@@ -3,6 +3,7 @@
  * Orchestrates all authentication providers and features
  */
 
+import { Redis } from 'ioredis';
 import { Pool } from 'pg';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -12,6 +13,7 @@ import { PasswordHasher } from './password/PasswordHasher.js';
 import { PasswordPolicy } from './password/PasswordPolicy.js';
 import { JWTProvider } from './providers/JWTProvider.js';
 import { OAuthProvider } from './providers/OAuthProvider.js';
+import { SAMLProvider } from './providers/SAMLProvider.js';
 import { RBACEngine } from './rbac/RBACEngine.js';
 import { RateLimiter, RateLimitPresets } from './security/RateLimiter.js';
 import { SessionManager } from './session/SessionManager.js';
@@ -48,6 +50,9 @@ export class AuthService {
   // OAuth providers
   private oauthProviders: Map<string, OAuthProvider>;
 
+  // SAML providers
+  private samlProviders: Map<string, SAMLProvider>;
+
   constructor(config: AuthConfig, db: Pool, redis: Redis) {
     this.config = config;
     this.db = db;
@@ -79,6 +84,14 @@ export class AuthService {
     if (config.oauth?.providers) {
       for (const providerConfig of config.oauth.providers) {
         this.oauthProviders.set(providerConfig.name, new OAuthProvider(providerConfig));
+      }
+    }
+
+    // Initialize SAML providers
+    this.samlProviders = new Map();
+    if (config.saml?.providers) {
+      for (const providerConfig of config.saml.providers) {
+        this.samlProviders.set(providerConfig.name, new SAMLProvider(providerConfig));
       }
     }
   }
@@ -423,14 +436,166 @@ export class AuthService {
   }
 
   /**
-   * Get services for middleware
+   * Get SAML provider
    */
-  getServices() {
-    return {
-      jwtProvider: this.jwtProvider,
-      sessionManager: this.sessionManager,
-      rateLimiter: this.rateLimiter,
-      rbacEngine: this.rbacEngine,
+  getSAMLProvider(name: string = 'default'): SAMLProvider | undefined {
+    return this.samlProviders.get(name);
+  }
+
+  /**
+   * Get SAML authorization URL
+   */
+  async getSAMLAuthUrl(providerName: string = 'default'): Promise<string | null> {
+    const provider = this.samlProviders.get(providerName);
+    if (!provider) {
+      return null;
+    }
+
+    // For now, return a placeholder URL - in practice, this would integrate with Passport
+    return `/auth/saml/${providerName}`;
+  }
+
+  /**
+   * Handle SAML login callback
+   */
+  async samlLogin(
+    providerName: string,
+    samlUser: any,
+    ipAddress: string,
+    userAgent: string
+  ): Promise<AuthResult> {
+    try {
+      const provider = this.samlProviders.get(providerName);
+      if (!provider) {
+        return {
+          success: false,
+          error: 'SAML provider not found',
+        };
+      }
+
+      // Extract user information from SAML response
+      const email = samlUser.email;
+      if (!email) {
+        return {
+          success: false,
+          error: 'Email not provided by SAML IdP',
+        };
+      }
+
+      // Check if user exists
+      let user = await this.getUserByEmail(email);
+
+      if (!user) {
+        // Auto-provision user if configured
+        user = await this.createSAMLUser(samlUser);
+      }
+
+      // Get user roles and permissions
+      const roles = await this.getUserRoles(user.id);
+      const permissions = this.rbacEngine.getRolePermissions(roles);
+
+      // Create session
+      const session = await this.sessionManager.createSession(user, ipAddress, userAgent);
+
+      // Generate tokens
+      const tokenPair = this.jwtProvider.createTokenPair(
+        user,
+        roles.map((r) => r.name),
+        permissions
+      );
+
+      // Update last login
+      await this.db.query('UPDATE users SET last_login = NOW() WHERE id = $1', [user.id]);
+
+      return {
+        success: true,
+        user,
+        token: {
+          ...tokenPair,
+          tokenType: 'Bearer',
+        },
+      };
+    } catch (error) {
+      console.error('SAML login error:', error);
+      return {
+        success: false,
+        error: 'SAML authentication failed',
+      };
+    }
+  }
+
+  /**
+   * Handle SAML logout
+   */
+  async samlLogout(providerName: string, req: any): Promise<string | null> {
+    const provider = this.samlProviders.get(providerName);
+    if (!provider) {
+      return null;
+    }
+
+    return provider.logout(req);
+  }
+
+  /**
+   * Get SAML service provider metadata
+   */
+  getSAMLMetadata(providerName: string = 'default'): string | null {
+    const provider = this.samlProviders.get(providerName);
+    if (!provider) {
+      return null;
+    }
+
+    return provider.generateServiceProviderMetadata();
+  }
+
+  /**
+   * Get user by email
+   */
+  private async getUserByEmail(email: string): Promise<User | null> {
+    const result = await this.db.query('SELECT * FROM users WHERE email = $1', [
+      email.toLowerCase(),
+    ]);
+    return result.rows[0] || null;
+  }
+
+  /**
+   * Create user from SAML attributes
+   */
+  private async createSAMLUser(samlUser: any): Promise<User> {
+    const userId = uuidv4();
+    const now = new Date();
+
+    const user: User = {
+      id: userId,
+      email: samlUser.email.toLowerCase(),
+      mfaEnabled: false,
+      failedLoginAttempts: 0,
+      createdAt: now,
+      updatedAt: now,
+      metadata: {
+        samlId: samlUser.id,
+        name: samlUser.name,
+        givenName: samlUser.givenName,
+        familyName: samlUser.familyName,
+        groups: samlUser.groups,
+        provider: 'saml',
+      },
     };
+
+    await this.db.query(
+      `INSERT INTO users (id, email, mfa_enabled, failed_login_attempts, created_at, updated_at, metadata)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [
+        user.id,
+        user.email,
+        user.mfaEnabled,
+        user.failedLoginAttempts,
+        user.createdAt,
+        user.updatedAt,
+        JSON.stringify(user.metadata),
+      ]
+    );
+
+    return user;
   }
 }

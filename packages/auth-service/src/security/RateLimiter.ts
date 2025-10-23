@@ -2,6 +2,7 @@
  * Advanced rate limiting using Redis
  */
 
+import { Redis } from 'ioredis';
 import { RateLimiterRedis, RateLimiterRes } from 'rate-limiter-flexible';
 
 export interface RateLimitConfig {

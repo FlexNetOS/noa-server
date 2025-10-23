@@ -2,30 +2,18 @@
  * Authentication middleware for Express and Fastify
  */
 
-import { Request, Response, NextFunction } from 'express';
-import { FastifyRequest, FastifyReply } from 'fastify';
+import { NextFunction, Request, Response } from 'express';
+import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { JWTProvider } from '../providers/JWTProvider.js';
 import { SessionManager } from '../session/SessionManager.js';
-import { JWTPayload } from '../types/index.js';
+import { JWTPayload, Permission } from '../types/index.js';
 
 export interface AuthMiddlewareConfig {
   jwtProvider: JWTProvider;
   sessionManager?: SessionManager;
   optional?: boolean; // Allow request even if not authenticated
   requireMFA?: boolean; // Require MFA verification
-}
-
-/**
- * Extend Express Request with auth properties
- */
-declare global {
-  namespace Express {
-    interface Request {
-      user?: JWTPayload;
-      sessionId?: string;
-    }
-  }
 }
 
 /**
@@ -79,12 +67,12 @@ export function createExpressAuthMiddleware(config: AuthMiddlewareConfig) {
           // Touch session to extend expiry
           await config.sessionManager.touchSession(sessionId);
 
-          req.sessionId = sessionId;
+          (req as any).sessionId = sessionId;
         }
       }
 
       // Attach user to request
-      req.user = payload;
+      (req as any).user = payload;
 
       next();
     } catch (error) {
@@ -159,12 +147,11 @@ export function createFastifyAuthPlugin(config: AuthMiddlewareConfig) {
   };
 }
 
-/**
- * Require specific roles middleware
- */
 export function requireRoles(...roles: string[]) {
   return (req: Request, res: Response, next: NextFunction): void => {
-    if (!req.user) {
+    const user = (req as any).user as JWTPayload | undefined;
+
+    if (!user) {
       res.status(401).json({
         error: 'Unauthorized',
         message: 'Authentication required',
@@ -172,7 +159,7 @@ export function requireRoles(...roles: string[]) {
       return;
     }
 
-    const userRoles = req.user.roles || [];
+    const userRoles = user.roles || [];
     const hasRole = roles.some((role) => userRoles.includes(role));
 
     if (!hasRole) {
@@ -187,12 +174,11 @@ export function requireRoles(...roles: string[]) {
   };
 }
 
-/**
- * Require specific permissions middleware
- */
 export function requirePermissions(resource: string, action: string) {
   return (req: Request, res: Response, next: NextFunction): void => {
-    if (!req.user) {
+    const user = (req as any).user as JWTPayload | undefined;
+
+    if (!user) {
       res.status(401).json({
         error: 'Unauthorized',
         message: 'Authentication required',
@@ -200,8 +186,8 @@ export function requirePermissions(resource: string, action: string) {
       return;
     }
 
-    const permissions = req.user.permissions || [];
-    const hasPermission = permissions.some((p) => p.resource === resource && p.action === action);
+    const permissions = user.permissions || [];
+    const hasPermission = permissions.some((p: Permission) => p.resource === resource && p.action === action);
 
     if (!hasPermission) {
       res.status(403).json({
