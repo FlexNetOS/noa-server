@@ -4,7 +4,8 @@ Complete API documentation for the Noa Server platform.
 
 ## Overview
 
-The Noa Server API is a comprehensive RESTful API for intelligent orchestration with MCP tools integration, agent swarm coordination, and workflow automation.
+The Noa Server API is a comprehensive RESTful API for intelligent orchestration
+with MCP tools integration, agent swarm coordination, and workflow automation.
 
 ### Key Features
 
@@ -56,13 +57,16 @@ docs/api/
 ### Guides
 
 - **[Quick Start Guide](./guides/API_QUICKSTART.md)** - Get started in minutes
-- **[Authentication Guide](./guides/AUTHENTICATION.md)** - Complete auth documentation
-- **[Rate Limiting Guide](./guides/RATE_LIMITING.md)** - Understanding rate limits
+- **[Authentication Guide](./guides/AUTHENTICATION.md)** - Complete auth
+  documentation
+- **[Rate Limiting Guide](./guides/RATE_LIMITING.md)** - Understanding rate
+  limits
 - **[Webhooks Guide](./guides/WEBHOOKS.md)** - Real-time event notifications
 
 ### Client Libraries
 
-- **[TypeScript Client](./clients/typescript/README.md)** - TypeScript/JavaScript SDK
+- **[TypeScript Client](./clients/typescript/README.md)** -
+  TypeScript/JavaScript SDK
 - **[Python Client](./clients/python/README.md)** - Python SDK
 
 ## Getting Started
@@ -178,11 +182,11 @@ See [Authentication Guide](./guides/AUTHENTICATION.md) for details.
 
 ## Rate Limits
 
-| User Type | Requests/Hour |
-|-----------|--------------|
-| Anonymous | 100 |
-| Authenticated | 1000 |
-| Admin | 10000 |
+| User Type     | Requests/Hour |
+| ------------- | ------------- |
+| Anonymous     | 100           |
+| Authenticated | 1000          |
+| Admin         | 10000         |
 
 See [Rate Limiting Guide](./guides/RATE_LIMITING.md) for details.
 
@@ -223,18 +227,18 @@ See [Rate Limiting Guide](./guides/RATE_LIMITING.md) for details.
 
 ## Status Codes
 
-| Code | Meaning |
-|------|---------|
-| 200 | OK - Request successful |
-| 201 | Created - Resource created |
-| 202 | Accepted - Request accepted for processing |
-| 400 | Bad Request - Invalid parameters |
-| 401 | Unauthorized - Authentication required |
-| 403 | Forbidden - Insufficient permissions |
-| 404 | Not Found - Resource not found |
-| 409 | Conflict - Resource already exists |
-| 429 | Too Many Requests - Rate limit exceeded |
-| 500 | Internal Server Error - Server error |
+| Code | Meaning                                    |
+| ---- | ------------------------------------------ |
+| 200  | OK - Request successful                    |
+| 201  | Created - Resource created                 |
+| 202  | Accepted - Request accepted for processing |
+| 400  | Bad Request - Invalid parameters           |
+| 401  | Unauthorized - Authentication required     |
+| 403  | Forbidden - Insufficient permissions       |
+| 404  | Not Found - Resource not found             |
+| 409  | Conflict - Resource already exists         |
+| 429  | Too Many Requests - Rate limit exceeded    |
+| 500  | Internal Server Error - Server error       |
 
 ## Pagination
 
@@ -288,7 +292,7 @@ import { Configuration, AuthenticationApi } from '@noa-server/api-client';
 
 const config = new Configuration({
   basePath: 'https://api.noa-server.io/v1',
-  accessToken: 'YOUR_ACCESS_TOKEN'
+  accessToken: 'YOUR_ACCESS_TOKEN',
 });
 
 const authApi = new AuthenticationApi(config);
