@@ -84,6 +84,8 @@ downloads/
 **/*.gz
 **/*.bz2
 **/*.7z
+backups/
+scripts/backups/
 
 # OS/editor
 .DS_Store
