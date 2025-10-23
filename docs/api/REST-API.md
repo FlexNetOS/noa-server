@@ -55,7 +55,7 @@ Content-Type: application/json
 **Response**:
 ```json
 {
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "access_token": "YOUR_ACCESS_TOKEN",
   "token_type": "Bearer",
   "expires_in": 3600,
   "scope": "read write"
@@ -68,7 +68,7 @@ For simpler use cases, API keys are supported:
 
 ```http
 GET /v1/agents
-X-API-Key: your_api_key
+X-API-Key: YOUR_API_KEY
 ```
 
 ## Endpoints
@@ -90,7 +90,7 @@ GET /v1/agents
 **Example Request**:
 ```bash
 curl -X GET "https://api.noa-server.io/v1/agents?type=coder&limit=10" \
-  -H "Authorization: Bearer YOUR_TOKEN"
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 
 **Response** (200 OK):

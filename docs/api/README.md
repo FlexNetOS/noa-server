@@ -167,12 +167,12 @@ curl -X GET https://api.noa-server.io/v1/users/me \
 The API uses **JWT (JSON Web Tokens)** for authentication:
 
 ```http
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Authorization: Bearer YOUR_ACCESS_TOKEN
 ```
 
 Alternative authentication methods:
 
-- **API Key**: `X-API-Key: noa_sk_live_abc123xyz789`
+- **API Key**: `X-API-Key: YOUR_API_KEY`
 
 See [Authentication Guide](./guides/AUTHENTICATION.md) for details.
 

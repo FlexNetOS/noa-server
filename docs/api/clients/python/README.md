@@ -254,7 +254,7 @@ configuration = Configuration(
 ```python
 configuration = Configuration(
     host='https://api.noa-server.io/v1',
-    api_key={'X-API-Key': 'noa_sk_live_abc123xyz789'}
+    api_key={'X-API-Key': 'YOUR_API_KEY'}
 )
 ```
 

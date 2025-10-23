@@ -132,8 +132,8 @@ paths:
               example:
                 success: true
                 data:
-                  accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-                  refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  accessToken: YOUR_ACCESS_TOKEN
+                  refreshToken: YOUR_REFRESH_TOKEN
                   tokenType: Bearer
                   expiresIn: 3600
                   user:
@@ -203,7 +203,7 @@ paths:
                   type: string
                   description: Valid refresh token
             example:
-              refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+              refreshToken: YOUR_REFRESH_TOKEN
       responses:
         '200':
           description: Token refreshed successfully

@@ -84,8 +84,8 @@ curl -X POST https://api.noa-server.io/v1/auth/login \
 {
   "success": true,
   "data": {
-    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "accessToken": "YOUR_ACCESS_TOKEN",
+  "refreshToken": "YOUR_REFRESH_TOKEN",
     "tokenType": "Bearer",
     "expiresIn": 3600,
     "user": {
@@ -104,7 +104,7 @@ Include the access token in the `Authorization` header:
 
 ```bash
 curl -X GET https://api.noa-server.io/v1/users/me \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 
 ## Making Your First Request

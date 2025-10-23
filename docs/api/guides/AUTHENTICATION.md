@@ -31,7 +31,7 @@ Primary authentication method using JWT tokens:
 
 ```bash
 curl -X GET https://api.noa-server.io/v1/users/me \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 
 ### 2. API Key
@@ -40,7 +40,7 @@ For server-to-server communication:
 
 ```bash
 curl -X GET https://api.noa-server.io/v1/users/me \
-  -H "X-API-Key: noa_sk_live_abc123xyz789"
+  -H "X-API-Key: YOUR_API_KEY"
 ```
 
 ## Registration and Login
@@ -103,8 +103,8 @@ curl -X POST https://api.noa-server.io/v1/auth/login \
 {
   "success": true,
   "data": {
-    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "accessToken": "YOUR_ACCESS_TOKEN",
+  "refreshToken": "YOUR_REFRESH_TOKEN",
     "tokenType": "Bearer",
     "expiresIn": 3600,
     "user": {
@@ -154,7 +154,7 @@ curl -X POST https://api.noa-server.io/v1/auth/login \
 curl -X POST https://api.noa-server.io/v1/auth/refresh \
   -H "Content-Type: application/json" \
   -d '{
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+              "refreshToken": "YOUR_REFRESH_TOKEN"
   }'
 ```
 
@@ -163,8 +163,8 @@ curl -X POST https://api.noa-server.io/v1/auth/refresh \
 {
   "success": true,
   "data": {
-    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "accessToken": "YOUR_ACCESS_TOKEN",
+  "refreshToken": "YOUR_REFRESH_TOKEN",
     "tokenType": "Bearer",
     "expiresIn": 3600
   }

@@ -163,7 +163,7 @@ curl -X POST https://api.noa-server.io/v1/webhooks \
       "workflow.failed",
       "agent.status.changed"
     ],
-    "secret": "whsec_abc123xyz789",
+  "secret": "YOUR_WEBHOOK_SECRET",
     "active": true,
     "createdAt": "2025-10-22T10:00:00Z"
   }
