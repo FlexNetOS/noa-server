@@ -180,7 +180,7 @@ export class ConfigurationManager {
       throw new Error('Configuration not loaded');
     }
 
-  return this.config.providers.find((p: ProviderConfig) => p.type === type);
+    return this.config.providers.find((p: ProviderConfig) => p.type === type);
   }
 
   /**
