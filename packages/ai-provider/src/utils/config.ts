@@ -236,7 +236,7 @@ export class ConfigurationManager {
     }
 
     const initialLength = this.config.providers.length;
-  this.config.providers = this.config.providers.filter((p: ProviderConfig) => p.type !== type);
+    this.config.providers = this.config.providers.filter((p: ProviderConfig) => p.type !== type);
 
     return this.config.providers.length < initialLength;
   }
