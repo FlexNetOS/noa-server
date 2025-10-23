@@ -1,0 +1,54 @@
+# current.todo
+<!-- Active tasks for immediate execution -->
+<!-- Last Updated: 2025-10-22 03:10 UTC -->
+
+## 🚨 Critical (P0) - Same Day
+- *None.*
+
+## 🔴 High Priority (P1) - 24-48 hours
+- [ ] [P1] Capture stakeholder sign-off on automated orchestration deliverables @governance #compliance due:2025-10-23
+  - Context: Truth Gate, export package, and Evidence Ledger are complete; written approval required for release.
+  - Success: Approval note added to `docs/release/truth-report.md` and referenced in SOT.
+  - Dependencies: Share latest report bundle with stakeholders.
+
+## 🟡 Normal Priority (P2) - This Week
+- [ ] [P2] Replace MCP tool stubs with production commands @mcp #tooling due:2025-10-25
+  - Context: Current MCP configuration uses stub wrappers for coverage.
+  - Success: High-value tools mapped to live commands, verification script updated, regression tests recorded.
+  - Dependencies: Collect execution details from service owners.
+
+## 🟢 Low Priority (P3) - When Possible
+- [ ] [P3] Draft onboarding playbook for Claude Suite automation stack @documentation #training
+  - Context: Need a concise guide for new contributors covering orchestration scripts and dashboard usage.
+  - Success: Playbook published at `docs/onboarding/claude-suite.md` with review sign-offs.
+  - Dependencies: MCP replacements and stakeholder approval (P1/P2) feed into content.
+
+---
+
+## 📊 Stats
+- Active Tasks: 3
+- Completion Rate (This Week): 5/8 (62%)
+- Average Task Age: 0.2 days
+- Oldest Task: 0 days
+
+## 🔄 Daily Standup Notes
+### 2025-10-22
+- Focus: Post-completion sign-off and production hardening work.
+- Blockers: Stakeholder availability for approval review.
+- Help Needed: Prioritization guidance for MCP tool replacement sequencing.
+
+---
+
+## Task Entry Template
+```
+- [ ] [PRIORITY] Task description @category #tags due:YYYY-MM-DD
+  - Context: Why this task exists
+  - Success: Definition of done
+  - Dependencies: What needs to happen first
+```
+
+## Priority Guidelines
+- **P0**: System down, data loss risk, security breach
+- **P1**: Major feature broken, blocking others, required sign-off
+- **P2**: Normal development, improvements, follow-up work
+- **P3**: Nice to have, research, training, documentation

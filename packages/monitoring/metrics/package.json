@@ -1,0 +1,46 @@
+{
+  "name": "@noa/metrics",
+  "version": "1.0.0",
+  "description": "Application metrics collection and Prometheus integration for Noa Server",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "benchmark": "node --loader ts-node/esm dist/benchmark.js"
+  },
+  "keywords": [
+    "metrics",
+    "prometheus",
+    "monitoring",
+    "observability",
+    "instrumentation",
+    "counters",
+    "gauges",
+    "histograms"
+  ],
+  "author": "Noa Server Team",
+  "license": "MIT",
+  "dependencies": {
+    "prom-client": "^15.1.0",
+    "express": "^4.18.2",
+    "winston": "^3.11.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.16",
+    "@types/express": "^4.17.21",
+    "@vitest/coverage-v8": "^1.2.2",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.5",
+    "ts-node": "^10.9.2"
+  }
+}

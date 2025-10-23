@@ -1,0 +1,172 @@
+{
+  "version": "1.0.0",
+  "project": "noa-server",
+  "baseline_date": "2025-10-22T00:00:00Z",
+  "status": "baseline_pending",
+  "environment": {
+    "node_version": "v20.18.0",
+    "platform": "Linux 6.6.87.2-microsoft-standard-WSL2",
+    "cpu": "AMD Ryzen 9",
+    "memory_gb": 32,
+    "os": "Ubuntu (WSL2)"
+  },
+  "targets": {
+    "api": {
+      "health_check": {
+        "p50": 50,
+        "p95": 100,
+        "p99": 200,
+        "unit": "ms"
+      },
+      "authentication": {
+        "p50": 100,
+        "p95": 200,
+        "p99": 500,
+        "unit": "ms"
+      },
+      "ai_inference": {
+        "p50": 500,
+        "p95": 2000,
+        "p99": 5000,
+        "unit": "ms"
+      },
+      "database_query": {
+        "p50": 20,
+        "p95": 50,
+        "p99": 100,
+        "unit": "ms"
+      },
+      "cache_operation": {
+        "p50": 5,
+        "p95": 10,
+        "p99": 20,
+        "unit": "ms"
+      }
+    },
+    "system": {
+      "cold_start_time": {
+        "target": 3000,
+        "unit": "ms"
+      },
+      "memory_baseline": {
+        "target": 512,
+        "unit": "MB"
+      },
+      "memory_peak": {
+        "target": 2048,
+        "unit": "MB"
+      },
+      "cpu_idle": {
+        "target": 5,
+        "unit": "%"
+      },
+      "cpu_load": {
+        "target": 70,
+        "unit": "%"
+      },
+      "build_time": {
+        "target": 60,
+        "unit": "s"
+      }
+    },
+    "resources": {
+      "memory_warning": {
+        "threshold": 80,
+        "unit": "%"
+      },
+      "memory_critical": {
+        "threshold": 95,
+        "unit": "%"
+      },
+      "cpu_warning": {
+        "threshold": 70,
+        "unit": "%"
+      },
+      "cpu_critical": {
+        "threshold": 90,
+        "unit": "%"
+      },
+      "disk_io_warning": {
+        "threshold": 80,
+        "unit": "%"
+      },
+      "event_loop_lag": {
+        "warning": 50,
+        "critical": 100,
+        "unit": "ms"
+      }
+    }
+  },
+  "budgets": {
+    "page_load": {
+      "html": 15360,
+      "css": 51200,
+      "javascript": 204800,
+      "images": 512000,
+      "fonts": 102400,
+      "total": 1048576,
+      "unit": "bytes"
+    },
+    "time_budget": {
+      "ttfb": 200,
+      "fcp": 1800,
+      "lcp": 2500,
+      "tti": 3800,
+      "tbt": 300,
+      "cls": 0.1,
+      "unit_time": "ms",
+      "unit_cls": "score"
+    },
+    "error_budget": {
+      "availability": 99.9,
+      "error_rate": 0.1,
+      "timeout_rate": 0.01,
+      "unit": "%"
+    }
+  },
+  "monitoring": {
+    "enabled": true,
+    "interval": 10000,
+    "retention_days": 90,
+    "alerts": {
+      "high_latency": {
+        "enabled": true,
+        "threshold": 1000,
+        "duration": 300000
+      },
+      "high_memory": {
+        "enabled": true,
+        "threshold": 2147483648,
+        "duration": 600000
+      },
+      "high_error_rate": {
+        "enabled": true,
+        "threshold": 0.01,
+        "duration": 300000
+      },
+      "event_loop_lag": {
+        "enabled": true,
+        "threshold": 100,
+        "duration": 300000
+      }
+    }
+  },
+  "benchmarks": {
+    "schedule": {
+      "continuous": "Every commit (unit tests with performance assertions)",
+      "pr": "Every PR (integration tests + load test)",
+      "daily": "Full benchmark suite + extended load test",
+      "weekly": "Stress testing + chaos engineering",
+      "monthly": "Performance audit + capacity planning"
+    },
+    "latest_run": null,
+    "baseline_file": "docs/performance/benchmarks/baseline.json",
+    "results_dir": "docs/performance/benchmarks"
+  },
+  "optimizations": {
+    "completed": 1,
+    "in_progress": 0,
+    "pending": 5,
+    "ledger": "docs/performance/optimization-ledger.json"
+  }
+}

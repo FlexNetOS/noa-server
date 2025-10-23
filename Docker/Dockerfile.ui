@@ -1,0 +1,65 @@
+# Multi-stage Dockerfile for Noa Server UI
+# Optimized for static site deployment
+
+# ===================================
+# Stage 1: Build
+# ===================================
+FROM node:20.17.0-alpine AS builder
+
+WORKDIR /app
+
+# Install dependencies
+RUN apk add --no-cache python3 make g++
+
+# Copy package files
+COPY package.json package-lock.json ./
+COPY packages/ui-dashboard/package.json ./packages/ui-dashboard/
+
+# Enable corepack
+RUN corepack enable && \
+    corepack prepare pnpm@9.11.0 --activate
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Copy source
+COPY packages/ui-dashboard ./packages/ui-dashboard
+
+# Build UI
+WORKDIR /app/packages/ui-dashboard
+RUN pnpm run build
+
+# ===================================
+# Stage 2: Production with NGINX
+# ===================================
+FROM nginx:1.25-alpine
+
+# Install security updates
+RUN apk upgrade --no-cache
+
+# Copy built assets
+COPY --from=builder /app/packages/ui-dashboard/dist /usr/share/nginx/html
+
+# Copy nginx configuration
+COPY Docker/nginx.conf /etc/nginx/nginx.conf
+
+# Build arguments
+ARG BUILD_DATE
+ARG VERSION
+ARG VCS_REF
+
+# Labels
+LABEL org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.revision="${VCS_REF}" \
+      org.opencontainers.image.title="Noa Server UI"
+
+# Expose port
+EXPOSE 80
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s \
+  CMD wget --quiet --tries=1 --spider http://localhost/health || exit 1
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]

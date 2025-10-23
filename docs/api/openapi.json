@@ -1,0 +1,123 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Noa Server API",
+    "version": "1.0.0",
+    "description": "Comprehensive REST API for Noa Server - An intelligent orchestration platform with MCP tools integration, agent swarm coordination, and workflow automation.\n\n## Features\n- Authentication with JWT and MFA support\n- User management with RBAC\n- MCP tools integration (filesystem, SQLite, GitHub)\n- Workflow orchestration and monitoring\n- Agent swarm coordination\n- Real-time monitoring and metrics\n\n## Rate Limiting\n- Anonymous: 100 requests/hour\n- Authenticated: 1000 requests/hour\n- Admin: 10000 requests/hour\n\n## Pagination\nAll list endpoints support pagination with `page` and `limit` query parameters.\nDefault: page=1, limit=20, max=100",
+    "contact": {
+      "name": "Noa Server API Support",
+      "url": "https://github.com/deflex/noa-server",
+      "email": "support@noa-server.io"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.noa-server.io/v1",
+      "description": "Production server"
+    },
+    {
+      "url": "https://staging-api.noa-server.io/v1",
+      "description": "Staging server"
+    },
+    {
+      "url": "http://localhost:3000/v1",
+      "description": "Local development server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "User authentication and authorization operations"
+    },
+    {
+      "name": "Users",
+      "description": "User management operations"
+    },
+    {
+      "name": "MCP Tools",
+      "description": "Model Context Protocol tools integration"
+    },
+    {
+      "name": "Workflows",
+      "description": "Workflow orchestration and management"
+    },
+    {
+      "name": "Agents",
+      "description": "Agent swarm coordination and monitoring"
+    },
+    {
+      "name": "Health",
+      "description": "System health and monitoring"
+    },
+    {
+      "name": "Admin",
+      "description": "Administrative operations"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    },
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health check",
+        "description": "Basic health check endpoint",
+        "tags": ["Health"],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": ["healthy", "degraded", "unhealthy"]
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "version": {
+                      "type": "string"
+                    },
+                    "uptime": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT token authentication"
+      },
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "API key authentication"
+      }
+    }
+  }
+}

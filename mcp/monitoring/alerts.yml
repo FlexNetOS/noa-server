@@ -1,0 +1,312 @@
+# Prometheus Alert Rules for MCP Server
+
+groups:
+  - name: mcp_requests
+    interval: 30s
+    rules:
+      - alert: HighErrorRate
+        expr: |
+          rate(mcp_request_errors_total[5m]) / rate(mcp_requests_total[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: warning
+          component: mcp
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }} for {{ $labels.tool }}.{{ $labels.operation }}"
+
+      - alert: CriticalErrorRate
+        expr: |
+          rate(mcp_request_errors_total[5m]) / rate(mcp_requests_total[5m]) > 0.15
+        for: 1m
+        labels:
+          severity: critical
+          component: mcp
+        annotations:
+          summary: "Critical error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }} for {{ $labels.tool }}.{{ $labels.operation }}"
+
+      - alert: HighRequestLatency
+        expr: |
+          histogram_quantile(0.95, rate(mcp_request_duration_seconds_bucket[5m])) > 5
+        for: 3m
+        labels:
+          severity: warning
+          component: mcp
+        annotations:
+          summary: "High request latency detected"
+          description: "P95 latency is {{ $value }}s for {{ $labels.tool }}.{{ $labels.operation }}"
+
+      - alert: RequestsStalled
+        expr: |
+          rate(mcp_requests_total[5m]) == 0
+        for: 5m
+        labels:
+          severity: critical
+          component: mcp
+        annotations:
+          summary: "No requests processed"
+          description: "MCP server has not processed any requests for 5 minutes"
+
+  - name: mcp_agents
+    interval: 30s
+    rules:
+      - alert: HighAgentFailureRate
+        expr: |
+          rate(mcp_agents_failed_total[5m]) / rate(mcp_agents_spawned_total[5m]) > 0.20
+        for: 2m
+        labels:
+          severity: warning
+          component: agents
+        annotations:
+          summary: "High agent failure rate"
+          description: "Agent failure rate is {{ $value | humanizePercentage }} for {{ $labels.type }}"
+
+      - alert: NoActiveAgents
+        expr: |
+          sum(mcp_agents_active) == 0
+        for: 5m
+        labels:
+          severity: warning
+          component: agents
+        annotations:
+          summary: "No active agents"
+          description: "No active agents detected for 5 minutes"
+
+      - alert: TooManyActiveAgents
+        expr: |
+          sum(mcp_agents_active) > 100
+        for: 2m
+        labels:
+          severity: warning
+          component: agents
+        annotations:
+          summary: "Too many active agents"
+          description: "Active agent count is {{ $value }}, may indicate resource leak"
+
+  - name: mcp_tasks
+    interval: 30s
+    rules:
+      - alert: HighTaskQueueDepth
+        expr: |
+          sum(mcp_tasks_pending) > 50
+        for: 5m
+        labels:
+          severity: warning
+          component: tasks
+        annotations:
+          summary: "High task queue depth"
+          description: "Task queue has {{ $value }} pending tasks"
+
+      - alert: CriticalTaskQueueDepth
+        expr: |
+          sum(mcp_tasks_pending) > 200
+        for: 2m
+        labels:
+          severity: critical
+          component: tasks
+        annotations:
+          summary: "Critical task queue depth"
+          description: "Task queue has {{ $value }} pending tasks, system may be overloaded"
+
+      - alert: TaskExecutionStalled
+        expr: |
+          rate(mcp_task_duration_seconds_count[5m]) == 0 and sum(mcp_tasks_pending) > 0
+        for: 5m
+        labels:
+          severity: critical
+          component: tasks
+        annotations:
+          summary: "Task execution stalled"
+          description: "Tasks are pending but none are being executed"
+
+      - alert: LongRunningTasks
+        expr: |
+          histogram_quantile(0.95, rate(mcp_task_duration_seconds_bucket[5m])) > 300
+        for: 5m
+        labels:
+          severity: warning
+          component: tasks
+        annotations:
+          summary: "Long running tasks detected"
+          description: "P95 task duration is {{ $value }}s"
+
+  - name: mcp_memory
+    interval: 30s
+    rules:
+      - alert: HighMemoryUsage
+        expr: |
+          mcp_memory_usage_bytes{type="heap"} / mcp_memory_usage_bytes{type="total"} > 0.85
+        for: 3m
+        labels:
+          severity: warning
+          component: memory
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is {{ $value | humanizePercentage }}"
+
+      - alert: CriticalMemoryUsage
+        expr: |
+          mcp_memory_usage_bytes{type="heap"} / mcp_memory_usage_bytes{type="total"} > 0.95
+        for: 1m
+        labels:
+          severity: critical
+          component: memory
+        annotations:
+          summary: "Critical memory usage"
+          description: "Memory usage is {{ $value | humanizePercentage }}, system may OOM"
+
+      - alert: MemoryLeakSuspected
+        expr: |
+          rate(mcp_memory_usage_bytes{type="heap"}[30m]) > 0
+        for: 1h
+        labels:
+          severity: warning
+          component: memory
+        annotations:
+          summary: "Potential memory leak"
+          description: "Memory usage has been steadily increasing for 1 hour"
+
+  - name: mcp_neural
+    interval: 30s
+    rules:
+      - alert: SlowNeuralInference
+        expr: |
+          histogram_quantile(0.95, rate(mcp_neural_inference_duration_seconds_bucket[5m])) > 10
+        for: 3m
+        labels:
+          severity: warning
+          component: neural
+        annotations:
+          summary: "Slow neural inference"
+          description: "P95 inference time is {{ $value }}s for {{ $labels.model }}"
+
+      - alert: LowTokenThroughput
+        expr: |
+          rate(mcp_neural_tokens_processed_total[5m]) < 10
+        for: 5m
+        labels:
+          severity: warning
+          component: neural
+        annotations:
+          summary: "Low token throughput"
+          description: "Token processing rate is {{ $value }} tokens/sec for {{ $labels.model }}"
+
+  - name: mcp_system
+    interval: 30s
+    rules:
+      - alert: HighCPUUsage
+        expr: |
+          mcp_system_cpu_usage_percent > 85
+        for: 5m
+        labels:
+          severity: warning
+          component: system
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is {{ $value }}%"
+
+      - alert: CriticalCPUUsage
+        expr: |
+          mcp_system_cpu_usage_percent > 95
+        for: 2m
+        labels:
+          severity: critical
+          component: system
+        annotations:
+          summary: "Critical CPU usage"
+          description: "CPU usage is {{ $value }}%, system may be unresponsive"
+
+      - alert: HighSystemMemoryUsage
+        expr: |
+          mcp_system_memory_usage_percent > 90
+        for: 3m
+        labels:
+          severity: warning
+          component: system
+        annotations:
+          summary: "High system memory usage"
+          description: "System memory usage is {{ $value }}%"
+
+      - alert: CriticalSystemMemoryUsage
+        expr: |
+          mcp_system_memory_usage_percent > 98
+        for: 1m
+        labels:
+          severity: critical
+          component: system
+        annotations:
+          summary: "Critical system memory usage"
+          description: "System memory usage is {{ $value }}%, may trigger OOM killer"
+
+  - name: mcp_auth
+    interval: 30s
+    rules:
+      - alert: HighAuthenticationFailureRate
+        expr: |
+          rate(mcp_auth_attempts_total{status="failed"}[5m]) / rate(mcp_auth_attempts_total[5m]) > 0.10
+        for: 2m
+        labels:
+          severity: warning
+          component: auth
+        annotations:
+          summary: "High authentication failure rate"
+          description: "Authentication failure rate is {{ $value | humanizePercentage }}"
+
+      - alert: PossibleBruteForceAttack
+        expr: |
+          rate(mcp_auth_attempts_total{status="failed"}[1m]) > 10
+        for: 1m
+        labels:
+          severity: critical
+          component: auth
+        annotations:
+          summary: "Possible brute force attack"
+          description: "High rate of failed authentication attempts detected ({{ $value }}/sec)"
+
+      - alert: HighRateLimitViolations
+        expr: |
+          rate(mcp_auth_rate_limit_exceeded_total[5m]) > 5
+        for: 2m
+        labels:
+          severity: warning
+          component: auth
+        annotations:
+          summary: "High rate limit violations"
+          description: "Multiple users are hitting rate limits ({{ $value }}/sec)"
+
+      - alert: NoAuthenticationAttempts
+        expr: |
+          rate(mcp_auth_attempts_total[5m]) == 0
+        for: 10m
+        labels:
+          severity: info
+          component: auth
+        annotations:
+          summary: "No authentication attempts"
+          description: "No authentication attempts for 10 minutes, system may be unreachable"
+
+  - name: mcp_availability
+    interval: 30s
+    rules:
+      - alert: MCPServerDown
+        expr: |
+          up{job="mcp-server"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: availability
+        annotations:
+          summary: "MCP server is down"
+          description: "MCP server has been unreachable for 1 minute"
+
+      - alert: MCPServerFlapping
+        expr: |
+          changes(up{job="mcp-server"}[10m]) > 5
+        for: 5m
+        labels:
+          severity: warning
+          component: availability
+        annotations:
+          summary: "MCP server is flapping"
+          description: "MCP server has restarted {{ $value }} times in 10 minutes"

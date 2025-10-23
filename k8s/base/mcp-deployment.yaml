@@ -1,0 +1,162 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: noa-mcp
+  namespace: noa-server
+  labels:
+    app: noa-mcp
+    tier: backend
+    component: coordination
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: noa-mcp
+  template:
+    metadata:
+      labels:
+        app: noa-mcp
+        tier: backend
+        component: coordination
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8001"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: noa-server-sa
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+      - name: mcp
+        image: noa-server:latest
+        imagePullPolicy: IfNotPresent
+        args: ["mcp-service"]
+        ports:
+        - name: http
+          containerPort: 8001
+          protocol: TCP
+        env:
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: noa-server-config
+              key: NODE_ENV
+        - name: MCP_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: noa-server-config
+              key: MCP_PORT
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: noa-server-config
+              key: LOG_LEVEL
+        - name: POSTGRES_URL
+          valueFrom:
+            configMapKeyRef:
+              name: noa-server-config
+              key: POSTGRES_URL
+        - name: REDIS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: noa-server-config
+              key: REDIS_URL
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: noa-server-secrets
+              key: POSTGRES_PASSWORD
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: noa-server-secrets
+              key: REDIS_PASSWORD
+        resources:
+          requests:
+            cpu: 250m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 512Mi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 8001
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /health/startup
+            port: 8001
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          failureThreshold: 30
+        volumeMounts:
+        - name: mcp-data
+          mountPath: /app/data
+        - name: mcp-logs
+          mountPath: /app/logs
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+      volumes:
+      - name: mcp-data
+        persistentVolumeClaim:
+          claimName: noa-mcp-pvc
+      - name: mcp-logs
+        emptyDir: {}
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: noa-mcp-service
+  namespace: noa-server
+  labels:
+    app: noa-mcp
+spec:
+  type: ClusterIP
+  selector:
+    app: noa-mcp
+  ports:
+  - name: http
+    port: 8001
+    targetPort: 8001
+    protocol: TCP
+  sessionAffinity: ClientIP
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: noa-mcp-pvc
+  namespace: noa-server
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: standard

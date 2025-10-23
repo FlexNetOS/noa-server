@@ -1,0 +1,32 @@
+{
+  "name": "llama-cpp-sllm-registry",
+  "version": "1.0.0",
+  "description": "Model registry and database for Small Language Models (SLLMs) in llama.cpp",
+  "main": "registry/api/registry-manager.js",
+  "scripts": {
+    "import": "node api/registry-manager.js import",
+    "export": "node api/registry-manager.js export",
+    "list": "node api/registry-manager.js list",
+    "search": "node api/registry-manager.js search",
+    "family": "node api/registry-manager.js family",
+    "init-db": "node -e \"const Registry = require('./api/registry-manager.js'); const r = new Registry(); r.initialize().then(() => r.close())\"",
+    "start": "node api/server.js"
+  },
+  "dependencies": {
+    "sqlite3": "^5.1.6",
+    "csv-parser": "^3.0.0",
+    "express": "^4.18.2"
+  },
+  "keywords": [
+    "llama.cpp",
+    "machine-learning",
+    "models",
+    "registry",
+    "sllm",
+    "small-language-models",
+    "sqlite",
+    "gguf"
+  ],
+  "author": "DEFLEX",
+  "license": "MIT"
+}

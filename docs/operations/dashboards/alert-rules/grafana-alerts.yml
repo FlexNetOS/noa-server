@@ -1,0 +1,234 @@
+apiVersion: 1
+
+groups:
+  - name: Application Alerts
+    interval: 1m
+    rules:
+      - uid: app_latency_high
+        title: High Application Latency
+        condition: A
+        data:
+          - refId: A
+            queryType: prometheus
+            model:
+              expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{service="api"}[5m])) by (le))
+              interval: ""
+              legendFormat: ""
+        noDataState: NoData
+        execErrState: Error
+        for: 5m
+        annotations:
+          description: "API P95 latency is {{ $values.A }}s, exceeding threshold of 2s"
+          summary: "High API latency detected"
+          runbook_url: "https://docs.noaserver.com/runbooks/high-latency"
+        labels:
+          severity: warning
+          team: backend
+        isPaused: false
+
+      - uid: app_error_rate_high
+        title: High Application Error Rate
+        condition: A
+        data:
+          - refId: A
+            queryType: prometheus
+            model:
+              expr: (sum(rate(http_requests_total{service="api",status=~"5.."}[5m])) / sum(rate(http_requests_total{service="api"}[5m]))) * 100
+              interval: ""
+        noDataState: NoData
+        execErrState: Error
+        for: 5m
+        annotations:
+          description: "Error rate is {{ $values.A }}%, exceeding threshold of 1%"
+          summary: "High error rate detected"
+          runbook_url: "https://docs.noaserver.com/runbooks/high-error-rate"
+        labels:
+          severity: warning
+          team: backend
+        isPaused: false
+
+  - name: Database Alerts
+    interval: 1m
+    rules:
+      - uid: db_connections_high
+        title: High Database Connections
+        condition: A
+        data:
+          - refId: A
+            queryType: prometheus
+            model:
+              expr: pg_stat_database_numbackends{datname="noa_db"} / pg_settings_max_connections * 100
+              interval: ""
+        noDataState: NoData
+        execErrState: Error
+        for: 5m
+        annotations:
+          description: "Database connections at {{ $values.A }}% of maximum"
+          summary: "Connection pool near capacity"
+          runbook_url: "https://docs.noaserver.com/runbooks/database-connections"
+        labels:
+          severity: warning
+          team: backend
+        isPaused: false
+
+      - uid: db_down
+        title: Database Down
+        condition: A
+        data:
+          - refId: A
+            queryType: prometheus
+            model:
+              expr: up{job="postgres"}
+              interval: ""
+        noDataState: Alerting
+        execErrState: Error
+        for: 1m
+        annotations:
+          description: "PostgreSQL database is not responding"
+          summary: "Database is down"
+          runbook_url: "https://docs.noaserver.com/playbooks/database-failure"
+        labels:
+          severity: critical
+          team: backend
+        isPaused: false
+
+  - name: Infrastructure Alerts
+    interval: 1m
+    rules:
+      - uid: node_cpu_high
+        title: High Node CPU Usage
+        condition: A
+        data:
+          - refId: A
+            queryType: prometheus
+            model:
+              expr: sum(rate(container_cpu_usage_seconds_total[5m])) by (node) * 100
+              interval: ""
+        noDataState: NoData
+        execErrState: Error
+        for: 10m
+        annotations:
+          description: "Node {{ $labels.node }} CPU at {{ $values.A }}%"
+          summary: "High CPU usage on node"
+          runbook_url: "https://docs.noaserver.com/runbooks/high-cpu"
+        labels:
+          severity: warning
+          team: devops
+        isPaused: false
+
+      - uid: pod_crashloop
+        title: Pod Crash Looping
+        condition: A
+        data:
+          - refId: A
+            queryType: prometheus
+            model:
+              expr: rate(kube_pod_container_status_restarts_total[15m])
+              interval: ""
+        noDataState: NoData
+        execErrState: Error
+        for: 5m
+        annotations:
+          description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} is crash looping"
+          summary: "Pod crash looping"
+          runbook_url: "https://docs.noaserver.com/runbooks/crashloop"
+        labels:
+          severity: critical
+          team: devops
+        isPaused: false
+
+  - name: SLA Alerts
+    interval: 5m
+    rules:
+      - uid: sla_breach
+        title: SLA Breach
+        condition: A
+        data:
+          - refId: A
+            queryType: prometheus
+            model:
+              expr: (sum(rate(http_requests_total{service="api",status!~"5.."}[30d])) / sum(rate(http_requests_total{service="api"}[30d]))) * 100
+              interval: ""
+        noDataState: NoData
+        execErrState: Error
+        for: 1h
+        annotations:
+          description: "API availability {{ $values.A }}% is below SLA of 99.9%"
+          summary: "SLA breach detected"
+          runbook_url: "https://docs.noaserver.com/playbooks/sla-breach"
+        labels:
+          severity: critical
+          team: leadership
+        isPaused: false
+
+      - uid: error_budget_low
+        title: Error Budget Low
+        condition: A
+        data:
+          - refId: A
+            queryType: prometheus
+            model:
+              expr: ((0.999 - (sum(rate(http_requests_total{service="api",status!~"5.."}[30d])) / sum(rate(http_requests_total{service="api"}[30d])))) / 0.001) * 100
+              interval: ""
+        noDataState: NoData
+        execErrState: Error
+        for: 30m
+        annotations:
+          description: "Error budget at {{ $values.A }}% remaining"
+          summary: "Error budget running low"
+          runbook_url: "https://docs.noaserver.com/runbooks/error-budget"
+        labels:
+          severity: warning
+          team: backend
+        isPaused: false
+
+contactPoints:
+  - uid: pagerduty_critical
+    name: PagerDuty Critical
+    type: pagerduty
+    settings:
+      integrationKey: $PAGERDUTY_INTEGRATION_KEY
+      severity: critical
+      autoResolve: true
+
+  - uid: opsgenie_warning
+    name: OpsGenie Warning
+    type: opsgenie
+    settings:
+      apiKey: $OPSGENIE_API_KEY
+      autoClose: true
+      overridePriority: true
+      sendTagsAs: tags
+
+  - uid: slack_alerts
+    name: Slack Alerts
+    type: slack
+    settings:
+      url: $SLACK_WEBHOOK_URL
+      username: Grafana Alerts
+      icon_emoji: ":warning:"
+
+notificationPolicies:
+  - receiver: pagerduty_critical
+    matchers:
+      - severity = critical
+    group_by: ['alertname', 'cluster']
+    group_wait: 10s
+    group_interval: 10s
+    repeat_interval: 12h
+
+  - receiver: opsgenie_warning
+    matchers:
+      - severity = warning
+    group_by: ['alertname']
+    group_wait: 30s
+    group_interval: 5m
+    repeat_interval: 4h
+
+  - receiver: slack_alerts
+    matchers:
+      - severity =~ warning|info
+    group_by: ['alertname']
+    group_wait: 1m
+    group_interval: 10m
+    repeat_interval: 24h

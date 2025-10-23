@@ -1,0 +1,255 @@
+{
+  "roles": [
+    {
+      "name": "admin",
+      "description": "Full administrative access to all MCP tools and operations",
+      "permissions": [
+        {
+          "resource": "*",
+          "operations": ["*"],
+          "conditions": {}
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "developer",
+      "description": "Development access to MCP tools, excludes system management",
+      "permissions": [
+        {
+          "resource": "mcp.swarm.*",
+          "operations": ["execute", "read"],
+          "conditions": {}
+        },
+        {
+          "resource": "mcp.agent.*",
+          "operations": ["execute", "read"],
+          "conditions": {}
+        },
+        {
+          "resource": "mcp.task.*",
+          "operations": ["execute", "read", "write"],
+          "conditions": {}
+        },
+        {
+          "resource": "mcp.memory.*",
+          "operations": ["execute", "read", "write"],
+          "conditions": {}
+        },
+        {
+          "resource": "mcp.neural.*",
+          "operations": ["execute", "read"],
+          "conditions": {}
+        },
+        {
+          "resource": "mcp.github.*",
+          "operations": ["execute", "read", "write"],
+          "conditions": {}
+        },
+        {
+          "resource": "mcp.monitoring.*",
+          "operations": ["read"],
+          "conditions": {}
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "readonly",
+      "description": "Read-only access to MCP status and monitoring",
+      "permissions": [
+        {
+          "resource": "mcp.swarm.status",
+          "operations": ["read"],
+          "conditions": {}
+        },
+        {
+          "resource": "mcp.agent.list",
+          "operations": ["read"],
+          "conditions": {}
+        },
+        {
+          "resource": "mcp.agent.metrics",
+          "operations": ["read"],
+          "conditions": {}
+        },
+        {
+          "resource": "mcp.task.status",
+          "operations": ["read"],
+          "conditions": {}
+        },
+        {
+          "resource": "mcp.monitoring.*",
+          "operations": ["read"],
+          "conditions": {}
+        },
+        {
+          "resource": "mcp.memory.usage",
+          "operations": ["read"],
+          "conditions": {}
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "operator",
+      "description": "Operations access for deployment and monitoring",
+      "permissions": [
+        {
+          "resource": "mcp.swarm.*",
+          "operations": ["execute", "read"],
+          "conditions": {}
+        },
+        {
+          "resource": "mcp.agent.*",
+          "operations": ["read"],
+          "conditions": {}
+        },
+        {
+          "resource": "mcp.task.*",
+          "operations": ["read"],
+          "conditions": {}
+        },
+        {
+          "resource": "mcp.monitoring.*",
+          "operations": ["*"],
+          "conditions": {}
+        },
+        {
+          "resource": "mcp.system.health",
+          "operations": ["read"],
+          "conditions": {}
+        },
+        {
+          "resource": "mcp.system.metrics",
+          "operations": ["read"],
+          "conditions": {}
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ml-engineer",
+      "description": "Machine learning engineer with neural processing access",
+      "permissions": [
+        {
+          "resource": "mcp.neural.*",
+          "operations": ["*"],
+          "conditions": {}
+        },
+        {
+          "resource": "mcp.memory.*",
+          "operations": ["execute", "read", "write"],
+          "conditions": {}
+        },
+        {
+          "resource": "mcp.monitoring.*",
+          "operations": ["read"],
+          "conditions": {}
+        },
+        {
+          "resource": "llama.chat_completion",
+          "operations": ["execute"],
+          "conditions": {}
+        },
+        {
+          "resource": "llama.stream_chat",
+          "operations": ["execute"],
+          "conditions": {}
+        },
+        {
+          "resource": "llama.benchmark_model",
+          "operations": ["execute"],
+          "conditions": {}
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ci-bot",
+      "description": "Automated CI/CD bot with limited permissions",
+      "permissions": [
+        {
+          "resource": "mcp.github.pr_enhance",
+          "operations": ["execute"],
+          "conditions": {}
+        },
+        {
+          "resource": "mcp.github.code_review",
+          "operations": ["execute"],
+          "conditions": {}
+        },
+        {
+          "resource": "mcp.task.*",
+          "operations": ["execute", "read"],
+          "conditions": {}
+        },
+        {
+          "resource": "mcp.monitoring.*",
+          "operations": ["read"],
+          "conditions": {}
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "guest",
+      "description": "Guest access with minimal permissions",
+      "permissions": [
+        {
+          "resource": "mcp.swarm.status",
+          "operations": ["read"],
+          "conditions": {}
+        },
+        {
+          "resource": "mcp.monitoring.health",
+          "operations": ["read"],
+          "conditions": {}
+        }
+      ],
+      "inherits": []
+    }
+  ],
+  "permission_definitions": {
+    "operations": {
+      "execute": "Execute the tool or operation",
+      "read": "Read data or status",
+      "write": "Write or modify data",
+      "*": "All operations"
+    },
+    "resource_patterns": {
+      "*": "All resources",
+      "mcp.swarm.*": "All swarm coordination tools",
+      "mcp.agent.*": "All agent management tools",
+      "mcp.task.*": "All task orchestration tools",
+      "mcp.memory.*": "All memory management tools",
+      "mcp.neural.*": "All neural processing tools",
+      "mcp.github.*": "All GitHub integration tools",
+      "mcp.monitoring.*": "All monitoring tools",
+      "mcp.system.*": "All system management tools",
+      "llama.*": "All llama.cpp neural processing tools"
+    }
+  },
+  "conditions": {
+    "time_based": {
+      "description": "Time-based access restrictions",
+      "example": {
+        "allowed_hours": "9-17",
+        "allowed_days": ["monday", "tuesday", "wednesday", "thursday", "friday"]
+      }
+    },
+    "ip_based": {
+      "description": "IP-based access restrictions",
+      "example": {
+        "allowed_ips": ["192.168.1.0/24", "10.0.0.0/8"]
+      }
+    },
+    "resource_based": {
+      "description": "Resource-specific conditions",
+      "example": {
+        "max_concurrent_tasks": 10,
+        "max_agents": 50
+      }
+    }
+  }
+}

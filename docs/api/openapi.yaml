@@ -1,0 +1,465 @@
+openapi: 3.0.3
+info:
+  title: Noa Server API
+  version: 1.0.0
+  description: |
+    Comprehensive REST API for Noa Server - An intelligent orchestration platform
+    with MCP tools integration, agent swarm coordination, and workflow automation.
+
+    ## Features
+    - Authentication with JWT and MFA support
+    - User management with RBAC
+    - MCP tools integration (filesystem, SQLite, GitHub)
+    - Workflow orchestration and monitoring
+    - Agent swarm coordination
+    - Real-time monitoring and metrics
+
+    ## Rate Limiting
+    - Anonymous: 100 requests/hour
+    - Authenticated: 1000 requests/hour
+    - Admin: 10000 requests/hour
+
+    ## Pagination
+    All list endpoints support pagination with `page` and `limit` query parameters.
+    Default: page=1, limit=20, max=100
+
+  contact:
+    name: Noa Server API Support
+    url: https://github.com/deflex/noa-server
+    email: support@noa-server.io
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.noa-server.io/v1
+    description: Production server
+  - url: https://staging-api.noa-server.io/v1
+    description: Staging server
+  - url: http://localhost:3000/v1
+    description: Local development server
+
+tags:
+  - name: Authentication
+    description: User authentication and authorization operations
+  - name: Users
+    description: User management operations
+  - name: MCP Tools
+    description: Model Context Protocol tools integration
+  - name: Workflows
+    description: Workflow orchestration and management
+  - name: Agents
+    description: Agent swarm coordination and monitoring
+  - name: Health
+    description: System health and monitoring
+  - name: Admin
+    description: Administrative operations
+
+security:
+  - bearerAuth: []
+  - apiKeyAuth: []
+
+paths:
+  # Authentication endpoints
+  /auth/register:
+    $ref: './schemas/auth.yaml#/paths/~1auth~1register'
+  /auth/login:
+    $ref: './schemas/auth.yaml#/paths/~1auth~1login'
+  /auth/logout:
+    $ref: './schemas/auth.yaml#/paths/~1auth~1logout'
+  /auth/refresh:
+    $ref: './schemas/auth.yaml#/paths/~1auth~1refresh'
+  /auth/mfa/setup:
+    $ref: './schemas/auth.yaml#/paths/~1auth~1mfa~1setup'
+  /auth/mfa/verify:
+    $ref: './schemas/auth.yaml#/paths/~1auth~1mfa~1verify'
+  /auth/password/reset:
+    $ref: './schemas/auth.yaml#/paths/~1auth~1password~1reset'
+  /auth/password/change:
+    $ref: './schemas/auth.yaml#/paths/~1auth~1password~1change'
+
+  # User management endpoints
+  /users:
+    $ref: './schemas/users.yaml#/paths/~1users'
+  /users/{userId}:
+    $ref: './schemas/users.yaml#/paths/~1users~1{userId}'
+  /users/{userId}/roles:
+    $ref: './schemas/users.yaml#/paths/~1users~1{userId}~1roles'
+  /users/{userId}/permissions:
+    $ref: './schemas/users.yaml#/paths/~1users~1{userId}~1permissions'
+  /users/me:
+    $ref: './schemas/users.yaml#/paths/~1users~1me'
+
+  # MCP Tools endpoints
+  /mcp/tools:
+    $ref: './schemas/mcp.yaml#/paths/~1mcp~1tools'
+  /mcp/tools/{toolId}:
+    $ref: './schemas/mcp.yaml#/paths/~1mcp~1tools~1{toolId}'
+  /mcp/tools/{toolId}/execute:
+    $ref: './schemas/mcp.yaml#/paths/~1mcp~1tools~1{toolId}~1execute'
+  /mcp/filesystem:
+    $ref: './schemas/mcp.yaml#/paths/~1mcp~1filesystem'
+  /mcp/sqlite:
+    $ref: './schemas/mcp.yaml#/paths/~1mcp~1sqlite'
+  /mcp/github:
+    $ref: './schemas/mcp.yaml#/paths/~1mcp~1github'
+
+  # Workflow endpoints
+  /workflows:
+    $ref: './schemas/workflows.yaml#/paths/~1workflows'
+  /workflows/{workflowId}:
+    $ref: './schemas/workflows.yaml#/paths/~1workflows~1{workflowId}'
+  /workflows/{workflowId}/execute:
+    $ref: './schemas/workflows.yaml#/paths/~1workflows~1{workflowId}~1execute'
+  /workflows/{workflowId}/status:
+    $ref: './schemas/workflows.yaml#/paths/~1workflows~1{workflowId}~1status'
+  /workflows/executions:
+    $ref: './schemas/workflows.yaml#/paths/~1workflows~1executions'
+  /workflows/executions/{executionId}:
+    $ref: './schemas/workflows.yaml#/paths/~1workflows~1executions~1{executionId}'
+
+  # Agent swarm endpoints
+  /agents:
+    $ref: './schemas/agents.yaml#/paths/~1agents'
+  /agents/{agentId}:
+    $ref: './schemas/agents.yaml#/paths/~1agents~1{agentId}'
+  /agents/{agentId}/tasks:
+    $ref: './schemas/agents.yaml#/paths/~1agents~1{agentId}~1tasks'
+  /agents/swarms:
+    $ref: './schemas/agents.yaml#/paths/~1agents~1swarms'
+  /agents/swarms/{swarmId}:
+    $ref: './schemas/agents.yaml#/paths/~1agents~1swarms~1{swarmId}'
+  /agents/swarms/{swarmId}/coordinate:
+    $ref: './schemas/agents.yaml#/paths/~1agents~1swarms~1{swarmId}~1coordinate'
+
+  # Health and monitoring endpoints
+  /health:
+    get:
+      summary: Health check
+      description: Basic health check endpoint
+      tags:
+        - Health
+      security: []
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy, degraded, unhealthy]
+                  timestamp:
+                    type: string
+                    format: date-time
+                  version:
+                    type: string
+                  uptime:
+                    type: number
+
+  /health/ready:
+    get:
+      summary: Readiness check
+      description: Check if service is ready to accept traffic
+      tags:
+        - Health
+      security: []
+      responses:
+        '200':
+          description: Service is ready
+        '503':
+          description: Service is not ready
+
+  /health/live:
+    get:
+      summary: Liveness check
+      description: Check if service is alive
+      tags:
+        - Health
+      security: []
+      responses:
+        '200':
+          description: Service is alive
+        '503':
+          description: Service is not alive
+
+  /metrics:
+    get:
+      summary: Prometheus metrics
+      description: Expose metrics in Prometheus format
+      tags:
+        - Health
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Metrics data
+          content:
+            text/plain:
+              schema:
+                type: string
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token authentication
+
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key authentication
+
+  schemas:
+    Error:
+      type: object
+      required:
+        - error
+        - message
+        - statusCode
+      properties:
+        error:
+          type: string
+          description: Error type
+        message:
+          type: string
+          description: Human-readable error message
+        statusCode:
+          type: integer
+          description: HTTP status code
+        details:
+          type: object
+          description: Additional error details
+        timestamp:
+          type: string
+          format: date-time
+        path:
+          type: string
+          description: Request path that caused the error
+        requestId:
+          type: string
+          description: Unique request identifier for tracking
+
+    PaginationMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+          minimum: 1
+          description: Current page number
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+          description: Items per page
+        total:
+          type: integer
+          description: Total number of items
+        totalPages:
+          type: integer
+          description: Total number of pages
+        hasNext:
+          type: boolean
+          description: Whether there is a next page
+        hasPrev:
+          type: boolean
+          description: Whether there is a previous page
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+        data:
+          type: object
+        timestamp:
+          type: string
+          format: date-time
+
+  responses:
+    BadRequest:
+      description: Bad request - validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: ValidationError
+            message: Invalid request parameters
+            statusCode: 400
+            details:
+              field: email
+              reason: Invalid email format
+
+    Unauthorized:
+      description: Unauthorized - authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: Unauthorized
+            message: Authentication required
+            statusCode: 401
+
+    Forbidden:
+      description: Forbidden - insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: Forbidden
+            message: Insufficient permissions
+            statusCode: 403
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: NotFound
+            message: Resource not found
+            statusCode: 404
+
+    Conflict:
+      description: Conflict - resource already exists
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: Conflict
+            message: Resource already exists
+            statusCode: 409
+
+    TooManyRequests:
+      description: Too many requests - rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: TooManyRequests
+            message: Rate limit exceeded
+            statusCode: 429
+            details:
+              retryAfter: 3600
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: InternalServerError
+            message: An unexpected error occurred
+            statusCode: 500
+            requestId: req_12345
+
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      description: Page number for pagination
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+
+    LimitParam:
+      name: limit
+      in: query
+      description: Number of items per page
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+
+    SortParam:
+      name: sort
+      in: query
+      description: Sort field and direction (e.g., createdAt:desc)
+      schema:
+        type: string
+
+    FilterParam:
+      name: filter
+      in: query
+      description: Filter criteria in JSON format
+      schema:
+        type: string
+
+    UserIdParam:
+      name: userId
+      in: path
+      required: true
+      description: User unique identifier
+      schema:
+        type: string
+        format: uuid
+
+webhooks:
+  workflowCompleted:
+    post:
+      summary: Workflow completed webhook
+      description: Triggered when a workflow execution completes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event:
+                  type: string
+                  enum: [workflow.completed]
+                workflowId:
+                  type: string
+                executionId:
+                  type: string
+                status:
+                  type: string
+                  enum: [success, failed, cancelled]
+                timestamp:
+                  type: string
+                  format: date-time
+      responses:
+        '200':
+          description: Webhook received successfully
+
+  agentStatusChanged:
+    post:
+      summary: Agent status changed webhook
+      description: Triggered when an agent status changes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event:
+                  type: string
+                  enum: [agent.status.changed]
+                agentId:
+                  type: string
+                status:
+                  type: string
+                  enum: [idle, busy, failed, terminated]
+                timestamp:
+                  type: string
+                  format: date-time
+      responses:
+        '200':
+          description: Webhook received successfully

@@ -1,0 +1,126 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database for Testing
+  postgres-test:
+    image: postgres:15-alpine
+    container_name: noa-postgres-test
+    environment:
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_DB: noa_test
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-test-data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test_user -d noa_test"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Redis for Caching and Rate Limiting
+  redis-test:
+    image: redis:7-alpine
+    container_name: noa-redis-test
+    ports:
+      - "6380:6379"
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Mock AI Provider (OpenAI-compatible)
+  mock-openai:
+    build:
+      context: .
+      dockerfile: Dockerfile.mock-openai
+    container_name: noa-mock-openai
+    ports:
+      - "8081:8080"
+    environment:
+      MOCK_LATENCY_MS: 100
+      MOCK_FAILURE_RATE: 0.0
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Mock AI Provider (Claude-compatible)
+  mock-claude:
+    build:
+      context: .
+      dockerfile: Dockerfile.mock-claude
+    container_name: noa-mock-claude
+    ports:
+      - "8082:8080"
+    environment:
+      MOCK_LATENCY_MS: 150
+      MOCK_FAILURE_RATE: 0.0
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # llama.cpp Server (for local inference testing)
+  llamacpp-test:
+    build:
+      context: ../../packages/llama.cpp
+      dockerfile: Dockerfile.test
+    container_name: noa-llamacpp-test
+    ports:
+      - "8083:8080"
+    environment:
+      MODEL_PATH: /models/test-model.gguf
+      CONTEXT_SIZE: 2048
+      N_GPU_LAYERS: 0
+    volumes:
+      - ../../packages/llama.cpp/models:/models:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Message Queue (RabbitMQ)
+  rabbitmq-test:
+    image: rabbitmq:3-management-alpine
+    container_name: noa-rabbitmq-test
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: test_user
+      RABBITMQ_DEFAULT_PASS: test_password
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Prometheus (for metrics testing)
+  prometheus-test:
+    image: prom/prometheus:latest
+    container_name: noa-prometheus-test
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./prometheus.test.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+
+volumes:
+  postgres-test-data:
+    driver: local
+
+networks:
+  default:
+    name: noa-test-network

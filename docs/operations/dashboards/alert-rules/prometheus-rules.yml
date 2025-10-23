@@ -1,0 +1,218 @@
+groups:
+  - name: api_alerts
+    interval: 30s
+    rules:
+      - alert: HighAPILatency
+        expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{service="api"}[5m])) by (le, endpoint)) > 2
+        for: 5m
+        labels:
+          severity: warning
+          component: api
+          team: backend
+        annotations:
+          summary: "High API latency detected"
+          description: "P95 latency for {{ $labels.endpoint }} is {{ $value }}s (threshold: 2s)"
+          runbook: "https://docs.noaserver.com/runbooks/high-latency"
+          dashboard: "https://grafana.noaserver.com/d/api-performance"
+
+      - alert: CriticalAPILatency
+        expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{service="api"}[5m])) by (le, endpoint)) > 5
+        for: 2m
+        labels:
+          severity: critical
+          component: api
+          team: backend
+        annotations:
+          summary: "Critical API latency detected"
+          description: "P95 latency for {{ $labels.endpoint }} is {{ $value }}s (threshold: 5s)"
+          runbook: "https://docs.noaserver.com/runbooks/high-latency"
+          dashboard: "https://grafana.noaserver.com/d/api-performance"
+
+      - alert: HighErrorRate
+        expr: (sum(rate(http_requests_total{service="api",status=~"5.."}[5m])) by (endpoint) / sum(rate(http_requests_total{service="api"}[5m])) by (endpoint)) * 100 > 1
+        for: 5m
+        labels:
+          severity: warning
+          component: api
+          team: backend
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate for {{ $labels.endpoint }} is {{ $value }}% (threshold: 1%)"
+          runbook: "https://docs.noaserver.com/runbooks/high-error-rate"
+
+      - alert: CriticalErrorRate
+        expr: (sum(rate(http_requests_total{service="api",status=~"5.."}[5m])) by (endpoint) / sum(rate(http_requests_total{service="api"}[5m])) by (endpoint)) * 100 > 5
+        for: 2m
+        labels:
+          severity: critical
+          component: api
+          team: backend
+        annotations:
+          summary: "Critical error rate detected"
+          description: "Error rate for {{ $labels.endpoint }} is {{ $value }}% (threshold: 5%)"
+          runbook: "https://docs.noaserver.com/runbooks/high-error-rate"
+
+  - name: database_alerts
+    interval: 30s
+    rules:
+      - alert: HighDatabaseConnections
+        expr: pg_stat_database_numbackends{datname="noa_db"} / pg_settings_max_connections * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+          team: backend
+        annotations:
+          summary: "Database connection pool near capacity"
+          description: "Database connections at {{ $value }}% of max (threshold: 80%)"
+          runbook: "https://docs.noaserver.com/runbooks/database-connections"
+
+      - alert: DatabaseDown
+        expr: up{job="postgres"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: database
+          team: backend
+        annotations:
+          summary: "Database is down"
+          description: "PostgreSQL database is not responding"
+          runbook: "https://docs.noaserver.com/playbooks/database-failure"
+
+      - alert: HighQueryDuration
+        expr: avg_over_time(pg_stat_statements_mean_time_seconds[5m]) > 1
+        for: 10m
+        labels:
+          severity: warning
+          component: database
+          team: backend
+        annotations:
+          summary: "Slow database queries detected"
+          description: "Average query duration is {{ $value }}s (threshold: 1s)"
+          runbook: "https://docs.noaserver.com/runbooks/optimize-queries"
+
+      - alert: DatabaseReplicationLag
+        expr: pg_replication_lag_seconds > 10
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+          team: backend
+        annotations:
+          summary: "Database replication lag high"
+          description: "Replication lag is {{ $value }}s (threshold: 10s)"
+          runbook: "https://docs.noaserver.com/runbooks/replication-lag"
+
+      - alert: LowCacheHitRatio
+        expr: (sum(pg_stat_database_blks_hit{datname="noa_db"}) / (sum(pg_stat_database_blks_hit{datname="noa_db"}) + sum(pg_stat_database_blks_read{datname="noa_db"}))) * 100 < 90
+        for: 15m
+        labels:
+          severity: warning
+          component: database
+          team: backend
+        annotations:
+          summary: "Low database cache hit ratio"
+          description: "Cache hit ratio is {{ $value }}% (threshold: 90%)"
+          runbook: "https://docs.noaserver.com/runbooks/database-tuning"
+
+  - name: infrastructure_alerts
+    interval: 30s
+    rules:
+      - alert: HighNodeCPU
+        expr: sum(rate(container_cpu_usage_seconds_total[5m])) by (node) * 100 > 80
+        for: 10m
+        labels:
+          severity: warning
+          component: infrastructure
+          team: devops
+        annotations:
+          summary: "High CPU usage on node"
+          description: "Node {{ $labels.node }} CPU at {{ $value }}% (threshold: 80%)"
+          runbook: "https://docs.noaserver.com/runbooks/high-cpu"
+
+      - alert: HighNodeMemory
+        expr: (sum(container_memory_working_set_bytes) by (node) / sum(machine_memory_bytes) by (node)) * 100 > 85
+        for: 10m
+        labels:
+          severity: warning
+          component: infrastructure
+          team: devops
+        annotations:
+          summary: "High memory usage on node"
+          description: "Node {{ $labels.node }} memory at {{ $value }}% (threshold: 85%)"
+          runbook: "https://docs.noaserver.com/runbooks/high-memory"
+
+      - alert: PodCrashLooping
+        expr: rate(kube_pod_container_status_restarts_total[15m]) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+          component: infrastructure
+          team: devops
+        annotations:
+          summary: "Pod crash looping"
+          description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} is crash looping"
+          runbook: "https://docs.noaserver.com/runbooks/crashloop"
+
+      - alert: PodPending
+        expr: kube_pod_status_phase{phase="Pending"} > 0
+        for: 10m
+        labels:
+          severity: warning
+          component: infrastructure
+          team: devops
+        annotations:
+          summary: "Pod stuck in pending state"
+          description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} pending for >10m"
+          runbook: "https://docs.noaserver.com/runbooks/pending-pods"
+
+      - alert: HighPVUsage
+        expr: (kubelet_volume_stats_used_bytes / kubelet_volume_stats_capacity_bytes) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+          component: infrastructure
+          team: devops
+        annotations:
+          summary: "Persistent volume usage high"
+          description: "PV {{ $labels.persistentvolumeclaim }} at {{ $value }}% capacity"
+          runbook: "https://docs.noaserver.com/runbooks/pv-expansion"
+
+  - name: sla_alerts
+    interval: 1m
+    rules:
+      - alert: SLABreach
+        expr: (sum(rate(http_requests_total{service="api",status!~"5.."}[30d])) / sum(rate(http_requests_total{service="api"}[30d]))) * 100 < 99.9
+        for: 1h
+        labels:
+          severity: critical
+          component: sla
+          team: leadership
+        annotations:
+          summary: "SLA breach detected"
+          description: "API availability {{ $value }}% is below SLA of 99.9%"
+          runbook: "https://docs.noaserver.com/playbooks/sla-breach"
+
+      - alert: ErrorBudgetLow
+        expr: ((0.999 - (sum(rate(http_requests_total{service="api",status!~"5.."}[30d])) / sum(rate(http_requests_total{service="api"}[30d])))) / 0.001) * 100 < 20
+        for: 30m
+        labels:
+          severity: warning
+          component: sla
+          team: backend
+        annotations:
+          summary: "Error budget running low"
+          description: "Error budget at {{ $value }}% remaining (threshold: 20%)"
+          runbook: "https://docs.noaserver.com/runbooks/error-budget"
+
+      - alert: HighBurnRate
+        expr: (sum(rate(http_requests_total{service="api",status=~"5.."}[1h])) / sum(rate(http_requests_total{service="api"}[1h]))) / 0.001 > 10
+        for: 15m
+        labels:
+          severity: critical
+          component: sla
+          team: backend
+        annotations:
+          summary: "High error budget burn rate"
+          description: "Burning error budget at {{ $value }}x normal rate"
+          runbook: "https://docs.noaserver.com/playbooks/high-burn-rate"

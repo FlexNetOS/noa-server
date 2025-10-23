@@ -1,0 +1,97 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Build outputs
+dist/
+build/
+out/
+.next/
+.nuxt/
+.cache/
+*.tsbuildinfo
+public/build/
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Generated files
+*.min.js
+*.d.ts
+*.config.js
+*.config.ts
+
+# Package manager files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Environment files
+.env
+.env.*
+
+# Monorepo specific
+.runtime/
+.swarm/
+.hive-mind/
+.orchestration/
+EvidenceLedger/
+
+# Claude-specific
+.claude/
+.claude-flow/
+
+# Large files
+*.zip
+*.tar.gz
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Rust
+target/
+
+# Go
+vendor/
+
+# Models and binaries
+models/
+*.bin
+*.gguf
+
+# Third-party code
+awesome-*/
+claude-code/
+claude-conf/
+claude-flow/
+claude-squad/
+opcode/
+noa/
+octelium/
+
+# Scripts (optional - remove if you want to lint scripts)
+# scripts/
+
+# Tests fixtures
+**/__fixtures__/
+**/__mocks__/
+**/fixtures/
+**/mocks/
+**/examples/

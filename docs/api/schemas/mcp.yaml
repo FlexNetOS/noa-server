@@ -1,0 +1,403 @@
+openapi: 3.0.3
+info:
+  title: MCP Tools API
+  version: 1.0.0
+
+paths:
+  /mcp/tools:
+    get:
+      summary: List MCP tools
+      description: Get list of available MCP tools
+      tags:
+        - MCP Tools
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: category
+          in: query
+          description: Filter by tool category
+          schema:
+            type: string
+            enum: [filesystem, database, github, communication, utility]
+        - name: status
+          in: query
+          description: Filter by tool status
+          schema:
+            type: string
+            enum: [available, unavailable, deprecated]
+      responses:
+        '200':
+          description: MCP tools retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MCPTool'
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+
+  /mcp/tools/{toolId}:
+    get:
+      summary: Get MCP tool details
+      description: Retrieve detailed information about specific MCP tool
+      tags:
+        - MCP Tools
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: toolId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Tool details retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/MCPTool'
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: '../openapi.yaml#/components/responses/NotFound'
+
+  /mcp/tools/{toolId}/execute:
+    post:
+      summary: Execute MCP tool
+      description: Execute MCP tool with provided parameters
+      tags:
+        - MCP Tools
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: toolId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - parameters
+              properties:
+                parameters:
+                  type: object
+                  description: Tool-specific parameters
+                context:
+                  type: object
+                  description: Execution context
+                timeout:
+                  type: integer
+                  description: Execution timeout in seconds
+                  default: 30
+            example:
+              parameters:
+                path: /data/file.txt
+                content: "Hello, World!"
+              timeout: 60
+      responses:
+        '200':
+          description: Tool executed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/MCPExecutionResult'
+        '400':
+          $ref: '../openapi.yaml#/components/responses/BadRequest'
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+        '403':
+          $ref: '../openapi.yaml#/components/responses/Forbidden'
+        '404':
+          $ref: '../openapi.yaml#/components/responses/NotFound'
+        '500':
+          $ref: '../openapi.yaml#/components/responses/InternalServerError'
+
+  /mcp/filesystem:
+    post:
+      summary: Filesystem operations
+      description: Execute filesystem operations via MCP
+      tags:
+        - MCP Tools
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - operation
+                - path
+              properties:
+                operation:
+                  type: string
+                  enum: [read, write, delete, list, mkdir, copy, move]
+                path:
+                  type: string
+                  description: File or directory path
+                content:
+                  type: string
+                  description: Content for write operation
+                destination:
+                  type: string
+                  description: Destination for copy/move
+                recursive:
+                  type: boolean
+                  default: false
+            example:
+              operation: write
+              path: /data/config.json
+              content: '{"key": "value"}'
+      responses:
+        '200':
+          description: Operation completed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+        '400':
+          $ref: '../openapi.yaml#/components/responses/BadRequest'
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+        '403':
+          $ref: '../openapi.yaml#/components/responses/Forbidden'
+
+  /mcp/sqlite:
+    post:
+      summary: SQLite operations
+      description: Execute SQLite database operations
+      tags:
+        - MCP Tools
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - database
+                - query
+              properties:
+                database:
+                  type: string
+                  description: Database path or name
+                query:
+                  type: string
+                  description: SQL query to execute
+                parameters:
+                  type: array
+                  items:
+                    type: string
+                  description: Query parameters for prepared statements
+                readonly:
+                  type: boolean
+                  default: false
+                  description: Execute query in readonly mode
+            example:
+              database: /data/app.db
+              query: SELECT * FROM users WHERE status = ?
+              parameters: [active]
+              readonly: true
+      responses:
+        '200':
+          description: Query executed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      rows:
+                        type: array
+                        items:
+                          type: object
+                      rowCount:
+                        type: integer
+                      lastInsertId:
+                        type: integer
+        '400':
+          $ref: '../openapi.yaml#/components/responses/BadRequest'
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+        '500':
+          $ref: '../openapi.yaml#/components/responses/InternalServerError'
+
+  /mcp/github:
+    post:
+      summary: GitHub operations
+      description: Execute GitHub API operations via MCP
+      tags:
+        - MCP Tools
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - operation
+                - repository
+              properties:
+                operation:
+                  type: string
+                  enum: [create_issue, create_pr, list_prs, merge_pr, create_comment, get_repo_info]
+                repository:
+                  type: string
+                  description: Repository in format owner/repo
+                parameters:
+                  type: object
+                  description: Operation-specific parameters
+            example:
+              operation: create_issue
+              repository: deflex/noa-server
+              parameters:
+                title: Bug Report
+                body: Description of the issue
+                labels: [bug, priority-high]
+      responses:
+        '200':
+          description: GitHub operation completed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+        '400':
+          $ref: '../openapi.yaml#/components/responses/BadRequest'
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+        '403':
+          $ref: '../openapi.yaml#/components/responses/Forbidden'
+
+components:
+  schemas:
+    MCPTool:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+          enum: [filesystem, database, github, communication, utility]
+        version:
+          type: string
+        status:
+          type: string
+          enum: [available, unavailable, deprecated]
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/MCPToolParameter'
+        permissions:
+          type: array
+          items:
+            type: string
+        documentation:
+          type: string
+          format: uri
+        examples:
+          type: array
+          items:
+            type: object
+
+    MCPToolParameter:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum: [string, number, boolean, object, array]
+        required:
+          type: boolean
+        description:
+          type: string
+        default:
+          type: string
+        validation:
+          type: object
+          properties:
+            pattern:
+              type: string
+            min:
+              type: number
+            max:
+              type: number
+            enum:
+              type: array
+
+    MCPExecutionResult:
+      type: object
+      properties:
+        executionId:
+          type: string
+          format: uuid
+        toolId:
+          type: string
+        status:
+          type: string
+          enum: [success, failed, timeout]
+        result:
+          type: object
+          description: Tool-specific result data
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+        executionTime:
+          type: number
+          description: Execution time in milliseconds
+        timestamp:
+          type: string
+          format: date-time
+        metadata:
+          type: object

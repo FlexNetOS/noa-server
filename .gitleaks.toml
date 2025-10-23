@@ -1,8 +1,18 @@
+# Gitleaks allowlist for placeholders and known test fixtures
+# See: https://github.com/gitleaks/gitleaks#configuration
+
 title = "noa-server gitleaks allowlist"
 
 [allowlist]
-description = "Allow known placeholders and test fixtures"
-files = ['''^noa/libs/sdk-py/tests/fixtures/.*$''']
+description = "Allow well-known placeholders and test fixture files"
+# File path allowlist (regex). These paths may intentionally contain fake tokens for tests/examples.
+files = [
+    '''^noa/libs/sdk-py/tests/fixtures/.*$''',
+    '''^noa/libs/sdk-py/tests/.*fixtures.*$''',
+    '''(^|/)tests?/fixtures?/.*$''',
+    '''(^|/)examples?/.*$''',
+]
+# Literal placeholder patterns that should never be treated as secrets
 regexes = [
     # Placeholder Authorization headers
     '''Authorization:\s*Bearer\s*(?:YOUR_ACCESS_TOKEN|YOUR_TOKEN|TOKEN|<token>|<admin_token>|<admin-token>|no-key|\$\{?your-token\}?|\$[A-Z_]+)''',
@@ -15,4 +25,14 @@ regexes = [
     # Truncated JWT placeholders in docs
     '''\"?(?:accessToken|refreshToken|token|access_token)\"?\s*[:=]\s*\"(?:eyJhbGci[^\"]*\\.\\.\\.)\"''',
     '''eyJhbGci[^\"\n]*\\.\\.\\.''',
+
+    # General placeholder patterns
+    '''YOUR_ACCESS_TOKEN''',
+    '''YOUR_REFRESH_TOKEN''',
+    '''YOUR_API_KEY''',
+    '''YOUR_WEBHOOK_SECRET''',
+    '''FAKE[_-]?SECRET''',
+    '''DUMMY[_-]?(TOKEN|KEY)''',
+    '''SAMPLE[_-]?(TOKEN|KEY)''',
+    '''PLACEHOLDER''',
 ]

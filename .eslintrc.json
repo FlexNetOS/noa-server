@@ -1,0 +1,206 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2022": true,
+    "jest": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:react/recommended",
+    "plugin:react/jsx-runtime",
+    "plugin:react-hooks/recommended",
+    "plugin:jsx-a11y/recommended",
+    "plugin:import/recommended",
+    "plugin:import/typescript",
+    "plugin:security/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "project": ["./tsconfig.eslint.json"]
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "react",
+    "react-hooks",
+    "jsx-a11y",
+    "import",
+    "security"
+  ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    },
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": ["./tsconfig.eslint.json", "./packages/*/tsconfig.json"]
+      },
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  },
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-floating-promises": "off",
+    "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/await-thenable": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-member-access": "off",
+    "@typescript-eslint/no-unsafe-call": "off",
+    "@typescript-eslint/no-unsafe-return": "off",
+    "@typescript-eslint/no-unsafe-argument": "off",
+    "@typescript-eslint/require-await": "off",
+    "@typescript-eslint/restrict-template-expressions": "off",
+    "@typescript-eslint/no-namespace": "off",
+    "@typescript-eslint/no-base-to-string": "off",
+    "@typescript-eslint/no-duplicate-type-constituents": "off",
+    "@typescript-eslint/no-implied-eval": "off",
+    "@typescript-eslint/no-redundant-type-constituents": "off",
+    "@typescript-eslint/no-unnecessary-type-assertion": "off",
+    "@typescript-eslint/no-unsafe-enum-comparison": "off",
+    "@typescript-eslint/restrict-plus-operands": "off",
+    "react/prop-types": "off",
+    "react/react-in-jsx-scope": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "off",
+    "jsx-a11y/anchor-is-valid": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "import/order": "off",
+    "import/no-unresolved": "off",
+    "import/no-cycle": "off",
+    "import/no-duplicates": "off",
+    "security/detect-object-injection": "off",
+    "security/detect-non-literal-fs-filename": "off",
+    "security/detect-eval-with-expression": "off",
+    "security/detect-unsafe-regex": "off",
+    "security/detect-non-literal-regexp": "off",
+    "no-console": "off",
+    "no-debugger": "error",
+    "no-alert": "off",
+    "no-undef": "off",
+    "prefer-const": "off",
+    "no-var": "off",
+    "eqeqeq": "off",
+    "curly": "off",
+    "no-throw-literal": "off",
+    "prefer-promise-reject-errors": "off",
+    "import/no-named-as-default-member": "off",
+    "import/no-named-as-default": "off",
+    "no-case-declarations": "off"
+  },
+  "overrides": [
+    {
+      "files": [
+        "packages/claude-flow-alpha/scripts/**/*.{ts,tsx}",
+        "scripts/**/*.ts",
+        "scripts/**/*.js",
+        "tests/**/*.js"
+      ],
+      "parserOptions": {
+        "project": false
+      }
+    },
+    {
+      "files": ["*.test.ts", "*.test.tsx", "*.spec.ts", "*.spec.tsx"],
+      "env": {
+        "jest": true
+      },
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-unsafe-assignment": "off",
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/no-unsafe-call": "off"
+      }
+    },
+    {
+      "files": ["*.js", "*.cjs"],
+      "rules": {
+        "@typescript-eslint/no-var-requires": "off",
+        "@typescript-eslint/no-require-imports": "off"
+      }
+    },
+    {
+      "files": ["scripts/**/*.js", "scripts/**/*.ts"],
+      "rules": {
+        "no-console": "off",
+        "security/detect-non-literal-fs-filename": "off"
+      }
+    },
+    {
+      "files": ["packages/ui-dashboard/**/*.{ts,tsx}"],
+      "rules": {
+        "@typescript-eslint/no-unsafe-assignment": "off",
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/no-unsafe-call": "off",
+        "@typescript-eslint/no-unsafe-return": "off",
+        "@typescript-eslint/no-unsafe-argument": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/no-floating-promises": "off",
+        "@typescript-eslint/no-misused-promises": "off",
+        "@typescript-eslint/no-redundant-type-constituents": "off",
+        "@typescript-eslint/require-await": "off",
+        "import/no-unresolved": "off",
+        "import/no-named-as-default-member": "off",
+        "jsx-a11y/label-has-associated-control": "off",
+        "jsx-a11y/interactive-supports-focus": "off",
+        "jsx-a11y/no-noninteractive-element-interactions": "off",
+        "jsx-a11y/role-has-required-aria-props": "off",
+        "no-console": "off",
+        "no-alert": "off",
+        "prettier/prettier": "off"
+      }
+    },
+    {
+      "files": ["packages/ui-dashboard/tests/**/*.{ts,tsx}"],
+      "env": {
+        "jest": true
+      },
+      "rules": {
+        "@typescript-eslint/require-await": "off",
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            "argsIgnorePattern": "^_",
+            "varsIgnorePattern": "^_",
+            "caughtErrorsIgnorePattern": "^_"
+          }
+        ],
+        "jsx-a11y/interactive-supports-focus": "off",
+        "jsx-a11y/no-noninteractive-element-interactions": "off",
+        "jsx-a11y/role-has-required-aria-props": "off",
+        "import/no-unresolved": "off"
+      }
+    }
+  ],
+  "ignorePatterns": [
+    "node_modules/",
+    "dist/",
+    "build/",
+    "coverage/",
+    "*.min.js",
+    "*.d.ts",
+    ".cache/",
+    ".next/",
+    "out/",
+    "public/build/",
+    "*.config.js",
+    "*.config.ts",
+    ".eslintrc.js"
+  ]
+}

@@ -1,0 +1,550 @@
+name: Security Scanning and SBOM Generation
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # Daily at 2 AM UTC
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+  pull-requests: write
+
+env:
+  NODE_VERSION: '20.17.0'
+  PNPM_VERSION: '9.11.0'
+
+jobs:
+  # ===================================
+  # CODEQL ANALYSIS
+  # ===================================
+  codeql-analysis:
+    name: CodeQL Security Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ['javascript', 'python']
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: +security-and-quality,security-extended
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
+          upload: true
+
+  # ===================================
+  # SECRET SCANNING
+  # ===================================
+  secret-scan:
+    name: Secret Detection with Gitleaks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_SUMMARY: true
+
+      - name: Upload Gitleaks results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gitleaks-results
+          path: results.sarif
+          retention-days: 90
+
+  # ===================================
+  # PYTHON DEPENDENCY SCANNING
+  # ===================================
+  pip-audit:
+    name: Python Dependency Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install pip-audit
+        run: pip install pip-audit
+
+      - name: Scan Python dependencies
+        run: |
+          # Find all requirements files and scan them
+          find . -name 'requirements*.txt' -o -name 'pyproject.toml' | while read file; do
+            echo "Scanning $file"
+            pip-audit -r "$file" --format json --output "pip-audit-$(basename $file).json" || true
+          done
+        continue-on-error: true
+
+      - name: Upload pip-audit results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pip-audit-results
+          path: pip-audit-*.json
+          retention-days: 90
+
+  # ===================================
+  # NODE.JS DEPENDENCY SCANNING
+  # ===================================
+  pnpm-audit:
+    name: Node.js Dependency Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile=false
+
+      - name: Run pnpm audit
+        run: |
+          pnpm audit --audit-level=moderate --json > pnpm-audit.json || true
+          pnpm audit --audit-level=high --json > pnpm-audit-high.json || true
+        continue-on-error: true
+
+      - name: Check for critical vulnerabilities
+        run: |
+          if pnpm audit --audit-level=critical --json > pnpm-audit-critical.json; then
+            echo "No critical vulnerabilities found"
+          else
+            echo "CRITICAL vulnerabilities detected!"
+            cat pnpm-audit-critical.json
+            exit 1
+          fi
+        continue-on-error: false
+
+      - name: Upload pnpm audit results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pnpm-audit-results
+          path: pnpm-audit*.json
+          retention-days: 90
+
+  # ===================================
+  # SNYK VULNERABILITY SCANNING
+  # ===================================
+  snyk-scan:
+    name: Snyk Vulnerability Scanning
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile=false
+
+      - name: Run Snyk security scan
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --all-projects --severity-threshold=high --json-file-output=snyk-results.json
+
+      - name: Run Snyk container scan
+        if: hashFiles('Docker/**') != ''
+        uses: snyk/actions/docker@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: noa-server:latest
+          args: --file=Docker/Dockerfile.api --severity-threshold=high
+
+      - name: Upload Snyk results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk-scan-results
+          path: snyk-results.json
+          retention-days: 90
+
+  # ===================================
+  # TRIVY CONTAINER SCANNING
+  # ===================================
+  trivy-scan:
+    name: Trivy Container Image Scanning
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build container image
+        if: hashFiles('Docker/Dockerfile.api') != ''
+        run: |
+          docker build -t noa-server:scan -f Docker/Dockerfile.api .
+
+      - name: Run Trivy filesystem scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-fs-results.sarif'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+
+      - name: Run Trivy container scan
+        if: hashFiles('Docker/Dockerfile.api') != ''
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'image'
+          image-ref: 'noa-server:scan'
+          format: 'sarif'
+          output: 'trivy-container-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-fs-results.sarif'
+
+      - name: Upload Trivy scan artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-scan-results
+          path: trivy-*.sarif
+          retention-days: 90
+
+  # ===================================
+  # SBOM GENERATION - CYCLONEDX
+  # ===================================
+  sbom-cyclonedx:
+    name: Generate SBOM with CycloneDX
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile=false
+
+      - name: Install CycloneDX CLI
+        run: npm install -g @cyclonedx/cyclonedx-npm
+
+      - name: Generate Node.js SBOM
+        run: |
+          cyclonedx-npm --output-file sbom-nodejs.json --output-format JSON
+          cyclonedx-npm --output-file sbom-nodejs.xml --output-format XML
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate Python SBOM
+        run: |
+          pip install cyclonedx-bom
+          # Find all Python projects and generate SBOMs
+          if [ -f "requirements.txt" ]; then
+            cyclonedx-py requirements requirements.txt -o sbom-python.json --format json
+            cyclonedx-py requirements requirements.txt -o sbom-python.xml --format xml
+          fi
+
+      - name: Upload CycloneDX SBOMs
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-cyclonedx
+          path: sbom-*.{json,xml}
+          retention-days: 365
+
+  # ===================================
+  # SBOM GENERATION - SYFT
+  # ===================================
+  sbom-syft:
+    name: Generate SBOM with Syft
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Syft
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+
+      - name: Generate directory SBOM
+        run: |
+          syft dir:. -o json > sbom-syft.json
+          syft dir:. -o spdx-json > sbom-syft-spdx.json
+          syft dir:. -o cyclonedx-json > sbom-syft-cyclonedx.json
+
+      - name: Generate container SBOM
+        if: hashFiles('Docker/Dockerfile.api') != ''
+        run: |
+          docker build -t noa-server:sbom -f Docker/Dockerfile.api .
+          syft noa-server:sbom -o json > sbom-container.json
+          syft noa-server:sbom -o spdx-json > sbom-container-spdx.json
+
+      - name: Upload Syft SBOMs
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-syft
+          path: sbom-*.json
+          retention-days: 365
+
+  # ===================================
+  # SBOM ATTESTATION
+  # ===================================
+  sbom-attestation:
+    name: Sign and Attest SBOMs
+    runs-on: ubuntu-latest
+    needs: [sbom-cyclonedx, sbom-syft]
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download all SBOMs
+        uses: actions/download-artifact@v4
+        with:
+          pattern: sbom-*
+          merge-multiple: true
+
+      - name: Create SBOM bundle
+        run: |
+          mkdir -p sbom-bundle
+          cp sbom-*.json sbom-bundle/ 2>/dev/null || true
+          cp sbom-*.xml sbom-bundle/ 2>/dev/null || true
+          tar -czf sbom-bundle.tar.gz sbom-bundle/
+
+      - name: Attest SBOM bundle
+        uses: actions/attest-sbom@v1
+        with:
+          subject-path: 'sbom-bundle.tar.gz'
+          sbom-path: 'sbom-bundle/sbom-nodejs.json'
+
+      - name: Upload attested SBOM bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-bundle-attested
+          path: sbom-bundle.tar.gz
+          retention-days: 365
+
+  # ===================================
+  # SECURITY REPORT GENERATION
+  # ===================================
+  security-report:
+    name: Generate Consolidated Security Report
+    runs-on: ubuntu-latest
+    needs:
+      - codeql-analysis
+      - secret-scan
+      - pip-audit
+      - pnpm-audit
+      - snyk-scan
+      - trivy-scan
+      - sbom-cyclonedx
+      - sbom-syft
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+
+      - name: Generate consolidated security report
+        run: |
+          mkdir -p security-reports
+          cat > security-reports/security-report.md << 'EOF'
+          # Security Scan Report
+
+          **Scan Date**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+          **Repository**: ${{ github.repository }}
+          **Branch**: ${{ github.ref_name }}
+          **Commit**: ${{ github.sha }}
+          **Workflow Run**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          ## Scan Results Summary
+
+          | Scan Type | Status | Severity |
+          |-----------|--------|----------|
+          | CodeQL Analysis | ${{ needs.codeql-analysis.result }} | CRITICAL |
+          | Secret Detection | ${{ needs.secret-scan.result }} | CRITICAL |
+          | Python Dependencies | ${{ needs.pip-audit.result }} | HIGH |
+          | Node.js Dependencies | ${{ needs.pnpm-audit.result }} | HIGH |
+          | Snyk Vulnerability Scan | ${{ needs.snyk-scan.result }} | HIGH |
+          | Trivy Container Scan | ${{ needs.trivy-scan.result }} | HIGH |
+          | SBOM Generation (CycloneDX) | ${{ needs.sbom-cyclonedx.result }} | INFO |
+          | SBOM Generation (Syft) | ${{ needs.sbom-syft.result }} | INFO |
+
+          ## Critical Findings
+
+          Review individual scan artifacts for detailed findings:
+          - **CodeQL**: Static code analysis for security vulnerabilities
+          - **Gitleaks**: Secret and credential detection in Git history
+          - **pip-audit**: Python dependency vulnerabilities
+          - **pnpm audit**: Node.js dependency vulnerabilities
+          - **Snyk**: Comprehensive vulnerability database scanning
+          - **Trivy**: Filesystem and container image vulnerabilities
+
+          ## Software Bill of Materials (SBOM)
+
+          SBOM artifacts have been generated in multiple formats:
+          - **CycloneDX**: JSON and XML formats for compliance
+          - **Syft**: Multiple formats including SPDX
+          - **Container SBOM**: Full container image dependency tree
+
+          ## Remediation Priority
+
+          1. **IMMEDIATE** (0-24 hours): Fix CRITICAL vulnerabilities from any scan
+          2. **HIGH** (1-7 days): Remediate HIGH severity issues
+          3. **MEDIUM** (7-30 days): Plan fixes for MEDIUM severity findings
+          4. **LOW** (30+ days): Address in regular maintenance cycles
+
+          ## Compliance
+
+          - SBOMs available for supply chain transparency
+          - All scans run daily and on every PR
+          - Results retained for 365 days (SBOMs) or 90 days (scans)
+          - Automated attestation for SBOM integrity
+
+          ## Next Steps
+
+          1. Review all scan artifacts in this workflow run
+          2. Create issues for vulnerabilities requiring remediation
+          3. Update dependencies to patched versions
+          4. Re-run scans to verify fixes
+
+          ---
+          *Generated by GitHub Actions Security Workflow*
+          EOF
+
+      - name: Upload consolidated report
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report
+          path: security-reports/
+          retention-days: 365
+
+      - name: Comment on PR with security results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            if (fs.existsSync('security-reports/security-report.md')) {
+              const report = fs.readFileSync('security-reports/security-report.md', 'utf8');
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: report
+              });
+            }
+        continue-on-error: true
+
+  # ===================================
+  # FAIL ON CRITICAL VULNERABILITIES
+  # ===================================
+  security-gate:
+    name: Security Gate - Fail on Critical Issues
+    runs-on: ubuntu-latest
+    needs:
+      - codeql-analysis
+      - secret-scan
+      - pnpm-audit
+    if: always()
+    steps:
+      - name: Check for critical failures
+        run: |
+          echo "Checking security scan results..."
+
+          # Fail if secret scanning failed
+          if [ "${{ needs.secret-scan.result }}" == "failure" ]; then
+            echo "❌ CRITICAL: Secrets detected in repository!"
+            exit 1
+          fi
+
+          # Fail if pnpm audit found critical issues
+          if [ "${{ needs.pnpm-audit.result }}" == "failure" ]; then
+            echo "❌ CRITICAL: Critical vulnerabilities in Node.js dependencies!"
+            exit 1
+          fi
+
+          echo "✅ No critical security issues detected"

@@ -1,0 +1,105 @@
+# Multi-stage Dockerfile for Noa Server API
+# Optimized for fast builds and small image size
+
+# ===================================
+# Stage 1: Dependencies
+# ===================================
+FROM node:20.17.0-alpine AS dependencies
+
+WORKDIR /app
+
+# Install build dependencies
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    curl
+
+# Copy package files
+COPY package.json package-lock.json pnpm-workspace.yaml ./
+COPY packages/*/package.json ./packages/
+
+# Enable corepack and install pnpm
+RUN corepack enable && \
+    corepack prepare pnpm@9.11.0 --activate
+
+# Install dependencies with frozen lockfile
+RUN pnpm install --frozen-lockfile --prod
+
+# ===================================
+# Stage 2: Build
+# ===================================
+FROM node:20.17.0-alpine AS builder
+
+WORKDIR /app
+
+# Copy dependencies from previous stage
+COPY --from=dependencies /app/node_modules ./node_modules
+COPY --from=dependencies /app/package.json ./
+
+# Copy source code
+COPY . .
+
+# Build application if TypeScript
+RUN if [ -f "tsconfig.json" ]; then \
+      npm run build || true; \
+    fi
+
+# ===================================
+# Stage 3: Runtime
+# ===================================
+FROM node:20.17.0-alpine AS runtime
+
+# Install runtime dependencies and security updates
+RUN apk add --no-cache \
+    ca-certificates \
+    dumb-init \
+    curl \
+    && apk upgrade --no-cache
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
+WORKDIR /app
+
+# Copy built application
+COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nodejs:nodejs /app/package.json ./
+COPY --from=builder --chown=nodejs:nodejs /app/src ./src
+
+# Build arguments
+ARG BUILD_DATE
+ARG VERSION
+ARG VCS_REF
+
+# Labels
+LABEL org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.authors="Noa Server Team" \
+      org.opencontainers.image.url="https://noa-server.example.com" \
+      org.opencontainers.image.source="https://github.com/OWNER/noa-server" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.revision="${VCS_REF}" \
+      org.opencontainers.image.title="Noa Server API" \
+      org.opencontainers.image.description="Noa Server API service"
+
+# Environment variables
+ENV NODE_ENV=production \
+    PORT=3000 \
+    LOG_LEVEL=info
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD curl -f http://localhost:3000/health || exit 1
+
+# Switch to non-root user
+USER nodejs
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]
+
+# Start application
+CMD ["node", "src/index.js"]

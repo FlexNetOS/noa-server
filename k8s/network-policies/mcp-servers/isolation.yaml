@@ -1,0 +1,118 @@
+# MCP Servers Isolation Policy
+# MCP servers should only communicate with Noa server, not each other
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: mcp-server-isolation
+  namespace: mcp-servers
+spec:
+  podSelector:
+    matchLabels:
+      component: mcp-server
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Allow traffic from Noa server only
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: noa-server
+        - podSelector:
+            matchLabels:
+              app: noa-server
+      ports:
+        - protocol: TCP
+          port: 3000-9999
+
+    # Allow health checks
+    - from:
+        - namespaceSelector: {}
+      ports:
+        - protocol: TCP
+          port: 8080
+
+  egress:
+    # Allow DNS
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+
+    # Allow response to Noa server
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: noa-server
+        - podSelector:
+            matchLabels:
+              app: noa-server
+      ports:
+        - protocol: TCP
+          port: 3000
+
+    # Allow external HTTPS (for AI APIs)
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - protocol: TCP
+          port: 443
+
+    # Allow database access if needed
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: databases
+      ports:
+        - protocol: TCP
+          port: 5432
+        - protocol: TCP
+          port: 6379
+        - protocol: TCP
+          port: 27017
+---
+# Specific MCP server policies (example: claude-flow)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: mcp-claude-flow
+  namespace: mcp-servers
+spec:
+  podSelector:
+    matchLabels:
+      app: claude-flow
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: noa-server
+      ports:
+        - protocol: TCP
+          port: 3100
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: databases
+      ports:
+        - protocol: TCP
+          port: 5432
+        - protocol: TCP
+          port: 6379
+    - ports:
+        - protocol: TCP
+          port: 443

@@ -1,0 +1,403 @@
+---
+# ============================================
+# Agent Role Definitions
+# ============================================
+# Description: Defines specialized agent roles and their capabilities
+# Version: 1.0.0
+
+apiVersion: agentic.os/v1alpha1
+kind: AgentRoleDefinition
+
+roles:
+
+  # ============================================
+  # Platform Engineer Agent
+  # ============================================
+  - name: platform-engineer
+    tier: specialist
+    description: "Expert in building developer platforms, CI/CD systems, and cloud infrastructure"
+
+    capabilities:
+      - ci-cd-pipeline-design
+      - kubernetes-orchestration
+      - infrastructure-as-code
+      - developer-platform-building
+      - observability-implementation
+      - security-hardening
+
+    expertise:
+      - Kubernetes & container orchestration
+      - CI/CD systems (GitLab, Jenkins, GitHub Actions)
+      - Infrastructure as Code (Terraform, Ansible)
+      - Cloud providers (AWS, GCP, Azure)
+      - Service mesh & networking
+      - Platform automation
+
+    tools:
+      - kubectl
+      - terraform
+      - ansible
+      - helm
+      - docker
+      - git
+
+    resources:
+      cpu: "1000m"
+      memory: "2Gi"
+
+  # ============================================
+  # Security Analyst Agent
+  # ============================================
+  - name: security-analyst
+    tier: specialist
+    description: "Expert in security assessment, vulnerability analysis, and compliance"
+
+    capabilities:
+      - security-auditing
+      - vulnerability-scanning
+      - compliance-checking
+      - threat-modeling
+      - security-policy-creation
+      - incident-response
+
+    expertise:
+      - OWASP Top 10
+      - Security frameworks (NIST, ISO 27001)
+      - Penetration testing
+      - Cryptography
+      - Access control systems
+      - Security automation
+
+    tools:
+      - trivy
+      - semgrep
+      - gitleaks
+      - opa
+      - vault
+
+    resources:
+      cpu: "500m"
+      memory: "1Gi"
+
+  # ============================================
+  # DevOps Engineer Agent
+  # ============================================
+  - name: devops-engineer
+    tier: specialist
+    description: "Expert in deployment automation, monitoring, and operational excellence"
+
+    capabilities:
+      - deployment-automation
+      - monitoring-setup
+      - incident-management
+      - performance-optimization
+      - backup-recovery
+      - disaster-recovery
+
+    expertise:
+      - GitOps workflows
+      - Monitoring systems (Prometheus, Grafana)
+      - Log aggregation (ELK, Loki)
+      - Alerting systems
+      - SRE practices
+      - Chaos engineering
+
+    tools:
+      - argocd
+      - prometheus
+      - grafana
+      - fluxcd
+      - telepresence
+
+    resources:
+      cpu: "500m"
+      memory: "1Gi"
+
+  # ============================================
+  # Data Scientist Agent
+  # ============================================
+  - name: data-scientist
+    tier: specialist
+    description: "Expert in data analysis, machine learning, and statistical modeling"
+
+    capabilities:
+      - data-analysis
+      - machine-learning
+      - statistical-modeling
+      - data-visualization
+      - predictive-analytics
+      - feature-engineering
+
+    expertise:
+      - Python data stack (pandas, numpy, scikit-learn)
+      - Deep learning frameworks (TensorFlow, PyTorch)
+      - Data visualization (matplotlib, plotly)
+      - Statistical analysis
+      - MLOps
+      - Data pipelines
+
+    tools:
+      - python
+      - jupyter
+      - mlflow
+      - kubeflow
+      - dvc
+
+    resources:
+      cpu: "2000m"
+      memory: "4Gi"
+      gpu: "1"
+
+  # ============================================
+  # QA Engineer Agent
+  # ============================================
+  - name: qa-engineer
+    tier: specialist
+    description: "Expert in testing strategies, quality assurance, and test automation"
+
+    capabilities:
+      - test-strategy-design
+      - test-automation
+      - performance-testing
+      - security-testing
+      - api-testing
+      - e2e-testing
+
+    expertise:
+      - Test frameworks (pytest, jest, selenium)
+      - Load testing (k6, locust)
+      - API testing (postman, rest-assured)
+      - Test coverage analysis
+      - Continuous testing
+      - Test data management
+
+    tools:
+      - pytest
+      - selenium
+      - k6
+      - postman
+      - cypress
+
+    resources:
+      cpu: "500m"
+      memory: "1Gi"
+
+  # ============================================
+  # Code Generator Agent
+  # ============================================
+  - name: code-generator
+    tier: executor
+    description: "Specialized in generating high-quality, production-ready code"
+
+    capabilities:
+      - code-generation
+      - template-scaffolding
+      - boilerplate-creation
+      - code-refactoring
+      - documentation-generation
+
+    expertise:
+      - Multiple programming languages
+      - Design patterns
+      - Best practices
+      - Code style guides
+      - Documentation standards
+
+    resources:
+      cpu: "500m"
+      memory: "1Gi"
+
+  # ============================================
+  # Code Analyzer Agent
+  # ============================================
+  - name: code-analyzer
+    tier: executor
+    description: "Specialized in code review, static analysis, and quality assessment"
+
+    capabilities:
+      - code-review
+      - static-analysis
+      - complexity-analysis
+      - dependency-scanning
+      - code-smell-detection
+
+    expertise:
+      - Code quality metrics
+      - Anti-patterns
+      - Performance analysis
+      - Security vulnerabilities
+      - Technical debt assessment
+
+    tools:
+      - sonarqube
+      - eslint
+      - pylint
+      - semgrep
+
+    resources:
+      cpu: "500m"
+      memory: "1Gi"
+
+  # ============================================
+  # Documentation Agent
+  # ============================================
+  - name: documentation-specialist
+    tier: executor
+    description: "Specialized in creating comprehensive technical documentation"
+
+    capabilities:
+      - api-documentation
+      - user-guides
+      - architecture-diagrams
+      - runbooks
+      - tutorials
+
+    expertise:
+      - Markdown & reStructuredText
+      - API documentation (OpenAPI, AsyncAPI)
+      - Diagramming (Mermaid, PlantUML)
+      - Documentation sites (MkDocs, Sphinx)
+      - Technical writing
+
+    resources:
+      cpu: "250m"
+      memory: "512Mi"
+
+  # ============================================
+  # Coordinator Agent
+  # ============================================
+  - name: coordinator
+    tier: control-plane
+    description: "Orchestrates agent swarm and manages task distribution"
+
+    capabilities:
+      - task-distribution
+      - load-balancing
+      - health-monitoring
+      - conflict-resolution
+      - resource-allocation
+      - priority-management
+
+    responsibilities:
+      - Receive incoming tasks
+      - Analyze task requirements
+      - Select appropriate specialist agents
+      - Distribute work across executor agents
+      - Monitor task progress
+      - Aggregate results
+      - Handle failures and retries
+
+    resources:
+      cpu: "1000m"
+      memory: "2Gi"
+
+  # ============================================
+  # Memory Manager Agent
+  # ============================================
+  - name: memory-manager
+    tier: storage-plane
+    description: "Manages distributed memory, context, and knowledge base"
+
+    capabilities:
+      - context-storage
+      - context-retrieval
+      - semantic-search
+      - knowledge-indexing
+      - memory-compression
+      - memory-cleanup
+
+    responsibilities:
+      - Store conversation context
+      - Index knowledge artifacts
+      - Provide semantic search
+      - Manage memory lifecycle
+      - Optimize storage usage
+      - Ensure data consistency
+
+    resources:
+      cpu: "500m"
+      memory: "4Gi"
+      storage: "20Gi"
+
+# ============================================
+# Role Assignment Strategies
+# ============================================
+
+assignmentStrategies:
+
+  # Skill-based routing
+  - name: skill-match
+    description: "Route tasks to agents based on required skills"
+    priority: 1
+    algorithm: best-match
+
+  # Load-based routing
+  - name: load-balance
+    description: "Distribute tasks evenly across available agents"
+    priority: 2
+    algorithm: least-loaded
+
+  # Affinity-based routing
+  - name: affinity
+    description: "Route related tasks to same agent for context preservation"
+    priority: 3
+    algorithm: session-affinity
+
+  # Priority-based routing
+  - name: priority
+    description: "Route high-priority tasks to most capable agents"
+    priority: 4
+    algorithm: priority-queue
+
+# ============================================
+# Role Collaboration Patterns
+# ============================================
+
+collaborationPatterns:
+
+  - name: platform-deployment
+    description: "Full platform deployment workflow"
+    participants:
+      - platform-engineer
+      - security-analyst
+      - devops-engineer
+      - qa-engineer
+    workflow:
+      - step: design
+        owner: platform-engineer
+      - step: security-review
+        owner: security-analyst
+      - step: implementation
+        owner: platform-engineer
+      - step: testing
+        owner: qa-engineer
+      - step: deployment
+        owner: devops-engineer
+
+  - name: code-review
+    description: "Comprehensive code review process"
+    participants:
+      - code-analyzer
+      - security-analyst
+      - qa-engineer
+    workflow:
+      - step: static-analysis
+        owner: code-analyzer
+      - step: security-scan
+        owner: security-analyst
+      - step: test-coverage
+        owner: qa-engineer
+
+  - name: data-pipeline
+    description: "Data pipeline development and deployment"
+    participants:
+      - data-scientist
+      - platform-engineer
+      - devops-engineer
+    workflow:
+      - step: model-development
+        owner: data-scientist
+      - step: pipeline-infrastructure
+        owner: platform-engineer
+      - step: deployment-automation
+        owner: devops-engineer

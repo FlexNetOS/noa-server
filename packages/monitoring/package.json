@@ -1,0 +1,46 @@
+{
+  "name": "@noa-server/monitoring",
+  "version": "1.0.0",
+  "description": "Comprehensive health checks and error tracking for Noa Server",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "lint": "eslint . --ext .ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "monitoring",
+    "health-checks",
+    "error-tracking",
+    "sentry",
+    "kubernetes",
+    "observability"
+  ],
+  "author": "Noa Server Team",
+  "license": "MIT",
+  "dependencies": {
+    "@sentry/node": "^7.100.0",
+    "@sentry/tracing": "^7.100.0",
+    "express": "^4.18.2",
+    "ioredis": "^5.3.2",
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.11.0",
+    "@types/pg": "^8.10.9",
+    "@typescript-eslint/eslint-plugin": "^6.18.1",
+    "@typescript-eslint/parser": "^6.18.1",
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

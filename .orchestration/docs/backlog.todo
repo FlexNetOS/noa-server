@@ -1,0 +1,120 @@
+# backlog.todo
+<!-- Tasks awaiting prioritization and scheduling -->
+<!-- Last Groomed: 2025-10-22 -->
+
+## 📥 Triage - Unprioritized
+<!-- New items that need evaluation -->
+
+- [ ] Harden MCP tool commands for production environments
+  - Value: HIGH - Enables operational automation beyond stubs
+  - Effort: H (L) - 1-2 weeks with coordination across service owners
+  - Added: 2025-10-22
+
+- [ ] Automate stakeholder approval workflow for releases
+  - Value: MEDIUM - Removes manual sign-off step
+  - Effort: M - Integrate approvals into orchestration scripts
+  - Added: 2025-10-22
+
+- [ ] Capture gamified dashboard metrics over time
+  - Value: MEDIUM - Historical insights for Queen Seraphina telemetry
+  - Effort: S - Append rolling log + charting
+  - Added: 2025-10-22
+
+## 🎯 Next Sprint (Sprint 24)
+<!-- Items selected for next work cycle -->
+
+- [ ] Replace MCP stubs with service-specific adapters
+  - Value: HIGH - Required for production launch
+  - Effort: M - 5 days once requirements gathered
+  - Dependencies: Finalized execution specs (see triage item)
+  - Added: 2025-10-22
+
+- [ ] Build automated approval capture CLI
+  - Value: HIGH - Closes compliance loop
+  - Effort: S - 1-2 days
+  - Dependencies: Stakeholder sign-off template (current.todo)
+  - Added: 2025-10-22
+
+## 💡 Ideas & Research
+<!-- Future possibilities, not yet committed -->
+
+- [ ] Implement automated regression harness for MCP tool set
+  - Value: MEDIUM - Ensures tool behaviour across updates
+  - Effort: L - Requires mock backends + CI integration
+  - Research needed: Which tools provide highest ROI
+  - Added: 2025-10-22
+
+- [ ] Evaluate optional mobile dashboard companion
+  - Value: LOW - Stakeholder convenience
+  - Effort: M - React Native proof of concept
+  - Research needed: Adoption demand from stakeholders
+  - Added: 2025-10-22
+
+## 🔄 Recurring Tasks Templates
+<!-- Templates for regular activities -->
+
+- [ ] [TEMPLATE] Weekly Evidence Ledger verification
+  - Value: MEDIUM - Security and performance
+  - Effort: S - 1-2 hours
+  - Frequency: Weekly (Monday)
+
+- [ ] [TEMPLATE] Monthly automation resilience test
+  - Value: HIGH - Maintain SLAs
+  - Effort: M - Half day
+  - Frequency: First Friday of month
+
+- [ ] [TEMPLATE] Quarterly documentation refresh
+  - Value: HIGH - Technical debt management
+  - Effort: L - Full day workshop
+  - Frequency: Quarterly
+
+## 🗄️ Someday/Maybe
+<!-- Low priority items kept for reference -->
+
+- [ ] Publish public status page backed by Truth Gate metrics
+- [ ] Integrate real-time chat notifications for MCP verification
+- [ ] Offer downloadable onboarding kit (PDF)
+- [ ] Explore AI pairing assistant for orchestration scripts
+
+---
+
+## 📊 Backlog Metrics
+- Total Items: 13
+- Triage Queue: 3
+- Next Sprint: 2
+- Ideas/Research: 2
+- Recurring: 3
+- Someday/Maybe: 4
+
+## 🏷️ Effort Scale
+- **XS**: < 2 hours
+- **S**: 2-8 hours (1 day)
+- **M**: 2-5 days
+- **L**: 1-2 weeks
+- **XL**: > 2 weeks
+
+## 💰 Value Definitions
+- **HIGH**: Direct impact on users/revenue, fixes critical issues
+- **MEDIUM**: Improves efficiency, enhances features
+- **LOW**: Nice to have, aesthetic improvements
+
+## 🔍 Prioritization Matrix
+```
+         High Value
+             ↑
+        [DO FIRST]  |  [DO NEXT]
+    ________________|________________
+        [DO LATER]  |  [RECONSIDER]
+             ↓
+         Low Value
+        
+        Low Effort ← → High Effort
+```
+
+## 📝 Weekly Grooming Checklist
+- [ ] Move completed items to SOT
+- [ ] Evaluate new triage items
+- [ ] Update effort/value estimates
+- [ ] Select items for next sprint
+- [ ] Archive stale items (>90 days)
+- [ ] Review recurring task schedule

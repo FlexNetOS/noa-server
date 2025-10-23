@@ -1,0 +1,64 @@
+version: '3.9'
+
+# Development Override Configuration
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  mcp:
+    build:
+      args:
+        NODE_ENV: development
+    environment:
+      - NODE_ENV=development
+      - DEBUG=*
+    volumes:
+      - ../mcp:/app/mcp:cached
+      - ../config:/app/config:cached
+      - mcp-node-modules:/app/node_modules
+    command: ["npm", "run", "dev"]
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1G
+
+  claude-flow:
+    build:
+      args:
+        NODE_ENV: development
+    environment:
+      - NODE_ENV=development
+      - DEBUG=*
+    volumes:
+      - ../claude-flow:/app/claude-flow:cached
+      - claude-flow-node-modules:/app/node_modules
+    command: ["npx", "claude-flow", "mcp", "start", "--dev"]
+
+  ui-dashboard:
+    build:
+      args:
+        NODE_ENV: development
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ../packages/contains-studio-dashboard/src:/app/packages/contains-studio-dashboard/src:cached
+      - ../packages/contains-studio-dashboard/public:/app/packages/contains-studio-dashboard/public:cached
+      - ui-node-modules:/app/packages/contains-studio-dashboard/node_modules
+    command: ["npm", "run", "dev"]
+
+  llama-cpp:
+    environment:
+      - LOG_LEVEL=debug
+    volumes:
+      - ../packages/llama.cpp:/app/packages/llama.cpp:cached
+
+  agenticos:
+    environment:
+      - LOG_LEVEL=debug
+    volumes:
+      - ../srv/agenticos:/app/srv/agenticos:cached
+
+volumes:
+  mcp-node-modules:
+  claude-flow-node-modules:
+  ui-node-modules:

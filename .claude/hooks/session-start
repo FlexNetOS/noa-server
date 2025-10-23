@@ -1,0 +1,284 @@
+#!/bin/bash
+# =============================================================================
+# Claude Code Desktop - SessionStart Hook
+# =============================================================================
+# Executed automatically when a Claude Code session starts
+# Validates environment, checks dependencies, and prepares resources
+#
+# Location: /home/deflex/noa-server/.claude/hooks/session-start
+# =============================================================================
+
+set -e
+
+# Color codes for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+PROJECT_ROOT="/home/deflex/noa-server"
+CLAUDE_DIR="$PROJECT_ROOT/.claude"
+ENV_FILE="$PROJECT_ROOT/.env"
+
+# =============================================================================
+# Functions
+# =============================================================================
+
+log_info() {
+  echo -e "${BLUE}ℹ${NC} $1"
+}
+
+log_success() {
+  echo -e "${GREEN}✓${NC} $1"
+}
+
+log_warning() {
+  echo -e "${YELLOW}⚠${NC} $1"
+}
+
+log_error() {
+  echo -e "${RED}✗${NC} $1"
+}
+
+section_header() {
+  echo ""
+  echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+  echo -e "${BLUE}$1${NC}"
+  echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+}
+
+# =============================================================================
+# Validation Functions
+# =============================================================================
+
+validate_environment_file() {
+  section_header "Environment Configuration"
+
+  if [ -f "$ENV_FILE" ]; then
+    log_success "Environment file found: .env"
+
+    # Source environment file
+    set -a
+    source "$ENV_FILE"
+    set +a
+
+    # Validate critical variables
+    local missing_vars=()
+
+    if [ -z "$NODE_ENV" ]; then missing_vars+=("NODE_ENV"); fi
+    if [ -z "$CLAUDE_FLOW_HOOKS_ENABLED" ]; then missing_vars+=("CLAUDE_FLOW_HOOKS_ENABLED"); fi
+
+    if [ ${#missing_vars[@]} -gt 0 ]; then
+      log_warning "Missing environment variables: ${missing_vars[*]}"
+    else
+      log_success "All critical environment variables set"
+    fi
+  else
+    log_warning "Environment file not found, using defaults"
+    log_info "Create .env from .env.example for custom configuration"
+  fi
+}
+
+validate_node_environment() {
+  section_header "Node.js Environment"
+
+  if command -v node &> /dev/null; then
+    NODE_VERSION=$(node --version)
+    log_success "Node.js: $NODE_VERSION"
+  else
+    log_error "Node.js not found"
+    return 1
+  fi
+
+  if command -v npm &> /dev/null; then
+    NPM_VERSION=$(npm --version)
+    log_success "npm: $NPM_VERSION"
+  else
+    log_error "npm not found"
+    return 1
+  fi
+}
+
+validate_claude_flow() {
+  section_header "Claude Flow MCP Server"
+
+  if command -v npx &> /dev/null; then
+    log_success "npx available"
+
+    # Check if claude-flow is installed
+    if npx claude-flow@alpha --version &> /dev/null; then
+      FLOW_VERSION=$(npx claude-flow@alpha --version 2>&1 | head -n1)
+      log_success "Claude Flow: $FLOW_VERSION"
+    else
+      log_warning "Claude Flow not installed or not accessible"
+      log_info "Installing claude-flow@alpha..."
+      npm install -g claude-flow@alpha || log_warning "Could not install claude-flow"
+    fi
+  else
+    log_error "npx not found"
+  fi
+}
+
+validate_llama_cpp() {
+  section_header "llama.cpp Neural Processing"
+
+  LLAMA_DIR="$PROJECT_ROOT/packages/llama.cpp"
+
+  if [ -d "$LLAMA_DIR" ]; then
+    log_success "llama.cpp directory found"
+
+    # Check for models directory
+    MODELS_DIR="$LLAMA_DIR/models"
+    if [ -d "$MODELS_DIR" ]; then
+      MODEL_COUNT=$(find "$MODELS_DIR" -name "*.gguf" 2>/dev/null | wc -l)
+      if [ "$MODEL_COUNT" -gt 0 ]; then
+        log_success "Found $MODEL_COUNT GGUF model(s)"
+      else
+        log_warning "No GGUF models found in $MODELS_DIR"
+        log_info "Download models for neural processing functionality"
+      fi
+    else
+      log_warning "Models directory not found: $MODELS_DIR"
+    fi
+
+    # Check GPU availability
+    if command -v nvidia-smi &> /dev/null; then
+      GPU_INFO=$(nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null | head -n1)
+      if [ -n "$GPU_INFO" ]; then
+        log_success "GPU detected: $GPU_INFO"
+      fi
+    else
+      log_info "No NVIDIA GPU detected, using CPU mode"
+    fi
+  else
+    log_warning "llama.cpp not found at $LLAMA_DIR"
+  fi
+}
+
+validate_python_environment() {
+  section_header "Python Environment"
+
+  if command -v python3 &> /dev/null; then
+    PYTHON_VERSION=$(python3 --version)
+    log_success "$PYTHON_VERSION"
+
+    # Check for virtual environment
+    VENV_PATH="$PROJECT_ROOT/praisonai_env"
+    if [ -d "$VENV_PATH" ]; then
+      log_success "Virtual environment found: praisonai_env"
+    else
+      log_info "Virtual environment not found (optional)"
+    fi
+  else
+    log_info "Python3 not found (optional for llama.cpp)"
+  fi
+}
+
+check_mcp_servers() {
+  section_header "MCP Servers Status"
+
+  # Check if MCP servers are configured
+  if command -v claude &> /dev/null; then
+    MCP_STATUS=$(claude mcp list 2>&1 || echo "Not available")
+    if [[ "$MCP_STATUS" == *"claude-flow"* ]]; then
+      log_success "claude-flow MCP server configured"
+    else
+      log_info "claude-flow MCP server not configured"
+      log_info "Run: claude mcp add claude-flow npx claude-flow@alpha mcp start"
+    fi
+  fi
+}
+
+prepare_audit_directories() {
+  section_header "Audit System Preparation"
+
+  AUDIT_DIR="$CLAUDE_DIR/audit-history"
+
+  if [ ! -d "$AUDIT_DIR" ]; then
+    mkdir -p "$AUDIT_DIR"
+    log_success "Created audit history directory"
+  else
+    log_success "Audit history directory ready"
+  fi
+
+  # Count existing audits
+  AUDIT_COUNT=$(find "$AUDIT_DIR" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
+  if [ "$AUDIT_COUNT" -gt 0 ]; then
+    log_info "Found $AUDIT_COUNT previous audit(s)"
+  fi
+}
+
+prepare_session_directories() {
+  section_header "Session Management"
+
+  # Prepare sessions directory
+  SESSIONS_DIR="$CLAUDE_DIR/sessions"
+  if [ ! -d "$SESSIONS_DIR" ]; then
+    mkdir -p "$SESSIONS_DIR"
+    log_success "Created sessions directory"
+  fi
+
+  # Prepare metrics directory
+  METRICS_DIR="$CLAUDE_DIR/metrics"
+  if [ ! -d "$METRICS_DIR" ]; then
+    mkdir -p "$METRICS_DIR"
+    log_success "Created metrics directory"
+  fi
+
+  # Prepare logs directory
+  LOGS_DIR="$CLAUDE_DIR/logs"
+  if [ ! -d "$LOGS_DIR" ]; then
+    mkdir -p "$LOGS_DIR"
+    log_success "Created logs directory"
+  fi
+
+  log_success "Session directories ready"
+}
+
+display_summary() {
+  section_header "Session Ready"
+
+  echo ""
+  log_success "Claude Code Desktop environment initialized"
+  log_info "Project: NOA Server"
+  log_info "Mode: ${NODE_ENV:-development}"
+  log_info "SPARC: ${SPARC_ENABLED:-true}"
+  log_info "Audit: ${AUDIT_ENABLED:-true}"
+  log_info "Neural Processing: ${QUEEN_NEURAL_PROCESSING:-true}"
+  echo ""
+  log_info "Available Commands:"
+  log_info "  - npx claude-flow@alpha sparc modes"
+  log_info "  - npx claude-flow@alpha sparc run <mode>"
+  log_info "  - /audit - Run comprehensive audit"
+  log_info "  - /audit-config - View audit configuration"
+  echo ""
+}
+
+# =============================================================================
+# Main Execution
+# =============================================================================
+
+main() {
+  echo ""
+  echo -e "${GREEN}╔════════════════════════════════════════════════════╗${NC}"
+  echo -e "${GREEN}║  Claude Code Desktop - Session Initialization     ║${NC}"
+  echo -e "${GREEN}╚════════════════════════════════════════════════════╝${NC}"
+
+  # Run validations
+  validate_environment_file
+  validate_node_environment
+  validate_claude_flow
+  validate_llama_cpp
+  validate_python_environment
+  check_mcp_servers
+  prepare_audit_directories
+  prepare_session_directories
+  display_summary
+
+  # Return success
+  exit 0
+}
+
+# Execute main function
+main "$@"

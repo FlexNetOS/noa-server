@@ -1,0 +1,188 @@
+{
+  "policies": [
+    {
+      "name": "User Personal Data",
+      "dataType": "user_data",
+      "retentionDays": 1095,
+      "archiveDays": 365,
+      "legalBasis": "GDPR Article 6 - Contract & Legitimate Interest",
+      "description": "Personal data including profile, preferences, and account information",
+      "exceptions": ["active_users", "legal_hold", "ongoing_transaction"],
+      "notifyBeforeDeletion": true,
+      "notifyDaysBefore": 30
+    },
+    {
+      "name": "Transaction Records",
+      "dataType": "transaction_data",
+      "retentionDays": 365,
+      "archiveDays": 90,
+      "legalBasis": "PCI DSS Requirement 3 & Tax Regulations",
+      "description": "Payment transactions, invoices, and financial records",
+      "exceptions": ["legal_hold", "dispute", "chargeback", "tax_audit"],
+      "notifyBeforeDeletion": false,
+      "anonymizeInsteadOfDelete": true
+    },
+    {
+      "name": "Audit Logs",
+      "dataType": "audit_logs",
+      "retentionDays": 2555,
+      "archiveDays": 730,
+      "legalBasis": "SOC 2 Compliance & Security Requirements",
+      "description": "Security audit logs, access logs, and compliance records",
+      "exceptions": ["legal_hold", "security_incident", "regulatory_investigation"],
+      "notifyBeforeDeletion": false,
+      "anonymizeInsteadOfDelete": false
+    },
+    {
+      "name": "Session Data",
+      "dataType": "session_data",
+      "retentionDays": 90,
+      "archiveDays": null,
+      "legalBasis": "Operational Necessity & Security",
+      "description": "User sessions, authentication tokens, and temporary data",
+      "exceptions": [],
+      "notifyBeforeDeletion": false,
+      "anonymizeInsteadOfDelete": false
+    },
+    {
+      "name": "Analytics Data",
+      "dataType": "analytics_data",
+      "retentionDays": 730,
+      "archiveDays": 365,
+      "legalBasis": "Legitimate Interest - Service Improvement",
+      "description": "Usage analytics, metrics, and performance data",
+      "exceptions": ["research", "statistics", "legal_hold"],
+      "notifyBeforeDeletion": false,
+      "anonymizeInsteadOfDelete": true
+    },
+    {
+      "name": "Backup Data",
+      "dataType": "backup_data",
+      "retentionDays": 30,
+      "archiveDays": null,
+      "legalBasis": "Business Continuity & Disaster Recovery",
+      "description": "System backups and recovery points",
+      "exceptions": [],
+      "notifyBeforeDeletion": false,
+      "anonymizeInsteadOfDelete": false
+    },
+    {
+      "name": "Communication Data",
+      "dataType": "communication_data",
+      "retentionDays": 365,
+      "archiveDays": 180,
+      "legalBasis": "Legitimate Interest - Customer Support",
+      "description": "Emails, support tickets, and customer communications",
+      "exceptions": ["legal_hold", "ongoing_support_case"],
+      "notifyBeforeDeletion": false,
+      "anonymizeInsteadOfDelete": false
+    },
+    {
+      "name": "System Logs",
+      "dataType": "system_logs",
+      "retentionDays": 180,
+      "archiveDays": 90,
+      "legalBasis": "Operational Necessity & Troubleshooting",
+      "description": "Application logs, error logs, and system events",
+      "exceptions": ["security_incident"],
+      "notifyBeforeDeletion": false,
+      "anonymizeInsteadOfDelete": false
+    },
+    {
+      "name": "Marketing Data",
+      "dataType": "marketing_data",
+      "retentionDays": 730,
+      "archiveDays": 365,
+      "legalBasis": "Consent - Marketing Communications",
+      "description": "Marketing preferences, campaign data, and engagement metrics",
+      "exceptions": ["active_campaign", "legal_hold"],
+      "notifyBeforeDeletion": true,
+      "notifyDaysBefore": 90
+    },
+    {
+      "name": "User Generated Content",
+      "dataType": "user_content",
+      "retentionDays": 1095,
+      "archiveDays": 365,
+      "legalBasis": "Contract - Service Provision",
+      "description": "Posts, comments, uploads, and user-created content",
+      "exceptions": ["legal_hold", "copyright_claim", "dmca_notice"],
+      "notifyBeforeDeletion": true,
+      "notifyDaysBefore": 60
+    }
+  ],
+  "automation": {
+    "enableAutoArchival": true,
+    "enableAutoDeletion": true,
+    "enableExpiryNotifications": true,
+    "batchSize": 100,
+    "maxDeletionsPerRun": 1000,
+    "notificationEmail": "compliance@example.com",
+    "alertOnFailures": true,
+    "verifyDeletions": true
+  },
+  "scheduling": {
+    "checkExpiry": {
+      "enabled": true,
+      "schedule": "0 2 * * *",
+      "description": "Daily at 2:00 AM"
+    },
+    "archiveData": {
+      "enabled": true,
+      "schedule": "0 3 * * 0",
+      "description": "Weekly on Sunday at 3:00 AM"
+    },
+    "deleteExpired": {
+      "enabled": true,
+      "schedule": "0 4 * * *",
+      "description": "Daily at 4:00 AM"
+    },
+    "generateReport": {
+      "enabled": true,
+      "schedule": "0 5 1 * *",
+      "description": "Monthly on 1st at 5:00 AM"
+    }
+  },
+  "notifications": {
+    "expiryWarning": {
+      "enabled": true,
+      "warningDays": [7, 30, 90],
+      "recipients": ["compliance@example.com", "dpo@example.com"]
+    },
+    "deletionComplete": {
+      "enabled": true,
+      "recipients": ["compliance@example.com"]
+    },
+    "archivalComplete": {
+      "enabled": true,
+      "recipients": ["compliance@example.com"]
+    },
+    "failures": {
+      "enabled": true,
+      "recipients": ["tech-support@example.com", "compliance@example.com"]
+    }
+  },
+  "archival": {
+    "storageType": "cold",
+    "compressionEnabled": true,
+    "encryptionEnabled": true,
+    "verifyIntegrity": true,
+    "encryptionAlgorithm": "aes-256-gcm"
+  },
+  "deletion": {
+    "secureDelete": true,
+    "multiPassOverwrite": false,
+    "verifyDeletion": true,
+    "cascadeDelete": true,
+    "createBackupBeforeDelete": true,
+    "backupRetentionDays": 30
+  },
+  "compliance": {
+    "gdprCompliant": true,
+    "pciDssCompliant": true,
+    "soc2Compliant": true,
+    "hipaaCom pliant": false,
+    "dataResidency": "EU",
+    "dpoContact": "dpo@example.com"
+  }
+}

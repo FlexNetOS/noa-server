@@ -1,0 +1,40 @@
+{
+  "name": "@noa/database-sharding",
+  "version": "1.0.0",
+  "description": "Database sharding framework for horizontal scaling",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix"
+  },
+  "keywords": [
+    "database",
+    "sharding",
+    "scaling",
+    "postgresql",
+    "mongodb",
+    "horizontal-scaling"
+  ],
+  "author": "Noa Server Team",
+  "license": "MIT",
+  "dependencies": {
+    "@noa/connection-pool": "workspace:*",
+    "pg": "^8.11.0",
+    "mongodb": "^6.0.0",
+    "redis": "^4.6.0",
+    "winston": "^3.10.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/pg": "^8.10.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0",
+    "eslint": "^8.0.0"
+  }
+}

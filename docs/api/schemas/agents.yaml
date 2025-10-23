@@ -1,0 +1,609 @@
+openapi: 3.0.3
+info:
+  title: Agents API
+  version: 1.0.0
+
+paths:
+  /agents:
+    get:
+      summary: List agents
+      description: Get paginated list of agents
+      tags:
+        - Agents
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/PageParam'
+        - $ref: '../openapi.yaml#/components/parameters/LimitParam'
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [idle, busy, failed, terminated]
+        - name: type
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Agents retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Agent'
+                  meta:
+                    $ref: '../openapi.yaml#/components/schemas/PaginationMeta'
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+
+    post:
+      summary: Spawn agent
+      description: Create and spawn a new agent
+      tags:
+        - Agents
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpawnAgentRequest'
+      responses:
+        '201':
+          description: Agent spawned successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Agent'
+        '400':
+          $ref: '../openapi.yaml#/components/responses/BadRequest'
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+
+  /agents/{agentId}:
+    get:
+      summary: Get agent
+      description: Retrieve agent details by ID
+      tags:
+        - Agents
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Agent retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Agent'
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: '../openapi.yaml#/components/responses/NotFound'
+
+    delete:
+      summary: Terminate agent
+      description: Terminate running agent
+      tags:
+        - Agents
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: force
+          in: query
+          description: Force termination without cleanup
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Agent terminated successfully
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: '../openapi.yaml#/components/responses/NotFound'
+
+  /agents/{agentId}/tasks:
+    get:
+      summary: Get agent tasks
+      description: Retrieve tasks assigned to agent
+      tags:
+        - Agents
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, running, completed, failed]
+      responses:
+        '200':
+          description: Tasks retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AgentTask'
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: '../openapi.yaml#/components/responses/NotFound'
+
+    post:
+      summary: Assign task to agent
+      description: Create and assign new task to agent
+      tags:
+        - Agents
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - type
+                - parameters
+              properties:
+                type:
+                  type: string
+                  description: Task type
+                parameters:
+                  type: object
+                  description: Task parameters
+                priority:
+                  type: string
+                  enum: [low, normal, high, urgent]
+                timeout:
+                  type: integer
+            example:
+              type: code_generation
+              parameters:
+                language: typescript
+                requirements: "Create REST API"
+              priority: high
+              timeout: 300
+      responses:
+        '201':
+          description: Task assigned successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/AgentTask'
+        '400':
+          $ref: '../openapi.yaml#/components/responses/BadRequest'
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+
+  /agents/swarms:
+    get:
+      summary: List agent swarms
+      description: Get list of agent swarms
+      tags:
+        - Agents
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/PageParam'
+        - $ref: '../openapi.yaml#/components/parameters/LimitParam'
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, inactive, coordinating, failed]
+      responses:
+        '200':
+          description: Swarms retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AgentSwarm'
+                  meta:
+                    $ref: '../openapi.yaml#/components/schemas/PaginationMeta'
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+
+    post:
+      summary: Create agent swarm
+      description: Create new agent swarm for coordination
+      tags:
+        - Agents
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSwarmRequest'
+      responses:
+        '201':
+          description: Swarm created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/AgentSwarm'
+        '400':
+          $ref: '../openapi.yaml#/components/responses/BadRequest'
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+
+  /agents/swarms/{swarmId}:
+    get:
+      summary: Get swarm details
+      description: Retrieve swarm details and member agents
+      tags:
+        - Agents
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: swarmId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Swarm retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/AgentSwarm'
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: '../openapi.yaml#/components/responses/NotFound'
+
+    delete:
+      summary: Terminate swarm
+      description: Terminate agent swarm and all member agents
+      tags:
+        - Agents
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: swarmId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Swarm terminated successfully
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: '../openapi.yaml#/components/responses/NotFound'
+
+  /agents/swarms/{swarmId}/coordinate:
+    post:
+      summary: Coordinate swarm task
+      description: Execute coordinated task across swarm agents
+      tags:
+        - Agents
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: swarmId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - task
+              properties:
+                task:
+                  type: object
+                  description: Task to coordinate
+                strategy:
+                  type: string
+                  enum: [parallel, sequential, hierarchical, mesh]
+                  default: parallel
+                timeout:
+                  type: integer
+            example:
+              task:
+                type: full_stack_development
+                requirements: "Build REST API with React frontend"
+              strategy: hierarchical
+              timeout: 600
+      responses:
+        '202':
+          description: Coordination started
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      coordinationId:
+                        type: string
+                        format: uuid
+                      status:
+                        type: string
+                      agents:
+                        type: array
+                        items:
+                          type: string
+        '400':
+          $ref: '../openapi.yaml#/components/responses/BadRequest'
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+
+components:
+  schemas:
+    Agent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+          description: Agent type (coder, tester, reviewer, etc.)
+        status:
+          type: string
+          enum: [idle, busy, failed, terminated]
+        capabilities:
+          type: array
+          items:
+            type: string
+        currentTask:
+          type: string
+          format: uuid
+        swarmId:
+          type: string
+          format: uuid
+        metrics:
+          type: object
+          properties:
+            tasksCompleted:
+              type: integer
+            tasksSuccessful:
+              type: integer
+            tasksFailed:
+              type: integer
+            averageExecutionTime:
+              type: number
+            uptime:
+              type: number
+        resources:
+          type: object
+          properties:
+            cpu:
+              type: number
+            memory:
+              type: number
+            tokens:
+              type: number
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        lastHeartbeat:
+          type: string
+          format: date-time
+
+    AgentTask:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        agentId:
+          type: string
+          format: uuid
+        type:
+          type: string
+        parameters:
+          type: object
+        status:
+          type: string
+          enum: [pending, running, completed, failed, cancelled]
+        priority:
+          type: string
+          enum: [low, normal, high, urgent]
+        result:
+          type: object
+        error:
+          type: object
+        startedAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+        duration:
+          type: integer
+        retries:
+          type: integer
+        logs:
+          type: array
+          items:
+            type: object
+
+    AgentSwarm:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        topology:
+          type: string
+          enum: [hierarchical, mesh, star, ring]
+        status:
+          type: string
+          enum: [active, inactive, coordinating, failed]
+        agents:
+          type: array
+          items:
+            $ref: '#/components/schemas/Agent'
+        coordinator:
+          type: string
+          format: uuid
+        maxAgents:
+          type: integer
+        metrics:
+          type: object
+          properties:
+            totalTasks:
+              type: integer
+            successfulTasks:
+              type: integer
+            failedTasks:
+              type: integer
+            averageCoordinationTime:
+              type: number
+        configuration:
+          type: object
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    SpawnAgentRequest:
+      type: object
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          description: Agent type to spawn
+        name:
+          type: string
+        capabilities:
+          type: array
+          items:
+            type: string
+        swarmId:
+          type: string
+          format: uuid
+          description: Swarm to join
+        configuration:
+          type: object
+
+    CreateSwarmRequest:
+      type: object
+      required:
+        - name
+        - topology
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        topology:
+          type: string
+          enum: [hierarchical, mesh, star, ring]
+        maxAgents:
+          type: integer
+          default: 10
+        agents:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+              capabilities:
+                type: array
+                items:
+                  type: string
+        configuration:
+          type: object

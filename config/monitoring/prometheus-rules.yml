@@ -1,0 +1,300 @@
+# Prometheus Alert Rules for Noa Server
+# Target: <100ms API response times, 99.9% uptime, Zero critical vulnerabilities
+
+groups:
+  # ===================================
+  # API PERFORMANCE ALERTS
+  # ===================================
+  - name: api_performance
+    interval: 30s
+    rules:
+      - alert: HighAPILatency
+        expr: |
+          histogram_quantile(0.95,
+            rate(http_request_duration_seconds_bucket{job="noa-api"}[5m])
+          ) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          component: api
+          metric: latency
+        annotations:
+          summary: "API latency exceeds 100ms"
+          description: "95th percentile API response time is {{ $value }}s (threshold: 0.1s)"
+          dashboard: "https://grafana.example.com/d/api-performance"
+          runbook: "https://docs.example.com/runbooks/high-latency"
+
+      - alert: CriticalAPILatency
+        expr: |
+          histogram_quantile(0.95,
+            rate(http_request_duration_seconds_bucket{job="noa-api"}[5m])
+          ) > 0.5
+        for: 2m
+        labels:
+          severity: critical
+          component: api
+          metric: latency
+        annotations:
+          summary: "API latency critically high"
+          description: "95th percentile API response time is {{ $value }}s (critical threshold: 0.5s)"
+          action: "Immediate investigation required"
+
+      - alert: SlowDatabaseQueries
+        expr: |
+          histogram_quantile(0.95,
+            rate(database_query_duration_seconds_bucket[5m])
+          ) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "Database queries are slow"
+          description: "95th percentile query time is {{ $value }}s"
+
+  # ===================================
+  # UPTIME & AVAILABILITY ALERTS
+  # ===================================
+  - name: uptime_monitoring
+    interval: 1m
+    rules:
+      - alert: ServiceDown
+        expr: up{job=~"noa-.*"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: infrastructure
+        annotations:
+          summary: "Service {{ $labels.job }} is down"
+          description: "{{ $labels.job }} has been down for more than 2 minutes"
+          action: "Immediate investigation and recovery required"
+
+      - alert: HighErrorRate
+        expr: |
+          (sum(rate(http_requests_total{status=~"5.."}[5m])) by (job)
+          /
+          sum(rate(http_requests_total[5m])) by (job)) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+          component: api
+          metric: error_rate
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }} (threshold: 5%)"
+          impact: "Uptime SLA of 99.9% at risk"
+
+      - alert: UptimeSLAAtRisk
+        expr: |
+          (1 - (sum(rate(http_requests_total{status=~"5.."}[1h]))
+          /
+          sum(rate(http_requests_total[1h])))) < 0.999
+        for: 10m
+        labels:
+          severity: warning
+          component: sla
+        annotations:
+          summary: "Uptime SLA at risk"
+          description: "Current uptime: {{ $value | humanizePercentage }} (target: 99.9%)"
+
+  # ===================================
+  # RESOURCE UTILIZATION ALERTS
+  # ===================================
+  - name: resource_monitoring
+    interval: 1m
+    rules:
+      - alert: HighCPUUsage
+        expr: |
+          100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 10m
+        labels:
+          severity: warning
+          component: infrastructure
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is {{ $value }}% (threshold: 80%)"
+
+      - alert: CriticalCPUUsage
+        expr: |
+          100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 95
+        for: 5m
+        labels:
+          severity: critical
+          component: infrastructure
+        annotations:
+          summary: "Critical CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is {{ $value }}% (threshold: 95%)"
+          action: "Scale up or investigate resource-intensive processes"
+
+      - alert: HighMemoryUsage
+        expr: |
+          (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 10m
+        labels:
+          severity: warning
+          component: infrastructure
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value }}%"
+
+      - alert: DiskSpaceLow
+        expr: |
+          (node_filesystem_avail_bytes{mountpoint="/"}
+          /
+          node_filesystem_size_bytes{mountpoint="/"}) * 100 < 15
+        for: 5m
+        labels:
+          severity: warning
+          component: infrastructure
+        annotations:
+          summary: "Low disk space on {{ $labels.instance }}"
+          description: "Available disk space: {{ $value }}%"
+
+  # ===================================
+  # SECURITY ALERTS
+  # ===================================
+  - name: security_monitoring
+    interval: 5m
+    rules:
+      - alert: UnauthorizedAccessAttempts
+        expr: |
+          sum(rate(http_requests_total{status="401"}[5m])) by (job) > 10
+        for: 5m
+        labels:
+          severity: warning
+          component: security
+        annotations:
+          summary: "High number of unauthorized access attempts"
+          description: "{{ $value }} unauthorized requests per second on {{ $labels.job }}"
+          action: "Review security logs and consider rate limiting"
+
+      - alert: SSLCertificateExpiringSoon
+        expr: |
+          probe_ssl_earliest_cert_expiry - time() < 86400 * 30
+        for: 1h
+        labels:
+          severity: warning
+          component: security
+        annotations:
+          summary: "SSL certificate expiring soon"
+          description: "Certificate for {{ $labels.instance }} expires in {{ $value | humanizeDuration }}"
+          action: "Renew SSL certificate"
+
+      - alert: TooManyFailedLogins
+        expr: |
+          sum(rate(authentication_failures_total[5m])) > 5
+        for: 5m
+        labels:
+          severity: warning
+          component: security
+        annotations:
+          summary: "High number of failed login attempts"
+          description: "{{ $value }} failed logins per second"
+
+  # ===================================
+  # APPLICATION HEALTH ALERTS
+  # ===================================
+  - name: application_health
+    interval: 1m
+    rules:
+      - alert: HealthCheckFailing
+        expr: |
+          probe_success{job="blackbox-http"} == 0
+        for: 3m
+        labels:
+          severity: critical
+          component: health
+        annotations:
+          summary: "Health check failing for {{ $labels.instance }}"
+          description: "Health endpoint is not responding"
+          action: "Investigate service health immediately"
+
+      - alert: HighRequestQueueDepth
+        expr: |
+          http_request_queue_depth > 100
+        for: 5m
+        labels:
+          severity: warning
+          component: api
+        annotations:
+          summary: "High request queue depth"
+          description: "Queue depth: {{ $value }} requests"
+          action: "Consider scaling up or investigating slow processing"
+
+      - alert: DatabaseConnectionPoolExhausted
+        expr: |
+          database_connection_pool_active / database_connection_pool_max > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "Database connection pool nearly exhausted"
+          description: "Using {{ $value | humanizePercentage }} of connection pool"
+
+  # ===================================
+  # BUSINESS METRICS ALERTS
+  # ===================================
+  - name: business_metrics
+    interval: 5m
+    rules:
+      - alert: LowRequestThroughput
+        expr: |
+          sum(rate(http_requests_total[5m])) < 1
+        for: 15m
+        labels:
+          severity: warning
+          component: business
+        annotations:
+          summary: "Unusually low request throughput"
+          description: "Request rate: {{ $value }} req/s"
+          action: "Investigate if traffic drop is expected"
+
+      - alert: AbnormalTrafficSpike
+        expr: |
+          (sum(rate(http_requests_total[5m]))
+          /
+          sum(rate(http_requests_total[1h] offset 1h))) > 3
+        for: 5m
+        labels:
+          severity: warning
+          component: business
+        annotations:
+          summary: "Abnormal traffic spike detected"
+          description: "Traffic is {{ $value }}x higher than normal"
+          action: "Verify if spike is legitimate or potential attack"
+
+  # ===================================
+  # DEPLOYMENT & ROLLBACK ALERTS
+  # ===================================
+  - name: deployment_monitoring
+    interval: 1m
+    rules:
+      - alert: DeploymentErrorRateIncreased
+        expr: |
+          (sum(rate(http_requests_total{status=~"5.."}[10m]))
+          /
+          sum(rate(http_requests_total[10m])))
+          >
+          (sum(rate(http_requests_total{status=~"5.."}[10m] offset 30m))
+          /
+          sum(rate(http_requests_total[10m] offset 30m))) * 2
+        for: 5m
+        labels:
+          severity: critical
+          component: deployment
+        annotations:
+          summary: "Error rate increased after deployment"
+          description: "Error rate is {{ $value }}x higher than before deployment"
+          action: "Consider rollback"
+
+      - alert: PodCrashLooping
+        expr: |
+          rate(kube_pod_container_status_restarts_total[15m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+          component: kubernetes
+        annotations:
+          summary: "Pod {{ $labels.pod }} is crash looping"
+          description: "Pod has restarted {{ $value }} times in the last 15 minutes"

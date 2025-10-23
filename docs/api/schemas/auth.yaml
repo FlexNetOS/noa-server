@@ -1,0 +1,441 @@
+openapi: 3.0.3
+info:
+  title: Authentication API
+  version: 1.0.0
+
+paths:
+  /auth/register:
+    post:
+      summary: Register new user
+      description: Create a new user account with email and password
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - username
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User email address
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+                  description: User password (min 8 characters)
+                username:
+                  type: string
+                  minLength: 3
+                  maxLength: 50
+                  pattern: "^[a-zA-Z0-9_-]+$"
+                  description: Username (alphanumeric, dash, underscore)
+                firstName:
+                  type: string
+                  maxLength: 100
+                lastName:
+                  type: string
+                  maxLength: 100
+                metadata:
+                  type: object
+                  description: Additional user metadata
+            example:
+              email: user@example.com
+              password: SecurePass123!
+              username: johndoe
+              firstName: John
+              lastName: Doe
+      responses:
+        "201":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/UserResponse"
+              example:
+                success: true
+                message: User registered successfully
+                data:
+                  id: 550e8400-e29b-41d4-a716-446655440000
+                  email: user@example.com
+                  username: johndoe
+                  roles: [user]
+                  createdAt: "2025-10-22T10:00:00Z"
+        "400":
+          $ref: "../openapi.yaml#/components/responses/BadRequest"
+        "409":
+          $ref: "../openapi.yaml#/components/responses/Conflict"
+        "500":
+          $ref: "../openapi.yaml#/components/responses/InternalServerError"
+
+  /auth/login:
+    post:
+      summary: User login
+      description: Authenticate user and receive access token
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                mfaCode:
+                  type: string
+                  description: MFA code if MFA is enabled
+                  pattern: "^[0-9]{6}$"
+                rememberMe:
+                  type: boolean
+                  default: false
+                  description: Extend token validity
+            example:
+              email: user@example.com
+              password: SecurePass123!
+              rememberMe: false
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: "#/components/schemas/AuthTokens"
+              example:
+                success: true
+                data:
+                  accessToken: YOUR_ACCESS_TOKEN
+                  refreshToken: YOUR_REFRESH_TOKEN
+                  tokenType: Bearer
+                  expiresIn: 3600
+                  user:
+                    id: 550e8400-e29b-41d4-a716-446655440000
+                    email: user@example.com
+                    username: johndoe
+                    roles: [user]
+        "401":
+          $ref: "../openapi.yaml#/components/responses/Unauthorized"
+        "429":
+          $ref: "../openapi.yaml#/components/responses/TooManyRequests"
+        "500":
+          $ref: "../openapi.yaml#/components/responses/InternalServerError"
+
+  /auth/logout:
+    post:
+      summary: User logout
+      description: Invalidate current session and refresh token
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+                  description: Refresh token to invalidate
+      responses:
+        "200":
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: true
+                message: Logged out successfully
+        "401":
+          $ref: "../openapi.yaml#/components/responses/Unauthorized"
+
+  /auth/refresh:
+    post:
+      summary: Refresh access token
+      description: Obtain new access token using refresh token
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+                  description: Valid refresh token
+            example:
+              refreshToken: YOUR_REFRESH_TOKEN
+      responses:
+        "200":
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: "#/components/schemas/AuthTokens"
+        "401":
+          $ref: "../openapi.yaml#/components/responses/Unauthorized"
+
+  /auth/mfa/setup:
+    post:
+      summary: Setup MFA
+      description: Initialize multi-factor authentication for user
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: MFA setup initiated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      secret:
+                        type: string
+                        description: MFA secret key
+                      qrCode:
+                        type: string
+                        description: QR code data URL
+                      backupCodes:
+                        type: array
+                        items:
+                          type: string
+                        description: Backup recovery codes
+        "401":
+          $ref: "../openapi.yaml#/components/responses/Unauthorized"
+
+  /auth/mfa/verify:
+    post:
+      summary: Verify MFA
+      description: Verify and enable MFA with code
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - code
+                - secret
+              properties:
+                code:
+                  type: string
+                  pattern: "^[0-9]{6}$"
+                  description: 6-digit MFA code
+                secret:
+                  type: string
+                  description: MFA secret from setup
+            example:
+              code: "123456"
+              secret: JBSWY3DPEHPK3PXP
+      responses:
+        "200":
+          description: MFA verified and enabled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: true
+                message: MFA enabled successfully
+        "400":
+          $ref: "../openapi.yaml#/components/responses/BadRequest"
+        "401":
+          $ref: "../openapi.yaml#/components/responses/Unauthorized"
+
+  /auth/password/reset:
+    post:
+      summary: Request password reset
+      description: Send password reset email to user
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+            example:
+              email: user@example.com
+      responses:
+        "200":
+          description: Password reset email sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: true
+                message: Password reset email sent if account exists
+        "429":
+          $ref: "../openapi.yaml#/components/responses/TooManyRequests"
+
+  /auth/password/change:
+    post:
+      summary: Change password
+      description: Change user password with current password
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - currentPassword
+                - newPassword
+              properties:
+                currentPassword:
+                  type: string
+                  format: password
+                newPassword:
+                  type: string
+                  format: password
+                  minLength: 8
+            example:
+              currentPassword: OldPass123!
+              newPassword: NewSecurePass456!
+      responses:
+        "200":
+          description: Password changed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        "400":
+          $ref: "../openapi.yaml#/components/responses/BadRequest"
+        "401":
+          $ref: "../openapi.yaml#/components/responses/Unauthorized"
+
+components:
+  schemas:
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+        mfaEnabled:
+          type: boolean
+        emailVerified:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        lastLoginAt:
+          type: string
+          format: date-time
+
+    AuthTokens:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: JWT access token
+        refreshToken:
+          type: string
+          description: JWT refresh token
+        tokenType:
+          type: string
+          enum: [Bearer]
+          default: Bearer
+        expiresIn:
+          type: integer
+          description: Token expiration time in seconds
+        user:
+          $ref: "#/components/schemas/UserResponse"

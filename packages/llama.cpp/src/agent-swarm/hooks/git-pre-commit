@@ -1,0 +1,248 @@
+#!/usr/bin/env node
+
+/**
+ * Git Pre-Commit Hook
+ * Automatically triggers agent integration when new agent files are committed
+ */
+
+const { execSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
+
+// Configuration
+const CONFIG = {
+  enabled: true,
+  agentPatterns: [
+    '**/agent.ts',
+    '**/core/agent.ts',
+    '**/*-agent.ts',
+    'agents/**/*.ts'
+  ],
+  runIntegration: true,
+  blockOnFailure: false,
+  verbose: true
+};
+
+/**
+ * Main execution
+ */
+async function main() {
+  if (!CONFIG.enabled) {
+    console.log('⚠️  Agent integration pre-commit hook is disabled');
+    process.exit(0);
+  }
+
+  console.log('\n🔍 Checking for new agent files...');
+
+  try {
+    // Get staged files
+    const stagedFiles = getStagedFiles();
+
+    // Filter for agent files
+    const agentFiles = filterAgentFiles(stagedFiles);
+
+    if (agentFiles.length === 0) {
+      console.log('✅ No agent files in this commit');
+      process.exit(0);
+    }
+
+    console.log(`\n📦 Found ${agentFiles.length} agent file(s):`);
+    agentFiles.forEach(file => {
+      console.log(`   • ${file}`);
+    });
+
+    if (CONFIG.runIntegration) {
+      console.log('\n🚀 Triggering automated integration...\n');
+
+      for (const file of agentFiles) {
+        await integrateAgent(file);
+      }
+
+      console.log('\n✅ All agents integrated successfully');
+    } else {
+      console.log('\n⚠️  Auto-integration is disabled (runIntegration: false)');
+    }
+
+    process.exit(0);
+
+  } catch (error) {
+    console.error('\n❌ Error during pre-commit integration:', error.message);
+
+    if (CONFIG.blockOnFailure) {
+      console.error('\n🛑 Commit blocked due to integration failure');
+      console.error('   Fix the issues or use --no-verify to skip this hook');
+      process.exit(1);
+    } else {
+      console.log('\n⚠️  Commit will proceed despite integration failure');
+      process.exit(0);
+    }
+  }
+}
+
+/**
+ * Get list of staged files
+ */
+function getStagedFiles() {
+  try {
+    const output = execSync('git diff --cached --name-only --diff-filter=ACM', {
+      encoding: 'utf-8'
+    });
+
+    return output
+      .trim()
+      .split('\n')
+      .filter(f => f.length > 0);
+
+  } catch (error) {
+    console.warn('⚠️  Could not get staged files:', error.message);
+    return [];
+  }
+}
+
+/**
+ * Filter files that match agent patterns
+ */
+function filterAgentFiles(files) {
+  const agentFiles = [];
+
+  for (const file of files) {
+    // Check if file matches any agent pattern
+    for (const pattern of CONFIG.agentPatterns) {
+      if (matchesPattern(file, pattern)) {
+        agentFiles.push(file);
+        break;
+      }
+    }
+  }
+
+  return agentFiles;
+}
+
+/**
+ * Simple pattern matching
+ */
+function matchesPattern(file, pattern) {
+  // Convert glob pattern to regex
+  const regexPattern = pattern
+    .replace(/\*\*/g, '.*')
+    .replace(/\*/g, '[^/]*')
+    .replace(/\./g, '\\.');
+
+  const regex = new RegExp(`^${regexPattern}$`);
+  return regex.test(file);
+}
+
+/**
+ * Integrate a single agent
+ */
+async function integrateAgent(filePath) {
+  console.log(`\n━━━ Integrating: ${filePath} ━━━`);
+
+  const fullPath = path.join(process.cwd(), filePath);
+
+  // Check if file exists
+  if (!fs.existsSync(fullPath)) {
+    console.warn(`⚠️  File not found: ${fullPath}`);
+    return;
+  }
+
+  try {
+    // Option 1: Use the CLI tool
+    const cliPath = path.join(__dirname, '../cli/agent-swarm-cli.ts');
+
+    if (fs.existsSync(cliPath)) {
+      const cmd = `node "${cliPath}" integrate "${fullPath}"`;
+
+      if (CONFIG.verbose) {
+        console.log(`   Running: ${cmd}`);
+      }
+
+      execSync(cmd, {
+        stdio: 'inherit',
+        cwd: process.cwd()
+      });
+
+    } else {
+      // Option 2: Direct integration (fallback)
+      console.log('   ℹ️  CLI not found, using direct integration...');
+      await directIntegration(fullPath);
+    }
+
+    console.log(`   ✅ Integration complete`);
+
+  } catch (error) {
+    console.error(`   ❌ Integration failed: ${error.message}`);
+    throw error;
+  }
+}
+
+/**
+ * Direct integration (fallback when CLI is not available)
+ */
+async function directIntegration(filePath) {
+  const agentInfo = extractAgentInfo(filePath);
+
+  console.log(`   Agent: ${agentInfo.name}`);
+  console.log(`   Type: ${agentInfo.type}`);
+
+  // Log to integration file
+  const logPath = path.join(process.cwd(), 'logs/agent-integration.log');
+  const logDir = path.dirname(logPath);
+
+  if (!fs.existsSync(logDir)) {
+    fs.mkdirSync(logDir, { recursive: true });
+  }
+
+  const logEntry = JSON.stringify({
+    timestamp: new Date().toISOString(),
+    agent: agentInfo.name,
+    type: agentInfo.type,
+    path: filePath,
+    source: 'git-pre-commit-hook',
+    integrated: true
+  }) + '\n';
+
+  fs.appendFileSync(logPath, logEntry);
+
+  console.log('   ✅ Logged integration request');
+}
+
+/**
+ * Extract agent information from file
+ */
+function extractAgentInfo(filePath) {
+  const content = fs.readFileSync(filePath, 'utf-8');
+  const fileName = path.basename(filePath, '.ts');
+
+  // Extract class name
+  const classMatch = content.match(/class\s+(\w+)/);
+  const className = classMatch ? classMatch[1] : fileName;
+
+  // Determine type
+  let type = 'utility';
+  if (/optimizer/i.test(content)) type = 'optimizer';
+  else if (/coordinator/i.test(content)) type = 'coordinator';
+  else if (/validator/i.test(content)) type = 'validator';
+  else if (/analyzer/i.test(content)) type = 'analyzer';
+
+  // Extract name from class or file
+  let name = className
+    .replace(/Agent$/, '')
+    .replace(/Optimizer$/, '')
+    .replace(/([A-Z])/g, '-$1')
+    .toLowerCase()
+    .replace(/^-/, '');
+
+  return {
+    name,
+    type,
+    path: filePath,
+    className
+  };
+}
+
+// Execute
+main().catch(error => {
+  console.error('Fatal error in pre-commit hook:', error);
+  process.exit(CONFIG.blockOnFailure ? 1 : 0);
+});

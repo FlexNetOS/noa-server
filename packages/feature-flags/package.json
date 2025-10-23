@@ -1,0 +1,31 @@
+{
+  "name": "@noa/feature-flags",
+  "version": "0.0.1",
+  "description": "Feature flag management system for Noa Server",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "feature-flags",
+    "feature-toggles",
+    "a/b-testing",
+    "canary-releases"
+  ],
+  "dependencies": {
+    "launchdarkly-node-server-sdk": "^7.0.0",
+    "ioredis": "^5.3.2",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0",
+    "@vitest/coverage-v8": "^1.2.0"
+  }
+}

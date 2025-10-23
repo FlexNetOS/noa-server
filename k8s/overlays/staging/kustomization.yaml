@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: noa-server-staging
+
+namePrefix: staging-
+
+commonLabels:
+  environment: staging
+
+bases:
+- ../../base
+
+configMapGenerator:
+- name: noa-server-config
+  behavior: merge
+  literals:
+  - NODE_ENV=staging
+  - LOG_LEVEL=info
+
+images:
+- name: noa-server
+  newTag: staging-latest

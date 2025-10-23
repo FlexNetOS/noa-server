@@ -1,0 +1,389 @@
+name: Release Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - release/*
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Release type (major, minor, patch, prerelease)'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - prerelease
+      prerelease_tag:
+        description: 'Prerelease tag (alpha, beta, rc)'
+        required: false
+        type: string
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  NODE_VERSION: '20.x'
+
+jobs:
+  # Semantic Version Analysis
+  version-check:
+    name: Analyze Version and Changelog
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.new_version }}
+      changelog: ${{ steps.changelog.outputs.changelog }}
+      should_release: ${{ steps.version.outputs.should_release }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Analyze commits with Changesets
+        id: version
+        run: |
+          # Check if there are changesets to process
+          if [ -d ".changeset" ] && [ "$(ls -A .changeset/*.md 2>/dev/null | grep -v README.md)" ]; then
+            echo "should_release=true" >> $GITHUB_OUTPUT
+
+            # Generate version bump
+            pnpm changeset version --snapshot
+
+            # Extract new version from package.json
+            NEW_VERSION=$(node -p "require('./package.json').version")
+            echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "should_release=false" >> $GITHUB_OUTPUT
+            echo "new_version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate Changelog
+        id: changelog
+        run: |
+          # Generate changelog from git commits
+          CHANGELOG=$(git log $(git describe --tags --abbrev=0 2>/dev/null || echo "")..HEAD --pretty=format:"- %s (%h)" --no-merges)
+
+          # Escape newlines for GitHub output
+          CHANGELOG="${CHANGELOG//'%'/'%25'}"
+          CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
+          CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
+
+          echo "changelog=$CHANGELOG" >> $GITHUB_OUTPUT
+
+  # Build and Test
+  build-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    needs: version-check
+    strategy:
+      matrix:
+        package:
+          - api-gateway
+          - auth-service
+          - user-service
+          - feature-flags
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm run lint --filter=@noa/${{ matrix.package }}
+
+      - name: Type check
+        run: pnpm run typecheck --filter=@noa/${{ matrix.package }}
+
+      - name: Run tests
+        run: pnpm run test --filter=@noa/${{ matrix.package }} -- --coverage
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/coverage-final.json
+          flags: ${{ matrix.package }}
+
+  # Build Docker Images (Multi-platform)
+  build-images:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    needs: [version-check, build-test]
+    if: needs.version-check.outputs.should_release == 'true'
+    strategy:
+      matrix:
+        service:
+          - api-gateway
+          - auth-service
+          - user-service
+          - feature-flags
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.service }}
+          tags: |
+            type=semver,pattern={{version}},value=${{ needs.version-check.outputs.version }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ needs.version-check.outputs.version }}
+            type=semver,pattern={{major}},value=${{ needs.version-check.outputs.version }}
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./docker/Dockerfile.${{ matrix.service }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            VERSION=${{ needs.version-check.outputs.version }}
+            BUILD_DATE=${{ github.event.repository.updated_at }}
+            VCS_REF=${{ github.sha }}
+
+  # Build NPM Packages
+  build-packages:
+    name: Build NPM Packages
+    runs-on: ubuntu-latest
+    needs: [version-check, build-test]
+    if: needs.version-check.outputs.should_release == 'true'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm run build
+
+      - name: Package artifacts
+        run: |
+          mkdir -p ./artifacts
+          for pkg in packages/*; do
+            if [ -d "$pkg/dist" ]; then
+              tar -czf "./artifacts/$(basename $pkg)-${{ needs.version-check.outputs.version }}.tar.gz" -C "$pkg" dist package.json README.md
+            fi
+          done
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: npm-packages
+          path: ./artifacts/*.tar.gz
+          retention-days: 30
+
+  # Security Scanning
+  security-scan:
+    name: Security Scanning
+    runs-on: ubuntu-latest
+    needs: build-images
+    strategy:
+      matrix:
+        service:
+          - api-gateway
+          - auth-service
+          - user-service
+          - feature-flags
+    steps:
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.service }}:${{ needs.version-check.outputs.version }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  # Create GitHub Release
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [version-check, build-images, build-packages, security-scan]
+    if: needs.version-check.outputs.should_release == 'true'
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: npm-packages
+          path: ./artifacts
+
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          cat > release_notes.md << 'EOF'
+          ## Release v${{ needs.version-check.outputs.version }}
+
+          ### Changes
+          ${{ needs.version-check.outputs.changelog }}
+
+          ### Docker Images
+          - `${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/api-gateway:${{ needs.version-check.outputs.version }}`
+          - `${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/auth-service:${{ needs.version-check.outputs.version }}`
+          - `${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/user-service:${{ needs.version-check.outputs.version }}`
+          - `${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/feature-flags:${{ needs.version-check.outputs.version }}`
+
+          ### Platform Support
+          - linux/amd64
+          - linux/arm64
+
+          ### Installation
+          ```bash
+          # Pull images
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/api-gateway:${{ needs.version-check.outputs.version }}
+
+          # Deploy with Kubernetes
+          kubectl apply -f k8s/deployments/
+          ```
+
+          ### Rollback
+          If issues occur, rollback to previous version:
+          ```bash
+          ./scripts/release/rollback.sh v${{ needs.version-check.outputs.version }}
+          ```
+          EOF
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ needs.version-check.outputs.version }}
+          name: Release v${{ needs.version-check.outputs.version }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: ${{ contains(needs.version-check.outputs.version, '-') }}
+          files: |
+            ./artifacts/*.tar.gz
+            ./k8s/deployments/**/*.yaml
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  # Publish NPM Packages
+  publish-npm:
+    name: Publish to NPM
+    runs-on: ubuntu-latest
+    needs: create-release
+    if: needs.version-check.outputs.should_release == 'true' && !contains(needs.version-check.outputs.version, '-')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm run build
+
+      - name: Publish packages
+        run: pnpm publish -r --access public --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  # Notify
+  notify:
+    name: Notify Release
+    runs-on: ubuntu-latest
+    needs: [create-release, publish-npm]
+    if: always()
+    steps:
+      - name: Send Slack notification
+        if: success()
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "Release v${{ needs.version-check.outputs.version }} completed successfully!",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Release v${{ needs.version-check.outputs.version }}* has been deployed\n\n${{ needs.version-check.outputs.changelog }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

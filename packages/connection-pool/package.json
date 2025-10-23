@@ -1,0 +1,54 @@
+{
+  "name": "@noa/connection-pool",
+  "version": "1.0.0",
+  "description": "Advanced multi-database connection pooling with health checks and load balancing",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "health-check": "node --loader ts-node/esm dist/health-check.js"
+  },
+  "keywords": [
+    "connection-pool",
+    "database",
+    "postgresql",
+    "mongodb",
+    "mysql",
+    "redis",
+    "health-check",
+    "load-balancing"
+  ],
+  "author": "Noa Server Team",
+  "license": "MIT",
+  "dependencies": {
+    "pg": "^8.11.3",
+    "pg-pool": "^3.6.1",
+    "mongodb": "^6.3.0",
+    "mysql2": "^3.9.1",
+    "ioredis": "^5.3.2",
+    "generic-pool": "^3.9.0",
+    "zod": "^3.22.4",
+    "winston": "^3.11.0",
+    "prom-client": "^15.1.0",
+    "node-cron": "^3.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.16",
+    "@types/pg": "^8.11.0",
+    "@types/generic-pool": "^3.8.3",
+    "@types/node-cron": "^3.0.11",
+    "@vitest/coverage-v8": "^1.2.2",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.5",
+    "ts-node": "^10.9.2"
+  }
+}

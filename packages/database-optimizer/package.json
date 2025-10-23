@@ -1,0 +1,60 @@
+{
+  "name": "@noa/database-optimizer",
+  "version": "1.0.0",
+  "description": "Comprehensive database optimization and query analysis system for Noa Server",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "migrate": "node --loader ts-node/esm migrations/run.ts",
+    "analyze": "node --loader ts-node/esm dist/cli.js analyze",
+    "optimize": "node --loader ts-node/esm dist/cli.js optimize"
+  },
+  "keywords": [
+    "database",
+    "optimization",
+    "query-analysis",
+    "performance",
+    "postgresql",
+    "mongodb",
+    "indexing",
+    "n+1",
+    "slow-queries"
+  ],
+  "author": "Noa Server Team",
+  "license": "MIT",
+  "dependencies": {
+    "pg": "^8.11.3",
+    "pg-query-stream": "^4.5.4",
+    "mongodb": "^6.3.0",
+    "ioredis": "^5.3.2",
+    "mysql2": "^3.9.1",
+    "zod": "^3.22.4",
+    "chalk": "^5.3.0",
+    "ora": "^8.0.1",
+    "table": "^6.8.1",
+    "winston": "^3.11.0",
+    "prom-client": "^15.1.0",
+    "node-cron": "^3.0.3",
+    "sql-formatter": "^15.0.2",
+    "sqlstring": "^2.3.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.16",
+    "@types/pg": "^8.11.0",
+    "@types/node-cron": "^3.0.11",
+    "@vitest/coverage-v8": "^1.2.2",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.5",
+    "ts-node": "^10.9.2"
+  }
+}

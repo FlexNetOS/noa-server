@@ -1,0 +1,11 @@
+services:
+  mcp:
+    port: 8001
+  claude_flow:
+    port: 9100
+  flow_nexus:
+    port: 9000
+  ui_dashboard:
+    port: 9200
+  llama_cpp_bridge:
+    port: 9300

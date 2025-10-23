@@ -1,0 +1,109 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: noa-server-config
+  namespace: noa-server
+  labels:
+    app: noa-server
+data:
+  NODE_ENV: "production"
+  LOG_LEVEL: "info"
+  MCP_PORT: "8001"
+  CLAUDE_FLOW_PORT: "9100"
+  UI_PORT: "9200"
+  LLAMA_PORT: "9300"
+  AGENTICOS_PORT: "9400"
+  REDIS_PORT: "6379"
+  POSTGRES_PORT: "5432"
+
+  # Service URLs
+  MCP_URL: "http://noa-mcp-service:8001"
+  CLAUDE_FLOW_URL: "http://noa-claude-flow-service:9100"
+  UI_URL: "http://noa-ui-service:9200"
+  LLAMA_URL: "http://noa-llama-service:9300"
+  AGENTICOS_URL: "http://noa-agenticos-service:9400"
+  REDIS_URL: "redis://noa-redis-service:6379"
+  POSTGRES_URL: "postgresql://noa-postgres-service:5432/noa"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: noa-server-nginx-config
+  namespace: noa-server
+data:
+  nginx.conf: |
+    user nginx;
+    worker_processes auto;
+    error_log /var/log/nginx/error.log warn;
+    pid /var/run/nginx.pid;
+
+    events {
+        worker_connections 1024;
+    }
+
+    http {
+        include /etc/nginx/mime.types;
+        default_type application/octet-stream;
+
+        log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for"';
+
+        access_log /var/log/nginx/access.log main;
+
+        sendfile on;
+        tcp_nopush on;
+        tcp_nodelay on;
+        keepalive_timeout 65;
+        types_hash_max_size 2048;
+
+        gzip on;
+        gzip_vary on;
+        gzip_min_length 1024;
+        gzip_types text/plain text/css text/xml text/javascript application/javascript application/json application/xml+rss;
+
+        upstream mcp_backend {
+            server noa-mcp-service:8001;
+        }
+
+        upstream claude_flow_backend {
+            server noa-claude-flow-service:9100;
+        }
+
+        upstream ui_backend {
+            server noa-ui-service:9200;
+        }
+
+        server {
+            listen 80;
+            server_name _;
+
+            location /api/mcp/ {
+                proxy_pass http://mcp_backend/;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection 'upgrade';
+                proxy_set_header Host $host;
+                proxy_cache_bypass $http_upgrade;
+            }
+
+            location /api/flow/ {
+                proxy_pass http://claude_flow_backend/;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection 'upgrade';
+                proxy_set_header Host $host;
+                proxy_cache_bypass $http_upgrade;
+            }
+
+            location / {
+                proxy_pass http://ui_backend;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection 'upgrade';
+                proxy_set_header Host $host;
+                proxy_cache_bypass $http_upgrade;
+            }
+        }
+    }

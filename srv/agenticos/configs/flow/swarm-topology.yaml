@@ -1,0 +1,385 @@
+---
+# ============================================
+# Swarm Topology Configuration
+# ============================================
+# Description: Defines agent swarm architecture and coordination patterns
+# Version: 1.0.0
+# Last Updated: 2025-10-18
+
+apiVersion: agentic.os/v1alpha1
+kind: SwarmTopology
+metadata:
+  name: agentic-os-swarm
+  namespace: default
+  labels:
+    environment: production
+    managed-by: claude-flow
+
+spec:
+  # ============================================
+  # Swarm Architecture
+  # ============================================
+  architecture:
+    type: hierarchical
+    coordination: consensus-based
+    communication: mesh
+
+  # Number of swarm instances
+  replicas: 3
+
+  # ============================================
+  # Agent Roles and Specialization
+  # ============================================
+  agents:
+
+    # Coordinator Agents
+    - role: coordinator
+      count: 3
+      tier: control-plane
+      capabilities:
+        - task-distribution
+        - load-balancing
+        - health-monitoring
+        - conflict-resolution
+      resources:
+        cpu: "1000m"
+        memory: "2Gi"
+      affinity:
+        podAntiAffinity: true
+
+    # Execution Agents (Workers)
+    - role: executor
+      count: 10
+      tier: data-plane
+      specializations:
+        - code-generation
+        - code-analysis
+        - documentation
+        - testing
+        - deployment
+      capabilities:
+        - parallel-execution
+        - result-caching
+        - state-persistence
+      resources:
+        cpu: "500m"
+        memory: "1Gi"
+      scaling:
+        enabled: true
+        minReplicas: 5
+        maxReplicas: 20
+        targetCPU: 70
+        targetMemory: 80
+
+    # Specialist Agents
+    - role: specialist
+      count: 5
+      tier: data-plane
+      types:
+        - platform-engineer
+        - security-analyst
+        - data-scientist
+        - devops-engineer
+        - qa-engineer
+      capabilities:
+        - domain-expertise
+        - advanced-reasoning
+        - complex-problem-solving
+      resources:
+        cpu: "1000m"
+        memory: "2Gi"
+
+    # Memory Manager Agents
+    - role: memory-manager
+      count: 2
+      tier: storage-plane
+      capabilities:
+        - context-retrieval
+        - knowledge-indexing
+        - semantic-search
+        - memory-compression
+      resources:
+        cpu: "500m"
+        memory: "4Gi"
+        storage: "20Gi"
+
+  # ============================================
+  # Communication Patterns
+  # ============================================
+  communication:
+
+    # Inter-agent messaging
+    messaging:
+      protocol: grpc
+      compression: true
+      encryption: true
+      timeout: 30s
+      retries: 3
+
+    # Broadcast channels
+    broadcast:
+      enabled: true
+      channels:
+        - name: system-events
+          priority: high
+        - name: task-updates
+          priority: medium
+        - name: health-checks
+          priority: low
+
+    # Point-to-point communication
+    directMessaging:
+      enabled: true
+      maxConnections: 100
+      keepAlive: 60s
+
+  # ============================================
+  # Coordination Strategies
+  # ============================================
+  coordination:
+
+    # Task distribution
+    taskDistribution:
+      strategy: dynamic-load-balancing
+      algorithm: least-loaded
+      rebalancingInterval: 30s
+
+    # Consensus mechanism
+    consensus:
+      algorithm: raft
+      quorumSize: 2
+      electionTimeout: 5s
+      heartbeatInterval: 1s
+
+    # Leader election
+    leaderElection:
+      enabled: true
+      leaseDuration: 15s
+      renewDeadline: 10s
+      retryPeriod: 2s
+
+  # ============================================
+  # Fault Tolerance
+  # ============================================
+  faultTolerance:
+
+    # Health monitoring
+    healthCheck:
+      enabled: true
+      interval: 10s
+      timeout: 5s
+      failureThreshold: 3
+      successThreshold: 1
+
+    # Automatic recovery
+    autoRecovery:
+      enabled: true
+      maxAttempts: 3
+      backoffStrategy: exponential
+      initialDelay: 5s
+      maxDelay: 60s
+
+    # Circuit breaker
+    circuitBreaker:
+      enabled: true
+      failureThreshold: 5
+      successThreshold: 2
+      timeout: 30s
+      halfOpenRequests: 3
+
+  # ============================================
+  # Performance Optimization
+  # ============================================
+  performance:
+
+    # Caching strategy
+    caching:
+      enabled: true
+      layers:
+        - level: l1
+          type: in-memory
+          size: 512Mi
+          ttl: 5m
+        - level: l2
+          type: redis
+          size: 2Gi
+          ttl: 1h
+        - level: l3
+          type: disk
+          size: 10Gi
+          ttl: 24h
+
+    # Batching
+    batching:
+      enabled: true
+      maxBatchSize: 10
+      maxWaitTime: 100ms
+
+    # Connection pooling
+    connectionPool:
+      minIdle: 5
+      maxActive: 50
+      maxWait: 30s
+
+  # ============================================
+  # Security Policies
+  # ============================================
+  security:
+
+    # Agent authentication
+    authentication:
+      provider: keycloak
+      tokenRefreshInterval: 5m
+
+    # Authorization
+    authorization:
+      provider: opa
+      policyPath: /srv/agenticos/configs/opa/policies
+
+    # Network policies
+    networkPolicy:
+      enabled: true
+      ingressRules:
+        - from:
+            - podSelector:
+                matchLabels:
+                  role: coordinator
+          ports:
+            - protocol: TCP
+              port: 8080
+      egressRules:
+        - to:
+            - podSelector: {}
+          ports:
+            - protocol: TCP
+              port: 6379  # Redis
+            - protocol: TCP
+              port: 5432  # PostgreSQL
+
+  # ============================================
+  # Observability
+  # ============================================
+  observability:
+
+    # Metrics collection
+    metrics:
+      enabled: true
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
+        prometheus.io/path: "/metrics"
+
+    # Distributed tracing
+    tracing:
+      enabled: true
+      samplingRate: 0.1
+      jaegerEndpoint: "http://jaeger-collector:14268/api/traces"
+
+    # Logging
+    logging:
+      level: info
+      structured: true
+      includeStackTrace: true
+
+  # ============================================
+  # Resource Quotas
+  # ============================================
+  resourceQuotas:
+    limits:
+      cpu: "20"
+      memory: "40Gi"
+      storage: "100Gi"
+    requests:
+      cpu: "10"
+      memory: "20Gi"
+      storage: "50Gi"
+
+  # ============================================
+  # Lifecycle Management
+  # ============================================
+  lifecycle:
+
+    # Startup behavior
+    startup:
+      initialDelaySeconds: 10
+      periodSeconds: 5
+      timeoutSeconds: 30
+
+    # Graceful shutdown
+    shutdown:
+      gracePeriodSeconds: 30
+      preStop:
+        - name: drain-connections
+          timeout: 20s
+        - name: flush-cache
+          timeout: 10s
+
+    # Rolling updates
+    updateStrategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 0
+
+---
+# ============================================
+# Swarm Presets for Different Scenarios
+# ============================================
+
+apiVersion: agentic.os/v1alpha1
+kind: SwarmPreset
+metadata:
+  name: high-performance
+spec:
+  description: "Optimized for maximum throughput and low latency"
+  agents:
+    executor:
+      count: 20
+      resources:
+        cpu: "1000m"
+        memory: "2Gi"
+  performance:
+    caching:
+      enabled: true
+      aggressive: true
+    batching:
+      maxBatchSize: 20
+
+---
+apiVersion: agentic.os/v1alpha1
+kind: SwarmPreset
+metadata:
+  name: resource-efficient
+spec:
+  description: "Optimized for minimal resource consumption"
+  agents:
+    executor:
+      count: 5
+      resources:
+        cpu: "250m"
+        memory: "512Mi"
+  performance:
+    caching:
+      enabled: true
+      conservative: true
+
+---
+apiVersion: agentic.os/v1alpha1
+kind: SwarmPreset
+metadata:
+  name: high-availability
+spec:
+  description: "Optimized for fault tolerance and reliability"
+  agents:
+    coordinator:
+      count: 5
+    executor:
+      count: 15
+  faultTolerance:
+    autoRecovery:
+      maxAttempts: 5
+    healthCheck:
+      interval: 5s
+  coordination:
+    consensus:
+      quorumSize: 3

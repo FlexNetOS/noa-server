@@ -1,0 +1,4 @@
+agents:
+  - id: .
+    path: packages/contains-studio-agents
+    description: "# Claude Code Configuration - SPARC Development Environment"

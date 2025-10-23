@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: noa-server-sa
+  namespace: noa-server
+  labels:
+    app: noa-server
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: noa-server-role
+  namespace: noa-server
+rules:
+- apiGroups: [""]
+  resources: ["configmaps", "secrets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["services"]
+  verbs: ["get", "list"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: noa-server-rolebinding
+  namespace: noa-server
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: noa-server-role
+subjects:
+- kind: ServiceAccount
+  name: noa-server-sa
+  namespace: noa-server

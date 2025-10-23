@@ -1,0 +1,86 @@
+# Dependencies
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store
+package-lock.json
+yarn.lock
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv
+venv/
+ENV/
+env/
+*.egg-info/
+dist/
+build/
+
+# Testing
+coverage
+.nyc_output
+*.lcov
+.cache
+.pytest_cache
+
+# Development
+.git
+.github
+.gitignore
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Documentation
+*.md
+!README.md
+docs/
+examples/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build artifacts
+dist/
+build/
+.next/
+out/
+*.tsbuildinfo
+
+# Models (will be mounted)
+models/
+*.gguf
+*.bin
+*.safetensors
+
+# Data directories
+data/
+tmp/
+temp/
+
+# CI/CD
+.claude-flow/training
+.hive-mind/sessions
+memory/sessions

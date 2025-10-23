@@ -1,0 +1,102 @@
+{
+  "version": "1.0.0",
+  "description": "Service orchestration topology for Claude Suite automation pipeline.",
+  "services": [
+    {
+      "id": "swarm-init",
+      "command": "npm run swarm:init",
+      "depends_on": [],
+      "logs": "logs/tasks/swarm:init.log"
+    },
+    {
+      "id": "workspace-sync",
+      "command": "npm run workspace:sync",
+      "depends_on": ["swarm-init"],
+      "logs": "logs/tasks/workspace:sync.log"
+    },
+    {
+      "id": "runtime-bootstrap",
+      "command": "npm run runtime:bootstrap",
+      "depends_on": ["workspace-sync"],
+      "logs": "logs/tasks/runtime:bootstrap.log"
+    },
+    {
+      "id": "config-scaffold",
+      "command": "npm run config:scaffold",
+      "depends_on": ["workspace-sync"],
+      "logs": "logs/tasks/config:scaffold.log"
+    },
+    {
+      "id": "setup",
+      "command": "npm run setup",
+      "depends_on": ["runtime-bootstrap", "config-scaffold"],
+      "logs": "logs/tasks/setup.log"
+    },
+    {
+      "id": "memory-init",
+      "command": "npm run memory:init",
+      "depends_on": ["setup"],
+      "logs": "logs/tasks/memory:init.log"
+    },
+    {
+      "id": "agents-sync",
+      "command": "npm run agents:sync",
+      "depends_on": ["memory-init"],
+      "logs": "logs/tasks/agents:sync.log"
+    },
+    {
+      "id": "mcp-verify",
+      "command": "npm run mcp:verify",
+      "depends_on": ["agents-sync"],
+      "logs": "logs/tasks/mcp:verify.log"
+    },
+    {
+      "id": "flow-integrate",
+      "command": "npm run flow:integrate",
+      "depends_on": ["mcp-verify"],
+      "logs": "logs/tasks/flow:integrate.log"
+    },
+    {
+      "id": "neural-test",
+      "command": "npm run neural:test",
+      "depends_on": ["flow-integrate"],
+      "logs": "logs/tasks/neural:test.log"
+    },
+    {
+      "id": "swarm-train",
+      "command": "npm run swarm:train",
+      "depends_on": ["neural-test"],
+      "logs": "logs/tasks/swarm:train.log"
+    },
+    {
+      "id": "bench",
+      "command": "npm run bench",
+      "depends_on": ["swarm-train"],
+      "logs": "logs/tasks/bench.log"
+    },
+    {
+      "id": "ui-build",
+      "command": "npm run ui:build",
+      "depends_on": ["bench"],
+      "logs": "logs/tasks/ui:build.log"
+    },
+    {
+      "id": "truth-gate",
+      "command": "npm run truth-gate",
+      "depends_on": ["ui-build"],
+      "logs": "logs/tasks/truth-gate.log"
+    },
+    {
+      "id": "export",
+      "command": "npm run export",
+      "depends_on": ["truth-gate"],
+      "logs": "logs/tasks/export.log"
+    },
+    {
+      "id": "release-report",
+      "command": "npm run release:report",
+      "depends_on": ["export"],
+      "logs": "logs/tasks/release:report.log"
+    }
+  ]
+}

@@ -1,0 +1,292 @@
+# current.todo
+<!-- Active tasks for immediate execution -->
+<!-- Last Updated: YYYY-MM-DD HH:MM UTC -->
+
+## 📖 How to Use This Todo List
+
+### Quick Start
+1. **Add tasks** using the template format below each priority section
+2. **Update daily** - Move completed tasks to archive, adjust priorities
+3. **Review weekly** - Clean up stale tasks, update stats
+4. **Keep it focused** - Maximum 5-7 tasks per priority level
+5. **Use automation** - Run `workspace/tools/todo_helper.sh` for quick operations
+
+### Task Format
+```
+- [ ] [PRIORITY] Task description @category #tags due:YYYY-MM-DD
+  - Context: Why this task exists and background information
+  - Success: Clear definition of done criteria
+  - Dependencies: Prerequisites or blockers
+  - Estimate: [XS|S|M|L|XL] (optional time sizing)
+  - Owner: @username (for team contexts)
+```
+
+### Priority Levels
+- **P0 (Critical)**: System outages, security issues, data loss risks - Fix immediately
+- **P1 (High)**: Blocking issues, deadline-driven, stakeholder commitments - 24-48 hours
+- **P2 (Normal)**: Regular development, improvements, standard features - This week
+- **P3 (Low)**: Nice-to-haves, research, documentation, technical debt - When possible
+
+### Categories (@)
+- `@development` - Code and feature work
+- `@bugfix` - Issue resolution
+- `@infrastructure` - System and tooling
+- `@documentation` - Docs and guides
+- `@governance` - Compliance and approvals
+- `@mcp` - MCP-specific tasks
+- `@testing` - Test creation and validation
+- `@automation` - Script and workflow improvements
+- `@research` - Investigation and POCs
+- `@deflex` - DEFLEX workspace specific
+
+### Tags (#)
+- `#blocked` - Waiting on external dependency
+- `#in-progress` - Actively being worked
+- `#review` - Ready for review
+- `#tooling` - Tool-related
+- `#compliance` - Regulatory/policy
+- `#training` - Learning/onboarding
+- `#quick-win` - Can be done in < 30 min
+- `#debt` - Technical debt
+- `#recurring` - Repeats regularly
+
+### Best Practices
+- Keep task descriptions under 100 characters
+- One deliverable per task (split large items)
+- Update due dates realistically
+- Archive completed tasks weekly
+- Add blockers to standup notes immediately
+- Use estimates to plan capacity (XS=<1hr, S=1-2hr, M=2-4hr, L=4-8hr, XL=>8hr)
+
+### Keyboard Shortcuts (VS Code)
+- `Ctrl+Enter` - Toggle checkbox
+- `Alt+C` - Check/uncheck task
+- `Alt+D` - Mark as done with timestamp
+- `Ctrl+Shift+[` - Fold section
+- `Ctrl+Shift+]` - Unfold section
+
+---
+
+## 🚨 Critical (P0) - Same Day
+*No critical issues - This is good!*
+
+<!-- Example:
+- [ ] [P0] Fix production database connection failure @infrastructure #blocked due:2025-10-22
+  - Context: Main DB cluster unreachable since 14:00 UTC
+  - Success: All services reconnected, monitoring green
+  - Dependencies: DBA team investigation
+  - Estimate: M
+-->
+
+## 🔴 High Priority (P1) - 24-48 hours
+
+<!-- Add P1 tasks here -->
+
+## 🟡 Normal Priority (P2) - This Week
+
+- [ ] [P2] Ship Queue Monitoring UI @ui-dashboard #ui due:2025-01-14
+  - Context: Live message queue stats exist but the dashboard still shows placeholders
+  - Success: Metrics cards and job timeline render live data with loading/error states
+  - Dependencies: WebSocket data model finalized
+
+- [ ] [P2] Build Telemetry Integration Tests @testing #integration due:2025-01-14
+  - Context: Need real coverage proving Zustand store + WebSocket updates behave correctly
+  - Success: Vitest integration suite mounts the store, streams events, and asserts UI observable changes
+  - Dependencies: Queue Monitoring UI scaffolding
+
+- [ ] [P2] Harden WebSocket Reconnect UX @ui-dashboard #development due:2025-01-14
+  - Context: Users have no indication when the socket drops and reconnects
+  - Success: Connection banner/toast wired to `useWebSocket` state and e2e covered
+  - Dependencies: Telemetry Integration Tests
+
+- [ ] [P2] Document Live Data Pipeline @documentation #in-progress due:2025-01-15
+  - Context: Onboarding engineers lack guidance on API → store → component flow
+  - Success: README section with diagrams + troubleshooting for WebSocket telemetry
+  - Dependencies: Queue Monitoring UI finalised
+
+- [ ] [P2] Coordinate UI Coverage Metrics @testing #integration due:2025-01-15
+  - Context: Integration coverage currently reports 0% for dashboard code
+  - Success: Coverage report shows exercised lines/functions for `packages/ui-dashboard` components
+  - Dependencies: Telemetry Integration Tests
+
+## 🟢 Low Priority (P3) - When Possible
+
+- [ ] [P3] Polish Dark Mode Styles @ui-dashboard #ui
+  - Context: New cards and tables lack dark theme adjustments
+  - Success: WCAG contrast maintained and visual tests updated
+  - Dependencies: Queue Monitoring UI shipped
+
+- [ ] [P3] Add Storybook Live Data Mocks @ui-dashboard #tooling
+  - Context: Designers want to review states without running backend services
+  - Success: Storybook stories simulate telemetry updates and socket edge cases
+  - Dependencies: Telemetry store API considered stable
+
+- [ ] [P3] Evaluate Charting Performance @research #ui
+  - Context: Real-time charts may drop frames on lower-end devices
+  - Success: Report comparing current Recharts setup vs lightweight alternatives with recommendation
+  - Dependencies: Queue Monitoring UI charts deployed
+
+## 🔁 Recurring Tasks
+<!-- Tasks that repeat on a schedule -->
+<!-- Example:
+- [ ] [P2] Weekly backup validation @infrastructure #recurring due:every-friday
+  - Context: Ensure backups are restorable
+  - Success: Test restore completes successfully
+  - Dependencies: Access to backup storage
+-->
+
+---
+
+## 📊 Stats
+- Active Tasks: 0
+- Completion Rate (This Week): 0/0 (0%)
+- Average Task Age: 0 days
+- Oldest Task: N/A
+- Sprint Velocity: 0 points/week
+- Blocked Count: 0
+
+### Burndown Tracking
+| Week | Started | Completed | Added | Ending | Velocity |
+|------|---------|-----------|-------|--------|----------|
+| Current | 0 | 0 | 0 | 0 | 0 |
+
+## 🔄 Daily Standup Notes
+### YYYY-MM-DD
+- **Focus**: What's the main goal today?
+- **Completed**: What got done yesterday?
+- **Blockers**: What's preventing progress?
+- **Help Needed**: Where do you need assistance?
+- **Wins**: What went well? 🎉
+
+<!-- Template for daily entries:
+### 2025-10-23
+- **Focus**: 
+- **Completed**: 
+- **Blockers**: 
+- **Help Needed**: 
+- **Wins**: 
+-->
+
+---
+
+## 📝 Task Templates
+
+### Feature Development
+```
+- [ ] [P2] Implement [feature name] @development #in-progress due:YYYY-MM-DD
+  - Context: User story or requirement reference
+  - Success: Feature working with tests passing
+  - Dependencies: Design approval, API endpoint ready
+  - Estimate: M
+```
+
+### Bug Fix
+```
+- [ ] [P1] Fix [issue description] @bugfix #blocked due:YYYY-MM-DD
+  - Context: Issue #123, affecting X users
+  - Success: Bug resolved, regression test added
+  - Dependencies: Reproduction steps confirmed
+  - Estimate: S
+```
+
+### Documentation
+```
+- [ ] [P3] Document [component/process] @documentation #review due:YYYY-MM-DD
+  - Context: Missing docs identified in review
+  - Success: Markdown file created with examples
+  - Dependencies: Implementation complete
+  - Estimate: XS
+```
+
+### Research/POC
+```
+- [ ] [P2] Research [technology/approach] @research due:YYYY-MM-DD
+  - Context: Need to evaluate options for [requirement]
+  - Success: Decision doc with pros/cons and recommendation
+  - Dependencies: Access to test environment
+  - Estimate: L
+```
+
+### DEFLEX Workspace Task
+```
+- [ ] [P2] Update [workspace component] @deflex #tooling due:YYYY-MM-DD
+  - Context: Enhancement to DEFLEX workspace structure
+  - Success: Script updated, health_check.sh passes
+  - Dependencies: Review reorganize_deflex.sh
+  - Estimate: S
+```
+
+## 🎯 Quick Actions
+<!-- Common task operations for copy/paste -->
+```bash
+# Mark task complete with timestamp
+- [x] [COMPLETED: YYYY-MM-DD HH:MM] Task description
+
+# Defer task
+- [ ] [DEFERRED to YYYY-MM-DD] Original task
+
+# Convert to blocked
+#blocked #waiting-on:[dependency]
+
+# Escalate priority
+[P2] → [P1] (reason: stakeholder request)
+```
+
+## 🗄️ Archive Section
+<!-- Move completed tasks here during weekly review -->
+<!-- Format: - [x] [COMPLETED: YYYY-MM-DD] Task description -->
+
+### Week of YYYY-MM-DD
+<!-- Completed tasks from this week -->
+
+---
+
+## 🔗 Related Files
+- Project roadmap: `../../docs/roadmap.md`
+- Sprint planning: `../../docs/sprint-planning.md`
+- Team roster: `../../docs/team.md`
+- DEFLEX config: `~/config/system/config.yaml`
+
+## 🤖 Automation Helper
+```bash
+# Quick commands (using workspace/tools/todo_helper.sh)
+
+# Mark task complete with verification
+~/workspace/tools/todo_helper.sh complete "Fix database"
+
+# Watch for completions in real-time
+~/workspace/tools/todo_helper.sh watch
+
+# View task statistics
+~/workspace/tools/todo_helper.sh stats
+
+# List overdue tasks
+~/workspace/tools/todo_helper.sh overdue
+
+# Archive completed tasks
+~/workspace/tools/todo_helper.sh archive
+
+# Check audit trail
+tail -f ~/logs/applications/noa-audit-trail.jsonl | jq '.'
+
+# Verify hook execution
+tail -f ~/logs/applications/todo_helper.log
+```
+
+### 🎣 Hook Configuration
+The following hooks run automatically on task completion:
+1. **01-noa-auth-verify.sh**: Validates completion with auth service
+2. **02-noa-audit-log.sh**: Records in audit trail (JSONL format)
+
+To add custom hooks, create executable scripts in:
+`~/workspace/tools/todo-hooks/`
+
+Hooks receive these environment variables:
+- `TASK_JSON`: Task details in JSON format
+- `COMPLETION_TIMESTAMP`: When marked complete
+- `TODO_FILE`: Path to current todo file
+
+---
+
+*Generated from todo template v2.0.0*
+*Integrated with DEFLEX workspace structure*
