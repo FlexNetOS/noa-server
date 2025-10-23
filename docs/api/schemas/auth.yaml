@@ -35,7 +35,7 @@ paths:
                   type: string
                   minLength: 3
                   maxLength: 50
-                  pattern: '^[a-zA-Z0-9_-]+$'
+                  pattern: "^[a-zA-Z0-9_-]+$"
                   description: Username (alphanumeric, dash, underscore)
                 firstName:
                   type: string
@@ -53,7 +53,7 @@ paths:
               firstName: John
               lastName: Doe
       responses:
-        '201':
+        "201":
           description: User registered successfully
           content:
             application/json:
@@ -65,7 +65,7 @@ paths:
                   message:
                     type: string
                   data:
-                    $ref: '#/components/schemas/UserResponse'
+                    $ref: "#/components/schemas/UserResponse"
               example:
                 success: true
                 message: User registered successfully
@@ -74,13 +74,13 @@ paths:
                   email: user@example.com
                   username: johndoe
                   roles: [user]
-                  createdAt: '2025-10-22T10:00:00Z'
-        '400':
-          $ref: '../openapi.yaml#/components/responses/BadRequest'
-        '409':
-          $ref: '../openapi.yaml#/components/responses/Conflict'
-        '500':
-          $ref: '../openapi.yaml#/components/responses/InternalServerError'
+                  createdAt: "2025-10-22T10:00:00Z"
+        "400":
+          $ref: "../openapi.yaml#/components/responses/BadRequest"
+        "409":
+          $ref: "../openapi.yaml#/components/responses/Conflict"
+        "500":
+          $ref: "../openapi.yaml#/components/responses/InternalServerError"
 
   /auth/login:
     post:
@@ -108,7 +108,7 @@ paths:
                 mfaCode:
                   type: string
                   description: MFA code if MFA is enabled
-                  pattern: '^[0-9]{6}$'
+                  pattern: "^[0-9]{6}$"
                 rememberMe:
                   type: boolean
                   default: false
@@ -118,7 +118,7 @@ paths:
               password: SecurePass123!
               rememberMe: false
       responses:
-        '200':
+        "200":
           description: Login successful
           content:
             application/json:
@@ -128,7 +128,7 @@ paths:
                   success:
                     type: boolean
                   data:
-                    $ref: '#/components/schemas/AuthTokens'
+                    $ref: "#/components/schemas/AuthTokens"
               example:
                 success: true
                 data:
@@ -141,12 +141,12 @@ paths:
                     email: user@example.com
                     username: johndoe
                     roles: [user]
-        '401':
-          $ref: '../openapi.yaml#/components/responses/Unauthorized'
-        '429':
-          $ref: '../openapi.yaml#/components/responses/TooManyRequests'
-        '500':
-          $ref: '../openapi.yaml#/components/responses/InternalServerError'
+        "401":
+          $ref: "../openapi.yaml#/components/responses/Unauthorized"
+        "429":
+          $ref: "../openapi.yaml#/components/responses/TooManyRequests"
+        "500":
+          $ref: "../openapi.yaml#/components/responses/InternalServerError"
 
   /auth/logout:
     post:
@@ -166,7 +166,7 @@ paths:
                   type: string
                   description: Refresh token to invalidate
       responses:
-        '200':
+        "200":
           description: Logout successful
           content:
             application/json:
@@ -180,8 +180,8 @@ paths:
               example:
                 success: true
                 message: Logged out successfully
-        '401':
-          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+        "401":
+          $ref: "../openapi.yaml#/components/responses/Unauthorized"
 
   /auth/refresh:
     post:
@@ -205,7 +205,7 @@ paths:
             example:
               refreshToken: YOUR_REFRESH_TOKEN
       responses:
-        '200':
+        "200":
           description: Token refreshed successfully
           content:
             application/json:
@@ -215,9 +215,9 @@ paths:
                   success:
                     type: boolean
                   data:
-                    $ref: '#/components/schemas/AuthTokens'
-        '401':
-          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+                    $ref: "#/components/schemas/AuthTokens"
+        "401":
+          $ref: "../openapi.yaml#/components/responses/Unauthorized"
 
   /auth/mfa/setup:
     post:
@@ -228,7 +228,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: MFA setup initiated
           content:
             application/json:
@@ -251,8 +251,8 @@ paths:
                         items:
                           type: string
                         description: Backup recovery codes
-        '401':
-          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+        "401":
+          $ref: "../openapi.yaml#/components/responses/Unauthorized"
 
   /auth/mfa/verify:
     post:
@@ -274,16 +274,16 @@ paths:
               properties:
                 code:
                   type: string
-                  pattern: '^[0-9]{6}$'
+                  pattern: "^[0-9]{6}$"
                   description: 6-digit MFA code
                 secret:
                   type: string
                   description: MFA secret from setup
             example:
-              code: '123456'
+              code: "123456"
               secret: JBSWY3DPEHPK3PXP
       responses:
-        '200':
+        "200":
           description: MFA verified and enabled
           content:
             application/json:
@@ -297,10 +297,10 @@ paths:
               example:
                 success: true
                 message: MFA enabled successfully
-        '400':
-          $ref: '../openapi.yaml#/components/responses/BadRequest'
-        '401':
-          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+        "400":
+          $ref: "../openapi.yaml#/components/responses/BadRequest"
+        "401":
+          $ref: "../openapi.yaml#/components/responses/Unauthorized"
 
   /auth/password/reset:
     post:
@@ -324,7 +324,7 @@ paths:
             example:
               email: user@example.com
       responses:
-        '200':
+        "200":
           description: Password reset email sent
           content:
             application/json:
@@ -338,8 +338,8 @@ paths:
               example:
                 success: true
                 message: Password reset email sent if account exists
-        '429':
-          $ref: '../openapi.yaml#/components/responses/TooManyRequests'
+        "429":
+          $ref: "../openapi.yaml#/components/responses/TooManyRequests"
 
   /auth/password/change:
     post:
@@ -370,7 +370,7 @@ paths:
               currentPassword: OldPass123!
               newPassword: NewSecurePass456!
       responses:
-        '200':
+        "200":
           description: Password changed successfully
           content:
             application/json:
@@ -381,10 +381,10 @@ paths:
                     type: boolean
                   message:
                     type: string
-        '400':
-          $ref: '../openapi.yaml#/components/responses/BadRequest'
-        '401':
-          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+        "400":
+          $ref: "../openapi.yaml#/components/responses/BadRequest"
+        "401":
+          $ref: "../openapi.yaml#/components/responses/Unauthorized"
 
 components:
   schemas:
@@ -438,4 +438,4 @@ components:
           type: integer
           description: Token expiration time in seconds
         user:
-          $ref: '#/components/schemas/UserResponse'
+          $ref: "#/components/schemas/UserResponse"
