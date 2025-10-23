@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+#
+# Hive-Mind Wizard Global Launcher
+# Can be run from any directory
+#
+# Usage:
+#   ./bin/hive-wizard
+#   ln -s $(pwd)/bin/hive-wizard ~/.local/bin/hive-wizard
+#
+
+# Get the directory where this script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+# Change to project root
+cd "$PROJECT_ROOT" || exit 1
+
+# Run the wizard
+exec npx tsx scripts/hive-mind-wizard.ts "$@"

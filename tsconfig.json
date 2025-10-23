@@ -14,6 +14,6 @@
     "allowUnusedLabels": false,
     "allowUnreachableCode": false
   },
-  "include": ["src/**/*", "tests/**/*", "scripts/**/*"],
+  "include": ["src/**/*", "tests/**/*", "scripts/**/*", ".hive-mind/**/*"],
   "exclude": ["node_modules", "dist", "build", "coverage"]
 }

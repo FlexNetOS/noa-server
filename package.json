@@ -3,11 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "description": "Integrated Claude Suite monorepo with automation pipeline, MCP tooling, agents, llama.cpp, and UI.",
-  "workspaces": [
-    "packages/*",
-    "servers/*",
-    "apps/*"
-  ],
+  "workspaces": ["packages/*", "servers/*", "apps/*"],
   "scripts": {
     "hive:init": "bash scripts/automation/hive-mind-init.sh",
     "hive:test": "bash scripts/tasks/hive-mind-test.sh",
@@ -86,7 +82,17 @@
     "monitor:health": "node scripts/monitoring/health-check.js once",
     "monitor:metrics": "node scripts/monitoring/metrics-collector.js once",
     "monitor:dashboard": "node scripts/monitoring/dashboard.js",
-    "monitor:test": "npm run test tests/monitoring/"
+    "monitor:test": "npm run test tests/monitoring/",
+    "archive:symbol": "node --import tsx/esm scripts/platinum-pipeline/archive-symbol.ts",
+    "archive:module": "node --import tsx/esm scripts/platinum-pipeline/archive-module.ts",
+    "archive:chunk": "node --import tsx/esm scripts/platinum-pipeline/archive-chunk.ts",
+    "restore:search": "node --import tsx/esm scripts/platinum-pipeline/search-archives.ts",
+    "restore:archive": "node --import tsx/esm scripts/platinum-pipeline/restore-from-archive.ts",
+    "verify:archives": "bash scripts/platinum-pipeline/verify-archives.sh --all",
+    "compression:stats": "node --import tsx/esm scripts/platinum-pipeline/search-archives.ts --stats",
+    "compression:integrate": "bash scripts/npm/run-task.sh compression:integrate",
+    "hive:wizard": "ts-node .hive-mind/wizard-simple.ts",
+    "hive:configure": "ts-node .hive-mind/wizard-simple.ts"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -118,6 +124,7 @@
     "license-checker": "^25.0.1",
     "prettier": "^3.3.3",
     "ruv-swarm": "^1.0.20",
+    "tsx": "^4.20.6",
     "typescript": "^5.7.3",
     "vitest": "^3.2.4"
   }

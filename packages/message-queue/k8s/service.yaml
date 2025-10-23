@@ -1,0 +1,88 @@
+---
+# ================================
+# ClusterIP Service (Internal)
+# ================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: message-queue-api
+  namespace: noa-server
+  labels:
+    app: message-queue-api
+    component: backend
+    tier: services
+spec:
+  type: ClusterIP
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+  selector:
+    app: message-queue-api
+  ports:
+    - name: http
+      port: 8081
+      targetPort: http
+      protocol: TCP
+
+---
+# ================================
+# LoadBalancer Service (External)
+# ================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: message-queue-api-external
+  namespace: noa-server
+  labels:
+    app: message-queue-api
+    component: backend
+    tier: services
+  annotations:
+    # AWS ELB Annotations
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+    # GCP Annotations
+    cloud.google.com/load-balancer-type: "External"
+    # Health check annotations
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-path: "/health"
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: "30"
+spec:
+  type: LoadBalancer
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+  selector:
+    app: message-queue-api
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP
+  # External traffic policy
+  externalTrafficPolicy: Local
+
+---
+# ================================
+# Headless Service (for StatefulSet if needed)
+# ================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: message-queue-api-headless
+  namespace: noa-server
+  labels:
+    app: message-queue-api
+    component: backend
+spec:
+  clusterIP: None
+  publishNotReadyAddresses: true
+  selector:
+    app: message-queue-api
+  ports:
+    - name: http
+      port: 8081
+      targetPort: http
+      protocol: TCP

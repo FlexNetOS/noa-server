@@ -1,0 +1,248 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://noa-server.com/schemas/models-config.json",
+  "title": "AI Model Registry Configuration",
+  "description": "Schema for defining AI model configurations across multiple providers",
+  "type": "object",
+  "required": ["version", "models", "providers"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Configuration schema version (semantic versioning)"
+    },
+    "lastUpdated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of last configuration update"
+    },
+    "models": {
+      "type": "array",
+      "description": "List of available AI models",
+      "items": {
+        "$ref": "#/definitions/ModelConfig"
+      }
+    },
+    "providers": {
+      "type": "object",
+      "description": "Provider-specific configurations",
+      "additionalProperties": {
+        "$ref": "#/definitions/ProviderConfig"
+      }
+    }
+  },
+  "definitions": {
+    "ModelConfig": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "provider",
+        "version",
+        "contextWindow",
+        "maxTokens",
+        "capabilities",
+        "cost",
+        "rateLimit",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique model identifier (e.g., gpt-4, claude-3-opus)"
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable model name"
+        },
+        "provider": {
+          "type": "string",
+          "enum": ["openai", "claude", "llama.cpp"],
+          "description": "AI provider type"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Model version (semantic versioning)"
+        },
+        "contextWindow": {
+          "type": "integer",
+          "minimum": 512,
+          "description": "Maximum context window size in tokens"
+        },
+        "maxTokens": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum output tokens per request"
+        },
+        "capabilities": {
+          "type": "array",
+          "description": "Model capabilities",
+          "items": {
+            "type": "string",
+            "enum": [
+              "text_generation",
+              "chat_completion",
+              "embeddings",
+              "function_calling",
+              "vision",
+              "streaming",
+              "json_mode"
+            ]
+          },
+          "minItems": 1
+        },
+        "cost": {
+          "$ref": "#/definitions/CostConfig"
+        },
+        "rateLimit": {
+          "$ref": "#/definitions/RateLimitConfig"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["available", "loading", "loaded", "failed", "unloaded", "deprecated"],
+          "description": "Current model availability status"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Additional model metadata",
+          "properties": {
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": {
+              "type": "string"
+            },
+            "releaseDate": {
+              "type": "string",
+              "format": "date"
+            },
+            "deprecated": {
+              "type": "boolean",
+              "default": false
+            },
+            "apiEndpoint": {
+              "type": "string",
+              "format": "uri"
+            },
+            "modelFile": {
+              "type": "string",
+              "description": "Model file path (for self-hosted models)"
+            },
+            "quantization": {
+              "type": "string",
+              "description": "Quantization format (e.g., Q4_K_M, Q5_K_M)"
+            },
+            "fileSize": {
+              "type": "string",
+              "description": "Model file size (e.g., 4.5GB)"
+            },
+            "requiredRAM": {
+              "type": "string",
+              "description": "Minimum RAM required (e.g., 8GB)"
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "CostConfig": {
+      "type": "object",
+      "required": ["inputTokens", "outputTokens", "currency", "per"],
+      "properties": {
+        "inputTokens": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Cost per input token"
+        },
+        "outputTokens": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Cost per output token"
+        },
+        "currency": {
+          "type": "string",
+          "default": "USD",
+          "description": "Currency code (ISO 4217)"
+        },
+        "per": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1000,
+          "description": "Cost is per this many tokens"
+        },
+        "note": {
+          "type": "string",
+          "description": "Additional cost information"
+        }
+      }
+    },
+    "RateLimitConfig": {
+      "type": "object",
+      "required": ["requestsPerMinute", "tokensPerMinute"],
+      "properties": {
+        "requestsPerMinute": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum requests per minute"
+        },
+        "tokensPerMinute": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum tokens per minute"
+        },
+        "requestsPerDay": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum requests per day"
+        },
+        "note": {
+          "type": "string",
+          "description": "Additional rate limit information"
+        }
+      }
+    },
+    "ProviderConfig": {
+      "type": "object",
+      "required": ["name", "baseURL", "requiresApiKey", "authType"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Provider display name"
+        },
+        "baseURL": {
+          "type": "string",
+          "format": "uri",
+          "description": "Base API URL"
+        },
+        "requiresApiKey": {
+          "type": "boolean",
+          "description": "Whether API key is required"
+        },
+        "authType": {
+          "type": "string",
+          "enum": ["bearer", "x-api-key", "none"],
+          "description": "Authentication method"
+        },
+        "documentation": {
+          "type": "string",
+          "format": "uri",
+          "description": "Provider documentation URL"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Additional provider information"
+        }
+      }
+    }
+  }
+}

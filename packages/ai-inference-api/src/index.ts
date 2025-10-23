@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Application } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import swaggerUi from 'swagger-ui-express';
@@ -10,7 +10,7 @@ import { notFoundHandler } from './middleware/notFoundHandler';
 import { logger } from './middleware/logger';
 import { swaggerOptions } from './config/swagger';
 
-const app = express();
+const app: Application = express();
 const server = createServer(app);
 
 // Security middleware

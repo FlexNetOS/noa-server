@@ -1,0 +1,136 @@
+{
+  "logging": {
+    "level": {
+      "development": "debug",
+      "staging": "info",
+      "production": "info"
+    },
+    "format": "json",
+    "includeTimestamp": true,
+    "includeStackTrace": true,
+    "rotation": {
+      "enabled": true,
+      "maxSize": "50m",
+      "maxFiles": 30,
+      "compress": true
+    },
+    "piiMasking": {
+      "enabled": true,
+      "patterns": [
+        "password",
+        "apiKey",
+        "token",
+        "secret",
+        "authorization",
+        "credit_card",
+        "ssn",
+        "email"
+      ]
+    }
+  },
+  "performance": {
+    "thresholds": {
+      "slowQuery": 1000,
+      "slowQueryAlert": 5000,
+      "requestTimeout": 30000,
+      "memoryWarning": 0.85,
+      "memoryAlert": 0.95
+    },
+    "tracking": {
+      "requestDuration": true,
+      "dbQueries": true,
+      "aiCalls": true,
+      "memoryUsage": true,
+      "cpuUsage": true
+    },
+    "percentiles": [50, 95, 99]
+  },
+  "errorTracking": {
+    "enabled": true,
+    "captureStackTrace": true,
+    "categories": [
+      "client",
+      "server",
+      "provider",
+      "network",
+      "validation",
+      "authentication",
+      "authorization",
+      "database"
+    ],
+    "alerting": {
+      "critical": {
+        "enabled": true,
+        "threshold": 10,
+        "interval": 300000
+      },
+      "high": {
+        "enabled": true,
+        "threshold": 50,
+        "interval": 900000
+      }
+    },
+    "integrations": {
+      "sentry": {
+        "enabled": false,
+        "dsn": ""
+      },
+      "rollbar": {
+        "enabled": false,
+        "accessToken": ""
+      }
+    }
+  },
+  "metrics": {
+    "enabled": true,
+    "collectInterval": 60000,
+    "retentionPeriod": 2592000000,
+    "export": {
+      "prometheus": {
+        "enabled": true,
+        "port": 9090,
+        "path": "/metrics"
+      },
+      "statsd": {
+        "enabled": false,
+        "host": "localhost",
+        "port": 8125
+      },
+      "cloudwatch": {
+        "enabled": false,
+        "region": "us-east-1",
+        "namespace": "NoaServer/AI"
+      }
+    }
+  },
+  "healthCheck": {
+    "enabled": true,
+    "interval": 30000,
+    "timeout": 5000,
+    "endpoints": {
+      "liveness": "/health",
+      "readiness": "/health/ready",
+      "detailed": "/health/detailed"
+    },
+    "dependencies": [
+      "database",
+      "redis",
+      "ai-providers",
+      "message-queue"
+    ]
+  },
+  "monitoring": {
+    "realTime": {
+      "enabled": true,
+      "websocket": {
+        "enabled": true,
+        "port": 3002,
+        "path": "/logs/stream"
+      }
+    },
+    "dashboard": {
+      "enabled": true,
+      "refreshInterval": 5000
+    }
+  }
+}

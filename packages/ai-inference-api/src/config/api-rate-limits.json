@@ -1,0 +1,164 @@
+{
+  "globalLimits": {
+    "requestsPerMinute": 1000,
+    "requestsPerHour": 10000,
+    "description": "Global rate limits per IP address"
+  },
+  "tierLimits": {
+    "free": {
+      "requestsPerMinute": 10,
+      "requestsPerHour": 100,
+      "burstSize": 20,
+      "concurrentRequests": 5,
+      "description": "Free tier - Basic access for development and testing"
+    },
+    "pro": {
+      "requestsPerMinute": 100,
+      "requestsPerHour": 1000,
+      "burstSize": 200,
+      "concurrentRequests": 20,
+      "description": "Pro tier - For production applications"
+    },
+    "enterprise": {
+      "requestsPerMinute": 1000,
+      "requestsPerHour": 10000,
+      "burstSize": 2000,
+      "concurrentRequests": 100,
+      "description": "Enterprise tier - Unlimited access for large scale deployments"
+    },
+    "internal": {
+      "requestsPerMinute": 10000,
+      "requestsPerHour": 100000,
+      "burstSize": 10000,
+      "concurrentRequests": 500,
+      "description": "Internal tier - For system services with no practical limits"
+    }
+  },
+  "endpointLimits": [
+    {
+      "path": "/api/v1/inference/chat",
+      "method": "POST",
+      "requestsPerMinute": 100,
+      "requestsPerHour": 1000,
+      "burstSize": 50,
+      "description": "Chat completion endpoint - CPU intensive"
+    },
+    {
+      "path": "/api/v1/inference/chat/stream",
+      "method": "POST",
+      "requestsPerMinute": 100,
+      "requestsPerHour": 1000,
+      "burstSize": 50,
+      "description": "Streaming chat completion - Long-lived connections"
+    },
+    {
+      "path": "/api/v1/inference/embeddings",
+      "method": "POST",
+      "requestsPerMinute": 200,
+      "requestsPerHour": 2000,
+      "burstSize": 100,
+      "description": "Embeddings endpoint - Fast processing"
+    },
+    {
+      "path": "/api/v1/models",
+      "method": "GET",
+      "requestsPerMinute": 500,
+      "requestsPerHour": 5000,
+      "burstSize": 200,
+      "description": "List models - Read-only, cacheable"
+    },
+    {
+      "path": "/api/v1/models/:id",
+      "method": "GET",
+      "requestsPerMinute": 500,
+      "requestsPerHour": 5000,
+      "burstSize": 200,
+      "description": "Get model details - Read-only, cacheable"
+    },
+    {
+      "path": "/api/v1/status",
+      "method": "GET",
+      "requestsPerMinute": 1000,
+      "requestsPerHour": 10000,
+      "burstSize": 500,
+      "description": "Status endpoint - Lightweight monitoring"
+    },
+    {
+      "path": "/health",
+      "method": "GET",
+      "requestsPerMinute": 2000,
+      "requestsPerHour": 20000,
+      "burstSize": 1000,
+      "description": "Health check - No rate limiting practically"
+    }
+  ],
+  "authEndpointLimits": [
+    {
+      "path": "/auth/login",
+      "method": "POST",
+      "requestsPerMinute": 5,
+      "requestsPerHour": 20,
+      "burstSize": 10,
+      "description": "Login endpoint - Prevent brute force attacks"
+    },
+    {
+      "path": "/auth/register",
+      "method": "POST",
+      "requestsPerMinute": 2,
+      "requestsPerHour": 3,
+      "burstSize": 5,
+      "description": "Registration endpoint - Prevent spam accounts"
+    },
+    {
+      "path": "/auth/password-reset",
+      "method": "POST",
+      "requestsPerMinute": 3,
+      "requestsPerHour": 5,
+      "burstSize": 5,
+      "description": "Password reset - Prevent abuse"
+    },
+    {
+      "path": "/auth/verify-email",
+      "method": "POST",
+      "requestsPerMinute": 10,
+      "requestsPerHour": 50,
+      "burstSize": 20,
+      "description": "Email verification - Allow resends"
+    }
+  ],
+  "burstProtection": {
+    "enabled": true,
+    "windowMs": 10000,
+    "maxRequests": 100,
+    "description": "Burst protection - Maximum 100 requests in 10 seconds"
+  },
+  "adaptiveThrottling": {
+    "enabled": true,
+    "cpuThreshold": 80,
+    "memoryThreshold": 85,
+    "description": "Adaptive throttling based on server load"
+  },
+  "whitelistedIPs": [
+    "127.0.0.1",
+    "::1"
+  ],
+  "blacklistedIPs": [],
+  "bypassConditions": {
+    "internalAPIKey": true,
+    "systemRequests": true,
+    "healthChecks": true
+  },
+  "rateLimitHeaders": {
+    "enabled": true,
+    "includeRetryAfter": true,
+    "includeReset": true
+  },
+  "redis": {
+    "enabled": false,
+    "host": "localhost",
+    "port": 6379,
+    "db": 0,
+    "keyPrefix": "ratelimit:",
+    "description": "Redis configuration for distributed rate limiting"
+  }
+}

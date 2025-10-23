@@ -1,0 +1,30 @@
+{
+  "name": "@noa/shared-utils",
+  "version": "1.0.0",
+  "description": "Consolidated shared utilities for NOA Server - logging, validation, crypto, and error handling",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "noa",
+    "utilities",
+    "logger",
+    "validation",
+    "crypto",
+    "errors"
+  ],
+  "dependencies": {
+    "winston": "^3.17.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.9.1",
+    "typescript": "^5.7.3",
+    "vitest": "^3.2.4"
+  }
+}

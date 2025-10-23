@@ -2,14 +2,12 @@
   "mandatory": true,
   "enabled": true,
   "version": "1.0.0",
-
   "quality": {
-    "threshold": 7.0,
+    "threshold": 7,
     "blockBelowThreshold": false,
     "autoRetryOnFailure": true,
     "maxRetries": 2
   },
-
   "bypass": {
     "enabled": true,
     "prefixes": [
@@ -20,20 +18,17 @@
     ],
     "allowAdminOverride": true
   },
-
   "caching": {
     "enabled": true,
     "ttl": 3600,
     "maxEntries": 1000,
     "strategy": "lru"
   },
-
   "strategies": {
     "default": "auto-detect",
     "fallback": "technical",
     "forceStrategy": null
   },
-
   "integrations": {
     "claudeCode": {
       "enabled": true,
@@ -41,15 +36,20 @@
     },
     "api": {
       "enabled": true,
-      "endpoints": ["*"],
+      "endpoints": [
+        "*"
+      ],
       "excludeEndpoints": []
     },
     "terminal": {
       "enabled": false,
-      "commands": ["ai", "claude", "chat"]
+      "commands": [
+        "ai",
+        "claude",
+        "chat"
+      ]
     }
   },
-
   "logging": {
     "enabled": true,
     "level": "info",
@@ -59,7 +59,6 @@
     "logBypass": true,
     "destination": "console"
   },
-
   "monitoring": {
     "enabled": true,
     "trackMetrics": true,
@@ -67,19 +66,16 @@
     "trackCacheHits": true,
     "alertOnFailures": false
   },
-
   "performance": {
     "maxProcessingTime": 5000,
     "timeoutAction": "passthrough",
     "parallelOptimization": false
   },
-
   "abTesting": {
     "enabled": false,
     "sampleRate": 0.1,
     "compareResults": true
   },
-
   "emergency": {
     "overrideEnabled": false,
     "overrideKey": null,

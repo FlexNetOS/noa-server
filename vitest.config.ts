@@ -13,6 +13,7 @@ export default defineConfig({
         'packages/ui-dashboard/src/**/*',
         'packages/message-queue/src/**/*',
         'packages/ai-provider/src/**/*',
+        'packages/hive-mind-king/src/**/*',
       ],
       exclude: [
         'node_modules/',
@@ -34,7 +35,7 @@ export default defineConfig({
         statements: process.env.VITEST_DISABLE_THRESHOLDS ? 0 : 80,
       },
     },
-    include: ['tests/**/*.{test,spec}.{js,ts}'],
+    include: ['tests/**/*.{test,spec}.{js,ts}', 'packages/hive-mind-king/src/**/*.{test,spec}.{js,ts}'],
     exclude: ['node_modules', 'dist', 'tests/e2e/**'],
   },
   resolve: {

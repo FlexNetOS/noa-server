@@ -1,0 +1,373 @@
+{
+  "$schema": "./models-config.schema.json",
+  "version": "1.0.0",
+  "lastUpdated": "2025-10-23T00:00:00Z",
+  "models": [
+    {
+      "id": "gpt-4-turbo-preview",
+      "name": "GPT-4 Turbo",
+      "provider": "openai",
+      "version": "1.0.0",
+      "contextWindow": 128000,
+      "maxTokens": 4096,
+      "capabilities": [
+        "chat_completion",
+        "function_calling",
+        "json_mode",
+        "streaming",
+        "vision"
+      ],
+      "cost": {
+        "inputTokens": 0.01,
+        "outputTokens": 0.03,
+        "currency": "USD",
+        "per": 1000
+      },
+      "rateLimit": {
+        "requestsPerMinute": 500,
+        "tokensPerMinute": 150000,
+        "requestsPerDay": 10000
+      },
+      "status": "available",
+      "metadata": {
+        "tags": ["latest", "recommended", "production"],
+        "description": "Most capable GPT-4 model with 128K context window",
+        "releaseDate": "2024-01-01",
+        "deprecated": false,
+        "apiEndpoint": "https://api.openai.com/v1/chat/completions"
+      }
+    },
+    {
+      "id": "gpt-4",
+      "name": "GPT-4",
+      "provider": "openai",
+      "version": "0.9.0",
+      "contextWindow": 8192,
+      "maxTokens": 4096,
+      "capabilities": [
+        "chat_completion",
+        "function_calling",
+        "streaming"
+      ],
+      "cost": {
+        "inputTokens": 0.03,
+        "outputTokens": 0.06,
+        "currency": "USD",
+        "per": 1000
+      },
+      "rateLimit": {
+        "requestsPerMinute": 200,
+        "tokensPerMinute": 40000,
+        "requestsPerDay": 10000
+      },
+      "status": "available",
+      "metadata": {
+        "tags": ["stable", "production"],
+        "description": "Original GPT-4 model with 8K context",
+        "releaseDate": "2023-03-14",
+        "deprecated": false
+      }
+    },
+    {
+      "id": "gpt-3.5-turbo",
+      "name": "GPT-3.5 Turbo",
+      "provider": "openai",
+      "version": "1.1.0",
+      "contextWindow": 16385,
+      "maxTokens": 4096,
+      "capabilities": [
+        "chat_completion",
+        "function_calling",
+        "streaming",
+        "json_mode"
+      ],
+      "cost": {
+        "inputTokens": 0.0005,
+        "outputTokens": 0.0015,
+        "currency": "USD",
+        "per": 1000
+      },
+      "rateLimit": {
+        "requestsPerMinute": 3500,
+        "tokensPerMinute": 250000,
+        "requestsPerDay": 10000
+      },
+      "status": "available",
+      "metadata": {
+        "tags": ["fast", "cost-effective", "recommended"],
+        "description": "Fast and cost-effective model for most tasks",
+        "releaseDate": "2023-11-06",
+        "deprecated": false
+      }
+    },
+    {
+      "id": "claude-3-opus-20240229",
+      "name": "Claude 3 Opus",
+      "provider": "claude",
+      "version": "3.0.0",
+      "contextWindow": 200000,
+      "maxTokens": 4096,
+      "capabilities": [
+        "chat_completion",
+        "function_calling",
+        "vision",
+        "streaming",
+        "json_mode"
+      ],
+      "cost": {
+        "inputTokens": 0.015,
+        "outputTokens": 0.075,
+        "currency": "USD",
+        "per": 1000
+      },
+      "rateLimit": {
+        "requestsPerMinute": 50,
+        "tokensPerMinute": 40000,
+        "requestsPerDay": 1000
+      },
+      "status": "available",
+      "metadata": {
+        "tags": ["flagship", "high-performance", "production"],
+        "description": "Most capable Claude model for complex tasks",
+        "releaseDate": "2024-02-29",
+        "deprecated": false,
+        "apiEndpoint": "https://api.anthropic.com/v1/messages"
+      }
+    },
+    {
+      "id": "claude-3-sonnet-20240229",
+      "name": "Claude 3 Sonnet",
+      "provider": "claude",
+      "version": "3.0.0",
+      "contextWindow": 200000,
+      "maxTokens": 4096,
+      "capabilities": [
+        "chat_completion",
+        "function_calling",
+        "vision",
+        "streaming"
+      ],
+      "cost": {
+        "inputTokens": 0.003,
+        "outputTokens": 0.015,
+        "currency": "USD",
+        "per": 1000
+      },
+      "rateLimit": {
+        "requestsPerMinute": 50,
+        "tokensPerMinute": 40000,
+        "requestsPerDay": 1000
+      },
+      "status": "available",
+      "metadata": {
+        "tags": ["balanced", "recommended", "production"],
+        "description": "Balanced performance and cost",
+        "releaseDate": "2024-02-29",
+        "deprecated": false
+      }
+    },
+    {
+      "id": "claude-3-haiku-20240307",
+      "name": "Claude 3 Haiku",
+      "provider": "claude",
+      "version": "3.0.0",
+      "contextWindow": 200000,
+      "maxTokens": 4096,
+      "capabilities": [
+        "chat_completion",
+        "streaming",
+        "json_mode"
+      ],
+      "cost": {
+        "inputTokens": 0.00025,
+        "outputTokens": 0.00125,
+        "currency": "USD",
+        "per": 1000
+      },
+      "rateLimit": {
+        "requestsPerMinute": 50,
+        "tokensPerMinute": 50000,
+        "requestsPerDay": 1000
+      },
+      "status": "available",
+      "metadata": {
+        "tags": ["fast", "cost-effective"],
+        "description": "Fastest and most compact Claude model",
+        "releaseDate": "2024-03-07",
+        "deprecated": false
+      }
+    },
+    {
+      "id": "llama-3.1-8b-instruct",
+      "name": "Llama 3.1 8B Instruct",
+      "provider": "llama.cpp",
+      "version": "3.1.0",
+      "contextWindow": 128000,
+      "maxTokens": 4096,
+      "capabilities": [
+        "chat_completion",
+        "text_generation",
+        "streaming"
+      ],
+      "cost": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "currency": "USD",
+        "per": 1000,
+        "note": "Self-hosted, no API costs"
+      },
+      "rateLimit": {
+        "requestsPerMinute": 1000,
+        "tokensPerMinute": 100000,
+        "requestsPerDay": 100000,
+        "note": "Limited by hardware capabilities"
+      },
+      "status": "available",
+      "metadata": {
+        "tags": ["self-hosted", "open-source", "local"],
+        "description": "Open-source Llama model for local inference",
+        "releaseDate": "2024-07-23",
+        "deprecated": false,
+        "modelFile": "llama-3.1-8b-instruct-q5_k_m.gguf",
+        "quantization": "Q5_K_M",
+        "fileSize": "5.73GB",
+        "requiredRAM": "8GB",
+        "apiEndpoint": "http://localhost:8080/v1/chat/completions"
+      }
+    },
+    {
+      "id": "phi-3.5-mini-instruct",
+      "name": "Phi-3.5 Mini Instruct",
+      "provider": "llama.cpp",
+      "version": "3.5.0",
+      "contextWindow": 131072,
+      "maxTokens": 4096,
+      "capabilities": [
+        "chat_completion",
+        "text_generation",
+        "streaming",
+        "json_mode"
+      ],
+      "cost": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "currency": "USD",
+        "per": 1000,
+        "note": "Self-hosted, no API costs"
+      },
+      "rateLimit": {
+        "requestsPerMinute": 1000,
+        "tokensPerMinute": 120000,
+        "requestsPerDay": 100000,
+        "note": "Limited by hardware capabilities"
+      },
+      "status": "available",
+      "metadata": {
+        "tags": ["self-hosted", "microsoft", "local", "recommended"],
+        "description": "Microsoft's efficient small language model",
+        "releaseDate": "2024-08-20",
+        "deprecated": false,
+        "modelFile": "phi-3.5-mini-instruct-q4_k_m.gguf",
+        "quantization": "Q4_K_M",
+        "fileSize": "2.3GB",
+        "requiredRAM": "4GB",
+        "apiEndpoint": "http://localhost:8080/v1/chat/completions"
+      }
+    },
+    {
+      "id": "qwen2-7b-instruct",
+      "name": "Qwen2 7B Instruct",
+      "provider": "llama.cpp",
+      "version": "2.0.0",
+      "contextWindow": 32768,
+      "maxTokens": 2048,
+      "capabilities": [
+        "chat_completion",
+        "text_generation",
+        "streaming"
+      ],
+      "cost": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "currency": "USD",
+        "per": 1000,
+        "note": "Self-hosted, no API costs"
+      },
+      "rateLimit": {
+        "requestsPerMinute": 1000,
+        "tokensPerMinute": 80000,
+        "requestsPerDay": 100000,
+        "note": "Limited by hardware capabilities"
+      },
+      "status": "available",
+      "metadata": {
+        "tags": ["self-hosted", "alibaba", "local"],
+        "description": "Alibaba's Qwen2 model for general tasks",
+        "releaseDate": "2024-06-06",
+        "deprecated": false,
+        "modelFile": "qwen2-7b-instruct-q4_k_m.gguf",
+        "quantization": "Q4_K_M",
+        "fileSize": "4.4GB",
+        "requiredRAM": "6GB",
+        "apiEndpoint": "http://localhost:8080/v1/chat/completions"
+      }
+    },
+    {
+      "id": "custom-model-example",
+      "name": "Custom Model Example",
+      "provider": "llama.cpp",
+      "version": "1.0.0",
+      "contextWindow": 8192,
+      "maxTokens": 2048,
+      "capabilities": [
+        "chat_completion",
+        "text_generation"
+      ],
+      "cost": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "currency": "USD",
+        "per": 1000,
+        "note": "Custom self-hosted model"
+      },
+      "rateLimit": {
+        "requestsPerMinute": 500,
+        "tokensPerMinute": 50000,
+        "requestsPerDay": 50000
+      },
+      "status": "available",
+      "metadata": {
+        "tags": ["custom", "self-hosted"],
+        "description": "Example configuration for custom models",
+        "deprecated": false,
+        "modelFile": "/path/to/your/model.gguf",
+        "apiEndpoint": "http://localhost:8080/v1/chat/completions",
+        "notes": "Replace with your custom model configuration"
+      }
+    }
+  ],
+  "providers": {
+    "openai": {
+      "name": "OpenAI",
+      "baseURL": "https://api.openai.com/v1",
+      "requiresApiKey": true,
+      "authType": "bearer",
+      "documentation": "https://platform.openai.com/docs/api-reference"
+    },
+    "claude": {
+      "name": "Anthropic Claude",
+      "baseURL": "https://api.anthropic.com/v1",
+      "requiresApiKey": true,
+      "authType": "x-api-key",
+      "documentation": "https://docs.anthropic.com/claude/reference"
+    },
+    "llama.cpp": {
+      "name": "llama.cpp Server",
+      "baseURL": "http://localhost:8080",
+      "requiresApiKey": false,
+      "authType": "none",
+      "documentation": "https://github.com/ggerganov/llama.cpp/tree/master/examples/server",
+      "notes": "Self-hosted local inference server"
+    }
+  }
+}

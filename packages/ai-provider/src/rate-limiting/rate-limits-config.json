@@ -1,0 +1,163 @@
+{
+  "providers": [
+    {
+      "provider": "claude",
+      "requestsPerSecond": 10,
+      "burstCapacity": 20,
+      "maxConcurrent": 50,
+      "description": "Claude API rate limits - conservative defaults"
+    },
+    {
+      "provider": "openai",
+      "requestsPerSecond": 20,
+      "burstCapacity": 40,
+      "maxConcurrent": 100,
+      "description": "OpenAI API rate limits - standard tier"
+    },
+    {
+      "provider": "llama.cpp",
+      "requestsPerSecond": 50,
+      "burstCapacity": 100,
+      "maxConcurrent": 200,
+      "description": "llama.cpp local inference - high throughput"
+    }
+  ],
+  "models": [
+    {
+      "modelId": "gpt-4",
+      "provider": "openai",
+      "requestsPerSecond": 5,
+      "burstCapacity": 10,
+      "costPerRequest": 0.03,
+      "description": "GPT-4 - premium tier, higher cost"
+    },
+    {
+      "modelId": "gpt-4-turbo-preview",
+      "provider": "openai",
+      "requestsPerSecond": 8,
+      "burstCapacity": 15,
+      "costPerRequest": 0.01,
+      "description": "GPT-4 Turbo - faster, lower cost"
+    },
+    {
+      "modelId": "gpt-3.5-turbo",
+      "provider": "openai",
+      "requestsPerSecond": 20,
+      "burstCapacity": 40,
+      "costPerRequest": 0.002,
+      "description": "GPT-3.5 Turbo - high throughput, low cost"
+    },
+    {
+      "modelId": "claude-3-opus-20240229",
+      "provider": "claude",
+      "requestsPerSecond": 5,
+      "burstCapacity": 10,
+      "costPerRequest": 0.015,
+      "description": "Claude 3 Opus - most capable"
+    },
+    {
+      "modelId": "claude-3-sonnet-20240229",
+      "provider": "claude",
+      "requestsPerSecond": 10,
+      "burstCapacity": 20,
+      "costPerRequest": 0.003,
+      "description": "Claude 3 Sonnet - balanced performance"
+    },
+    {
+      "modelId": "claude-3-haiku-20240307",
+      "provider": "claude",
+      "requestsPerSecond": 15,
+      "burstCapacity": 30,
+      "costPerRequest": 0.00025,
+      "description": "Claude 3 Haiku - fastest, lowest cost"
+    }
+  ],
+  "userTiers": {
+    "free": {
+      "requestsPerSecond": 0.17,
+      "burstCapacity": 5,
+      "dailyQuota": 10,
+      "monthlyQuota": 300,
+      "costLimit": 0,
+      "description": "Free tier - 10 requests per minute, 10 per day"
+    },
+    "pro": {
+      "requestsPerSecond": 1.67,
+      "burstCapacity": 50,
+      "dailyQuota": 1000,
+      "monthlyQuota": 30000,
+      "costLimit": 10,
+      "description": "Pro tier - 100 requests per minute, 1000 per day, $10/day"
+    },
+    "enterprise": {
+      "requestsPerSecond": 16.67,
+      "burstCapacity": 500,
+      "dailyQuota": 100000,
+      "monthlyQuota": 3000000,
+      "costLimit": 1000,
+      "description": "Enterprise tier - 1000 requests per minute, high quotas"
+    },
+    "internal": {
+      "requestsPerSecond": 100,
+      "burstCapacity": 1000,
+      "description": "Internal/system tier - unlimited quotas, no cost tracking"
+    }
+  },
+  "global": {
+    "maxConcurrentRequests": 100,
+    "queueTimeout": 30000,
+    "queueMaxSize": 1000,
+    "description": "Global system limits for all requests"
+  },
+  "timeBasedLimits": {
+    "hourly": {
+      "free": 10,
+      "pro": 100,
+      "enterprise": 10000,
+      "internal": null
+    },
+    "daily": {
+      "free": 10,
+      "pro": 1000,
+      "enterprise": 100000,
+      "internal": null
+    },
+    "monthly": {
+      "free": 300,
+      "pro": 30000,
+      "enterprise": 3000000,
+      "internal": null
+    }
+  },
+  "costBasedLimits": {
+    "daily": {
+      "free": 0,
+      "pro": 10,
+      "enterprise": 1000,
+      "internal": null
+    },
+    "monthly": {
+      "free": 0,
+      "pro": 300,
+      "enterprise": 30000,
+      "internal": null
+    }
+  },
+  "burstAllowance": {
+    "enabled": true,
+    "multiplier": 2,
+    "description": "Allow 2x normal rate for short bursts"
+  },
+  "adaptiveThrottling": {
+    "enabled": true,
+    "errorThreshold": 0.1,
+    "backoffMultiplier": 0.5,
+    "recoveryTime": 60000,
+    "description": "Automatically reduce limits if error rate exceeds 10%"
+  },
+  "priorityQueues": {
+    "enabled": true,
+    "levels": ["critical", "high", "medium", "low"],
+    "defaultPriority": "medium"
+  }
+}

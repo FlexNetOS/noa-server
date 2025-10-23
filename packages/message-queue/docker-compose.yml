@@ -1,0 +1,142 @@
+version: '3.9'
+
+services:
+  # ================================
+  # Message Queue API Service
+  # ================================
+  message-queue-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: noa-message-queue-api
+    image: noa/message-queue-api:latest
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      # Server Configuration
+      NODE_ENV: production
+      API_PORT: 8081
+      API_HOST: 0.0.0.0
+      LOG_LEVEL: info
+
+      # CORS Configuration
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://localhost:8080}
+
+      # Feature Flags
+      ENABLE_WEBSOCKET: ${ENABLE_WEBSOCKET:-true}
+      ENABLE_METRICS: ${ENABLE_METRICS:-true}
+      AUTH_ENABLED: ${AUTH_ENABLED:-false}
+
+      # Redis Configuration
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+
+      # Queue Configuration
+      QUEUE_DEFAULT_PROVIDER: redis
+      QUEUE_MAX_RETRIES: 3
+      QUEUE_RETRY_DELAY: 1000
+
+      # Monitoring
+      METRICS_INTERVAL: 30000
+      HEALTH_CHECK_INTERVAL: 60000
+    volumes:
+      - queue-logs:/app/logs
+    networks:
+      - queue-network
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/health-check"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  # ================================
+  # Redis Service (Queue Backend)
+  # ================================
+  redis:
+    image: redis:7-alpine
+    container_name: noa-queue-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      ${REDIS_PASSWORD:+--requirepass ${REDIS_PASSWORD}}
+    volumes:
+      - redis-data:/data
+    networks:
+      - queue-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+  # ================================
+  # Redis Commander (Web UI - Optional)
+  # ================================
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: noa-redis-commander
+    restart: unless-stopped
+    profiles:
+      - tools
+    ports:
+      - "8082:8081"
+    environment:
+      REDIS_HOSTS: local:redis:6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+    networks:
+      - queue-network
+    depends_on:
+      - redis
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 128M
+
+# ================================
+# Networks
+# ================================
+networks:
+  queue-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16
+
+# ================================
+# Volumes
+# ================================
+volumes:
+  redis-data:
+    driver: local
+  queue-logs:
+    driver: local

@@ -9,6 +9,7 @@ import { automationConfig, AutomationConfig } from './config';
 import { PromptCache } from './cache';
 import { AutomationLogger } from './logger';
 import { AutomationMonitor } from './monitor';
+import { metricsCollector, enhancedLogger } from '../monitoring';
 
 export interface InterceptionResult {
   original: string;
@@ -53,6 +54,11 @@ export class MandatoryOptimizer {
    */
   async intercept(prompt: string, context?: any): Promise<InterceptionResult> {
     const startTime = Date.now();
+    const operation = enhancedLogger.startOperation('optimize_prompt', {
+      userId: context?.userId,
+      sessionId: context?.sessionId,
+      tags: ['optimization', 'interception']
+    });
 
     try {
       // Check if automation is enabled
@@ -115,6 +121,21 @@ export class MandatoryOptimizer {
 
       const processingTime = Date.now() - startTime;
 
+      // Record metrics with enhanced collector
+      metricsCollector.recordOptimization(optimized, processingTime);
+
+      // Log with enhanced logger
+      enhancedLogger.logOptimization(optimized, processingTime, {
+        correlationId: operation.correlationId,
+        userId: context?.userId,
+        sessionId: context?.sessionId
+      });
+
+      enhancedLogger.endOperation('optimize_prompt', operation.correlationId, operation.startTime, true, {
+        qualityScore: optimized.diagnoseResult.overallQualityScore,
+        strategy: optimized.developResult.strategySelection.primaryType
+      });
+
       return {
         original: prompt,
         optimized: optimized.deliverResult.finalOptimizedPrompt,
@@ -127,6 +148,19 @@ export class MandatoryOptimizer {
     } catch (error) {
       this.logger.error('Optimization failed:', error);
       this.monitor.recordFailure();
+
+      // Record failure metrics
+      const strategy = 'unknown';
+      metricsCollector.recordFailure(strategy, Date.now() - startTime);
+
+      // Enhanced error logging
+      enhancedLogger.error('Optimization failed', error as Error, {
+        correlationId: operation.correlationId
+      });
+
+      enhancedLogger.endOperation('optimize_prompt', operation.correlationId, operation.startTime, false, {
+        error: error instanceof Error ? error.message : String(error)
+      });
 
       if (this.config.emergency.disableOnError) {
         this.logger.warn('Disabling automation due to error');

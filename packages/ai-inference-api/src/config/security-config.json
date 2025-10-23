@@ -1,0 +1,61 @@
+{
+  "jwt": {
+    "accessTokenExpiry": "15m",
+    "refreshTokenExpiry": "7d",
+    "algorithm": "RS256"
+  },
+  "apiKey": {
+    "hashAlgorithm": "sha256",
+    "prefix": "noa_"
+  },
+  "password": {
+    "bcryptRounds": 12,
+    "policy": {
+      "minLength": 12,
+      "requireUppercase": true,
+      "requireLowercase": true,
+      "requireNumbers": true,
+      "requireSpecialChars": true,
+      "preventReuse": 5
+    }
+  },
+  "session": {
+    "enabled": true,
+    "maxAge": 86400000,
+    "cookieName": "noa_session"
+  },
+  "cors": {
+    "allowedOrigins": ["http://localhost:3000", "http://localhost:3001"],
+    "credentials": true
+  },
+  "rateLimit": {
+    "windowMs": 60000,
+    "maxRequests": 100,
+    "skipSuccessfulRequests": false
+  },
+  "audit": {
+    "enabled": true,
+    "logSuccessfulAuth": true,
+    "logFailedAuth": true,
+    "maskPII": true
+  },
+  "roles": {
+    "admin": {
+      "permissions": ["read", "write", "execute", "delete"],
+      "resources": ["*"]
+    },
+    "user": {
+      "permissions": ["read", "write"],
+      "resources": ["model", "provider", "inference", "embeddings"]
+    },
+    "guest": {
+      "permissions": ["read"],
+      "resources": ["model"]
+    }
+  },
+  "defaultRateLimits": {
+    "admin": 1000,
+    "user": 100,
+    "guest": 10
+  }
+}

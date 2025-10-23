@@ -1,0 +1,29 @@
+[Unit]
+Description=Task Management Backup Service
+Documentation=file:///home/deflex/noa-server/docs/BACKUP_DISASTER_RECOVERY.md
+After=network.target
+
+[Service]
+Type=oneshot
+User=deflex
+Group=deflex
+WorkingDirectory=/home/deflex/noa-server
+ExecStart=/bin/bash /home/deflex/noa-server/scripts/backup-system/backup-tasks.sh
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=task-backup
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/deflex/noa-server/backups /home/deflex/noa-server/.claude/logs
+
+# Resource limits
+CPUQuota=50%
+MemoryLimit=512M
+TasksMax=50
+
+[Install]
+WantedBy=multi-user.target

@@ -3,6 +3,7 @@
 ## Installation
 
 ### TypeScript SDK
+
 ```bash
 cd /home/deflex/noa-server/packages/mcp-client
 npm install
@@ -10,6 +11,7 @@ npm run build
 ```
 
 ### Python SDK
+
 ```bash
 cd /home/deflex/noa-server/mcp/client
 pip install -e .
@@ -28,9 +30,9 @@ const client = createMCPClient({
   version: '1.0.0',
   transport: {
     type: 'stdio',
-    command: 'npx',
-    args: ['-y', '@modelcontextprotocol/server-filesystem', '/tmp']
-  }
+    command: 'pnpm',
+    args: ['dlx', '@modelcontextprotocol/server-filesystem', '/tmp'],
+  },
 });
 
 // Connect
@@ -38,12 +40,15 @@ await client.connect();
 
 // List tools
 const tools = await client.tools.listTools();
-console.log('Tools:', tools.map(t => t.name));
+console.log(
+  'Tools:',
+  tools.map((t) => t.name)
+);
 
 // Call a tool
 const result = await client.tools.callTool({
   name: 'read_file',
-  arguments: { path: '/tmp/test.txt' }
+  arguments: { path: '/tmp/test.txt' },
 });
 
 // Disconnect
@@ -61,8 +66,8 @@ config = MCPClientConfig(
     version="1.0.0",
     transport=MCPTransportConfig(
         type=MCPTransportType.STDIO,
-        command="npx",
-        args=["-y", "@modelcontextprotocol/server-filesystem", "/tmp"]
+        command="pnpm",
+        args=["dlx", "@modelcontextprotocol/server-filesystem", "/tmp"]
     )
 )
 client = create_mcp_client(config)
@@ -90,6 +95,7 @@ await client.disconnect()
 ## Transport Types
 
 ### 1. Stdio (Local Process)
+
 **Best for:** Local MCP servers running as separate processes
 
 ```typescript
@@ -101,6 +107,7 @@ transport: {
 ```
 
 ### 2. HTTP (Request/Response)
+
 **Best for:** Stateless remote servers
 
 ```typescript
@@ -114,6 +121,7 @@ transport: {
 ```
 
 ### 3. WebSocket (Real-time)
+
 **Best for:** Bidirectional streaming, notifications
 
 ```typescript
@@ -154,7 +162,7 @@ client.on('toolsChanged', async () => {
 const calls = [
   { name: 'tool1', arguments: { param: 'value1' } },
   { name: 'tool2', arguments: { param: 'value2' } },
-  { name: 'tool3', arguments: { param: 'value3' } }
+  { name: 'tool3', arguments: { param: 'value3' } },
 ];
 
 const results = await client.tools.callToolsParallel(calls);
@@ -163,7 +171,11 @@ const results = await client.tools.callToolsParallel(calls);
 ### Error Handling
 
 ```typescript
-import { MCPConnectionError, MCPTimeoutError, MCPToolError } from '@noa-server/mcp-client';
+import {
+  MCPConnectionError,
+  MCPTimeoutError,
+  MCPToolError,
+} from '@noa-server/mcp-client';
 
 try {
   await client.connect();
@@ -179,6 +191,7 @@ try {
 ## Testing
 
 ### TypeScript
+
 ```bash
 npm test                # Run tests
 npm run test:coverage   # Coverage report
@@ -187,6 +200,7 @@ npm run typecheck      # Type checking
 ```
 
 ### Python
+
 ```bash
 pytest                              # Run tests
 pytest --cov=mcp.client            # Coverage
@@ -200,11 +214,13 @@ pylint mcp/client                  # Linting
 Full working examples are available:
 
 ### TypeScript
+
 - `/home/deflex/noa-server/packages/mcp-client/examples/stdio-example.ts`
 - `/home/deflex/noa-server/packages/mcp-client/examples/http-example.ts`
 - `/home/deflex/noa-server/packages/mcp-client/examples/websocket-example.ts`
 
 ### Python
+
 - `/home/deflex/noa-server/mcp/client/examples/stdio_example.py`
 - `/home/deflex/noa-server/mcp/client/examples/http_example.py`
 - `/home/deflex/noa-server/mcp/client/examples/websocket_example.py`
@@ -212,11 +228,13 @@ Full working examples are available:
 ## Key File Locations
 
 ### TypeScript SDK
+
 - **Source**: `/home/deflex/noa-server/packages/mcp-client/src/`
 - **Tests**: `/home/deflex/noa-server/packages/mcp-client/tests/`
 - **Documentation**: `/home/deflex/noa-server/packages/mcp-client/README.md`
 
 ### Python SDK
+
 - **Source**: `/home/deflex/noa-server/mcp/client/`
 - **Tests**: `/home/deflex/noa-server/mcp/client/tests/`
 - **Documentation**: `/home/deflex/noa-server/mcp/client/README.md`
@@ -240,6 +258,8 @@ Full working examples are available:
 ## Support
 
 For detailed documentation, see:
+
 - `/home/deflex/noa-server/packages/mcp-client/README.md` (TypeScript)
 - `/home/deflex/noa-server/mcp/client/README.md` (Python)
-- `/home/deflex/noa-server/docs/MCP_CLIENT_LIBRARIES.md` (Implementation details)
+- `/home/deflex/noa-server/docs/MCP_CLIENT_LIBRARIES.md` (Implementation
+  details)
