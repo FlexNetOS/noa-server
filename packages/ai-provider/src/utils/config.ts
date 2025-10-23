@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { z } from 'zod';
 import { ProviderConfig, ProviderConfigSchema, ProviderType } from '../types';
 
@@ -18,7 +19,7 @@ const ModelManagerConfigSchema = z.object({
 
 const AIProviderConfigSchema = z.object({
   providers: ProviderConfigListSchema,
-  defaultProvider: z.string().optional(),
+  defaultProvider: z.nativeEnum(ProviderType).optional(),
   timeout: z.number().positive().default(30000),
   maxRetries: z.number().nonnegative().default(3),
   enableLogging: z.boolean().default(true),
@@ -113,20 +114,45 @@ export class ConfigurationManager {
 
     const config: AIProviderConfig = {
       providers,
-      defaultProvider: process.env[`${envPrefix}DEFAULT_PROVIDER`],
+      defaultProvider: ConfigurationManager.parseProviderType(process.env[`${envPrefix}DEFAULT_PROVIDER`]),
       timeout: process.env[`${envPrefix}TIMEOUT`] ? parseInt(process.env[`${envPrefix}TIMEOUT`]!) : 30000,
       maxRetries: process.env[`${envPrefix}MAX_RETRIES`] ? parseInt(process.env[`${envPrefix}MAX_RETRIES`]!) : 3,
       enableLogging: process.env[`${envPrefix}ENABLE_LOGGING`] !== 'false',
       logLevel: (process.env[`${envPrefix}LOG_LEVEL`] as any) || 'info',
       cacheProviders: process.env[`${envPrefix}CACHE_PROVIDERS`] !== 'false',
       modelManager: {
-        defaultProvider: process.env[`${envPrefix}MODEL_MANAGER_DEFAULT_PROVIDER`] as ProviderType,
+        defaultProvider: ConfigurationManager.parseProviderType(process.env[`${envPrefix}MODEL_MANAGER_DEFAULT_PROVIDER`]),
         autoLoadDefault: process.env[`${envPrefix}MODEL_MANAGER_AUTO_LOAD_DEFAULT`] !== 'false',
         maxLoadedModels: process.env[`${envPrefix}MODEL_MANAGER_MAX_LOADED_MODELS`] ? parseInt(process.env[`${envPrefix}MODEL_MANAGER_MAX_LOADED_MODELS`]!) : 10
       }
     };
 
     this.validateAndSetConfig(config);
+  }
+
+  /**
+   * Parse a provider type from string (case/format insensitive)
+   */
+  private static parseProviderType(value?: string | null): ProviderType | undefined {
+    if (!value) return undefined;
+    const raw = String(value).trim().toLowerCase();
+
+    // Normalize common variants
+    const normalized = raw
+      .replace(/[_\-\s]+/g, '.')   // convert separators to dots
+      .replace(/llamacpp|llama\.?cpp|llama\.?c\+\+|llama\.?c\+\+?/g, 'llama.cpp');
+
+    switch (normalized) {
+      case 'openai':
+        return ProviderType.OPENAI;
+      case 'claude':
+        return ProviderType.CLAUDE;
+      case 'llama.cpp':
+      case 'llama': // accept shorthand
+        return ProviderType.LLAMA_CPP;
+      default:
+        return undefined;
+    }
   }
 
   /**
@@ -154,7 +180,7 @@ export class ConfigurationManager {
       throw new Error('Configuration not loaded');
     }
 
-    return this.config.providers.find(p => p.type === type);
+  return this.config.providers.find((p: ProviderConfig) => p.type === type);
   }
 
   /**
@@ -166,7 +192,7 @@ export class ConfigurationManager {
     }
 
     if (this.config.defaultProvider) {
-      return this.config.providers.find(p => p.type === this.config!.defaultProvider as ProviderType);
+  return this.config.providers.find((p: ProviderConfig) => p.type === (this.config!.defaultProvider as ProviderType));
     }
 
     // Return first available provider if no default is set
@@ -192,7 +218,7 @@ export class ConfigurationManager {
       throw new Error('Configuration not loaded');
     }
 
-    const existingIndex = this.config.providers.findIndex(p => p.type === config.type);
+  const existingIndex = this.config.providers.findIndex((p: ProviderConfig) => p.type === config.type);
 
     if (existingIndex >= 0) {
       this.config.providers[existingIndex] = config;
@@ -210,7 +236,7 @@ export class ConfigurationManager {
     }
 
     const initialLength = this.config.providers.length;
-    this.config.providers = this.config.providers.filter(p => p.type !== type);
+  this.config.providers = this.config.providers.filter((p: ProviderConfig) => p.type !== type);
 
     return this.config.providers.length < initialLength;
   }
@@ -277,11 +303,16 @@ export class ConfigurationManager {
   private validateAndSetConfig(config: any): void {
     try {
       this.config = AIProviderConfigSchema.parse(config);
-    } catch (error) {
+    } catch (error: unknown) {
       if (error instanceof z.ZodError) {
-        throw new Error(`Invalid configuration: ${error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')}`);
+        throw new Error(
+          `Invalid configuration: ${error.errors
+            .map((e: any) => `${e.path.join('.')}: ${e.message}`)
+            .join(', ')}`
+        );
       }
-      throw error;
+      if (error instanceof Error) throw error;
+      throw new Error(String(error));
     }
   }
 
