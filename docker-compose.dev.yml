@@ -1,0 +1,168 @@
+# Docker Compose for Local Development
+# Provides all necessary services for running Noa Server locally
+
+version: '3.8'
+
+services:
+  # Noa Server Application
+  noa-server:
+    build:
+      context: .
+      dockerfile: Docker/Dockerfile.noa-server
+      target: development
+    ports:
+      - "3000:3000"
+      - "8080:8080"
+    volumes:
+      - .:/app:cached
+      - node-modules:/app/node_modules
+      - pnpm-cache:/root/.local/share/pnpm
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/noa_dev
+      - REDIS_URL=redis://redis:6379
+      - MONGODB_URL=mongodb://mongo:27017/noa_dev
+      - FILESYSTEM_BASE_PATH=/app/data
+      - SQLITE_DB_PATH=/app/data/app.db
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+    command: pnpm run dev
+    depends_on:
+      - postgres
+      - redis
+      - mongo
+    networks:
+      - noa-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: noa_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./scripts/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - noa-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - noa-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MongoDB
+  mongo:
+    image: mongo:7
+    environment:
+      MONGO_INITDB_DATABASE: noa_dev
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - noa-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MCP Server (Filesystem)
+  mcp-filesystem:
+    build:
+      context: .
+      dockerfile: Docker/Dockerfile.mcp-server
+    environment:
+      - FILESYSTEM_BASE_PATH=/data
+    volumes:
+      - mcp-data:/data
+    command: python -m mcp.servers.filesystem.server
+    networks:
+      - noa-network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # MCP Server (SQLite)
+  mcp-sqlite:
+    build:
+      context: .
+      dockerfile: Docker/Dockerfile.mcp-server
+    environment:
+      - SQLITE_DB_PATH=/data/mcp.db
+    volumes:
+      - mcp-data:/data
+    command: python -m mcp.servers.sqlite.server
+    networks:
+      - noa-network
+
+  # Prometheus (Monitoring)
+  prometheus:
+    image: prom/prometheus:latest
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    networks:
+      - noa-network
+
+  # Grafana (Dashboards)
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./config/monitoring/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro
+    networks:
+      - noa-network
+    depends_on:
+      - prometheus
+
+networks:
+  noa-network:
+    driver: bridge
+
+volumes:
+  node-modules:
+  pnpm-cache:
+  postgres-data:
+  redis-data:
+  mongo-data:
+  mcp-data:
+  prometheus-data:
+  grafana-data:

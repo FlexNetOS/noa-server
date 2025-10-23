@@ -1,0 +1,92 @@
+
+# Claude Flow generated files
+.claude/settings.local.json
+.mcp.json
+claude-flow.config.json
+.swarm/
+.hive-mind/
+.claude-flow/
+memory/
+coordination/
+memory/claude-flow-data.json
+memory/sessions/*
+!memory/sessions/README.md
+memory/agents/*
+!memory/agents/README.md
+coordination/memory_bank/*
+coordination/subtasks/*
+coordination/orchestration/*
+*.db
+*.db-journal
+*.db-wal
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+claude-flow
+# Removed Windows wrapper files per user request
+hive-mind-prompt-*.txt
+
+# Build outputs and artifacts
+logs/
+EvidenceLedger/
+packages/ui-dashboard/dist/
+downloads/
+/claude-suite.zip
+
+# Additional standard ignores
+
+# Node/JS
+**/node_modules/
+**/dist/
+**/build/
+**/out/
+**/.next/
+**/.turbo/
+**/.cache/
+**/.parcel-cache/
+**/.rollup.cache/
+**/*.log
+**/*.tsbuildinfo
+
+# Python
+**/__pycache__/
+**/.venv/
+**/venv/
+**/.pytest_cache/
+**/.mypy_cache/
+
+# Coverage
+coverage/
+**/coverage/
+
+# Env and secrets
+.env
+.env.*
+*.env
+config/runtime/*.env
+vault/
+secrets/
+**/*.pem
+**/*.key
+
+# Data and archives
+data/archive/
+data/temp/
+downloads/
+**/*.tar
+**/*.zip
+**/*.gz
+**/*.bz2
+**/*.7z
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+
+# Specific build artifacts and non-core directories
+packages/llama.cpp/build/
+home-lab-server/
+claude-flow/dist-cjs/
+claude-flow/dist-esm/

@@ -1,0 +1,53 @@
+# Multi-stage Dockerfile for Noa Server Worker
+# Background job processing
+
+# ===================================
+# Stage 1: Dependencies
+# ===================================
+FROM node:20.17.0-alpine AS dependencies
+
+WORKDIR /app
+
+RUN apk add --no-cache python3 make g++
+
+COPY package.json package-lock.json pnpm-workspace.yaml ./
+
+RUN corepack enable && \
+    corepack prepare pnpm@9.11.0 --activate && \
+    pnpm install --frozen-lockfile --prod
+
+# ===================================
+# Stage 2: Runtime
+# ===================================
+FROM node:20.17.0-alpine AS runtime
+
+RUN apk add --no-cache \
+    ca-certificates \
+    dumb-init \
+    && apk upgrade --no-cache
+
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
+WORKDIR /app
+
+COPY --from=dependencies --chown=nodejs:nodejs /app/node_modules ./node_modules
+COPY --chown=nodejs:nodejs package.json ./
+COPY --chown=nodejs:nodejs src/worker ./src/worker
+
+# Build arguments
+ARG BUILD_DATE
+ARG VERSION
+ARG VCS_REF
+
+LABEL org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.title="Noa Server Worker"
+
+ENV NODE_ENV=production \
+    LOG_LEVEL=info
+
+USER nodejs
+
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["node", "src/worker/index.js"]

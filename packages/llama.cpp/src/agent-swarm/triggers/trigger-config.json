@@ -1,0 +1,153 @@
+{
+  "enabled": true,
+  "autoTrigger": true,
+  "version": "1.0.0",
+
+  "detection": {
+    "watchPaths": [
+      "src/*/agent.ts",
+      "src/*/core/agent.ts",
+      ".claude/agents/*.json",
+      "agents/**/*.ts",
+      "src/**/*-agent.ts"
+    ],
+    "ignorePatterns": [
+      "node_modules",
+      "*.test.ts",
+      "*.spec.ts",
+      "dist",
+      "build"
+    ],
+    "debounceMs": 3000,
+    "persistent": true
+  },
+
+  "swarm": {
+    "topology": "hierarchical",
+    "maxAgents": 10,
+    "coordinatorType": "integration-coordinator",
+    "autoSpawn": true,
+    "sessionPrefix": "agent-integration"
+  },
+
+  "agents": {
+    "config-updater": {
+      "enabled": true,
+      "priority": "high",
+      "files": [
+        "package.json",
+        "tsconfig.json",
+        ".claude/config.json",
+        "src/*/config/*.json"
+      ]
+    },
+    "doc-updater": {
+      "enabled": true,
+      "priority": "high",
+      "files": [
+        "README.md",
+        "CLAUDE.md",
+        "docs/**/*.md"
+      ]
+    },
+    "code-updater": {
+      "enabled": true,
+      "priority": "medium",
+      "patterns": [
+        "src/**/index.ts",
+        "integrations/**/*.ts",
+        "examples/**/*.ts"
+      ]
+    },
+    "agent-registry-updater": {
+      "enabled": true,
+      "priority": "high",
+      "registryPath": ".claude/agents.json"
+    },
+    "test-creator": {
+      "enabled": true,
+      "priority": "medium",
+      "testPath": "tests",
+      "coverageTarget": 80
+    },
+    "cross-reference-validator": {
+      "enabled": true,
+      "priority": "low",
+      "validateAll": true
+    }
+  },
+
+  "pipeline": {
+    "executionMode": "parallel",
+    "failureMode": "continue",
+    "retryAttempts": 2,
+    "timeoutMs": 300000,
+    "reportProgress": true
+  },
+
+  "notifications": {
+    "enabled": true,
+    "slack": {
+      "enabled": false,
+      "webhook": null
+    },
+    "email": {
+      "enabled": false,
+      "recipients": []
+    },
+    "console": {
+      "enabled": true,
+      "verbose": true,
+      "useColors": true
+    }
+  },
+
+  "validation": {
+    "required": true,
+    "breakOnError": false,
+    "validators": [
+      "agent-definition",
+      "config-consistency",
+      "cross-references",
+      "test-coverage",
+      "documentation-completeness"
+    ]
+  },
+
+  "hooks": {
+    "preAgentAdd": {
+      "enabled": true,
+      "script": "hooks/pre-agent-add.ts",
+      "async": true
+    },
+    "postAgentAdd": {
+      "enabled": true,
+      "script": "hooks/post-agent-add.ts",
+      "async": true
+    },
+    "onSwarmComplete": {
+      "enabled": true,
+      "script": "hooks/on-swarm-complete.ts",
+      "async": true
+    },
+    "onValidationFailure": {
+      "enabled": true,
+      "action": "report"
+    }
+  },
+
+  "git": {
+    "autoCommit": false,
+    "branchPrefix": "feature/agent-",
+    "commitMessage": "chore: integrate new agent {agentName}",
+    "createPullRequest": false
+  },
+
+  "logging": {
+    "enabled": true,
+    "level": "info",
+    "file": "logs/agent-integration.log",
+    "maxSize": "10MB",
+    "maxFiles": 5
+  }
+}

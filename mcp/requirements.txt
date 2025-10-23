@@ -1,0 +1,11 @@
+# MCP Server Dependencies
+
+# Core
+flask>=2.3.0
+pyjwt>=2.8.0
+
+# Optional (for enhanced features)
+# prometheus-client>=0.17.0  # Alternative metrics client
+# opentelemetry-api>=1.20.0  # OpenTelemetry integration
+# opentelemetry-sdk>=1.20.0
+# opentelemetry-instrumentation-flask>=0.41b0

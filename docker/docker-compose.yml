@@ -1,0 +1,376 @@
+version: '3.9'
+
+# Noa Server Multi-Service Docker Compose
+# Production-ready orchestration with health checks, networking, and security
+
+services:
+  # ================================
+  # MCP Service
+  # ================================
+  mcp:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: mcp-service
+      args:
+        NODE_ENV: ${NODE_ENV:-production}
+    container_name: noa-mcp
+    restart: unless-stopped
+    ports:
+      - "${MCP_PORT:-8001}:8001"
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - MCP_PORT=8001
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - MEMORY_LIMIT=${MCP_MEMORY_LIMIT:-512m}
+    env_file:
+      - ../.env
+    volumes:
+      - mcp-data:/app/data
+      - mcp-logs:/app/logs
+    networks:
+      - noa-network
+    healthcheck:
+      test: ["CMD", "/health-check.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    labels:
+      com.noa.service: "mcp"
+      com.noa.version: "0.0.1"
+
+  # ================================
+  # Claude Flow Service
+  # ================================
+  claude-flow:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: claude-flow-service
+    container_name: noa-claude-flow
+    restart: unless-stopped
+    ports:
+      - "${CLAUDE_FLOW_PORT:-9100}:9100"
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - CLAUDE_FLOW_PORT=9100
+      - MCP_URL=http://mcp:8001
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    env_file:
+      - ../.env
+    volumes:
+      - claude-flow-data:/app/data
+      - claude-flow-logs:/app/logs
+      - claude-flow-cache:/app/.claude-flow
+    networks:
+      - noa-network
+    depends_on:
+      mcp:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "/health-check.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1G
+        reservations:
+          cpus: '1.0'
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    labels:
+      com.noa.service: "claude-flow"
+      com.noa.version: "2.7.0"
+
+  # ================================
+  # UI Dashboard Service
+  # ================================
+  ui-dashboard:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: ui-dashboard
+    container_name: noa-ui-dashboard
+    restart: unless-stopped
+    ports:
+      - "${UI_PORT:-9200}:9200"
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - UI_PORT=9200
+      - NEXT_PUBLIC_MCP_URL=http://localhost:${MCP_PORT:-8001}
+      - NEXT_PUBLIC_CLAUDE_FLOW_URL=http://localhost:${CLAUDE_FLOW_PORT:-9100}
+      - NEXT_PUBLIC_LLAMA_URL=http://localhost:${LLAMA_PORT:-9300}
+    env_file:
+      - ../.env
+    volumes:
+      - ui-dashboard-data:/app/data
+    networks:
+      - noa-network
+    depends_on:
+      mcp:
+        condition: service_healthy
+      claude-flow:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "/health-check.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 768M
+        reservations:
+          cpus: '0.5'
+          memory: 384M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    labels:
+      com.noa.service: "ui-dashboard"
+      com.noa.version: "0.0.1"
+
+  # ================================
+  # Llama.cpp Neural Service
+  # ================================
+  llama-cpp:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: llama-service
+    container_name: noa-llama-cpp
+    restart: unless-stopped
+    ports:
+      - "${LLAMA_PORT:-9300}:9300"
+    environment:
+      - LLAMA_PORT=9300
+      - MODEL_PATH=${LLM_MODEL_PATH:-/app/models/demo.gguf}
+      - CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-0}
+      - GGML_CUDA_ENABLE=1
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    env_file:
+      - ../.env
+    volumes:
+      - llama-models:/app/models:ro
+      - llama-data:/app/data
+      - llama-logs:/app/logs
+    networks:
+      - noa-network
+    healthcheck:
+      test: ["CMD", "/health-check.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 4G
+        reservations:
+          cpus: '2.0'
+          memory: 2G
+      # GPU support (uncomment if NVIDIA GPU available)
+      # reservations:
+      #   devices:
+      #     - driver: nvidia
+      #       count: 1
+      #       capabilities: [gpu]
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    labels:
+      com.noa.service: "llama-cpp"
+      com.noa.version: "0.0.1"
+
+  # ================================
+  # AgenticOS Service
+  # ================================
+  agenticos:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: agenticos-service
+    container_name: noa-agenticos
+    restart: unless-stopped
+    ports:
+      - "${AGENTICOS_PORT:-9400}:9400"
+    environment:
+      - AGENTICOS_PORT=9400
+      - MCP_URL=http://mcp:8001
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    env_file:
+      - ../.env
+    volumes:
+      - agenticos-data:/app/data
+      - agenticos-logs:/app/logs
+      - agenticos-artifacts:/app/artifacts
+    networks:
+      - noa-network
+    depends_on:
+      mcp:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "/health-check.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1G
+        reservations:
+          cpus: '1.0'
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    labels:
+      com.noa.service: "agenticos"
+      com.noa.version: "0.0.1"
+
+  # ================================
+  # Redis Cache (Optional)
+  # ================================
+  redis:
+    image: redis:7-alpine
+    container_name: noa-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-changeme}
+    volumes:
+      - redis-data:/data
+    networks:
+      - noa-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ================================
+  # PostgreSQL Database (Optional)
+  # ================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: noa-postgres
+    restart: unless-stopped
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-noa}
+      - POSTGRES_USER=${POSTGRES_USER:-noa}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - noa-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-noa}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# ================================
+# Networks
+# ================================
+networks:
+  noa-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+
+# ================================
+# Volumes
+# ================================
+volumes:
+  mcp-data:
+    driver: local
+  mcp-logs:
+    driver: local
+  claude-flow-data:
+    driver: local
+  claude-flow-logs:
+    driver: local
+  claude-flow-cache:
+    driver: local
+  ui-dashboard-data:
+    driver: local
+  llama-models:
+    driver: local
+  llama-data:
+    driver: local
+  llama-logs:
+    driver: local
+  agenticos-data:
+    driver: local
+  agenticos-logs:
+    driver: local
+  agenticos-artifacts:
+    driver: local
+  redis-data:
+    driver: local
+  postgres-data:
+    driver: local

@@ -1,0 +1,20 @@
+# Noa Server Upgrade Plan — Tracked TODOs
+
+Source of truth: `docs/upgrade/TODO.yaml`
+
+| ID        | Title                                      | Owner                 | Est. | Status  | Depends On |
+|-----------|--------------------------------------------|-----------------------|------|---------|------------|
+| infra-001 | Pin Node/PNPM and add CI                   | Team Platform/Infra   | 0.5d | done    | —          |
+| fe-001    | Scaffold ui-dashboard as a package         | Team Frontend/UI      | 0.5d | done    | infra-001  |
+| sec-001   | Replace npx with pinned local CLIs         | Team Security/Tooling | 1d   | done    | infra-001  |
+| infra-002 | Convert external symlinks to portable code | Team Platform/Infra   | 2d   | planned | infra-001  |
+| qa-001    | Baseline lint/type-check/tests in CI       | Team Platform/Infra   | 1d   | planned | infra-001  |
+| mcp-001   | Implement first batch of real MCP tools    | Team Backend/Python   | 3d   | planned | qa-001     |
+| ts-001    | Replace Maestro stubs with claude-flow     | Team Platform/Integr. | 3d   | planned | qa-001     |
+| devx-001  | Devcontainer + docker-compose              | Team DevEx            | 1.5d | planned | infra-001  |
+| sec-002   | Security scanning and SBOM in CI           | Team Security/Tooling | 1d   | planned | qa-001     |
+| rel-001   | Release pipeline and artifacts             | Team Release          | 1d   | planned | qa-001     |
+
+Notes
+- “done” items are included in this PR: Node/PNPM pinning, CI baseline, and `ui-dashboard` package scaffolding.
+- Update `owner` names to match your team handles as desired.

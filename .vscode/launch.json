@@ -1,0 +1,72 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Noa Server",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/packages/noa-server/src/index.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "outFiles": ["${workspaceFolder}/**/*.js"],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "console": "integratedTerminal"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug MCP Server (Filesystem)",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/mcp/servers/filesystem/server.py",
+      "console": "integratedTerminal",
+      "justMyCode": false
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to Node Process",
+      "processId": "${command:PickProcess}",
+      "restart": true,
+      "protocol": "inspector"
+    },
+    {
+      "type": "python",
+      "request": "launch",
+      "name": "Python: MCP Server",
+      "program": "${workspaceFolder}/mcp/servers/filesystem/server.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/mcp/src",
+        "FILESYSTEM_BASE_PATH": "${workspaceFolder}/data"
+      }
+    },
+    {
+      "type": "python",
+      "request": "launch",
+      "name": "Python: Current File",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "justMyCode": false
+    },
+    {
+      "type": "python",
+      "request": "launch",
+      "name": "Python: Run Tests",
+      "module": "pytest",
+      "args": ["-v", "${file}"],
+      "console": "integratedTerminal",
+      "just MyCode": false,
+      "cwd": "${workspaceFolder}/mcp"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack Debug",
+      "configurations": ["Debug Noa Server", "Python: MCP Server"],
+      "stopAll": true
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+# backlog.todo
+<!-- Tasks awaiting prioritization and scheduling -->
+<!-- Last Groomed: 2025-01-10 -->
+
+## 📥 Triage - Unprioritized
+<!-- New items that need evaluation -->
+
+- [ ] Integrate AI-powered code review suggestions
+  - Value: HIGH - Could catch bugs earlier
+  - Effort: L - Requires tool selection and integration
+  - Added: 2025-01-10
+
+- [ ] Upgrade to Python 3.12
+  - Value: MEDIUM - Performance improvements
+  - Effort: M - Need to test all dependencies
+  - Added: 2025-01-10
+
+- [ ] Implement dark mode for documentation site
+  - Value: LOW - User preference
+  - Effort: S - CSS changes only
+  - Added: 2025-01-10
+
+## 🎯 Next Sprint (Sprint 24)
+<!-- Items selected for next work cycle -->
+
+- [ ] Implement comprehensive logging system
+  - Value: HIGH - Better debugging capability
+  - Effort: M - 3-5 days
+  - Dependencies: Choose logging framework
+  - Added: 2025-01-08
+
+- [ ] Add performance monitoring dashboard
+  - Value: HIGH - Visibility into system health
+  - Effort: M - 3-5 days
+  - Dependencies: Metrics collection in place
+  - Added: 2025-01-07
+
+## 💡 Ideas & Research
+<!-- Future possibilities, not yet committed -->
+
+- [ ] Explore WebAssembly for performance-critical paths
+  - Value: UNKNOWN - Needs benchmarking
+  - Effort: XL - Major architectural change
+  - Research needed: Performance gains vs complexity
+  - Added: 2025-01-05
+
+- [ ] Consider microservices migration
+  - Value: MEDIUM - Better scalability
+  - Effort: XL - 3-6 months
+  - Research needed: Which components to split first
+  - Added: 2025-01-03
+
+## 🔄 Recurring Tasks Templates
+<!-- Templates for regular activities -->
+
+- [ ] [TEMPLATE] Weekly dependency updates
+  - Value: MEDIUM - Security and performance
+  - Effort: S - 1-2 hours
+  - Frequency: Weekly (Monday)
+
+- [ ] [TEMPLATE] Monthly performance audit
+  - Value: HIGH - Maintain SLAs
+  - Effort: M - Half day
+  - Frequency: First Friday of month
+
+- [ ] [TEMPLATE] Quarterly architecture review
+  - Value: HIGH - Technical debt management
+  - Effort: L - Full day workshop
+  - Frequency: Quarterly
+
+## 🗄️ Someday/Maybe
+<!-- Low priority items kept for reference -->
+
+- [ ] Build mobile app version
+- [ ] Add multi-language support
+- [ ] Create public API
+- [ ] Implement blockchain integration (?)
+
+---
+
+## 📊 Backlog Metrics
+- Total Items: 13
+- Triage Queue: 3
+- Next Sprint: 2
+- Ideas/Research: 2
+- Recurring: 3
+- Someday/Maybe: 4
+
+## 🏷️ Effort Scale
+- **XS**: < 2 hours
+- **S**: 2-8 hours (1 day)
+- **M**: 2-5 days
+- **L**: 1-2 weeks
+- **XL**: > 2 weeks
+
+## 💰 Value Definitions
+- **HIGH**: Direct impact on users/revenue, fixes critical issues
+- **MEDIUM**: Improves efficiency, enhances features
+- **LOW**: Nice to have, aesthetic improvements
+
+## 🔍 Prioritization Matrix
+```
+         High Value
+             ↑
+        [DO FIRST]  |  [DO NEXT]
+    ________________|________________
+        [DO LATER]  |  [RECONSIDER]
+             ↓
+         Low Value
+        
+        Low Effort ← → High Effort
+```
+
+## 📝 Weekly Grooming Checklist
+- [ ] Move completed items to SOT
+- [ ] Evaluate new triage items
+- [ ] Update effort/value estimates
+- [ ] Select items for next sprint
+- [ ] Archive stale items (>90 days)
+- [ ] Review recurring task schedule

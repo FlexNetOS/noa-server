@@ -1,0 +1,40 @@
+{
+  "name": "@noa-server/alerting",
+  "version": "1.0.0",
+  "description": "Automated alerting and incident response system for Noa Server",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "alerting",
+    "incident-response",
+    "monitoring",
+    "pagerduty",
+    "opsgenie"
+  ],
+  "author": "Noa Server Team",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "winston": "^3.11.0",
+    "node-cron": "^3.0.3",
+    "date-fns": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/node-cron": "^3.0.11",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@vitest/coverage-v8": "^3.2.4",
+    "eslint": "^8.57.0",
+    "typescript": "^5.3.0",
+    "vitest": "^3.2.4"
+  }
+}

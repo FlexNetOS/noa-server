@@ -1,0 +1,48 @@
+{
+  "name": "@noa-server/data-retention",
+  "version": "1.0.0",
+  "description": "Automated data retention and lifecycle management for Noa Server",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit",
+    "check-expiry": "node dist/scripts/retention/check-expiry.js",
+    "archive-data": "node dist/scripts/retention/archive-data.js",
+    "delete-expired": "node dist/scripts/retention/delete-expired.js",
+    "generate-report": "node dist/scripts/retention/generate-report.js"
+  },
+  "keywords": [
+    "data-retention",
+    "lifecycle-management",
+    "compliance",
+    "gdpr",
+    "archival"
+  ],
+  "author": "Noa Server Team",
+  "license": "MIT",
+  "dependencies": {
+    "uuid": "^9.0.0",
+    "pg": "^8.11.0",
+    "node-cron": "^3.0.2",
+    "zod": "^3.22.0",
+    "crypto": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/uuid": "^9.0.0",
+    "@types/pg": "^8.10.0",
+    "@types/node-cron": "^3.0.7",
+    "typescript": "^5.0.0",
+    "jest": "^29.0.0",
+    "@types/jest": "^29.0.0",
+    "ts-jest": "^29.0.0",
+    "eslint": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0"
+  }
+}

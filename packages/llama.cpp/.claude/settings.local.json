@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//home/deflex/noa-server/**)",
+      "Read(//home/deflex/.claude/agents/contains-studio/**)",
+      "Bash(tar:*)",
+      "Read(//tmp/**)",
+      "Bash(npx:*)",
+      "WebSearch",
+      "Bash(find:*)",
+      "Read(//home/deflex/**)",
+      "Bash(tree:*)",
+      "Bash(awk:*)",
+      "Bash(test:*)",
+      "Bash(ln:*)",
+      "Bash(chmod:*)",
+      "Bash(python3:*)",
+      "Bash(/home/deflex/noa-server/agentic-homelab/coordinator-plane/agents/queens/primary-queen/setup_neural.sh)",
+      "Bash(./agentic-homelab/coordinator-plane/agents/queens/audit-queen/test-validation.sh:*)",
+      "Bash(sqlite3:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,59 @@
+{{- if .Values.mcpServers.filesystem.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "noa-server.fullname" . }}-mcp-filesystem
+  labels:
+    {{- include "noa-server.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mcp-filesystem
+spec:
+  replicas: {{ .Values.mcpServers.filesystem.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "noa-server.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: mcp-filesystem
+  template:
+    metadata:
+      labels:
+        {{- include "noa-server.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: mcp-filesystem
+    spec:
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      - name: mcp-filesystem
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.mcpServers.filesystem.image.repository }}:{{ .Values.mcpServers.filesystem.image.tag }}"
+        command: ["python", "-m", "mcp.servers.filesystem.server"]
+        env:
+        - name: FILESYSTEM_BASE_PATH
+          value: {{ .Values.mcpServers.filesystem.basePath | quote }}
+        resources:
+          {{- toYaml .Values.mcpServers.filesystem.resources | nindent 12 }}
+        volumeMounts:
+        - name: data
+          mountPath: /data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{ include "noa-server.fullname" . }}-mcp-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "noa-server.fullname" . }}-mcp-filesystem
+  labels:
+    {{- include "noa-server.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mcp-filesystem
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP
+      name: grpc
+  selector:
+    {{- include "noa-server.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: mcp-filesystem
+{{- end }}

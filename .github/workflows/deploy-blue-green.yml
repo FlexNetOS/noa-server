@@ -1,0 +1,367 @@
+name: Blue-Green Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      version:
+        description: 'Version to deploy (e.g., v1.2.3)'
+        required: true
+        type: string
+      traffic_strategy:
+        description: 'Traffic migration strategy'
+        required: true
+        type: choice
+        options:
+          - instant
+          - canary-10
+          - canary-50
+          - canary-90
+        default: canary-10
+      auto_rollback:
+        description: 'Enable automatic rollback on failure'
+        required: true
+        type: boolean
+        default: true
+
+env:
+  KUBECONFIG_PATH: ~/.kube/config
+  KUBECTL_VERSION: v1.28.0
+  HEALTH_CHECK_TIMEOUT: 300
+  SMOKE_TEST_TIMEOUT: 180
+
+jobs:
+  pre-deployment:
+    name: Pre-Deployment Checks
+    runs-on: ubuntu-latest
+    outputs:
+      current_color: ${{ steps.detect.outputs.current_color }}
+      target_color: ${{ steps.detect.outputs.target_color }}
+      backup_version: ${{ steps.detect.outputs.backup_version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG }}" | base64 -d > ~/.kube/config
+          chmod 600 ~/.kube/config
+
+      - name: Detect current deployment
+        id: detect
+        run: |
+          # Get currently active color (blue or green)
+          CURRENT_COLOR=$(kubectl get service noa-service -n ${{ inputs.environment }} -o jsonpath='{.spec.selector.color}')
+          echo "current_color=$CURRENT_COLOR" >> $GITHUB_OUTPUT
+
+          # Set target color (opposite of current)
+          if [ "$CURRENT_COLOR" == "blue" ]; then
+            echo "target_color=green" >> $GITHUB_OUTPUT
+          else
+            echo "target_color=blue" >> $GITHUB_OUTPUT
+          fi
+
+          # Get current version for backup
+          BACKUP_VERSION=$(kubectl get deployment noa-$CURRENT_COLOR -n ${{ inputs.environment }} -o jsonpath='{.spec.template.spec.containers[0].image}' | cut -d: -f2)
+          echo "backup_version=$BACKUP_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Verify resources
+        run: |
+          # Check cluster capacity
+          kubectl top nodes
+          kubectl describe nodes | grep -A 5 "Allocated resources"
+
+          # Verify namespace exists
+          kubectl get namespace ${{ inputs.environment }} || kubectl create namespace ${{ inputs.environment }}
+
+      - name: Create deployment backup
+        run: |
+          kubectl get deployment noa-${{ steps.detect.outputs.current_color }} -n ${{ inputs.environment }} -o yaml > /tmp/backup-deployment.yaml
+          kubectl get service noa-service -n ${{ inputs.environment }} -o yaml > /tmp/backup-service.yaml
+
+      - name: Upload backup artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: deployment-backup
+          path: /tmp/backup-*.yaml
+          retention-days: 7
+
+  deploy-target:
+    name: Deploy to Target Color
+    runs-on: ubuntu-latest
+    needs: pre-deployment
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG }}" | base64 -d > ~/.kube/config
+          chmod 600 ~/.kube/config
+
+      - name: Deploy to ${{ needs.pre-deployment.outputs.target_color }}
+        run: |
+          # Apply deployment to target color
+          kubectl apply -f k8s/deployments/blue-green/${{ needs.pre-deployment.outputs.target_color }}-deployment.yaml \
+            -n ${{ inputs.environment }}
+
+          # Update image to specified version
+          kubectl set image deployment/noa-${{ needs.pre-deployment.outputs.target_color }} \
+            noa-container=ghcr.io/${{ github.repository }}/api-gateway:${{ inputs.version }} \
+            -n ${{ inputs.environment }}
+
+      - name: Wait for rollout
+        run: |
+          kubectl rollout status deployment/noa-${{ needs.pre-deployment.outputs.target_color }} \
+            -n ${{ inputs.environment }} \
+            --timeout=5m
+
+      - name: Verify pod health
+        run: |
+          # Wait for all pods to be ready
+          kubectl wait --for=condition=ready pod \
+            -l app=noa,color=${{ needs.pre-deployment.outputs.target_color }} \
+            -n ${{ inputs.environment }} \
+            --timeout=${HEALTH_CHECK_TIMEOUT}s
+
+  smoke-tests:
+    name: Run Smoke Tests
+    runs-on: ubuntu-latest
+    needs: [pre-deployment, deploy-target]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG }}" | base64 -d > ~/.kube/config
+          chmod 600 ~/.kube/config
+
+      - name: Get target endpoint
+        id: endpoint
+        run: |
+          # Get ClusterIP for direct testing
+          TARGET_IP=$(kubectl get service noa-${{ needs.pre-deployment.outputs.target_color }}-internal \
+            -n ${{ inputs.environment }} \
+            -o jsonpath='{.spec.clusterIP}')
+          echo "target_ip=$TARGET_IP" >> $GITHUB_OUTPUT
+
+      - name: Run health checks
+        run: |
+          # Create a test pod for internal testing
+          kubectl run smoke-test-pod --image=curlimages/curl:latest \
+            --restart=Never \
+            --rm \
+            -i \
+            -n ${{ inputs.environment }} \
+            -- sh -c "
+              curl -f http://${{ steps.endpoint.outputs.target_ip }}:8080/health || exit 1
+              curl -f http://${{ steps.endpoint.outputs.target_ip }}:8080/metrics || exit 1
+            "
+
+      - name: Run functional tests
+        timeout-minutes: 3
+        run: |
+          # Port-forward for testing
+          kubectl port-forward -n ${{ inputs.environment }} \
+            deployment/noa-${{ needs.pre-deployment.outputs.target_color }} 8080:8080 &
+          PF_PID=$!
+          sleep 5
+
+          # Run smoke tests
+          bash ./scripts/release/smoke-tests.sh http://localhost:8080
+
+          # Cleanup
+          kill $PF_PID
+
+      - name: Load test
+        run: |
+          kubectl run load-test --image=williamyeh/hey:latest \
+            --restart=Never \
+            --rm \
+            -i \
+            -n ${{ inputs.environment }} \
+            -- -n 1000 -c 10 -t 30 http://${{ steps.endpoint.outputs.target_ip }}:8080/api/health
+
+  switch-traffic:
+    name: Switch Traffic (${{ inputs.traffic_strategy }})
+    runs-on: ubuntu-latest
+    needs: [pre-deployment, deploy-target, smoke-tests]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG }}" | base64 -d > ~/.kube/config
+          chmod 600 ~/.kube/config
+
+      - name: Execute traffic switch
+        run: |
+          bash ./scripts/release/switch-traffic.sh \
+            ${{ inputs.environment }} \
+            ${{ needs.pre-deployment.outputs.current_color }} \
+            ${{ needs.pre-deployment.outputs.target_color }} \
+            ${{ inputs.traffic_strategy }}
+
+      - name: Monitor metrics
+        run: |
+          # Monitor for 2 minutes after switch
+          for i in {1..24}; do
+            echo "=== Metrics check $i/24 ==="
+            kubectl top pods -n ${{ inputs.environment }} -l color=${{ needs.pre-deployment.outputs.target_color }}
+
+            # Check error rates
+            ERROR_RATE=$(kubectl logs -n ${{ inputs.environment }} \
+              -l color=${{ needs.pre-deployment.outputs.target_color }} \
+              --tail=100 | grep -c "ERROR" || echo "0")
+
+            if [ "$ERROR_RATE" -gt 10 ]; then
+              echo "ERROR: High error rate detected: $ERROR_RATE"
+              exit 1
+            fi
+
+            sleep 5
+          done
+
+  finalize:
+    name: Finalize Deployment
+    runs-on: ubuntu-latest
+    needs: [pre-deployment, switch-traffic]
+    if: success()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG }}" | base64 -d > ~/.kube/config
+          chmod 600 ~/.kube/config
+
+      - name: Scale down old deployment
+        run: |
+          # Keep old deployment at 1 replica for quick rollback
+          kubectl scale deployment/noa-${{ needs.pre-deployment.outputs.current_color }} \
+            --replicas=1 \
+            -n ${{ inputs.environment }}
+
+      - name: Tag deployment
+        run: |
+          kubectl annotate deployment/noa-${{ needs.pre-deployment.outputs.target_color }} \
+            deployment.kubernetes.io/revision=${{ inputs.version }} \
+            deployment.kubernetes.io/deployed-at="$(date -Iseconds)" \
+            deployment.kubernetes.io/deployed-by="${{ github.actor }}" \
+            -n ${{ inputs.environment }}
+
+      - name: Update deployment record
+        run: |
+          cat > /tmp/deployment-record.json << EOF
+          {
+            "version": "${{ inputs.version }}",
+            "environment": "${{ inputs.environment }}",
+            "color": "${{ needs.pre-deployment.outputs.target_color }}",
+            "deployed_at": "$(date -Iseconds)",
+            "deployed_by": "${{ github.actor }}",
+            "previous_version": "${{ needs.pre-deployment.outputs.backup_version }}",
+            "strategy": "${{ inputs.traffic_strategy }}"
+          }
+          EOF
+
+          # Store deployment record (you can adapt this to your storage solution)
+          kubectl create configmap deployment-record-$(date +%s) \
+            --from-file=/tmp/deployment-record.json \
+            -n ${{ inputs.environment }}
+
+  rollback:
+    name: Automatic Rollback
+    runs-on: ubuntu-latest
+    needs: [pre-deployment, deploy-target, smoke-tests, switch-traffic]
+    if: failure() && inputs.auto_rollback
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG }}" | base64 -d > ~/.kube/config
+          chmod 600 ~/.kube/config
+
+      - name: Execute rollback
+        run: |
+          echo "Failure detected, initiating automatic rollback..."
+
+          # Switch traffic back to current color
+          kubectl patch service noa-service \
+            -n ${{ inputs.environment }} \
+            -p '{"spec":{"selector":{"color":"${{ needs.pre-deployment.outputs.current_color }}"}}}'
+
+          # Scale down failed deployment
+          kubectl scale deployment/noa-${{ needs.pre-deployment.outputs.target_color }} \
+            --replicas=0 \
+            -n ${{ inputs.environment }}
+
+          # Restore current deployment to full capacity
+          kubectl scale deployment/noa-${{ needs.pre-deployment.outputs.current_color }} \
+            --replicas=3 \
+            -n ${{ inputs.environment }}
+
+      - name: Verify rollback
+        run: |
+          kubectl rollout status deployment/noa-${{ needs.pre-deployment.outputs.current_color }} \
+            -n ${{ inputs.environment }}
+
+      - name: Notify rollback
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": ":warning: Deployment v${{ inputs.version }} to ${{ inputs.environment }} failed and was rolled back",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Deployment Rollback*\n\nVersion: ${{ inputs.version }}\nEnvironment: ${{ inputs.environment }}\nRolled back to: ${{ needs.pre-deployment.outputs.backup_version }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  notify:
+    name: Notify Deployment
+    runs-on: ubuntu-latest
+    needs: [finalize]
+    if: always()
+    steps:
+      - name: Send notification
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "Deployment completed for v${{ inputs.version }} to ${{ inputs.environment }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Deployment Successful*\n\nVersion: ${{ inputs.version }}\nEnvironment: ${{ inputs.environment }}\nStrategy: ${{ inputs.traffic_strategy }}\nColor: ${{ needs.pre-deployment.outputs.target_color }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

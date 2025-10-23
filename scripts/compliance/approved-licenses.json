@@ -1,0 +1,142 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Approved and rejected software licenses for noa-server project",
+  "version": "1.0.0",
+  "lastUpdated": "2025-10-22",
+  "approved": [
+    "MIT",
+    "Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "CC0-1.0",
+    "CC-BY-3.0",
+    "CC-BY-4.0",
+    "Unlicense",
+    "Python-2.0",
+    "0BSD",
+    "BlueOak-1.0.0",
+    "MPL-2.0",
+    "Zlib",
+    "BSL-1.0"
+  ],
+  "conditionallyApproved": [
+    {
+      "license": "GPL-3.0",
+      "conditions": "Requires legal review for GPL compatibility and distribution requirements",
+      "reviewRequired": true,
+      "notes": "May be acceptable for development tools but not for core runtime dependencies"
+    },
+    {
+      "license": "GPL-3.0-only",
+      "conditions": "Same as GPL-3.0",
+      "reviewRequired": true
+    },
+    {
+      "license": "GPL-3.0-or-later",
+      "conditions": "Same as GPL-3.0",
+      "reviewRequired": true
+    },
+    {
+      "license": "LGPL-3.0",
+      "conditions": "Acceptable for libraries with dynamic linking. Review required for static linking or core dependencies",
+      "reviewRequired": true,
+      "notes": "Generally acceptable for npm packages used at runtime"
+    },
+    {
+      "license": "LGPL-3.0-only",
+      "conditions": "Same as LGPL-3.0",
+      "reviewRequired": true
+    },
+    {
+      "license": "LGPL-2.1",
+      "conditions": "Same as LGPL-3.0",
+      "reviewRequired": true
+    },
+    {
+      "license": "EPL-2.0",
+      "conditions": "Eclipse Public License - requires review for compatibility",
+      "reviewRequired": true
+    },
+    {
+      "license": "CDDL-1.0",
+      "conditions": "Common Development and Distribution License - requires review",
+      "reviewRequired": true
+    }
+  ],
+  "rejected": [
+    "AGPL-3.0",
+    "AGPL-3.0-only",
+    "AGPL-3.0-or-later",
+    "GPL-2.0",
+    "GPL-2.0-only",
+    "GPL-2.0-or-later",
+    "SSPL-1.0",
+    "Commons Clause",
+    "BUSL-1.1",
+    "Elastic-2.0",
+    "Facebook-2-Clause",
+    "Facebook-3-Clause"
+  ],
+  "customRules": [
+    {
+      "package": "@types/*",
+      "allowedLicense": "*",
+      "reason": "TypeScript type definitions are generally permissively licensed and used only at build time",
+      "pattern": true
+    },
+    {
+      "package": "react",
+      "allowedLicense": "MIT",
+      "reason": "Core UI framework - MIT licensed"
+    },
+    {
+      "package": "express",
+      "allowedLicense": "MIT",
+      "reason": "Core server framework - MIT licensed"
+    }
+  ],
+  "licenseCategories": {
+    "permissive": [
+      "MIT",
+      "Apache-2.0",
+      "BSD-2-Clause",
+      "BSD-3-Clause",
+      "ISC",
+      "Unlicense",
+      "0BSD"
+    ],
+    "copyleft": [
+      "GPL-3.0",
+      "LGPL-3.0",
+      "AGPL-3.0",
+      "MPL-2.0",
+      "EPL-2.0"
+    ],
+    "publicDomain": [
+      "CC0-1.0",
+      "Unlicense"
+    ],
+    "proprietary": [
+      "BUSL-1.1",
+      "Elastic-2.0",
+      "SSPL-1.0"
+    ]
+  },
+  "complianceNotes": {
+    "distribution": "This project may be distributed as open source or proprietary software",
+    "requirements": [
+      "All runtime dependencies must use approved licenses",
+      "Development dependencies may use conditionally approved licenses with review",
+      "No rejected licenses permitted in any dependency chain",
+      "Custom rules apply for specific packages where justified"
+    ],
+    "reviewProcess": "Conditionally approved licenses require legal team review and explicit approval before use",
+    "updateFrequency": "Review this list quarterly and after major dependency updates"
+  },
+  "contacts": {
+    "legalTeam": "legal@example.com",
+    "securityTeam": "security@example.com",
+    "complianceOfficer": "compliance@example.com"
+  }
+}

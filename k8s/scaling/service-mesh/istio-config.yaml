@@ -1,0 +1,379 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: noa-server-istio
+  namespace: istio-system
+spec:
+  profile: production
+
+  # Component configuration
+  components:
+    pilot:
+      k8s:
+        replicaCount: 3
+        resources:
+          requests:
+            cpu: 500m
+            memory: 2Gi
+          limits:
+            cpu: 2000m
+            memory: 4Gi
+        hpaSpec:
+          minReplicas: 3
+          maxReplicas: 10
+          metrics:
+          - type: Resource
+            resource:
+              name: cpu
+              target:
+                type: Utilization
+                averageUtilization: 80
+
+    ingressGateways:
+    - name: istio-ingressgateway
+      enabled: true
+      k8s:
+        replicaCount: 3
+        resources:
+          requests:
+            cpu: 1000m
+            memory: 1Gi
+          limits:
+            cpu: 2000m
+            memory: 2Gi
+        service:
+          type: LoadBalancer
+          ports:
+          - port: 15021
+            targetPort: 15021
+            name: status-port
+          - port: 80
+            targetPort: 8080
+            name: http2
+          - port: 443
+            targetPort: 8443
+            name: https
+
+    egressGateways:
+    - name: istio-egressgateway
+      enabled: true
+      k8s:
+        replicaCount: 2
+
+  # Mesh configuration
+  meshConfig:
+    # Access logging
+    accessLogFile: /dev/stdout
+    accessLogEncoding: JSON
+    accessLogFormat: |
+      {
+        "start_time": "%START_TIME%",
+        "method": "%REQ(:METHOD)%",
+        "path": "%REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%",
+        "protocol": "%PROTOCOL%",
+        "response_code": "%RESPONSE_CODE%",
+        "response_flags": "%RESPONSE_FLAGS%",
+        "bytes_received": "%BYTES_RECEIVED%",
+        "bytes_sent": "%BYTES_SENT%",
+        "duration": "%DURATION%",
+        "upstream_service_time": "%RESP(X-ENVOY-UPSTREAM-SERVICE-TIME)%",
+        "x_forwarded_for": "%REQ(X-FORWARDED-FOR)%",
+        "user_agent": "%REQ(USER-AGENT)%",
+        "request_id": "%REQ(X-REQUEST-ID)%",
+        "authority": "%REQ(:AUTHORITY)%",
+        "upstream_host": "%UPSTREAM_HOST%"
+      }
+
+    # Default configuration
+    defaultConfig:
+      # Tracing
+      tracing:
+        sampling: 1.0
+        zipkin:
+          address: zipkin.istio-system:9411
+
+      # Concurrency
+      concurrency: 2
+
+    # Enable automatic mTLS
+    enableAutoMtls: true
+
+    # Traffic management
+    outboundTrafficPolicy:
+      mode: REGISTRY_ONLY
+
+  # Values configuration
+  values:
+    global:
+      # mTLS configuration
+      mtls:
+        enabled: true
+        auto: true
+
+      # Proxy configuration
+      proxy:
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 2000m
+            memory: 1Gi
+
+        # Connection pool settings
+        concurrency: 2
+
+      # Telemetry configuration
+      tracer:
+        zipkin:
+          address: zipkin.istio-system:9411
+
+---
+# Virtual Service for Noa Server
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: noa-server
+  namespace: noa-system
+spec:
+  hosts:
+  - noa-server.io
+  - api.noa-server.io
+  gateways:
+  - noa-gateway
+  http:
+  # Canary deployment - 10% to v2, 90% to v1
+  - match:
+    - headers:
+        x-canary:
+          exact: "true"
+    route:
+    - destination:
+        host: noa-server
+        subset: v2
+
+  - route:
+    - destination:
+        host: noa-server
+        subset: v1
+      weight: 90
+    - destination:
+        host: noa-server
+        subset: v2
+      weight: 10
+
+    # Retry policy
+    retries:
+      attempts: 3
+      perTryTimeout: 5s
+      retryOn: 5xx,reset,connect-failure,refused-stream
+
+    # Timeout
+    timeout: 30s
+
+    # Fault injection for testing (disabled in production)
+    # fault:
+    #   delay:
+    #     percentage:
+    #       value: 1.0
+    #     fixedDelay: 5s
+
+---
+# Destination Rule for traffic policies
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: noa-server
+  namespace: noa-system
+spec:
+  host: noa-server
+
+  # Traffic policy
+  trafficPolicy:
+    # Connection pool settings
+    connectionPool:
+      tcp:
+        maxConnections: 100
+      http:
+        http1MaxPendingRequests: 100
+        http2MaxRequests: 100
+        maxRequestsPerConnection: 2
+        maxRetries: 3
+
+    # Load balancer settings
+    loadBalancer:
+      consistentHash:
+        httpCookie:
+          name: noa-session
+          ttl: 3600s
+
+    # Outlier detection (circuit breaker)
+    outlierDetection:
+      consecutiveErrors: 5
+      interval: 30s
+      baseEjectionTime: 30s
+      maxEjectionPercent: 50
+      minHealthPercent: 50
+
+  # Subsets for different versions
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+    trafficPolicy:
+      connectionPool:
+        tcp:
+          maxConnections: 100
+        http:
+          http1MaxPendingRequests: 100
+
+  - name: v2
+    labels:
+      version: v2
+    trafficPolicy:
+      connectionPool:
+        tcp:
+          maxConnections: 50
+        http:
+          http1MaxPendingRequests: 50
+
+---
+# Gateway configuration
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: noa-gateway
+  namespace: noa-system
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  # HTTP (redirect to HTTPS)
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+    tls:
+      httpsRedirect: true
+
+  # HTTPS
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    hosts:
+    - noa-server.io
+    - api.noa-server.io
+    - "*.noa-server.io"
+    tls:
+      mode: SIMPLE
+      credentialName: noa-server-tls
+
+---
+# Service Entry for external services
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: external-apis
+  namespace: noa-system
+spec:
+  hosts:
+  - api.openai.com
+  - api.anthropic.com
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+  location: MESH_EXTERNAL
+  resolution: DNS
+
+---
+# Peer Authentication for mTLS
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: noa-system
+spec:
+  mtls:
+    mode: STRICT
+
+---
+# Authorization Policy
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: noa-server-authz
+  namespace: noa-system
+spec:
+  selector:
+    matchLabels:
+      app: noa-server
+  action: ALLOW
+  rules:
+  # Allow authenticated requests
+  - from:
+    - source:
+        principals:
+        - "cluster.local/ns/noa-system/sa/noa-server"
+    to:
+    - operation:
+        methods: ["GET", "POST", "PUT", "DELETE"]
+        paths: ["/api/*"]
+
+  # Allow health checks
+  - to:
+    - operation:
+        paths: ["/health", "/metrics"]
+
+---
+# Request Authentication with JWT
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: jwt-auth
+  namespace: noa-system
+spec:
+  selector:
+    matchLabels:
+      app: noa-server
+  jwtRules:
+  - issuer: "https://auth.noa-server.io"
+    jwksUri: "https://auth.noa-server.io/.well-known/jwks.json"
+    audiences:
+    - "noa-server-api"
+
+---
+# Telemetry configuration
+apiVersion: telemetry.istio.io/v1alpha1
+kind: Telemetry
+metadata:
+  name: noa-server-telemetry
+  namespace: noa-system
+spec:
+  metrics:
+  - providers:
+    - name: prometheus
+    dimensions:
+      request_protocol: request.protocol | "unknown"
+      response_code: response.code | 0
+      connection_security_policy: conditional((context.reporter.kind | "inbound") == "outbound", "unknown", conditional(connection.mtls | false, "mutual_tls", "none"))
+
+  accessLogging:
+  - providers:
+    - name: envoy
+
+---
+# Sidecar resource to optimize resource usage
+apiVersion: networking.istio.io/v1beta1
+kind: Sidecar
+metadata:
+  name: default
+  namespace: noa-system
+spec:
+  egress:
+  - hosts:
+    - "./*"
+    - "istio-system/*"

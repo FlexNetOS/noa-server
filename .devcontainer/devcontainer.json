@@ -1,0 +1,153 @@
+{
+  "name": "Noa Server Development",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+
+  // Configure tool-specific properties
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // TypeScript & JavaScript
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-typescript-next",
+
+        // Python
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.black-formatter",
+
+        // Docker & Kubernetes
+        "ms-azuretools.vscode-docker",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+
+        // Git
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+
+        // Database
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-sqlite",
+
+        // Utilities
+        "christian-kohler.path-intellisense",
+        "visualstudioexptteam.vscodeintellicode",
+        "gruntfuggly.todo-tree",
+        "yzhang.markdown-all-in-one"
+      ],
+
+      "settings": {
+        // TypeScript settings
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "typescript.enablePromptUseWorkspaceTsdk": true,
+
+        // ESLint settings
+        "eslint.validate": [
+          "javascript",
+          "javascriptreact",
+          "typescript",
+          "typescriptreact"
+        ],
+        "eslint.workingDirectories": [
+          {"mode": "auto"}
+        ],
+
+        // Prettier settings
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+
+        // Python settings
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": false,
+        "python.linting.flake8Enabled": true,
+        "python.formatting.provider": "black",
+
+        // Terminal settings
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/bin/bash"
+          }
+        },
+
+        // File associations
+        "files.associations": {
+          "*.yaml": "yaml",
+          "*.yml": "yaml",
+          ".env*": "dotenv"
+        },
+
+        // Editor settings
+        "editor.rulers": [80, 120],
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true
+      }
+    }
+  },
+
+  // Features to add to the dev container
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+
+  // Use 'forwardPorts' to make a list of ports inside the container available locally
+  "forwardPorts": [
+    3000,  // Noa Server API
+    8080,  // UI Dashboard
+    5432,  // PostgreSQL
+    6379,  // Redis
+    27017, // MongoDB
+    9090,  // Prometheus
+    3001   // Grafana
+  ],
+
+  // Port attributes
+  "portsAttributes": {
+    "3000": {
+      "label": "Noa Server API",
+      "onAutoForward": "notify"
+    },
+    "8080": {
+      "label": "UI Dashboard",
+      "onAutoForward": "openPreview"
+    },
+    "5432": {
+      "label": "PostgreSQL",
+      "onAutoForward": "silent"
+    },
+    "6379": {
+      "label": "Redis",
+      "onAutoForward": "silent"
+    }
+  },
+
+  // Post create command
+  "postCreateCommand": "pnpm install && pnpm run build",
+
+  // Post start command
+  "postStartCommand": "echo 'Noa Server Dev Container Ready! Run: pnpm run dev'",
+
+  // Environment variables
+  "containerEnv": {
+    "NODE_ENV": "development",
+    "PNPM_HOME": "/usr/local/share/pnpm",
+    "PATH": "/usr/local/share/pnpm:${containerEnv:PATH}"
+  },
+
+  // Mounts
+  "mounts": [
+    // Mount pnpm cache
+    "source=noa-server-pnpm-cache,target=/root/.local/share/pnpm,type=volume",
+    // Mount node_modules cache
+    "source=noa-server-node-modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
+  ],
+
+  // Remote user
+  "remoteUser": "node"
+}

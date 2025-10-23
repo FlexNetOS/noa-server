@@ -1,0 +1,97 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Build outputs
+dist/
+build/
+out/
+.next/
+.nuxt/
+.cache/
+*.tsbuildinfo
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Package manager files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment files
+.env
+.env.*
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Documentation
+CHANGELOG.md
+LICENSE
+
+# Generated files
+*.min.js
+*.min.css
+*.bundle.js
+
+# Git
+.git/
+.gitignore
+
+# Monorepo specific
+.runtime/
+.swarm/
+.hive-mind/
+.orchestration/
+EvidenceLedger/
+
+# Claude-specific
+.claude/
+.claude-flow/
+
+# Large files
+*.zip
+*.tar.gz
+*.rar
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Rust
+target/
+
+# Go
+vendor/
+
+# Docker
+Dockerfile
+docker-compose*.yml
+
+# Models and binaries
+models/
+*.bin
+*.gguf
+
+# Test snapshots
+**/__snapshots__/

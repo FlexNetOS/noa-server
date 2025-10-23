@@ -1,0 +1,262 @@
+name: Monitoring & Alerting Setup
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *' # Every 6 hours
+
+jobs:
+  # ===================================
+  # HEALTH CHECK MONITORING
+  # ===================================
+  health-monitoring:
+    name: Service Health Monitoring
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check production health
+        id: prod-health
+        run: |
+          HEALTH_URL="${{ vars.PRODUCTION_URL }}/health"
+          if [ -n "$HEALTH_URL" ]; then
+            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "$HEALTH_URL" || echo "000")
+            echo "status=$RESPONSE" >> $GITHUB_OUTPUT
+            if [ "$RESPONSE" != "200" ]; then
+              echo "❌ Production health check failed: $RESPONSE"
+              exit 1
+            else
+              echo "✅ Production health check passed"
+            fi
+          else
+            echo "No production URL configured"
+          fi
+        continue-on-error: true
+
+      - name: Check staging health
+        id: staging-health
+        run: |
+          HEALTH_URL="${{ vars.STAGING_URL }}/health"
+          if [ -n "$HEALTH_URL" ]; then
+            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "$HEALTH_URL" || echo "000")
+            echo "status=$RESPONSE" >> $GITHUB_OUTPUT
+            if [ "$RESPONSE" != "200" ]; then
+              echo "⚠️ Staging health check failed: $RESPONSE"
+            else
+              echo "✅ Staging health check passed"
+            fi
+          fi
+        continue-on-error: true
+
+      - name: Record metrics
+        run: |
+          mkdir -p monitoring/metrics
+          cat > monitoring/metrics/health-check-$(date +%Y%m%d-%H%M%S).json << EOF
+          {
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "production_status": "${{ steps.prod-health.outputs.status }}",
+            "staging_status": "${{ steps.staging-health.outputs.status }}",
+            "check_result": "${{ job.status }}"
+          }
+          EOF
+
+      - name: Upload metrics
+        uses: actions/upload-artifact@v4
+        with:
+          name: health-metrics-${{ github.run_id }}
+          path: monitoring/metrics/
+          retention-days: 30
+
+  # ===================================
+  # PERFORMANCE MONITORING
+  # ===================================
+  performance-monitoring:
+    name: Performance Metrics Collection
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.17.0'
+
+      - name: Install monitoring tools
+        run: |
+          npm install -g lighthouse clinic
+        continue-on-error: true
+
+      - name: Run Lighthouse performance audit
+        run: |
+          if [ -n "${{ vars.PRODUCTION_URL }}" ]; then
+            lighthouse "${{ vars.PRODUCTION_URL }}" \
+              --output=json \
+              --output-path=./lighthouse-report.json \
+              --chrome-flags="--headless --no-sandbox" || true
+          fi
+        continue-on-error: true
+
+      - name: Check API response times
+        run: |
+          mkdir -p monitoring/performance
+          API_URL="${{ vars.PRODUCTION_URL }}/api/health"
+          if [ -n "$API_URL" ]; then
+            for i in {1..10}; do
+              START=$(date +%s%N)
+              curl -s "$API_URL" > /dev/null || true
+              END=$(date +%s%N)
+              DURATION=$(( (END - START) / 1000000 ))
+              echo "$DURATION ms" >> monitoring/performance/response-times.txt
+              sleep 1
+            done
+
+            AVG_TIME=$(awk '{ sum += $1; n++ } END { if (n > 0) print sum / n; }' monitoring/performance/response-times.txt)
+            echo "Average response time: $AVG_TIME ms"
+
+            if (( $(echo "$AVG_TIME > 100" | bc -l) )); then
+              echo "⚠️ WARNING: Average response time ${AVG_TIME}ms exceeds 100ms target"
+            else
+              echo "✅ Response time within target (<100ms)"
+            fi
+          fi
+        continue-on-error: true
+
+      - name: Upload performance metrics
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: performance-metrics-${{ github.run_id }}
+          path: |
+            lighthouse-report.json
+            monitoring/performance/
+          retention-days: 90
+
+  # ===================================
+  # UPTIME MONITORING
+  # ===================================
+  uptime-check:
+    name: Uptime Verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Multi-endpoint uptime check
+        run: |
+          mkdir -p monitoring/uptime
+
+          ENDPOINTS=(
+            "${{ vars.PRODUCTION_URL }}"
+            "${{ vars.PRODUCTION_URL }}/api/health"
+            "${{ vars.PRODUCTION_URL }}/api/status"
+          )
+
+          FAILED=0
+          TOTAL=0
+
+          for endpoint in "${ENDPOINTS[@]}"; do
+            if [ -n "$endpoint" ]; then
+              TOTAL=$((TOTAL + 1))
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$endpoint" || echo "000")
+              if [ "$STATUS" = "200" ] || [ "$STATUS" = "204" ]; then
+                echo "✅ $endpoint: UP ($STATUS)"
+              else
+                echo "❌ $endpoint: DOWN ($STATUS)"
+                FAILED=$((FAILED + 1))
+              fi
+            fi
+          done
+
+          if [ $TOTAL -gt 0 ]; then
+            UPTIME_PERCENT=$(echo "scale=4; ($TOTAL - $FAILED) / $TOTAL * 100" | bc)
+            echo "Uptime: $UPTIME_PERCENT%"
+
+            cat > monitoring/uptime/report.json << EOF
+          {
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "total_endpoints": $TOTAL,
+            "failed_endpoints": $FAILED,
+            "uptime_percent": $UPTIME_PERCENT,
+            "target_uptime": 99.9
+          }
+          EOF
+
+            if (( $(echo "$UPTIME_PERCENT < 99.9" | bc -l) )); then
+              echo "⚠️ WARNING: Uptime ${UPTIME_PERCENT}% below 99.9% SLA"
+              exit 1
+            fi
+          fi
+        continue-on-error: true
+
+      - name: Upload uptime report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: uptime-report-${{ github.run_id }}
+          path: monitoring/uptime/
+          retention-days: 90
+
+  # ===================================
+  # ALERT ON FAILURES
+  # ===================================
+  alert-on-failure:
+    name: Send Alerts
+    runs-on: ubuntu-latest
+    needs: [health-monitoring, performance-monitoring, uptime-check]
+    if: failure()
+    steps:
+      - name: Create incident report
+        run: |
+          cat > incident-report.md << EOF
+          # Monitoring Alert - Failure Detected
+
+          **Time**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+          **Repository**: ${{ github.repository }}
+          **Workflow**: ${{ github.workflow }}
+          **Run ID**: ${{ github.run_id }}
+
+          ## Failed Jobs
+
+          - Health Monitoring: ${{ needs.health-monitoring.result }}
+          - Performance Monitoring: ${{ needs.performance-monitoring.result }}
+          - Uptime Check: ${{ needs.uptime-check.result }}
+
+          ## Action Required
+
+          1. Check service health and logs
+          2. Review performance metrics
+          3. Verify infrastructure status
+          4. Escalate if necessary
+
+          [View workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          EOF
+
+      - name: Create GitHub issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('incident-report.md', 'utf8');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[ALERT] Monitoring failure detected - ${new Date().toISOString()}`,
+              body: body,
+              labels: ['incident', 'monitoring', 'urgent']
+            });
+        continue-on-error: true
+
+      - name: Notify via webhook
+        if: vars.ALERT_WEBHOOK_URL != ''
+        run: |
+          curl -X POST "${{ vars.ALERT_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "text": "⚠️ Monitoring Alert: Service health check failed",
+              "workflow": "${{ github.workflow }}",
+              "repository": "${{ github.repository }}",
+              "run_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }' || true
+        continue-on-error: true

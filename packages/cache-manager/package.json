@@ -1,0 +1,55 @@
+{
+  "name": "@noa/cache-manager",
+  "version": "1.0.0",
+  "description": "Multi-tier caching system with Redis, memory, and CDN support for Noa Server",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "benchmark": "node --loader ts-node/esm dist/benchmark.js"
+  },
+  "keywords": [
+    "cache",
+    "caching",
+    "redis",
+    "memcached",
+    "multi-tier",
+    "performance",
+    "cache-aside",
+    "write-through",
+    "write-behind"
+  ],
+  "author": "Noa Server Team",
+  "license": "MIT",
+  "dependencies": {
+    "ioredis": "^5.3.2",
+    "redis": "^4.6.12",
+    "lru-cache": "^10.2.0",
+    "node-cache": "^5.1.2",
+    "memcached": "^2.2.2",
+    "msgpackr": "^1.10.1",
+    "zod": "^3.22.4",
+    "winston": "^3.11.0",
+    "prom-client": "^15.1.0",
+    "xxhash-wasm": "^1.0.2",
+    "compression": "^1.7.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.16",
+    "@types/compression": "^1.7.5",
+    "@types/memcached": "^2.2.10",
+    "@vitest/coverage-v8": "^1.2.2",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.5",
+    "ts-node": "^10.9.2"
+  }
+}

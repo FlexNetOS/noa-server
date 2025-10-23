@@ -1,0 +1,560 @@
+openapi: 3.0.3
+info:
+  title: Workflows API
+  version: 1.0.0
+
+paths:
+  /workflows:
+    get:
+      summary: List workflows
+      description: Get paginated list of workflows
+      tags:
+        - Workflows
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/PageParam'
+        - $ref: '../openapi.yaml#/components/parameters/LimitParam'
+        - $ref: '../openapi.yaml#/components/parameters/SortParam'
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, inactive, archived]
+        - name: category
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Workflows retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Workflow'
+                  meta:
+                    $ref: '../openapi.yaml#/components/schemas/PaginationMeta'
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+
+    post:
+      summary: Create workflow
+      description: Create a new workflow definition
+      tags:
+        - Workflows
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWorkflowRequest'
+      responses:
+        '201':
+          description: Workflow created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Workflow'
+        '400':
+          $ref: '../openapi.yaml#/components/responses/BadRequest'
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+
+  /workflows/{workflowId}:
+    get:
+      summary: Get workflow
+      description: Retrieve workflow details by ID
+      tags:
+        - Workflows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: workflowId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Workflow retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Workflow'
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: '../openapi.yaml#/components/responses/NotFound'
+
+    put:
+      summary: Update workflow
+      description: Update workflow definition
+      tags:
+        - Workflows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: workflowId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWorkflowRequest'
+      responses:
+        '200':
+          description: Workflow updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Workflow'
+        '400':
+          $ref: '../openapi.yaml#/components/responses/BadRequest'
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: '../openapi.yaml#/components/responses/NotFound'
+
+    delete:
+      summary: Delete workflow
+      description: Delete workflow (marks as archived)
+      tags:
+        - Workflows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: workflowId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Workflow deleted successfully
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: '../openapi.yaml#/components/responses/NotFound'
+
+  /workflows/{workflowId}/execute:
+    post:
+      summary: Execute workflow
+      description: Trigger workflow execution with optional parameters
+      tags:
+        - Workflows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: workflowId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                parameters:
+                  type: object
+                  description: Workflow execution parameters
+                context:
+                  type: object
+                  description: Additional context for execution
+                priority:
+                  type: string
+                  enum: [low, normal, high, urgent]
+                  default: normal
+                timeout:
+                  type: integer
+                  description: Execution timeout in seconds
+            example:
+              parameters:
+                inputData: "value"
+                option: true
+              priority: high
+              timeout: 300
+      responses:
+        '202':
+          description: Workflow execution started
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/WorkflowExecution'
+        '400':
+          $ref: '../openapi.yaml#/components/responses/BadRequest'
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: '../openapi.yaml#/components/responses/NotFound'
+
+  /workflows/{workflowId}/status:
+    get:
+      summary: Get workflow status
+      description: Retrieve current workflow status and metrics
+      tags:
+        - Workflows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: workflowId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Workflow status retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        enum: [active, inactive, executing, failed]
+                      executions:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                          successful:
+                            type: integer
+                          failed:
+                            type: integer
+                          running:
+                            type: integer
+                      lastExecution:
+                        type: string
+                        format: date-time
+                      metrics:
+                        type: object
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: '../openapi.yaml#/components/responses/NotFound'
+
+  /workflows/executions:
+    get:
+      summary: List workflow executions
+      description: Get paginated list of workflow executions
+      tags:
+        - Workflows
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/PageParam'
+        - $ref: '../openapi.yaml#/components/parameters/LimitParam'
+        - name: workflowId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, running, completed, failed, cancelled]
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Executions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WorkflowExecution'
+                  meta:
+                    $ref: '../openapi.yaml#/components/schemas/PaginationMeta'
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+
+  /workflows/executions/{executionId}:
+    get:
+      summary: Get execution details
+      description: Retrieve detailed information about workflow execution
+      tags:
+        - Workflows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: executionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Execution details retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/WorkflowExecution'
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: '../openapi.yaml#/components/responses/NotFound'
+
+    delete:
+      summary: Cancel execution
+      description: Cancel running workflow execution
+      tags:
+        - Workflows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: executionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Execution cancelled successfully
+        '400':
+          description: Execution cannot be cancelled
+        '401':
+          $ref: '../openapi.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: '../openapi.yaml#/components/responses/NotFound'
+
+components:
+  schemas:
+    Workflow:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        version:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive, archived]
+        category:
+          type: string
+        definition:
+          $ref: '#/components/schemas/WorkflowDefinition'
+        schedule:
+          type: object
+          properties:
+            cron:
+              type: string
+            enabled:
+              type: boolean
+        metadata:
+          type: object
+        createdBy:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    WorkflowDefinition:
+      type: object
+      properties:
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowStep'
+        variables:
+          type: object
+        errorHandling:
+          type: object
+          properties:
+            retryPolicy:
+              type: object
+            onError:
+              type: string
+              enum: [continue, stop, rollback]
+
+    WorkflowStep:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          enum: [task, condition, parallel, loop, mcp_tool, agent_task]
+        config:
+          type: object
+        dependencies:
+          type: array
+          items:
+            type: string
+        timeout:
+          type: integer
+        retries:
+          type: integer
+
+    WorkflowExecution:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        workflowId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [pending, running, completed, failed, cancelled]
+        priority:
+          type: string
+          enum: [low, normal, high, urgent]
+        parameters:
+          type: object
+        result:
+          type: object
+        error:
+          type: object
+        startedAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+        duration:
+          type: integer
+          description: Execution duration in milliseconds
+        steps:
+          type: array
+          items:
+            type: object
+            properties:
+              stepId:
+                type: string
+              status:
+                type: string
+              startedAt:
+                type: string
+                format: date-time
+              completedAt:
+                type: string
+                format: date-time
+              result:
+                type: object
+        logs:
+          type: array
+          items:
+            type: object
+            properties:
+              timestamp:
+                type: string
+                format: date-time
+              level:
+                type: string
+              message:
+                type: string
+
+    CreateWorkflowRequest:
+      type: object
+      required:
+        - name
+        - definition
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+        definition:
+          $ref: '#/components/schemas/WorkflowDefinition'
+        schedule:
+          type: object
+        metadata:
+          type: object
+
+    UpdateWorkflowRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive]
+        definition:
+          $ref: '#/components/schemas/WorkflowDefinition'
+        schedule:
+          type: object
+        metadata:
+          type: object

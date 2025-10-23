@@ -1,0 +1,51 @@
+{
+  "audit": {
+    "enabled": true,
+    "mandatory": true,
+    "autoTrigger": true,
+    "minConfidence": 0.95,
+    "enableNeuralAnalysis": true,
+    "enableTruthGate": true,
+    "enableTripleVerification": true,
+    "outputDirectory": ".claude/audit-history",
+    "hooks": {
+      "postTask": true,
+      "postEdit": false,
+      "preCommit": false
+    },
+    "promptInjection": {
+      "enabled": true,
+      "frequency": "every-response",
+      "template": "\n\n---\n⚠️ AUDIT REMINDER: Mark this task as completed in TodoWrite to trigger automatic verification.\n---\n"
+    },
+    "todoInterception": {
+      "enabled": true,
+      "interceptCompletions": true,
+      "requireAudit": true,
+      "autoSpawnSwarm": true
+    },
+    "llamaCpp": {
+      "enabled": true,
+      "modelPath": null,
+      "cudaEnabled": false,
+      "queenNeuralProcessing": true,
+      "autoSelectModel": true,
+      "modelSelectionProfile": "balanced"
+    }
+  },
+  "slashCommands": {
+    "/audit": "Run comprehensive audit on current workspace",
+    "/audit-task": "Audit specific task by ID",
+    "/audit-file": "Audit specific file or directory",
+    "/audit-report": "Generate audit report for task/file",
+    "/audit-config": "Show/modify audit configuration",
+    "/audit-history": "Show audit execution history"
+  },
+  "hooks": {
+    "post-task": {
+      "enabled": true,
+      "script": ".claude/hooks/post-task",
+      "autoRun": true
+    }
+  }
+}

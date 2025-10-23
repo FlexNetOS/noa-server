@@ -1,0 +1,2 @@
+# Python dependencies for Claude Suite automation.
+# TODO: populate with concrete versions once subsystems are integrated.

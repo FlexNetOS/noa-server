@@ -1,0 +1,312 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+  labels:
+    name: monitoring
+    environment: production
+
+---
+# ConfigMap for monitoring configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: monitoring-config
+  namespace: monitoring
+data:
+  monitoring-config.json: |
+    {
+      "monitoring": {
+        "enabled": true,
+        "healthChecks": {
+          "enabled": true,
+          "interval": 30000
+        },
+        "selfHealing": {
+          "enabled": true,
+          "autoRestart": true
+        }
+      }
+    }
+
+---
+# Health Check Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: health-check-monitor
+  namespace: monitoring
+  labels:
+    app: health-check
+    component: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: health-check
+  template:
+    metadata:
+      labels:
+        app: health-check
+        component: monitoring
+    spec:
+      containers:
+      - name: health-check
+        image: node:20-alpine
+        command:
+          - node
+          - /app/scripts/monitoring/health-check.js
+          - continuous
+        volumeMounts:
+          - name: config
+            mountPath: /app/config/monitoring
+            readOnly: true
+          - name: scripts
+            mountPath: /app/scripts/monitoring
+            readOnly: true
+          - name: logs
+            mountPath: /app/logs
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          exec:
+            command:
+              - node
+              - -e
+              - "process.exit(0)"
+          initialDelaySeconds: 30
+          periodSeconds: 60
+        readinessProbe:
+          exec:
+            command:
+              - node
+              - -e
+              - "process.exit(0)"
+          initialDelaySeconds: 10
+          periodSeconds: 30
+      volumes:
+        - name: config
+          configMap:
+            name: monitoring-config
+        - name: scripts
+          configMap:
+            name: monitoring-scripts
+        - name: logs
+          emptyDir: {}
+
+---
+# Metrics Collector Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-collector
+  namespace: monitoring
+  labels:
+    app: metrics-collector
+    component: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: metrics-collector
+  template:
+    metadata:
+      labels:
+        app: metrics-collector
+        component: monitoring
+    spec:
+      containers:
+      - name: collector
+        image: node:20-alpine
+        command:
+          - node
+          - /app/scripts/monitoring/metrics-collector.js
+          - continuous
+        volumeMounts:
+          - name: config
+            mountPath: /app/config/monitoring
+            readOnly: true
+          - name: scripts
+            mountPath: /app/scripts/monitoring
+            readOnly: true
+          - name: data
+            mountPath: /app/data
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        env:
+          - name: NODE_ENV
+            value: "production"
+      volumes:
+        - name: config
+          configMap:
+            name: monitoring-config
+        - name: scripts
+          configMap:
+            name: monitoring-scripts
+        - name: data
+          persistentVolumeClaim:
+            claimName: metrics-storage
+
+---
+# Self-Healing Controller
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: self-healing-controller
+  namespace: monitoring
+  labels:
+    app: self-healing
+    component: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: self-healing
+  template:
+    metadata:
+      labels:
+        app: self-healing
+        component: monitoring
+    spec:
+      serviceAccountName: self-healing-sa
+      containers:
+      - name: controller
+        image: node:20-alpine
+        volumeMounts:
+          - name: config
+            mountPath: /app/config/monitoring
+            readOnly: true
+          - name: scripts
+            mountPath: /app/scripts/monitoring
+            readOnly: true
+          - name: logs
+            mountPath: /app/logs
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+      volumes:
+        - name: config
+          configMap:
+            name: monitoring-config
+        - name: scripts
+          configMap:
+            name: monitoring-scripts
+        - name: logs
+          emptyDir: {}
+
+---
+# Service Account for Self-Healing (with cluster permissions)
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: self-healing-sa
+  namespace: monitoring
+
+---
+# ClusterRole for Self-Healing
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: self-healing-role
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets"]
+    verbs: ["get", "list", "watch", "update", "patch"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch", "delete"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch"]
+
+---
+# ClusterRoleBinding for Self-Healing
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: self-healing-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: self-healing-role
+subjects:
+  - kind: ServiceAccount
+    name: self-healing-sa
+    namespace: monitoring
+
+---
+# PersistentVolumeClaim for metrics storage
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: metrics-storage
+  namespace: monitoring
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: standard
+
+---
+# Service for metrics collector
+apiVersion: v1
+kind: Service
+metadata:
+  name: metrics-collector
+  namespace: monitoring
+  labels:
+    app: metrics-collector
+spec:
+  selector:
+    app: metrics-collector
+  ports:
+    - name: metrics
+      port: 9300
+      targetPort: 9300
+      protocol: TCP
+  type: ClusterIP
+
+---
+# HorizontalPodAutoscaler for health check
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: health-check-hpa
+  namespace: monitoring
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: health-check-monitor
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80

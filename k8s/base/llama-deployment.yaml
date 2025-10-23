@@ -1,0 +1,140 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: noa-llama-cpp
+  namespace: noa-server
+  labels:
+    app: noa-llama-cpp
+    tier: ml
+    component: neural-processing
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate  # GPU resources can't be shared
+  selector:
+    matchLabels:
+      app: noa-llama-cpp
+  template:
+    metadata:
+      labels:
+        app: noa-llama-cpp
+        tier: ml
+        component: neural-processing
+    spec:
+      serviceAccountName: noa-server-sa
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        fsGroup: 1001
+      # Node selector for GPU nodes
+      nodeSelector:
+        accelerator: nvidia-gpu
+      # Tolerations for GPU taints
+      tolerations:
+      - key: nvidia.com/gpu
+        operator: Exists
+        effect: NoSchedule
+      containers:
+      - name: llama-cpp
+        image: noa-server:latest
+        imagePullPolicy: IfNotPresent
+        args: ["llama-service"]
+        ports:
+        - name: http
+          containerPort: 9300
+          protocol: TCP
+        env:
+        - name: LLAMA_PORT
+          value: "9300"
+        - name: MODEL_PATH
+          value: "/app/models/demo.gguf"
+        - name: CUDA_VISIBLE_DEVICES
+          value: "0"
+        - name: GGML_CUDA_ENABLE
+          value: "1"
+        resources:
+          requests:
+            cpu: 2000m
+            memory: 2Gi
+            nvidia.com/gpu: 1
+          limits:
+            cpu: 4000m
+            memory: 4Gi
+            nvidia.com/gpu: 1
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 9300
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 9300
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        volumeMounts:
+        - name: llama-models
+          mountPath: /app/models
+          readOnly: true
+        - name: llama-data
+          mountPath: /app/data
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+      volumes:
+      - name: llama-models
+        persistentVolumeClaim:
+          claimName: noa-llama-models-pvc
+      - name: llama-data
+        persistentVolumeClaim:
+          claimName: noa-llama-data-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: noa-llama-service
+  namespace: noa-server
+  labels:
+    app: noa-llama-cpp
+spec:
+  type: ClusterIP
+  selector:
+    app: noa-llama-cpp
+  ports:
+  - name: http
+    port: 9300
+    targetPort: 9300
+    protocol: TCP
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: noa-llama-models-pvc
+  namespace: noa-server
+spec:
+  accessModes:
+  - ReadOnlyMany
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: standard
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: noa-llama-data-pvc
+  namespace: noa-server
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: standard

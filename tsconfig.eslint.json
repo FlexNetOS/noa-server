@@ -1,0 +1,29 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+    "scripts/**/*.ts",
+    "scripts/**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "tests/**/*.js"
+  ],
+  "exclude": [
+    "**/node_modules/**",
+    "packages/claude-code/**",
+    "packages/claude-flow-alpha/**",
+    "packages/claude-flow.wiki/**",
+    "packages/flow-nexus/**",
+    "packages/llama.cpp/**",
+    "packages/mcp-agent/**",
+    "packages/ui-dashboard/dist/**",
+    "packages/contains-studio-dashboard/.next/**",
+    "packages/contains-studio-dashboard/out/**"
+  ]
+}

@@ -1,0 +1,279 @@
+{
+  "monitoring": {
+    "enabled": true,
+    "version": "1.0.0",
+    "environment": "development",
+    "lastUpdated": "2025-10-22",
+    "healthChecks": {
+      "enabled": true,
+      "interval": 30000,
+      "timeout": 5000,
+      "retries": 3,
+      "endpoints": [
+        {
+          "name": "api-health",
+          "url": "http://localhost:8001/health",
+          "method": "GET",
+          "expectedStatus": 200,
+          "critical": true
+        },
+        {
+          "name": "mcp-server",
+          "url": "http://localhost:8001/mcp/status",
+          "method": "GET",
+          "expectedStatus": 200,
+          "critical": true
+        },
+        {
+          "name": "claude-flow",
+          "url": "http://localhost:9100/health",
+          "method": "GET",
+          "expectedStatus": 200,
+          "critical": false
+        },
+        {
+          "name": "neural-processing",
+          "url": "http://localhost:8080/v1/health",
+          "method": "GET",
+          "expectedStatus": 200,
+          "critical": false
+        },
+        {
+          "name": "ui-server",
+          "url": "http://localhost:9200/health",
+          "method": "GET",
+          "expectedStatus": 200,
+          "critical": false
+        }
+      ]
+    },
+    "selfHealing": {
+      "enabled": true,
+      "autoRestart": true,
+      "maxRestarts": 5,
+      "restartCooldown": 60000,
+      "gracefulShutdown": true,
+      "shutdownTimeout": 30000,
+      "strategies": {
+        "serviceRestart": {
+          "enabled": true,
+          "cooldown": 30000,
+          "maxConsecutive": 3
+        },
+        "dependencyCheck": {
+          "enabled": true,
+          "checkInterval": 60000
+        },
+        "rollback": {
+          "enabled": true,
+          "automatic": false,
+          "approvalRequired": true
+        },
+        "gracefulDegradation": {
+          "enabled": true,
+          "fallbackMode": "read-only"
+        }
+      }
+    },
+    "alerting": {
+      "enabled": true,
+      "channels": {
+        "console": {
+          "enabled": true,
+          "logLevel": "info"
+        },
+        "file": {
+          "enabled": true,
+          "path": "./logs/alerts",
+          "rotation": "daily",
+          "maxFiles": 30
+        },
+        "webhook": {
+          "enabled": false,
+          "url": null
+        },
+        "email": {
+          "enabled": false,
+          "recipients": []
+        }
+      },
+      "rules": [
+        {
+          "name": "high-error-rate",
+          "condition": "error_rate > 0.05",
+          "severity": "critical",
+          "cooldown": 300000,
+          "actions": ["notify", "auto-heal"]
+        },
+        {
+          "name": "service-down",
+          "condition": "health_check_failed && critical",
+          "severity": "critical",
+          "cooldown": 60000,
+          "actions": ["notify", "restart-service"]
+        },
+        {
+          "name": "high-latency",
+          "condition": "avg_latency > 1000",
+          "severity": "warning",
+          "cooldown": 600000,
+          "actions": ["notify"]
+        },
+        {
+          "name": "memory-pressure",
+          "condition": "memory_usage > 0.85",
+          "severity": "warning",
+          "cooldown": 300000,
+          "actions": ["notify", "garbage-collect"]
+        },
+        {
+          "name": "cpu-overload",
+          "condition": "cpu_usage > 0.90",
+          "severity": "critical",
+          "cooldown": 180000,
+          "actions": ["notify", "scale-up"]
+        }
+      ]
+    },
+    "metrics": {
+      "enabled": true,
+      "collectInterval": 10000,
+      "retentionDays": 30,
+      "storage": {
+        "type": "file",
+        "path": "./data/metrics",
+        "compression": true
+      },
+      "categories": {
+        "system": {
+          "enabled": true,
+          "metrics": ["cpu", "memory", "disk", "network"]
+        },
+        "application": {
+          "enabled": true,
+          "metrics": ["requests", "errors", "latency", "throughput"]
+        },
+        "business": {
+          "enabled": true,
+          "metrics": ["active-users", "tasks-completed", "agent-spawns"]
+        },
+        "custom": {
+          "enabled": true,
+          "metrics": []
+        }
+      }
+    },
+    "logging": {
+      "enabled": true,
+      "level": "info",
+      "format": "json",
+      "outputs": {
+        "console": {
+          "enabled": true,
+          "colorize": true
+        },
+        "file": {
+          "enabled": true,
+          "path": "./logs/monitoring",
+          "rotation": "daily",
+          "maxSize": "100mb",
+          "maxFiles": 14,
+          "compress": true
+        },
+        "syslog": {
+          "enabled": false,
+          "host": "localhost",
+          "port": 514
+        }
+      },
+      "categories": [
+        "health-check",
+        "self-healing",
+        "alerts",
+        "metrics",
+        "performance"
+      ]
+    },
+    "performance": {
+      "enabled": true,
+      "profiling": {
+        "enabled": false,
+        "samplingInterval": 100,
+        "outputPath": "./data/profiles"
+      },
+      "tracing": {
+        "enabled": true,
+        "sampleRate": 0.1,
+        "exportInterval": 30000
+      },
+      "benchmarking": {
+        "enabled": true,
+        "schedule": "0 */6 * * *",
+        "outputPath": "./docs/benchmarks"
+      }
+    },
+    "dashboard": {
+      "enabled": true,
+      "port": 9300,
+      "refreshInterval": 5000,
+      "widgets": [
+        {
+          "id": "system-health",
+          "type": "status-grid",
+          "title": "System Health",
+          "size": "large"
+        },
+        {
+          "id": "error-rate",
+          "type": "line-chart",
+          "title": "Error Rate",
+          "timeRange": "1h"
+        },
+        {
+          "id": "latency",
+          "type": "line-chart",
+          "title": "Average Latency",
+          "timeRange": "1h"
+        },
+        {
+          "id": "throughput",
+          "type": "bar-chart",
+          "title": "Request Throughput",
+          "timeRange": "1h"
+        },
+        {
+          "id": "resource-usage",
+          "type": "gauge-panel",
+          "title": "Resource Usage"
+        },
+        {
+          "id": "recent-alerts",
+          "type": "alert-list",
+          "title": "Recent Alerts",
+          "limit": 10
+        }
+      ]
+    }
+  },
+  "integrations": {
+    "prometheus": {
+      "enabled": false,
+      "endpoint": "http://localhost:9090",
+      "scrapeInterval": "15s"
+    },
+    "grafana": {
+      "enabled": false,
+      "endpoint": "http://localhost:3000"
+    },
+    "sentry": {
+      "enabled": false,
+      "dsn": null,
+      "environment": "development"
+    },
+    "datadog": {
+      "enabled": false,
+      "apiKey": null,
+      "site": "datadoghq.com"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@noa/agent-swarm": ["packages/agent-swarm/src"],
+      "@noa/claude-flow-integration": ["packages/claude-flow-integration/src"],
+      "@noa/workflow-orchestration": ["packages/workflow-orchestration/src"]
+    }
+  }
+}

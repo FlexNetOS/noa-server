@@ -1,0 +1,104 @@
+# Prometheus Network Policy
+# Allow metrics collection
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: prometheus-policy
+  namespace: monitoring
+spec:
+  podSelector:
+    matchLabels:
+      app: prometheus
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Allow Grafana
+    - from:
+        - podSelector:
+            matchLabels:
+              app: grafana
+      ports:
+        - protocol: TCP
+          port: 9090
+
+    # Allow AlertManager
+    - from:
+        - podSelector:
+            matchLabels:
+              app: alertmanager
+      ports:
+        - protocol: TCP
+          port: 9090
+
+    # Allow Prometheus federation
+    - from:
+        - podSelector:
+            matchLabels:
+              app: prometheus
+      ports:
+        - protocol: TCP
+          port: 9090
+
+  egress:
+    # Allow DNS
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+
+    # Scrape Noa server metrics
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: noa-server
+      ports:
+        - protocol: TCP
+          port: 9090
+
+    # Scrape MCP server metrics
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: mcp-servers
+      ports:
+        - protocol: TCP
+          port: 9090
+
+    # Scrape database metrics
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: databases
+      ports:
+        - protocol: TCP
+          port: 9187 # postgres-exporter
+        - protocol: TCP
+          port: 9121 # redis-exporter
+
+    # Scrape Kubernetes API
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: default
+      ports:
+        - protocol: TCP
+          port: 443
+
+    # Send alerts
+    - to:
+        - podSelector:
+            matchLabels:
+              app: alertmanager
+      ports:
+        - protocol: TCP
+          port: 9093
+
+    # Allow external alerting webhooks
+    - ports:
+        - protocol: TCP
+          port: 443

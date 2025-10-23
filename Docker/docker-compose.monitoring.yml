@@ -1,0 +1,219 @@
+version: '3.8'
+
+# Monitoring Stack for Noa Server
+# Includes: Prometheus, Grafana, Alertmanager, Node Exporter, cAdvisor
+
+services:
+  # ===================================
+  # PROMETHEUS - Metrics Collection
+  # ===================================
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    container_name: noa-prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=15d'
+      - '--storage.tsdb.retention.size=50GB'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./config/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./config/monitoring/prometheus-rules.yml:/etc/prometheus/rules/alerts.yml:ro
+      - prometheus-data:/prometheus
+    networks:
+      - monitoring
+    depends_on:
+      - node-exporter
+      - cadvisor
+    healthcheck:
+      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:9090/-/healthy']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ===================================
+  # GRAFANA - Visualization
+  # ===================================
+  grafana:
+    image: grafana/grafana:10.2.2
+    container_name: noa-grafana
+    restart: unless-stopped
+    ports:
+      - '3001:3000'
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=https://grafana.noa-server.example.com
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel,grafana-worldmap-panel
+      - GF_FEATURE_TOGGLES_ENABLE=publicDashboards
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./config/monitoring/grafana-dashboard.json:/etc/grafana/provisioning/dashboards/noa-server.json:ro
+      - ./config/monitoring/grafana-datasources.yml:/etc/grafana/provisioning/datasources/prometheus.yml:ro
+    networks:
+      - monitoring
+    depends_on:
+      - prometheus
+    healthcheck:
+      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:3000/api/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ===================================
+  # ALERTMANAGER - Alert Management
+  # ===================================
+  alertmanager:
+    image: prom/alertmanager:v0.26.0
+    container_name: noa-alertmanager
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+      - '--web.external-url=https://alerts.noa-server.example.com'
+    ports:
+      - '9093:9093'
+    volumes:
+      - ./config/monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alertmanager-data:/alertmanager
+    networks:
+      - monitoring
+    environment:
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}
+      - PAGERDUTY_SERVICE_KEY=${PAGERDUTY_SERVICE_KEY}
+      - WEBHOOK_URL=${WEBHOOK_URL}
+    healthcheck:
+      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:9093/-/healthy']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ===================================
+  # NODE EXPORTER - System Metrics
+  # ===================================
+  node-exporter:
+    image: prom/node-exporter:v1.7.0
+    container_name: noa-node-exporter
+    restart: unless-stopped
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    ports:
+      - '9100:9100'
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    networks:
+      - monitoring
+    pid: host
+
+  # ===================================
+  # CADVISOR - Container Metrics
+  # ===================================
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.2
+    container_name: noa-cadvisor
+    restart: unless-stopped
+    ports:
+      - '8080:8080'
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    networks:
+      - monitoring
+    privileged: true
+    devices:
+      - /dev/kmsg
+
+  # ===================================
+  # BLACKBOX EXPORTER - Endpoint Monitoring
+  # ===================================
+  blackbox-exporter:
+    image: prom/blackbox-exporter:v0.24.0
+    container_name: noa-blackbox-exporter
+    restart: unless-stopped
+    ports:
+      - '9115:9115'
+    volumes:
+      - ./config/monitoring/blackbox.yml:/etc/blackbox_exporter/config.yml:ro
+    networks:
+      - monitoring
+    command:
+      - '--config.file=/etc/blackbox_exporter/config.yml'
+
+  # ===================================
+  # LOKI - Log Aggregation
+  # ===================================
+  loki:
+    image: grafana/loki:2.9.3
+    container_name: noa-loki
+    restart: unless-stopped
+    ports:
+      - '3100:3100'
+    volumes:
+      - ./config/monitoring/loki-config.yml:/etc/loki/local-config.yaml:ro
+      - loki-data:/loki
+    networks:
+      - monitoring
+    command: -config.file=/etc/loki/local-config.yaml
+
+  # ===================================
+  # PROMTAIL - Log Shipper
+  # ===================================
+  promtail:
+    image: grafana/promtail:2.9.3
+    container_name: noa-promtail
+    restart: unless-stopped
+    volumes:
+      - /var/log:/var/log:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - ./config/monitoring/promtail-config.yml:/etc/promtail/config.yml:ro
+    networks:
+      - monitoring
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+
+  # ===================================
+  # NGINX EXPORTER - Web Server Metrics
+  # ===================================
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:0.11.0
+    container_name: noa-nginx-exporter
+    restart: unless-stopped
+    ports:
+      - '9113:9113'
+    networks:
+      - monitoring
+    command:
+      - '-nginx.scrape-uri=http://nginx:80/stub_status'
+
+networks:
+  monitoring:
+    name: noa-monitoring
+    driver: bridge
+
+volumes:
+  prometheus-data:
+    name: noa-prometheus-data
+  grafana-data:
+    name: noa-grafana-data
+  alertmanager-data:
+    name: noa-alertmanager-data
+  loki-data:
+    name: noa-loki-data

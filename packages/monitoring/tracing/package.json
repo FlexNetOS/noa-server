@@ -1,0 +1,54 @@
+{
+  "name": "@noa/tracing",
+  "version": "1.0.0",
+  "description": "Distributed tracing with OpenTelemetry, Jaeger, and Zipkin for Noa Server",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "benchmark": "node --loader ts-node/esm dist/benchmark.js"
+  },
+  "keywords": [
+    "tracing",
+    "opentelemetry",
+    "jaeger",
+    "zipkin",
+    "distributed-tracing",
+    "observability",
+    "instrumentation"
+  ],
+  "author": "Noa Server Team",
+  "license": "MIT",
+  "dependencies": {
+    "@opentelemetry/api": "^1.8.0",
+    "@opentelemetry/sdk-node": "^0.49.0",
+    "@opentelemetry/sdk-trace-base": "^1.21.0",
+    "@opentelemetry/sdk-trace-node": "^1.21.0",
+    "@opentelemetry/exporter-jaeger": "^1.21.0",
+    "@opentelemetry/exporter-zipkin": "^1.21.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.49.0",
+    "@opentelemetry/instrumentation": "^0.49.0",
+    "@opentelemetry/instrumentation-http": "^0.49.0",
+    "@opentelemetry/instrumentation-express": "^0.36.0",
+    "@opentelemetry/resources": "^1.21.0",
+    "@opentelemetry/semantic-conventions": "^1.21.0",
+    "winston": "^3.11.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.16",
+    "@vitest/coverage-v8": "^1.2.2",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.5",
+    "ts-node": "^10.9.2"
+  }
+}

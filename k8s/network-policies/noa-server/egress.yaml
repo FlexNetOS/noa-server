@@ -1,0 +1,90 @@
+# Noa Server Egress Network Policy
+# Defines allowed outgoing traffic from Noa server
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: noa-server-egress
+  namespace: noa-server
+spec:
+  podSelector:
+    matchLabels:
+      app: noa-server
+  policyTypes:
+    - Egress
+  egress:
+    # Allow DNS resolution
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+
+    # Allow PostgreSQL connection
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: databases
+        - podSelector:
+            matchLabels:
+              app: postgresql
+      ports:
+        - protocol: TCP
+          port: 5432
+
+    # Allow Redis connection
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: databases
+        - podSelector:
+            matchLabels:
+              app: redis
+      ports:
+        - protocol: TCP
+          port: 6379
+
+    # Allow MongoDB connection
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: databases
+        - podSelector:
+            matchLabels:
+              app: mongodb
+      ports:
+        - protocol: TCP
+          port: 27017
+
+    # Allow MCP server connections
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: mcp-servers
+      ports:
+        - protocol: TCP
+          port: 3000-9999
+
+    # Allow HTTPS for external APIs (Claude, etc.)
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 80
+
+    # Allow monitoring (Prometheus, Grafana)
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: monitoring
+      ports:
+        - protocol: TCP
+          port: 9090
+        - protocol: TCP
+          port: 3000

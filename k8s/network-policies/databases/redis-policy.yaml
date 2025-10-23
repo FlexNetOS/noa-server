@@ -1,0 +1,98 @@
+# Redis Network Policy
+# Session store and cache access control
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: redis-policy
+  namespace: databases
+spec:
+  podSelector:
+    matchLabels:
+      app: redis
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Allow Noa server
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: noa-server
+        - podSelector:
+            matchLabels:
+              app: noa-server
+      ports:
+        - protocol: TCP
+          port: 6379
+
+    # Allow authorized MCP servers
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: mcp-servers
+        - podSelector:
+            matchLabels:
+              cache-access: "true"
+      ports:
+        - protocol: TCP
+          port: 6379
+
+    # Allow Redis Sentinel (HA)
+    - from:
+        - podSelector:
+            matchLabels:
+              app: redis-sentinel
+      ports:
+        - protocol: TCP
+          port: 26379
+
+    # Allow Redis cluster communication
+    - from:
+        - podSelector:
+            matchLabels:
+              app: redis
+      ports:
+        - protocol: TCP
+          port: 6379
+        - protocol: TCP
+          port: 16379 # Cluster bus
+
+    # Allow monitoring
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: monitoring
+      ports:
+        - protocol: TCP
+          port: 9121 # redis-exporter
+
+  egress:
+    # Allow DNS
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+
+    # Allow Redis cluster communication
+    - to:
+        - podSelector:
+            matchLabels:
+              app: redis
+      ports:
+        - protocol: TCP
+          port: 6379
+        - protocol: TCP
+          port: 16379
+
+    # Allow Sentinel communication
+    - to:
+        - podSelector:
+            matchLabels:
+              app: redis-sentinel
+      ports:
+        - protocol: TCP
+          port: 26379
