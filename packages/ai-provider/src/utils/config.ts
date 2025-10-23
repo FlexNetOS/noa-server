@@ -192,7 +192,7 @@ export class ConfigurationManager {
     }
 
     if (this.config.defaultProvider) {
-  return this.config.providers.find((p: ProviderConfig) => p.type === (this.config!.defaultProvider as ProviderType));
+      return this.config.providers.find((p: ProviderConfig) => p.type === (this.config!.defaultProvider as ProviderType));
     }
 
     // Return first available provider if no default is set
