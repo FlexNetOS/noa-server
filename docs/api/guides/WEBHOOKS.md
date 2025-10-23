@@ -86,17 +86,24 @@ Webhooks allow you to receive real-time HTTP notifications when specific events 
 Create an endpoint on your server to receive webhooks:
 
 ```javascript
-// Express.js example
+// Express.js example with raw-body signature verification
 const express = require('express');
 const crypto = require('crypto');
 
 const app = express();
-app.use(express.json());
+
+// Capture the raw request body so the HMAC is computed on the exact bytes sent
+app.use(
+  express.json({
+    verify: (req, _res, buf) => {
+      req.rawBody = buf; // attach raw body for later verification
+    }
+  })
+);
 
 app.post('/webhooks/noa-server', (req, res) => {
-  // Verify webhook signature
-  const signature = req.headers['x-webhook-signature'];
-  if (!verifySignature(req.body, signature)) {
+  const signatureHeader = req.get('x-webhook-signature') || '';
+  if (!verifySignature(req.rawBody, signatureHeader)) {
     return res.status(401).send('Invalid signature');
   }
 
@@ -115,15 +122,26 @@ app.post('/webhooks/noa-server', (req, res) => {
       console.log(`Unhandled event: ${event.event}`);
   }
 
-  // Respond with 200 OK
+  // Respond quickly (Noa retries on non-2xx)
   res.status(200).send('OK');
 });
 
-function verifySignature(payload, signature) {
+function verifySignature(rawBody, signatureHeader) {
   const secret = process.env.WEBHOOK_SECRET;
+  if (!secret) throw new Error('WEBHOOK_SECRET is not set');
+
+  // Compute HMAC digest of the raw request body
   const hmac = crypto.createHmac('sha256', secret);
-  const digest = hmac.update(JSON.stringify(payload)).digest('hex');
-  return signature === digest;
+  const digest = 'sha256=' + hmac.update(rawBody).digest('hex');
+
+  // Some frameworks/layers may include extra whitespace; normalize.
+  const received = String(signatureHeader).trim();
+
+  // Use timing-safe comparison to avoid leaking information via timing attacks
+  return (
+    received.length === digest.length &&
+    crypto.timingSafeEqual(Buffer.from(received), Buffer.from(digest))
+  );
 }
 
 app.listen(3001, () => {
@@ -152,6 +170,7 @@ curl -X POST https://api.noa-server.io/v1/webhooks \
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -299,6 +318,8 @@ function verifyWebhookSignature(payload, signature, secret) {
   );
 }
 ```
+
+Note: If you use a body parser that parses JSON before you compute the signature, ensure you either capture the raw body (as shown above) or compute the HMAC on the exact raw bytes. Re-serializing JSON can change whitespace/key order and break verification.
 
 ### 2. IP Allowlisting
 
@@ -534,23 +555,27 @@ curl -X GET https://api.noa-server.io/v1/webhooks/{webhookId}/deliveries \
 
 ### Common Issues
 
-**1. Webhooks not received**
+#### 1. Webhooks not received
+
 - Verify URL is publicly accessible
 - Check firewall rules
 - Ensure HTTPS certificate is valid
 - Verify webhook is active
 
-**2. Signature verification fails**
+#### 2. Signature verification fails
+
 - Check webhook secret
 - Verify signature algorithm (SHA256)
 - Ensure raw body is used for verification
 
-**3. Timeouts**
+#### 3. Timeouts
+
 - Respond within 5 seconds
 - Process events asynchronously
 - Use queue for long operations
 
-**4. Duplicate events**
+#### 4. Duplicate events
+
 - Implement idempotency checks
 - Use event ID for deduplication
 - Store processed event IDs
@@ -565,6 +590,7 @@ curl -X GET https://api.noa-server.io/v1/webhooks/{webhookId}/deliveries/{delive
 ```
 
 **Response:**
+
 ```json
 {
   "id": "del_123",
@@ -590,6 +616,7 @@ curl -X GET https://api.noa-server.io/v1/webhooks/{webhookId}/deliveries/{delive
 ---
 
 For more information, see:
+
 - [API Quick Start](./API_QUICKSTART.md)
 - [Authentication Guide](./AUTHENTICATION.md)
 - [Rate Limiting Guide](./RATE_LIMITING.md)
