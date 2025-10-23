@@ -69,6 +69,12 @@ secrets/
 **/*.pem
 **/*.key
 
+# Allow example env templates to be tracked
+!.env.example
+!.env*.example
+!**/.env.example
+!**/.env*.example
+
 # Data and archives
 data/archive/
 data/temp/
