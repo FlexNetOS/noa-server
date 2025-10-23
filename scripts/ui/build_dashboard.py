@@ -32,6 +32,7 @@ credits = 100 if queen_status else 42
 tool_count = mcp.get("tool_count", 0)
 
 generated_at = datetime.now(UTC).isoformat()
+newline = '\n'
 
 html = f"""
 <!DOCTYPE html>
@@ -126,7 +127,7 @@ html = f"""
     </div>
     <div class="card">
       <h2>Swarm Hooks</h2>
-      <pre>{"\\n".join(recent_hooks) if recent_hooks else "No hook events recorded."}</pre>
+      <pre>{newline.join(recent_hooks) if recent_hooks else "No hook events recorded."}</pre>
     </div>
   </section>
 
