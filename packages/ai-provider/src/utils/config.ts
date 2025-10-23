@@ -218,7 +218,7 @@ export class ConfigurationManager {
       throw new Error('Configuration not loaded');
     }
 
-  const existingIndex = this.config.providers.findIndex((p: ProviderConfig) => p.type === config.type);
+    const existingIndex = this.config.providers.findIndex((p: ProviderConfig) => p.type === config.type);
 
     if (existingIndex >= 0) {
       this.config.providers[existingIndex] = config;
