@@ -140,7 +140,7 @@ export class ConfigurationManager {
     // Normalize common variants
     const normalized = raw
       .replace(/[_\-\s]+/g, '.')   // convert separators to dots
-      .replace(/llamacpp|llama\.?cpp|llama\.?c\+\+|llama\.?c\+\+?/g, 'llama.cpp');
+      .replace(/llamacpp|llama\.?cpp|llama\.?c\+\+/g, 'llama.cpp');
 
     switch (normalized) {
       case 'openai':
