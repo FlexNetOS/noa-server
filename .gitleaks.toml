@@ -1,0 +1,18 @@
+title = "noa-server gitleaks allowlist"
+
+[allowlist]
+description = "Allow known placeholders and test fixtures"
+files = ['''^noa/libs/sdk-py/tests/fixtures/.*$''']
+regexes = [
+    # Placeholder Authorization headers
+    '''Authorization:\s*Bearer\s*(?:YOUR_ACCESS_TOKEN|YOUR_TOKEN|TOKEN|<token>|<admin_token>|<admin-token>|no-key|\$\{?your-token\}?|\$[A-Z_]+)''',
+
+    # Placeholder API keys
+    '''\bnoa_sk_live_[A-Za-z0-9]{6,}\b''',
+    '''\bsk_live_abc123(?:xyz789)?\b''',
+    '''X-API-Key:\s*(?:YOUR_API_KEY|noa_sk_live_[A-Za-z0-9]+)''',
+
+    # Truncated JWT placeholders in docs
+    '''\"?(?:accessToken|refreshToken|token|access_token)\"?\s*[:=]\s*\"(?:eyJhbGci[^\"]*\\.\\.\\.)\"''',
+    '''eyJhbGci[^\"\n]*\\.\\.\\.''',
+]
