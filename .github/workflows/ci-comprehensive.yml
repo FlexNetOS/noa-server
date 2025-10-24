@@ -26,12 +26,12 @@ jobs:
       contents: read
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
         with:
           fetch-depth: 0
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@5681af892cd0b3e6192a2d3f6d1b0c80b5e64169 # master
         with:
           scan-type: 'fs'
           scan-ref: '.'
@@ -40,7 +40,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
 
       - name: Upload Trivy results to GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@ea9e4e37992a54ee68a9622e985e60c8e8f12d9f # v3.27.5
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
@@ -52,7 +52,7 @@ jobs:
         continue-on-error: true
 
       - name: Check for secrets
-        uses: trufflesecurity/trufflehog@main
+        uses: trufflesecurity/trufflehog@824ed45a7c95bc5b46d4164ee0d78f03f2e2da3d # main
         with:
           path: ./
           base: ${{ github.event.repository.default_branch }}
@@ -68,10 +68,10 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
@@ -80,7 +80,7 @@ jobs:
         run: corepack enable
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@eae0cfeb286e66ffb5155f1a79b90583a127a68b # v4
         with:
           version: ${{ env.PNPM_VERSION }}
 
@@ -107,7 +107,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload lint results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v4
         if: always()
         with:
           name: lint-reports
@@ -128,10 +128,10 @@ jobs:
         test-suite: [unit, integration, e2e]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
@@ -140,12 +140,12 @@ jobs:
         run: corepack enable
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@eae0cfeb286e66ffb5155f1a79b90583a127a68b # v4
         with:
           version: ${{ env.PNPM_VERSION }}
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@3605726ffa6ef7750b99ff496e5b88248b414e26 # v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
@@ -163,7 +163,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload coverage
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@ab904c41d6ece82784817410c45d8b8c02684457 # v4
         if: always()
         with:
           files: ./coverage/${{ matrix.test-suite }}/coverage-final.json
@@ -184,10 +184,10 @@ jobs:
       build-time: ${{ steps.build-info.outputs.build-time }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
@@ -196,12 +196,12 @@ jobs:
         run: corepack enable
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@eae0cfeb286e66ffb5155f1a79b90583a127a68b # v4
         with:
           version: ${{ env.PNPM_VERSION }}
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@3605726ffa6ef7750b99ff496e5b88248b414e26 # v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
@@ -231,7 +231,7 @@ jobs:
           echo "Build completed at $(date)"
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v4
         with:
           name: build-artifacts-${{ github.sha }}
           path: |
@@ -256,7 +256,7 @@ jobs:
           EOF
 
       - name: Upload build report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v4
         with:
           name: build-report
           path: reports/build-report.json
@@ -279,13 +279,13 @@ jobs:
         component: [api, ui, worker]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@8026d2bc3645ea78b0d2544766a1225eb5691f89 # v3.7.1
 
       - name: Log in to Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -293,7 +293,7 @@ jobs:
 
       - name: Extract metadata
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@70b2cdc6480c1a8b86edf1777157f8f437de2166 # v5.5.1
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.component }}
           tags: |
@@ -304,7 +304,7 @@ jobs:
             type=sha,prefix={{branch}}-
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@4f58ea79222b3b9dc2c8bbdd6debcef730109a75 # v5.4.0
         with:
           context: .
           file: ./Docker/Dockerfile.${{ matrix.component }}
@@ -328,10 +328,10 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: ${{ env.NODE_VERSION }}
 
@@ -341,7 +341,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload benchmark results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v4
         if: always()
         with:
           name: performance-results
@@ -364,16 +364,16 @@ jobs:
       url: https://staging.noa-server.example.com
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: build-artifacts-${{ github.sha }}
           path: ./artifacts
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # v4.0.2
         if: vars.AWS_REGION != ''
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -414,16 +414,16 @@ jobs:
       url: https://noa-server.example.com
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: build-artifacts-${{ github.sha }}
           path: ./artifacts
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # v4.0.2
         if: vars.AWS_REGION != ''
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -511,7 +511,7 @@ jobs:
     needs: [deploy-production]
     steps:
       - name: Delete old workflow runs
-        uses: Mattraks/delete-workflow-runs@v2
+        uses: Mattraks/delete-workflow-runs@5c7cb72e02f3f1f1b32fb8e95ec8fe11efc7d5eb # v2.0.6
         with:
           token: ${{ github.token }}
           repository: ${{ github.repository }}
