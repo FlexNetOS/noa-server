@@ -1,25 +1,31 @@
-name: release
+name: Octelium - release
 permissions:
   contents: read
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - 'octelium-v*.*.*'
+    paths:
+      - 'octelium/**'
+      - '.github/workflows/octelium-release.yml'
 jobs:
   build:
     name: Build
     runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ./octelium
     strategy:
       matrix:
         arch: [amd64, arm64]
         os: [linux, darwin, windows]
     steps:
       - name: Check out code into the Go module directory
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
       - name: GitHub vars
-        uses: rlespinasse/github-slug-action@v4
+        uses: rlespinasse/github-slug-action@cc11e9682d6c9f95b4a4ee7a73c64af4ed5c4628
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@0c52d547c9bc32b0c8faf7aabfb35c35306304d30
         with:
           go-version: '${{env.GO_VERSION}}'
         id: go
@@ -37,7 +43,7 @@ jobs:
           tar -czvf octops-${{matrix.os}}-${{matrix.arch}}.tar.gz octops
       - name: save artifacts
         if: ${{ matrix.os != 'windows' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
         with:
           name: release-artifact-${{matrix.os}}-${{matrix.arch}}-${{ env.GITHUB_REF_SLUG }}
           path: bin/*.tar.gz
@@ -55,7 +61,7 @@ jobs:
           zip octops-${{matrix.os}}-${{matrix.arch}}.zip octops.exe
       - name: save Windows artifacts
         if: ${{ matrix.os == 'windows' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
         with:
           name: release-artifact-${{matrix.os}}-${{matrix.arch}}-${{ env.GITHUB_REF_SLUG }}
           path: bin/*.zip
@@ -69,17 +75,17 @@ jobs:
       contents: write
     steps:
       - name: Check out code into the Go module directory
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
       - name: GitHub vars
-        uses: rlespinasse/github-slug-action@v4
-      - uses: actions/download-artifact@v4
+        uses: rlespinasse/github-slug-action@cc11e9682d6c9f95b4a4ee7a73c64af4ed5c4628
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
         with:
           # name: release-artifact-${{ env.GITHUB_REF_SLUG }}
           pattern: release-artifact-*
       - name: ls
         run: ls -la
       - name: Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@4a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z
         with:
           files: |
             release-artifact-*/*

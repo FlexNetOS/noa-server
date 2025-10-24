@@ -1,4 +1,4 @@
-name: demo-cluster-install
+name: Octelium - demo-cluster-install
 permissions:
   contents: read
 on: workflow_dispatch

@@ -5,7 +5,7 @@ Complete client library for all API endpoints
 
 import json
 import requests
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 from dataclasses import dataclass
 
 
@@ -44,7 +44,7 @@ class NoaClient:
 
         return headers
 
-    def _request(self, method: str, endpoint: str, **kwargs) -> requests.Response:
+    def _request(self, method: str, endpoint: str, **kwargs: Any) -> requests.Response:
         """Make HTTP request with authentication"""
         url = f"{self.base_url}/{endpoint.lstrip('/')}"
         headers = self._get_headers()
@@ -64,7 +64,7 @@ class NoaClient:
 
     # Authentication
 
-    def register(self, email: str, password: str, metadata: Optional[Dict] = None) -> Dict:
+    def register(self, email: str, password: str, metadata: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Register new user"""
         response = self._request(
             "POST",
@@ -74,7 +74,7 @@ class NoaClient:
         response.raise_for_status()
         return response.json()
 
-    def login(self, email: str, password: str, mfa_code: Optional[str] = None) -> Dict:
+    def login(self, email: str, password: str, mfa_code: Optional[str] = None) -> Dict[str, Any]:
         """Login with email and password"""
         payload = {"email": email, "password": password}
         if mfa_code:
@@ -108,11 +108,13 @@ class NoaClient:
         self.access_token = data["accessToken"]
         self.refresh_token = data.get("refreshToken", self.refresh_token)
 
+        if not self.access_token:
+            raise ValueError("Failed to refresh access token")
         return self.access_token
 
-    def create_api_key(self, name: str, expires_in: Optional[int] = None, scopes: Optional[List[str]] = None) -> Dict:
+    def create_api_key(self, name: str, expires_in: Optional[int] = None, scopes: Optional[List[str]] = None) -> Dict[str, Any]:
         """Create new API key"""
-        payload = {"name": name}
+        payload: Dict[str, Any] = {"name": name}
         if expires_in:
             payload["expiresIn"] = expires_in
         if scopes:
@@ -126,11 +128,11 @@ class NoaClient:
 
     def chat_completion(
         self, messages: List[Message], model: str = "gpt-4", config: Optional[ChatConfig] = None
-    ) -> Dict:
+    ) -> Dict[str, Any]:
         """Generate chat completion"""
         config = config or ChatConfig()
 
-        payload = {
+        payload: Dict[str, Any] = {
             "messages": [{"role": msg.role, "content": msg.content} for msg in messages],
             "model": model,
             "config": {
@@ -149,7 +151,7 @@ class NoaClient:
         """Generate streaming chat completion"""
         config = config or ChatConfig(stream=True)
 
-        payload = {
+        payload: Dict[str, Any] = {
             "messages": [{"role": msg.role, "content": msg.content} for msg in messages],
             "model": model,
             "config": {
@@ -177,19 +179,19 @@ class NoaClient:
                     except json.JSONDecodeError:
                         continue
 
-    def create_embedding(self, input_text: Union[str, List[str]], model: str = "text-embedding-ada-002") -> Dict:
+    def create_embedding(self, input_text: Union[str, List[str]], model: str = "text-embedding-ada-002") -> Dict[str, Any]:
         """Generate text embeddings"""
         response = self._request("POST", "/inference/embeddings", json={"input": input_text, "model": model})
         response.raise_for_status()
         return response.json()
 
-    def list_models(self) -> Dict:
+    def list_models(self) -> Dict[str, Any]:
         """List available models"""
         response = self._request("GET", "/models")
         response.raise_for_status()
         return response.json()
 
-    def switch_model(self, provider: str, model: str) -> Dict:
+    def switch_model(self, provider: str, model: str) -> Dict[str, Any]:
         """Switch active model"""
         response = self._request("POST", "/models/switch", json={"provider": provider, "model": model})
         response.raise_for_status()
@@ -200,13 +202,13 @@ class NoaClient:
     def publish_message(
         self,
         queue: str,
-        payload: Dict,
+        payload: Dict[str, Any],
         priority: str = "normal",
         ttl: Optional[int] = None,
         delay: Optional[int] = None,
-    ) -> Dict:
+    ) -> Dict[str, Any]:
         """Publish message to queue"""
-        data = {"queue": queue, "payload": payload, "priority": priority}
+        data: Dict[str, Any] = {"queue": queue, "payload": payload, "priority": priority}
 
         if ttl:
             data["ttl"] = ttl
@@ -217,9 +219,9 @@ class NoaClient:
         response.raise_for_status()
         return response.json()
 
-    def consume_messages(self, queue: str, limit: int = 1, timeout: int = 20) -> Dict:
+    def consume_messages(self, queue: str, limit: int = 1, timeout: int = 20) -> Dict[str, Any]:
         """Consume messages from queue"""
-        params = {"queue": queue, "limit": limit, "timeout": timeout}
+        params: Dict[str, Any] = {"queue": queue, "limit": limit, "timeout": timeout}
         response = self._request("GET", "/queue/consume", params=params)
         response.raise_for_status()
         return response.json()
@@ -229,7 +231,7 @@ class NoaClient:
         response = self._request("POST", "/queue/ack", json={"receiptHandle": receipt_handle})
         response.raise_for_status()
 
-    def get_queue_status(self, queue: str) -> Dict:
+    def get_queue_status(self, queue: str) -> Dict[str, Any]:
         """Get queue status"""
         response = self._request("GET", "/queue/status", params={"queue": queue})
         response.raise_for_status()
@@ -237,13 +239,13 @@ class NoaClient:
 
     # Monitoring
 
-    def health_check(self) -> Dict:
+    def health_check(self) -> Dict[str, Any]:
         """Get health status"""
         response = requests.get(f"{self.base_url.rsplit('/api', 1)[0]}/health")
         response.raise_for_status()
         return response.json()
 
-    def get_metrics(self) -> Dict:
+    def get_metrics(self) -> Dict[str, Any]:
         """Get JSON metrics"""
         response = self._request("GET", "/metrics")
         response.raise_for_status()

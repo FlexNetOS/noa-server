@@ -6,11 +6,10 @@ Python examples for llama.cpp neural processing with robust error handling.
 
 import sys
 import os
-import json
 import time
 import traceback
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Optional
 
 # ============================================================================
 # SETUP
@@ -23,12 +22,12 @@ sys.path.insert(0, str(Path(__file__).parent.parent / 'packages'))
 NeuralProcessor: Optional[type] = None  # type: ignore
 
 try:
-    from llama_cpp.processor import NeuralProcessor as _NeuralProcessor
-    NeuralProcessor = _NeuralProcessor
+    from llama_cpp.processor import NeuralProcessor as _NeuralProcessor  # type: ignore
+    NeuralProcessor = _NeuralProcessor  # type: ignore
 except ImportError:
     try:
-        from src.processor import NeuralProcessor as _NeuralProcessor
-        NeuralProcessor = _NeuralProcessor
+        from src.processor import NeuralProcessor as _NeuralProcessor  # type: ignore
+        NeuralProcessor = _NeuralProcessor  # type: ignore
     except ImportError as e:
         print(f"❌ Fatal Error: Could not import NeuralProcessor")
         print(f"   Details: {e}")
@@ -50,15 +49,15 @@ def ensure_processor_available() -> bool:
 
 def safe_get(data: Any, *keys: str, default: Any = None) -> Any:
     """Safely get nested dict values."""
-    current = data
+    current: Any = data
     for key in keys:
         if isinstance(current, dict):
-            current = current.get(key)
+            current = current.get(key)  # type: ignore
         else:
             return default
         if current is None:
             return default
-    return current
+    return current  # type: ignore
 
 
 # ============================================================================
@@ -74,7 +73,7 @@ def example_basic_chat() -> None:
 
     try:
         # Initialize processor
-        processor = NeuralProcessor(
+        processor = NeuralProcessor(  # type: ignore
             model_path=os.getenv('NEURAL_MODEL_PATH', './models/llama-2-7b-chat.gguf'),
             context_size=2048,
             gpu_layers=0  # CPU-only for compatibility
@@ -112,7 +111,7 @@ def example_streaming() -> None:
         return
 
     try:
-        processor = NeuralProcessor(
+        processor = NeuralProcessor(  # type: ignore
             model_path=os.getenv('NEURAL_MODEL_PATH', './models/llama-2-7b-chat.gguf'),
             context_size=2048,
             gpu_layers=0
@@ -127,7 +126,7 @@ def example_streaming() -> None:
 
         for chunk in processor.stream_chat(messages, max_tokens=300):
             if isinstance(chunk, dict) and 'content' in chunk:
-                print(chunk['content'], end='', flush=True)
+                print(chunk['content'], end='', flush=True)  # type: ignore
 
         print("\n" + "-" * 50)
         print("\n✅ Streaming example complete\n")
@@ -145,7 +144,7 @@ def example_embeddings() -> None:
         return
 
     try:
-        processor = NeuralProcessor(
+        processor = NeuralProcessor(  # type: ignore
             model_path=os.getenv('NEURAL_MODEL_PATH', './models/llama-2-7b-chat.gguf'),
             context_size=2048,
             gpu_layers=0
@@ -162,7 +161,7 @@ def example_embeddings() -> None:
         for i, text in enumerate(texts, 1):
             embedding = processor.get_embedding(text)
             if isinstance(embedding, (list, tuple)):
-                print(f"  Text {i}: {len(embedding)} dimensions")
+                print(f"  Text {i}: {len(embedding)} dimensions")  # type: ignore
             else:
                 print(f"  Text {i}: embedding generated")
 
@@ -181,7 +180,7 @@ def example_batch_processing() -> None:
         return
 
     try:
-        processor = NeuralProcessor(
+        processor = NeuralProcessor(  # type: ignore
             model_path=os.getenv('NEURAL_MODEL_PATH', './models/llama-2-7b-chat.gguf'),
             context_size=2048,
             gpu_layers=0,
@@ -224,7 +223,7 @@ def example_system_info() -> None:
         return
 
     try:
-        processor = NeuralProcessor(
+        processor = NeuralProcessor(  # type: ignore
             model_path=os.getenv('NEURAL_MODEL_PATH', './models/llama-2-7b-chat.gguf'),
             context_size=2048,
             gpu_layers=0
@@ -260,7 +259,7 @@ def example_benchmark() -> None:
         return
 
     try:
-        processor = NeuralProcessor(
+        processor = NeuralProcessor(  # type: ignore
             model_path=os.getenv('NEURAL_MODEL_PATH', './models/llama-2-7b-chat.gguf'),
             context_size=2048,
             gpu_layers=0

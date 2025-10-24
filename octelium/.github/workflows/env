@@ -1,3 +1,0 @@
-V_ORG=octelium
-V_CONTAINER_REGISTRY=ghcr.io
-GO_VERSION=1.24.7

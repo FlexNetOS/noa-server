@@ -1,4 +1,4 @@
-name: tests-unit-test
+name: Octelium - tests-unit-test
 permissions:
   contents: read
 on:
@@ -42,11 +42,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes libssl-dev
       - name: Set up go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@0c52d547c9bc32b0c8faf7aabfb35c35306304d30
         with:
           go-version: '${{env.GO_VERSION}}'
       - name: Check out code into the Go module directory
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
       - name: Install psql
         run: |
           sudo apt-get update

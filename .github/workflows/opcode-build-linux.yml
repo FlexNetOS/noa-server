@@ -22,7 +22,7 @@ jobs:
         working-directory: ./opcode
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Install system dependencies
         run: |
@@ -41,12 +41,12 @@ jobs:
           targets: x86_64-unknown-linux-gnu
 
       - name: Setup Rust cache
-        uses: Swatinem/rust-cache@v2
+        uses: Swatinem/rust-cache@23bce2519186d4e5285a58e8e37ed955ad904019
         with:
           workspaces: opcode/src-tauri
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+        uses: oven-sh/setup-bun@4bc047ad259df6fc24b05eb89eb1ce5c7e9e3c9
 
       - name: Install dependencies
         run: bun install
@@ -65,7 +65,7 @@ jobs:
           sha256sum * > checksums.txt
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
         with:
           name: linux-x86_64
           path: dist/linux-x86_64/*
