@@ -22,10 +22,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
         with:
           node-version: "20"
           cache: "npm"
@@ -49,7 +49,7 @@ jobs:
           npm run docs:lint || echo "Docs linting not configured"
 
       - name: Upload documentation artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382954b84365f3d453
         with:
           name: documentation
           path: |
@@ -65,16 +65,16 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Download documentation artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@65a9edc5881444af0b9093e5e666db3dd7f06d4
         with:
           name: documentation
           path: docs-site
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@8425965618f8b9a0c32f489d6b6c3b6b5c1239b
         with:
           ruby-version: "3.2"
           bundler-cache: true
@@ -94,7 +94,7 @@ jobs:
           bundle exec jekyll build --source docs --destination _site
 
       - name: Upload Jekyll site
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382954b84365f3d453
         with:
           name: jekyll-site
           path: docs-site/_site/
@@ -109,13 +109,13 @@ jobs:
       contents: write
     steps:
       - name: Download Jekyll site
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@65a9edc5881444af0b9093e5e666db3dd7f06d4
         with:
           name: jekyll-site
           path: docs-site
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@373f7f263a76c20808c831209c920827a82a284
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: docs-site
@@ -128,14 +128,14 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout wiki
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
         with:
           repository: ${{ github.repository }}.wiki
           path: wiki
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download documentation artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@65a9edc5881444af0b9093e5e666db3dd7f06d4
         with:
           name: documentation
           path: wiki-source

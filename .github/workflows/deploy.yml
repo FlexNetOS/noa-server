@@ -3,18 +3,18 @@ name: Deploy
 on:
   push:
     tags:
-      - 'v*' # Trigger on version tags (e.g., v1.0.0)
+      - "v*" # Trigger on version tags (e.g., v1.0.0)
   workflow_dispatch: # Allow manual deployment
     inputs:
       environment:
-        description: 'Deployment environment'
+        description: "Deployment environment"
         required: true
         type: choice
         options:
           - staging
           - production
       strategy:
-        description: 'Deployment strategy'
+        description: "Deployment strategy"
         required: true
         type: choice
         options:
@@ -23,8 +23,8 @@ on:
           - canary
 
 env:
-  NODE_VERSION: '20'
-  PNPM_VERSION: '9.11.0'
+  NODE_VERSION: "20"
+  PNPM_VERSION: "9.11.0"
 
 jobs:
   pre-deployment-checks:
@@ -36,17 +36,17 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
         with:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
         with:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@161b8d0c4739f28c4f8391fa2b2c23d8b6c4b2b2
         with:
           version: ${{ env.PNPM_VERSION }}
 
@@ -115,15 +115,15 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
         with:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@161b8d0c4739f28c4f8391fa2b2c23d8b6c4b2b2
         with:
           version: ${{ env.PNPM_VERSION }}
 
@@ -144,7 +144,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@0b7f87a49c3e4218e524ec8724b957a19cd1ec3a
         with:
           name: test-results
           path: coverage/
@@ -156,15 +156,15 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
         with:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@161b8d0c4739f28c4f8391fa2b2c23d8b6c4b2b2
         with:
           version: ${{ env.PNPM_VERSION }}
 
@@ -175,7 +175,7 @@ jobs:
         run: pnpm run build:all
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@0b7f87a49c3e4218e524ec8724b957a19cd1ec3a
         with:
           name: build-artifacts
           path: |
@@ -194,10 +194,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@65a9edc5881444af0b9093e5e666db3dd7f06d4
         with:
           name: build-artifacts
 
@@ -215,7 +215,7 @@ jobs:
 
       - name: Send deployment notification
         if: always()
-        uses: slackapi/slack-github-action@v1
+        uses: slackapi/slack-github-action@70cd7be8e40a46e8b612094aa26fbd48c5a13a8
         with:
           payload: |
             {
@@ -244,10 +244,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@65a9edc5881444af0b9093e5e666db3dd7f06d4
         with:
           name: build-artifacts
 
@@ -266,7 +266,7 @@ jobs:
           AUTO_APPROVE=true ./scripts/deploy/deploy-production.sh ${{ needs.pre-deployment-checks.outputs.strategy }}
         env:
           DEPLOY_KEY: ${{ secrets.PRODUCTION_DEPLOY_KEY }}
-          AUTO_APPROVE: 'true'
+          AUTO_APPROVE: "true"
 
       - name: Run health checks
         run: |
@@ -289,7 +289,7 @@ jobs:
 
       - name: Send deployment notification
         if: always()
-        uses: slackapi/slack-github-action@v1
+        uses: slackapi/slack-github-action@70cd7be8e40a46e8b612094aa26fbd48c5a13a8
         with:
           payload: |
             {
@@ -315,7 +315,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Create deployment record
         run: |

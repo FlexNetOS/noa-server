@@ -28,10 +28,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
         with:
           node-version: "20"
           cache: "npm"
@@ -80,7 +80,7 @@ jobs:
           echo "\`\`\`" >> analysis-report.md
 
       - name: Upload Analysis Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
         with:
           name: monorepo-analysis
           path: analysis-report.md
@@ -92,10 +92,10 @@ jobs:
     needs: toolkit-analysis
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Download Analysis Report
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
         with:
           name: monorepo-analysis
           path: reports
@@ -113,7 +113,7 @@ jobs:
 
       - name: Comment on PR
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
         with:
           script: |
             const fs = require('fs');

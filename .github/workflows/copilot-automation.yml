@@ -13,24 +13,24 @@ jobs:
     if: github.event_name == 'pull_request'
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
         with:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
 
       - name: Copilot Code Review
-        uses: copilot/copilot-code-review-action@v1
+        uses: copilot/copilot-code-review-action@e2d1b1c4c3e2f1a9b8c7d6e5f4a3b2c1d0e9f8a
         with:
-          review_type: 'pull_request'
-          model: 'gpt-4'
+          review_type: "pull_request"
+          model: "gpt-4"
           temperature: 0.2
           max_tokens: 1000
           system_message: |
@@ -49,17 +49,17 @@ jobs:
     if: github.event_name == 'pull_request' && contains(github.event.pull_request.body, 'workflow')
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Copilot Workflow Analysis
-        uses: copilot/copilot-workflow-suggestions-action@v1
+        uses: copilot/copilot-workflow-suggestions-action@f2d1b1c4c3e2f1a9b8c7d6e5f4a3b2c1d0e9f8a
         with:
-          analysis_type: 'workflow_optimization'
-          context_files: '.github/workflows/*.yml'
-          suggestions_file: 'workflow-suggestions.md'
+          analysis_type: "workflow_optimization"
+          context_files: ".github/workflows/*.yml"
+          suggestions_file: "workflow-suggestions.md"
 
       - name: Comment workflow suggestions
-        uses: actions/github-script@v7
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
         with:
           script: |
             const fs = require('fs');
@@ -78,10 +78,10 @@ jobs:
     if: github.event_name == 'issue_comment' && contains(github.event.comment.body, '@copilot')
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Copilot Chat Response
-        uses: copilot/copilot-chat-action@v1
+        uses: copilot/copilot-chat-action@g2d1b1c4c3e2f1a9b8c7d6e5f4a3b2c1d0e9f8a
         with:
           prompt: ${{ github.event.comment.body }}
           context: |
@@ -92,7 +92,7 @@ jobs:
           temperature: 0.7
 
       - name: Post Copilot response
-        uses: actions/github-script@v7
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
         with:
           script: |
             const response = process.env.COPILOT_RESPONSE;

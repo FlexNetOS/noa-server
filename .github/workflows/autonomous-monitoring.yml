@@ -25,10 +25,10 @@ jobs:
     if: github.event.inputs.check_type == 'health' || github.event.inputs.check_type == 'all' || github.event.schedule
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
         with:
           node-version: "20"
           cache: "npm"
@@ -54,10 +54,10 @@ jobs:
     if: github.event.inputs.check_type == 'performance' || github.event.inputs.check_type == 'all' || github.event.schedule
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
         with:
           node-version: "20"
           cache: "npm"
@@ -82,10 +82,10 @@ jobs:
     if: github.event.inputs.check_type == 'security' || github.event.inputs.check_type == 'all' || github.event.schedule
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
         with:
           node-version: "20"
           cache: "npm"
@@ -111,10 +111,10 @@ jobs:
     if: github.event.inputs.check_type == 'dependencies' || github.event.inputs.check_type == 'all' || github.event.schedule
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
         with:
           node-version: "20"
           cache: "npm"
@@ -141,7 +141,7 @@ jobs:
     if: failure()
     steps:
       - name: Create issue on failure
-        uses: actions/github-script@v7
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
         with:
           script: |
             const { data: issues } = await github.rest.issues.listForRepo({
