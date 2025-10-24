@@ -14,7 +14,8 @@ Complete guide for creating and managing releases in the Noa Server project.
 
 ## Overview
 
-The Noa Server uses semantic versioning (SemVer) with automated release pipelines that handle building, testing, packaging, and deploying releases.
+The Noa Server uses semantic versioning (SemVer) with automated release
+pipelines that handle building, testing, packaging, and deploying releases.
 
 ### Semantic Versioning
 
@@ -27,7 +28,8 @@ The Noa Server uses semantic versioning (SemVer) with automated release pipeline
 
 ### Standard Release
 
-Triggered automatically when changes are pushed to the main branch with changesets.
+Triggered automatically when changes are pushed to the main branch with
+changesets.
 
 ```bash
 # Create a changeset
@@ -323,17 +325,20 @@ npm publish --access public
 ### GitHub Actions
 
 Monitor release progress:
+
 - https://github.com/[org]/noa-server/actions
 
 ### Slack Notifications
 
 Automatic notifications sent to:
+
 - #releases channel
 - #deployments channel
 
 ### Release Metrics
 
 Track:
+
 - Build time
 - Test coverage
 - Package sizes

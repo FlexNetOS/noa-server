@@ -13,7 +13,7 @@ const ProviderConfigListSchema = z.array(ProviderConfigSchema);
 const ModelManagerConfigSchema = z.object({
   defaultProvider: z.nativeEnum(ProviderType).optional(),
   autoLoadDefault: z.boolean().default(true),
-  maxLoadedModels: z.number().positive().default(10)
+  maxLoadedModels: z.number().positive().default(10),
 });
 
 const AIProviderConfigSchema = z.object({
@@ -24,7 +24,7 @@ const AIProviderConfigSchema = z.object({
   enableLogging: z.boolean().default(true),
   logLevel: z.enum(['error', 'warn', 'info', 'debug']).default('info'),
   cacheProviders: z.boolean().default(true),
-  modelManager: ModelManagerConfigSchema.optional()
+  modelManager: ModelManagerConfigSchema.optional(),
 });
 
 export type AIProviderConfig = z.infer<typeof AIProviderConfigSchema> & {
@@ -36,18 +36,18 @@ export const DEFAULT_PROVIDER_CONFIGS: Record<ProviderType, Partial<ProviderConf
   [ProviderType.OPENAI]: {
     baseURL: 'https://api.openai.com/v1',
     timeout: 30000,
-    maxRetries: 3
+    maxRetries: 3,
   },
   [ProviderType.CLAUDE]: {
     baseURL: 'https://api.anthropic.com',
     timeout: 30000,
-    maxRetries: 3
+    maxRetries: 3,
   },
   [ProviderType.LLAMA_CPP]: {
     baseURL: 'http://localhost:8080',
     timeout: 60000,
-    maxRetries: 1
-  }
+    maxRetries: 1,
+  },
 };
 
 export class ConfigurationManager {
@@ -104,7 +104,7 @@ export class ConfigurationManager {
           baseURL: baseURL || DEFAULT_PROVIDER_CONFIGS[providerType as ProviderType].baseURL,
           defaultModel,
           timeout: timeout ? parseInt(timeout) : undefined,
-          maxRetries: maxRetries ? parseInt(maxRetries) : undefined
+          maxRetries: maxRetries ? parseInt(maxRetries) : undefined,
         };
 
         providers.push(config);
@@ -114,16 +114,22 @@ export class ConfigurationManager {
     const config: AIProviderConfig = {
       providers,
       defaultProvider: process.env[`${envPrefix}DEFAULT_PROVIDER`],
-      timeout: process.env[`${envPrefix}TIMEOUT`] ? parseInt(process.env[`${envPrefix}TIMEOUT`]!) : 30000,
-      maxRetries: process.env[`${envPrefix}MAX_RETRIES`] ? parseInt(process.env[`${envPrefix}MAX_RETRIES`]!) : 3,
+      timeout: process.env[`${envPrefix}TIMEOUT`]
+        ? parseInt(process.env[`${envPrefix}TIMEOUT`]!)
+        : 30000,
+      maxRetries: process.env[`${envPrefix}MAX_RETRIES`]
+        ? parseInt(process.env[`${envPrefix}MAX_RETRIES`]!)
+        : 3,
       enableLogging: process.env[`${envPrefix}ENABLE_LOGGING`] !== 'false',
       logLevel: (process.env[`${envPrefix}LOG_LEVEL`] as any) || 'info',
       cacheProviders: process.env[`${envPrefix}CACHE_PROVIDERS`] !== 'false',
       modelManager: {
         defaultProvider: process.env[`${envPrefix}MODEL_MANAGER_DEFAULT_PROVIDER`] as ProviderType,
         autoLoadDefault: process.env[`${envPrefix}MODEL_MANAGER_AUTO_LOAD_DEFAULT`] !== 'false',
-        maxLoadedModels: process.env[`${envPrefix}MODEL_MANAGER_MAX_LOADED_MODELS`] ? parseInt(process.env[`${envPrefix}MODEL_MANAGER_MAX_LOADED_MODELS`]!) : 10
-      }
+        maxLoadedModels: process.env[`${envPrefix}MODEL_MANAGER_MAX_LOADED_MODELS`]
+          ? parseInt(process.env[`${envPrefix}MODEL_MANAGER_MAX_LOADED_MODELS`]!)
+          : 10,
+      },
     };
 
     this.validateAndSetConfig(config);
@@ -141,7 +147,9 @@ export class ConfigurationManager {
    */
   getConfig(): AIProviderConfig {
     if (!this.config) {
-      throw new Error('Configuration not loaded. Call loadFromFile() or loadFromEnvironment() first.');
+      throw new Error(
+        'Configuration not loaded. Call loadFromFile() or loadFromEnvironment() first.'
+      );
     }
     return this.config;
   }
@@ -154,7 +162,7 @@ export class ConfigurationManager {
       throw new Error('Configuration not loaded');
     }
 
-    return this.config.providers.find(p => p.type === type);
+    return this.config.providers.find((p) => p.type === type);
   }
 
   /**
@@ -166,7 +174,9 @@ export class ConfigurationManager {
     }
 
     if (this.config.defaultProvider) {
-      return this.config.providers.find(p => p.type === this.config!.defaultProvider as ProviderType);
+      return this.config.providers.find(
+        (p) => p.type === (this.config!.defaultProvider as ProviderType)
+      );
     }
 
     // Return first available provider if no default is set
@@ -192,7 +202,7 @@ export class ConfigurationManager {
       throw new Error('Configuration not loaded');
     }
 
-    const existingIndex = this.config.providers.findIndex(p => p.type === config.type);
+    const existingIndex = this.config.providers.findIndex((p) => p.type === config.type);
 
     if (existingIndex >= 0) {
       this.config.providers[existingIndex] = config;
@@ -210,7 +220,7 @@ export class ConfigurationManager {
     }
 
     const initialLength = this.config.providers.length;
-    this.config.providers = this.config.providers.filter(p => p.type !== type);
+    this.config.providers = this.config.providers.filter((p) => p.type !== type);
 
     return this.config.providers.length < initialLength;
   }
@@ -250,8 +260,8 @@ export class ConfigurationManager {
       cacheProviders: true,
       modelManager: {
         autoLoadDefault: true,
-        maxLoadedModels: 10
-      }
+        maxLoadedModels: 10,
+      },
     };
   }
 
@@ -267,7 +277,7 @@ export class ConfigurationManager {
     return {
       ...defaults,
       type,
-      ...overrides
+      ...overrides,
     };
   }
 
@@ -279,7 +289,9 @@ export class ConfigurationManager {
       this.config = AIProviderConfigSchema.parse(config);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        throw new Error(`Invalid configuration: ${error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')}`);
+        throw new Error(
+          `Invalid configuration: ${error.errors.map((e) => `${e.path.join('.')}: ${e.message}`).join(', ')}`
+        );
       }
       throw error;
     }

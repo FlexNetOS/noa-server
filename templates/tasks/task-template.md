@@ -21,11 +21,14 @@
 ## Example Tasks
 
 ### P0 - Critical Task
+
 ```markdown
-- [ ] [P0] Fix production database connection pool exhaustion @infrastructure #critical due:2025-10-22
+- [ ] [P0] Fix production database connection pool exhaustion @infrastructure
+      #critical due:2025-10-22
   - ID: TASK-500
   - Context: Production database connections maxing out causing 503 errors
-  - Success: Connection pool increased, monitoring added, no 503 errors for 24 hours
+  - Success: Connection pool increased, monitoring added, no 503 errors for 24
+    hours
   - Dependencies: None - Critical fix
   - Assigned: Database Team
   - Estimated: 2 hours
@@ -36,6 +39,7 @@
 ```
 
 ### P1 - High Priority Task
+
 ```markdown
 - [ ] [P1] Implement user authentication endpoint @backend #api due:2025-10-25
   - ID: TASK-501
@@ -50,6 +54,7 @@
 ```
 
 ### P2 - Normal Priority Task
+
 ```markdown
 - [ ] [P2] Add dark mode toggle to settings page @frontend #ui due:2025-10-28
   - ID: TASK-502
@@ -65,6 +70,7 @@
 ```
 
 ### P3 - Low Priority Task
+
 ```markdown
 - [ ] [P3] Refactor legacy authentication code @backend #refactor due:2025-11-05
   - ID: TASK-503
@@ -79,6 +85,7 @@
 ```
 
 ### Research Task
+
 ```markdown
 - [ ] [P3] Evaluate GraphQL for API layer @research #api due:2025-11-10
   - ID: RESEARCH-301
@@ -96,48 +103,53 @@
 ## Priority Guidelines
 
 ### P0 - Critical (Same Day)
+
 **When to use:**
+
 - Production system down or severely degraded
 - Data loss or corruption risk
 - Active security breach
 - Legal/compliance violation
 
-**SLA:** Same day resolution
-**Escalation:** Immediate all-hands, page on-call
+**SLA:** Same day resolution **Escalation:** Immediate all-hands, page on-call
 
 ### P1 - High (24-48 hours)
+
 **When to use:**
+
 - Major feature broken or severely degraded
 - Blocking other team members
 - Significant user impact
 - Revenue-impacting bug
 
-**SLA:** 24-48 hour resolution
-**Escalation:** Manager notification
+**SLA:** 24-48 hour resolution **Escalation:** Manager notification
 
 ### P2 - Normal (This Week)
+
 **When to use:**
+
 - Regular development work
 - Feature enhancements
 - Non-critical bugs
 - Improvements and optimizations
 
-**SLA:** Within current sprint
-**Escalation:** Standard sprint planning
+**SLA:** Within current sprint **Escalation:** Standard sprint planning
 
 ### P3 - Low (Future)
+
 **When to use:**
+
 - Nice to have features
 - Research and exploration
 - Technical debt cleanup
 - Documentation improvements
 
-**SLA:** Best effort, next sprint
-**Escalation:** None
+**SLA:** Best effort, next sprint **Escalation:** None
 
 ## Category Tags
 
 ### Primary Categories
+
 - `@ai-integration` - AI/ML related work
 - `@ui-dashboard` - Frontend UI components
 - `@message-queue` - Message queue system
@@ -152,6 +164,7 @@
 - `@api` - API development
 
 ### Secondary Tags
+
 - `#api` - API development
 - `#config` - Configuration changes
 - `#optimization` - Performance work
@@ -174,12 +187,14 @@
 ## Success Criteria Examples
 
 **Good Success Criteria:**
+
 - "API endpoint returns 200 status with valid JWT token"
 - "All unit tests passing with >80% coverage"
 - "Page load time under 2 seconds on 3G connection"
 - "Zero security vulnerabilities in dependency scan"
 
 **Bad Success Criteria:**
+
 - "Make it work" (too vague)
 - "Improve performance" (not measurable)
 - "Fix the bug" (no verification criteria)

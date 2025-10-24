@@ -1,6 +1,7 @@
 # Message Queue API - Docker & Kubernetes Deployment
 
-Production-ready containerization with Docker, Docker Compose, and Kubernetes orchestration.
+Production-ready containerization with Docker, Docker Compose, and Kubernetes
+orchestration.
 
 ## Quick Start
 
@@ -44,12 +45,14 @@ make deploy
 ## What's Included
 
 ### Docker Files
+
 - `Dockerfile` - Multi-stage build (builder → production)
 - `.dockerignore` - Optimized build context
 - `docker-compose.yml` - Production orchestration
 - `.env.example` - Environment template
 
 ### Kubernetes Manifests (`/k8s`)
+
 - `deployment.yaml` - 3 replicas, rolling updates
 - `service.yaml` - ClusterIP & LoadBalancer
 - `configmap.yaml` - Configuration
@@ -58,11 +61,13 @@ make deploy
 - `redis.yaml` - Redis deployment
 
 ### Scripts (`/scripts`)
+
 - `build.sh` - Build Docker images
 - `deploy.sh` - Deploy to Kubernetes
 - `create-docker-infrastructure.sh` - Setup helper
 
 ### Helper Files (`/docker`)
+
 - `health-check.sh` - Container health check
 
 ## Common Commands
@@ -111,6 +116,7 @@ kubectl port-forward -n noa-server svc/message-queue-api 8081:8081  # Port forwa
 ## Resource Requirements
 
 ### Production
+
 - CPU: 100m request, 500m limit
 - Memory: 256Mi request, 1Gi limit
 - Min replicas: 3
@@ -120,6 +126,7 @@ kubectl port-forward -n noa-server svc/message-queue-api 8081:8081  # Port forwa
 ## Environment Variables
 
 Required:
+
 - `NODE_ENV` - production/development
 - `API_PORT` - API port (default: 8081)
 - `REDIS_HOST` - Redis hostname
@@ -130,18 +137,21 @@ See `.env.example` for complete list.
 ## Troubleshooting
 
 ### Container won't start
+
 ```bash
 docker logs <container-id>
 docker inspect <container-id> | grep Health
 ```
 
 ### Kubernetes pod issues
+
 ```bash
 kubectl logs -n noa-server <pod-name>
 kubectl describe pod -n noa-server <pod-name>
 ```
 
 ### Redis connection
+
 ```bash
 kubectl exec -it -n noa-server <pod-name> -- sh
 nc -zv redis-service 6379
@@ -170,4 +180,5 @@ nc -zv redis-service 6379
 
 ---
 
-**Production Ready**: Follows industry best practices for security, performance, and reliability.
+**Production Ready**: Follows industry best practices for security, performance,
+and reliability.

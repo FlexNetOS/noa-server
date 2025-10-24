@@ -1,6 +1,7 @@
 # MCP Client - Python SDK
 
-Python SDK for Model Context Protocol (MCP) - A comprehensive client library for connecting to and interacting with MCP servers.
+Python SDK for Model Context Protocol (MCP) - A comprehensive client library for
+connecting to and interacting with MCP servers.
 
 ## Features
 
@@ -365,7 +366,8 @@ Main client class for MCP communication.
 - `list_resources() -> List[MCPResource]` - List available resources
 - `read_resource(uri: str) -> List[MCPContent]` - Read a resource
 - `list_prompts() -> List[MCPPrompt]` - List available prompts
-- `get_prompt(name: str, args: Optional[Dict[str, str]]) -> GetPromptResponse` - Get a prompt
+- `get_prompt(name: str, args: Optional[Dict[str, str]]) -> GetPromptResponse` -
+  Get a prompt
 - `on(event: str, handler: Callable) -> None` - Register event handler
 - `off(event: str, handler: Callable) -> None` - Unregister event handler
 
@@ -384,8 +386,10 @@ Tool discovery and invocation manager.
 - `get_all_tools() -> List[MCPTool]` - Get all cached tools
 - `has_tool(name: str) -> bool` - Check if tool exists
 - `call_tool(call: MCPToolCall) -> MCPToolResult` - Call a tool
-- `call_tools_sequence(calls: List[MCPToolCall]) -> List[MCPToolResult]` - Call tools sequentially
-- `call_tools_parallel(calls: List[MCPToolCall]) -> List[MCPToolResult]` - Call tools in parallel
+- `call_tools_sequence(calls: List[MCPToolCall]) -> List[MCPToolResult]` - Call
+  tools sequentially
+- `call_tools_parallel(calls: List[MCPToolCall]) -> List[MCPToolResult]` - Call
+  tools in parallel
 - `refresh() -> List[MCPTool]` - Refresh tool list from server
 
 ## License
@@ -394,10 +398,12 @@ MIT
 
 ## Contributing
 
-Contributions are welcome! Please read our contributing guidelines before submitting PRs.
+Contributions are welcome! Please read our contributing guidelines before
+submitting PRs.
 
 ## Support
 
 For issues and questions:
+
 - GitHub Issues: https://github.com/noa-server/noa-server/issues
 - Documentation: https://docs.noa-server.io/mcp-client

@@ -43,10 +43,7 @@ export interface EventEnvelope<T = any> {
 /**
  * Event handler function
  */
-export type EventHandler<T = any> = (
-  data: T,
-  metadata: EventMetadata
-) => void | Promise<void>;
+export type EventHandler<T = any> = (data: T, metadata: EventMetadata) => void | Promise<void>;
 
 /**
  * Event subscription
@@ -67,10 +64,7 @@ export type EventFilter<T = any> = (data: T, metadata: EventMetadata) => boolean
 /**
  * Event transformation function
  */
-export type EventTransform<TIn = any, TOut = any> = (
-  data: TIn,
-  metadata: EventMetadata
-) => TOut;
+export type EventTransform<TIn = any, TOut = any> = (data: TIn, metadata: EventMetadata) => TOut;
 
 /**
  * EventBus configuration
@@ -174,7 +168,11 @@ export class EventBus extends EventEmitter {
   /**
    * Subscribe to an event (fires once)
    */
-  public once<T = any>(eventName: string, handler: EventHandler<T>, options: { priority?: number } = {}): string {
+  public once<T = any>(
+    eventName: string,
+    handler: EventHandler<T>,
+    options: { priority?: number } = {}
+  ): string {
     return this.on(eventName, handler, { ...options, once: true });
   }
 
@@ -296,7 +294,11 @@ export class EventBus extends EventEmitter {
   /**
    * Subscribe to wildcard events
    */
-  public onAny(pattern: string, handler: EventHandler, options: { priority?: number } = {}): string {
+  public onAny(
+    pattern: string,
+    handler: EventHandler,
+    options: { priority?: number } = {}
+  ): string {
     return this.on(pattern, handler, options);
   }
 
@@ -328,7 +330,9 @@ export class EventBus extends EventEmitter {
     for (const events of this.history.values()) {
       allHistory.push(...events);
     }
-    return allHistory.sort((a, b) => a.metadata.timestamp.getTime() - b.metadata.timestamp.getTime());
+    return allHistory.sort(
+      (a, b) => a.metadata.timestamp.getTime() - b.metadata.timestamp.getTime()
+    );
   }
 
   /**
@@ -367,7 +371,9 @@ export class EventBus extends EventEmitter {
   /**
    * Get metrics for an event
    */
-  public getMetrics(eventName?: string): Record<string, { count: number; avgTime: number; errors: number }> {
+  public getMetrics(
+    eventName?: string
+  ): Record<string, { count: number; avgTime: number; errors: number }> {
     if (eventName) {
       const metric = this.metrics.get(eventName);
       if (!metric) return {};

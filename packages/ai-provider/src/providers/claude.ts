@@ -13,7 +13,7 @@ import {
   ConfigurationError,
   AuthenticationError,
   CreateChatCompletionRequest,
-  CreateEmbeddingRequest
+  CreateEmbeddingRequest,
 } from '../types';
 import { BaseProvider } from './base';
 
@@ -33,7 +33,7 @@ export class ClaudeProvider extends BaseProvider {
         apiKey: config.apiKey,
         baseURL: config.baseURL,
         timeout: config.timeout || 30000,
-        maxRetries: config.maxRetries || 3
+        maxRetries: config.maxRetries || 3,
       });
     } catch (error) {
       throw new ConfigurationError(
@@ -67,12 +67,12 @@ export class ClaudeProvider extends BaseProvider {
           ModelCapability.CHAT_COMPLETION,
           ModelCapability.FUNCTION_CALLING,
           ModelCapability.VISION,
-          ModelCapability.STREAMING
+          ModelCapability.STREAMING,
         ],
         metadata: {
           version: '20240229',
-          description: 'Most capable Claude model for highly complex tasks'
-        }
+          description: 'Most capable Claude model for highly complex tasks',
+        },
       },
       {
         id: 'claude-3-sonnet-20240229',
@@ -85,12 +85,12 @@ export class ClaudeProvider extends BaseProvider {
           ModelCapability.CHAT_COMPLETION,
           ModelCapability.FUNCTION_CALLING,
           ModelCapability.VISION,
-          ModelCapability.STREAMING
+          ModelCapability.STREAMING,
         ],
         metadata: {
           version: '20240229',
-          description: 'Balanced Claude model for most tasks'
-        }
+          description: 'Balanced Claude model for most tasks',
+        },
       },
       {
         id: 'claude-3-haiku-20240307',
@@ -102,13 +102,13 @@ export class ClaudeProvider extends BaseProvider {
           ModelCapability.TEXT_GENERATION,
           ModelCapability.CHAT_COMPLETION,
           ModelCapability.FUNCTION_CALLING,
-          ModelCapability.STREAMING
+          ModelCapability.STREAMING,
         ],
         metadata: {
           version: '20240307',
-          description: 'Fastest Claude model for lightweight tasks'
-        }
-      }
+          description: 'Fastest Claude model for lightweight tasks',
+        },
+      },
     ];
 
     return this.models;
@@ -117,31 +117,37 @@ export class ClaudeProvider extends BaseProvider {
   async createChatCompletion(request: CreateChatCompletionRequest): Promise<GenerationResponse> {
     const requestId = this.generateRequestId();
 
-    return this.withRetry(async () => {
-      this.validateMessages(request.messages);
-      this.logRequest(requestId, 'createChatCompletion', request);
+    return this.withRetry(
+      async () => {
+        this.validateMessages(request.messages);
+        this.logRequest(requestId, 'createChatCompletion', request);
 
-      const modelInfo = await this.getModelInfo(request.model);
-      const { messages, system } = this.transformClaudeMessages(request.messages);
-      const options = this.buildClaudeOptions(request.config, modelInfo);
+        const modelInfo = await this.getModelInfo(request.model);
+        const { messages, system } = this.transformClaudeMessages(request.messages);
+        const options = this.buildClaudeOptions(request.config, modelInfo);
 
-      const response = await this.client.messages.create({
-        model: request.model,
-        max_tokens: options.maxTokens,
-        messages,
-        ...(system ? { system } : {}),
-        ...options.params,
-        stream: false
-      });
+        const response = await this.client.messages.create({
+          model: request.model,
+          max_tokens: options.maxTokens,
+          messages,
+          ...(system ? { system } : {}),
+          ...options.params,
+          stream: false,
+        });
 
-      const result = this.convertFromClaudeResponse(response, modelInfo);
-      this.logResponse(requestId, result);
+        const result = this.convertFromClaudeResponse(response, modelInfo);
+        this.logResponse(requestId, result);
 
-      return result;
-    }, 'createChatCompletion', requestId);
+        return result;
+      },
+      'createChatCompletion',
+      requestId
+    );
   }
 
-  async *createChatCompletionStream(request: CreateChatCompletionRequest): AsyncIterable<StreamingChunk> {
+  async *createChatCompletionStream(
+    request: CreateChatCompletionRequest
+  ): AsyncIterable<StreamingChunk> {
     const requestId = this.generateRequestId();
 
     try {
@@ -158,11 +164,15 @@ export class ClaudeProvider extends BaseProvider {
         messages,
         ...(system ? { system } : {}),
         ...options.params,
-        stream: true
+        stream: true,
       });
 
       for await (const chunk of stream) {
-        if (chunk.type === 'message_start' || chunk.type === 'message_delta' || chunk.type === 'message_stop') {
+        if (
+          chunk.type === 'message_start' ||
+          chunk.type === 'message_delta' ||
+          chunk.type === 'message_stop'
+        ) {
           yield this.convertFromClaudeStreamChunk(chunk, modelInfo);
         }
       }
@@ -175,18 +185,22 @@ export class ClaudeProvider extends BaseProvider {
   async createEmbedding(request: CreateEmbeddingRequest): Promise<EmbeddingResponse> {
     const requestId = this.generateRequestId();
 
-    return this.withRetry(async () => {
-      this.logRequest(requestId, 'createEmbedding', request);
+    return this.withRetry(
+      async () => {
+        this.logRequest(requestId, 'createEmbedding', request);
 
-      // Claude doesn't have embedding models yet, throw error
-      throw new AIProviderError(
-        'Embeddings are not supported by Claude provider',
-        ProviderType.CLAUDE,
-        'UNSUPPORTED_CAPABILITY',
-        400,
-        false
-      );
-    }, 'createEmbedding', requestId);
+        // Claude doesn't have embedding models yet, throw error
+        throw new AIProviderError(
+          'Embeddings are not supported by Claude provider',
+          ProviderType.CLAUDE,
+          'UNSUPPORTED_CAPABILITY',
+          400,
+          false
+        );
+      },
+      'createEmbedding',
+      requestId
+    );
   }
 
   supportsCapability(capability: ModelCapability): boolean {
@@ -195,7 +209,7 @@ export class ClaudeProvider extends BaseProvider {
       ModelCapability.CHAT_COMPLETION,
       ModelCapability.FUNCTION_CALLING,
       ModelCapability.VISION,
-      ModelCapability.STREAMING
+      ModelCapability.STREAMING,
     ];
 
     return supportedCapabilities.includes(capability);
@@ -220,9 +234,10 @@ export class ClaudeProvider extends BaseProvider {
 
     for (const message of messages) {
       if (message.role === 'system') {
-        const text = typeof message.content === 'string'
-          ? message.content
-          : message.content.map(block => block.text ?? '').join('\n');
+        const text =
+          typeof message.content === 'string'
+            ? message.content
+            : message.content.map((block) => block.text ?? '').join('\n');
         if (text) {
           systemPrompts.push(text);
         }
@@ -234,7 +249,7 @@ export class ClaudeProvider extends BaseProvider {
       if (typeof message.content === 'string') {
         result.push({
           role,
-          content: message.content
+          content: message.content,
         });
         continue;
       }
@@ -251,17 +266,20 @@ export class ClaudeProvider extends BaseProvider {
 
       result.push({
         role,
-        content: combinedContent
+        content: combinedContent,
       });
     }
 
     return {
       messages: result,
-      system: systemPrompts.length > 0 ? systemPrompts.join('\n\n') : undefined
+      system: systemPrompts.length > 0 ? systemPrompts.join('\n\n') : undefined,
     };
   }
 
-  private buildClaudeOptions(config: GenerationConfig | undefined, modelInfo: ModelInfo): {
+  private buildClaudeOptions(
+    config: GenerationConfig | undefined,
+    modelInfo: ModelInfo
+  ): {
     maxTokens: number;
     params: {
       temperature?: number;
@@ -276,14 +294,11 @@ export class ClaudeProvider extends BaseProvider {
     if (!config) {
       return {
         maxTokens,
-        params: {}
+        params: {},
       };
     }
 
-    const metadata =
-      config.user !== undefined
-        ? { user_id: config.user }
-        : undefined;
+    const metadata = config.user !== undefined ? { user_id: config.user } : undefined;
 
     return {
       maxTokens,
@@ -296,8 +311,8 @@ export class ClaudeProvider extends BaseProvider {
           : config.stop
             ? [config.stop]
             : undefined,
-        ...(metadata ? { metadata } : {})
-      }
+        ...(metadata ? { metadata } : {}),
+      },
     };
   }
 
@@ -305,7 +320,7 @@ export class ClaudeProvider extends BaseProvider {
     response: Anthropic.Messages.Message,
     modelInfo: ModelInfo
   ): GenerationResponse {
-    const textContent = response.content.find(block => block.type === 'text');
+    const textContent = response.content.find((block) => block.type === 'text');
     const text = textContent?.text || '';
 
     return {
@@ -318,31 +333,34 @@ export class ClaudeProvider extends BaseProvider {
           index: 0,
           message: {
             role: 'assistant',
-            content: text
+            content: text,
           },
           text,
-          finish_reason: response.stop_reason === 'end_turn' ? 'stop' :
-                        response.stop_reason === 'max_tokens' ? 'length' : null
-        }
+          finish_reason:
+            response.stop_reason === 'end_turn'
+              ? 'stop'
+              : response.stop_reason === 'max_tokens'
+                ? 'length'
+                : null,
+        },
       ],
-      usage: response.usage ? {
-        prompt_tokens: response.usage.input_tokens,
-        completion_tokens: response.usage.output_tokens,
-        total_tokens: response.usage.input_tokens + response.usage.output_tokens
-      } : undefined,
+      usage: response.usage
+        ? {
+            prompt_tokens: response.usage.input_tokens,
+            completion_tokens: response.usage.output_tokens,
+            total_tokens: response.usage.input_tokens + response.usage.output_tokens,
+          }
+        : undefined,
       provider: ProviderType.CLAUDE,
       metadata: {
         stop_reason: response.stop_reason,
         stop_sequence: response.stop_sequence,
-        model_info: modelInfo
-      }
+        model_info: modelInfo,
+      },
     };
   }
 
-  private convertFromClaudeStreamChunk(
-    chunk: any,
-    modelInfo: ModelInfo
-  ): StreamingChunk {
+  private convertFromClaudeStreamChunk(chunk: any, modelInfo: ModelInfo): StreamingChunk {
     let deltaContent = '';
 
     if (chunk.type === 'message_start') {
@@ -355,12 +373,12 @@ export class ClaudeProvider extends BaseProvider {
           {
             index: 0,
             delta: {
-              role: chunk.message.role
+              role: chunk.message.role,
             },
-            finish_reason: null
-          }
+            finish_reason: null,
+          },
         ],
-        provider: ProviderType.CLAUDE
+        provider: ProviderType.CLAUDE,
       };
     }
 
@@ -377,18 +395,24 @@ export class ClaudeProvider extends BaseProvider {
         {
           index: 0,
           delta: {
-            content: deltaContent
+            content: deltaContent,
           },
-          finish_reason: chunk.delta?.stop_reason === 'end_turn' ? 'stop' :
-                        chunk.delta?.stop_reason === 'max_tokens' ? 'length' : null
-        }
+          finish_reason:
+            chunk.delta?.stop_reason === 'end_turn'
+              ? 'stop'
+              : chunk.delta?.stop_reason === 'max_tokens'
+                ? 'length'
+                : null,
+        },
       ],
-      usage: chunk.usage ? {
-        prompt_tokens: chunk.usage.input_tokens || 0,
-        completion_tokens: chunk.usage.output_tokens || 0,
-        total_tokens: (chunk.usage.input_tokens || 0) + (chunk.usage.output_tokens || 0)
-      } : undefined,
-      provider: ProviderType.CLAUDE
+      usage: chunk.usage
+        ? {
+            prompt_tokens: chunk.usage.input_tokens || 0,
+            completion_tokens: chunk.usage.output_tokens || 0,
+            total_tokens: (chunk.usage.input_tokens || 0) + (chunk.usage.output_tokens || 0),
+          }
+        : undefined,
+      provider: ProviderType.CLAUDE,
     };
   }
 }

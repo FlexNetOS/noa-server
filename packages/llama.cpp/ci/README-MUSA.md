@@ -1,6 +1,7 @@
 ## Running MUSA CI in a Docker Container
 
-Assuming `$PWD` is the root of the `llama.cpp` repository, follow these steps to set up and run MUSA CI in a Docker container:
+Assuming `$PWD` is the root of the `llama.cpp` repository, follow these steps to
+set up and run MUSA CI in a Docker container:
 
 ### 1. Create a local directory to store cached models, configuration files and venv:
 
@@ -32,4 +33,5 @@ git config --global --add safe.directory /ws
 GG_BUILD_MUSA=1 bash ./ci/run.sh /ci-results /ci-cache
 ```
 
-This setup ensures that the CI runs within an isolated Docker environment while maintaining cached files and results across runs.
+This setup ensures that the CI runs within an isolated Docker environment while
+maintaining cached files and results across runs.

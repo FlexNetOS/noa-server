@@ -18,12 +18,12 @@ describe('ExpressErrorHandler', () => {
     tracker = new ErrorTracker({
       dsn: 'https://test@sentry.io/123',
       environment: 'test',
-      sampleRate: 0
+      sampleRate: 0,
     });
 
     handler = new ExpressErrorHandler(tracker, {
       exposeErrors: true,
-      logErrors: false
+      logErrors: false,
     });
 
     mockReq = {
@@ -33,14 +33,14 @@ describe('ExpressErrorHandler', () => {
       originalUrl: '/api/test',
       headers: {},
       query: {},
-      body: {}
+      body: {},
     };
 
     mockRes = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn().mockReturnThis(),
       on: jest.fn(),
-      statusCode: 200
+      statusCode: 200,
     };
 
     mockNext = jest.fn();
@@ -67,7 +67,7 @@ describe('ExpressErrorHandler', () => {
       expect(addBreadcrumbSpy).toHaveBeenCalledWith(
         expect.objectContaining({
           category: 'http',
-          level: ErrorSeverity.INFO
+          level: ErrorSeverity.INFO,
         })
       );
     });
@@ -79,19 +79,14 @@ describe('ExpressErrorHandler', () => {
       const error = new Error('Test error');
       const captureErrorSpy = jest.spyOn(tracker, 'captureError');
 
-      await middleware(
-        error,
-        mockReq as Request,
-        mockRes as Response,
-        mockNext
-      );
+      await middleware(error, mockReq as Request, mockRes as Response, mockNext);
 
       expect(captureErrorSpy).toHaveBeenCalledWith(
         error,
         expect.objectContaining({
           request: expect.objectContaining({
-            method: 'GET'
-          })
+            method: 'GET',
+          }),
         })
       );
     });
@@ -100,19 +95,14 @@ describe('ExpressErrorHandler', () => {
       const middleware = handler.errorHandler();
       const error = new Error('Test error');
 
-      await middleware(
-        error,
-        mockReq as Request,
-        mockRes as Response,
-        mockNext
-      );
+      await middleware(error, mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockRes.status).toHaveBeenCalledWith(500);
       expect(mockRes.json).toHaveBeenCalledWith(
         expect.objectContaining({
           error: expect.objectContaining({
-            message: 'Test error'
-          })
+            message: 'Test error',
+          }),
         })
       );
     });
@@ -122,36 +112,26 @@ describe('ExpressErrorHandler', () => {
       const error = new Error('Not found') as any;
       error.statusCode = 404;
 
-      await middleware(
-        error,
-        mockReq as Request,
-        mockRes as Response,
-        mockNext
-      );
+      await middleware(error, mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockRes.status).toHaveBeenCalledWith(404);
     });
 
     it('should hide error details in production', async () => {
       const prodHandler = new ExpressErrorHandler(tracker, {
-        exposeErrors: false
+        exposeErrors: false,
       });
 
       const middleware = prodHandler.errorHandler();
       const error = new Error('Sensitive error');
 
-      await middleware(
-        error,
-        mockReq as Request,
-        mockRes as Response,
-        mockNext
-      );
+      await middleware(error, mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockRes.json).toHaveBeenCalledWith(
         expect.objectContaining({
           error: expect.objectContaining({
-            message: 'Internal server error'
-          })
+            message: 'Internal server error',
+          }),
         })
       );
     });

@@ -250,46 +250,46 @@ spec:
         app: haproxy
     spec:
       containers:
-      - name: haproxy
-        image: haproxy:2.9-alpine
-        ports:
-        - name: http
-          containerPort: 80
-        - name: https
-          containerPort: 443
-        - name: stats
-          containerPort: 8404
-        volumeMounts:
-        - name: config
-          mountPath: /usr/local/etc/haproxy
-        - name: certs
-          mountPath: /etc/haproxy/certs
-        livenessProbe:
-          httpGet:
-            path: /stats
-            port: 8404
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /stats
-            port: 8404
-          initialDelaySeconds: 10
-          periodSeconds: 5
-        resources:
-          requests:
-            cpu: 500m
-            memory: 256Mi
-          limits:
-            cpu: 2000m
-            memory: 1Gi
+        - name: haproxy
+          image: haproxy:2.9-alpine
+          ports:
+            - name: http
+              containerPort: 80
+            - name: https
+              containerPort: 443
+            - name: stats
+              containerPort: 8404
+          volumeMounts:
+            - name: config
+              mountPath: /usr/local/etc/haproxy
+            - name: certs
+              mountPath: /etc/haproxy/certs
+          livenessProbe:
+            httpGet:
+              path: /stats
+              port: 8404
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /stats
+              port: 8404
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 500m
+              memory: 256Mi
+            limits:
+              cpu: 2000m
+              memory: 1Gi
       volumes:
-      - name: config
-        configMap:
-          name: haproxy-config
-      - name: certs
-        secret:
-          secretName: haproxy-tls
+        - name: config
+          configMap:
+            name: haproxy-config
+        - name: certs
+          secret:
+            secretName: haproxy-tls
 
 ---
 apiVersion: v1
@@ -302,14 +302,14 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - name: http
-    port: 80
-    targetPort: 80
-  - name: https
-    port: 443
-    targetPort: 443
-  - name: stats
-    port: 8404
-    targetPort: 8404
+    - name: http
+      port: 80
+      targetPort: 80
+    - name: https
+      port: 443
+      targetPort: 443
+    - name: stats
+      port: 8404
+      targetPort: 8404
   selector:
     app: haproxy

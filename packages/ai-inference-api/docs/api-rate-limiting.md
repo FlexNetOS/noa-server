@@ -1,6 +1,8 @@
 # API Rate Limiting & Validation
 
-Comprehensive API protection middleware for the AI Inference API, providing multi-tier rate limiting, request validation, input sanitization, and adaptive throttling.
+Comprehensive API protection middleware for the AI Inference API, providing
+multi-tier rate limiting, request validation, input sanitization, and adaptive
+throttling.
 
 ## Table of Contents
 
@@ -47,24 +49,28 @@ Count:              18 requests in window
 ### Tier Limits
 
 #### Free Tier
+
 - **Requests per minute**: 10
 - **Requests per hour**: 100
 - **Burst size**: 5 (10 seconds)
 - **Concurrent requests**: 2
 
 #### Pro Tier
+
 - **Requests per minute**: 100
 - **Requests per hour**: 1000
 - **Burst size**: 50
 - **Concurrent requests**: 20
 
 #### Enterprise Tier
+
 - **Requests per minute**: 1000
 - **Requests per hour**: 10000
 - **Burst size**: 500
 - **Concurrent requests**: 100
 
 #### Internal Tier
+
 - **Requests per minute**: 10000
 - **Requests per hour**: 100000
 - **Burst size**: 10000
@@ -104,7 +110,7 @@ Limits are checked in order (most restrictive wins):
 import {
   APIRateLimiter,
   RateLimitTier,
-  createAPIRateLimitMiddleware
+  createAPIRateLimitMiddleware,
 } from './middleware/api-rate-limit';
 import Redis from 'ioredis';
 
@@ -112,23 +118,29 @@ import Redis from 'ioredis';
 const redis = new Redis({
   host: 'localhost',
   port: 6379,
-  db: 0
+  db: 0,
 });
 
 // Setup tier limits
 const tierLimits = new Map([
-  [RateLimitTier.FREE, {
-    requestsPerMinute: 10,
-    requestsPerHour: 100,
-    burstSize: 5,
-    concurrentRequests: 2
-  }],
-  [RateLimitTier.PRO, {
-    requestsPerMinute: 100,
-    requestsPerHour: 1000,
-    burstSize: 50,
-    concurrentRequests: 20
-  }]
+  [
+    RateLimitTier.FREE,
+    {
+      requestsPerMinute: 10,
+      requestsPerHour: 100,
+      burstSize: 5,
+      concurrentRequests: 2,
+    },
+  ],
+  [
+    RateLimitTier.PRO,
+    {
+      requestsPerMinute: 100,
+      requestsPerHour: 1000,
+      burstSize: 50,
+      concurrentRequests: 20,
+    },
+  ],
 ]);
 
 // Setup endpoint limits
@@ -136,8 +148,8 @@ const endpointLimits = [
   {
     path: '/api/chat',
     method: 'POST',
-    requestsPerMinute: 50
-  }
+    requestsPerMinute: 50,
+  },
 ];
 
 // Create rate limiter
@@ -153,7 +165,7 @@ const rateLimitMiddleware = createAPIRateLimitMiddleware({
   getUserId: (req) => req.user?.id,
   getUserTier: (req) => req.user?.tier || RateLimitTier.FREE,
   skipPaths: ['/health', '/metrics'],
-  includeHeaders: true
+  includeHeaders: true,
 });
 
 // Apply to Express app
@@ -211,13 +223,14 @@ const redis = new Redis({
   port: parseInt(process.env.REDIS_PORT || '6379'),
   db: 0,
   password: process.env.REDIS_PASSWORD,
-  keyPrefix: 'ratelimit:'
+  keyPrefix: 'ratelimit:',
 });
 
 const rateLimiter = new APIRateLimiter(tierLimits, endpointLimits, redis);
 ```
 
 **Benefits**:
+
 - Consistent limits across multiple API servers
 - Persistent state (survives server restarts)
 - Higher accuracy for distributed systems
@@ -234,24 +247,25 @@ const validator = createRequestValidator();
 
 // Define schema
 const chatSchema = z.object({
-  messages: z.array(z.object({
-    role: z.enum(['system', 'user', 'assistant']),
-    content: z.string().min(1).max(10000)
-  })).min(1),
+  messages: z
+    .array(
+      z.object({
+        role: z.enum(['system', 'user', 'assistant']),
+        content: z.string().min(1).max(10000),
+      })
+    )
+    .min(1),
   model: z.string(),
   temperature: z.number().min(0).max(2).optional(),
-  max_tokens: z.number().int().positive().optional()
+  max_tokens: z.number().int().positive().optional(),
 });
 
 // Apply validation
-app.post('/api/chat',
-  validator.validateBody(chatSchema),
-  async (req, res) => {
-    // req.body is now type-safe and validated
-    const { messages, model } = req.body;
-    // ...
-  }
-);
+app.post('/api/chat', validator.validateBody(chatSchema), async (req, res) => {
+  // req.body is now type-safe and validated
+  const { messages, model } = req.body;
+  // ...
+});
 ```
 
 ### Query Parameter Validation
@@ -260,7 +274,8 @@ app.post('/api/chat',
 import { CommonSchemas } from './middleware/request-validator';
 
 // Pagination
-app.get('/api/models',
+app.get(
+  '/api/models',
   validator.validateQuery(CommonSchemas.pagination),
   async (req, res) => {
     const { page, limit } = req.query;
@@ -272,10 +287,11 @@ app.get('/api/models',
 const searchSchema = z.object({
   q: z.string().min(1).max(255),
   category: z.enum(['all', 'models', 'datasets']).default('all'),
-  sortBy: z.enum(['relevance', 'date']).default('relevance')
+  sortBy: z.enum(['relevance', 'date']).default('relevance'),
 });
 
-app.get('/api/search',
+app.get(
+  '/api/search',
   validator.validateQuery(searchSchema),
   async (req, res) => {
     // ...
@@ -287,20 +303,23 @@ app.get('/api/search',
 
 ```typescript
 // Require specific headers
-app.post('/api/upload',
-  validator.validateHeaders(['x-api-key', 'content-type']),
+app.post(
+  '/api/upload',
+  validator.validateHeaders(['x-api-key', 'content-type'])
   // ...
 );
 
 // Validate Content-Type
-app.post('/api/data',
-  validator.validateContentType(['application/json', 'application/xml']),
+app.post(
+  '/api/data',
+  validator.validateContentType(['application/json', 'application/xml'])
   // ...
 );
 
 // Validate Accept header
-app.get('/api/data',
-  validator.validateAccept(['application/json', 'text/csv']),
+app.get(
+  '/api/data',
+  validator.validateAccept(['application/json', 'text/csv'])
   // ...
 );
 ```
@@ -308,14 +327,15 @@ app.get('/api/data',
 ### Comprehensive Validation
 
 ```typescript
-app.post('/api/inference',
+app.post(
+  '/api/inference',
   validator.validateRequest({
     bodySchema: chatSchema,
     querySchema: z.object({
-      async: z.coerce.boolean().default(false)
+      async: z.coerce.boolean().default(false),
     }),
     requiredHeaders: ['content-type', 'x-api-key'],
-    allowedContentTypes: ['application/json']
+    allowedContentTypes: ['application/json'],
   }),
   async (req, res) => {
     // Fully validated request
@@ -330,23 +350,23 @@ import { CommonSchemas } from './middleware/request-validator';
 
 // UUID validation
 const idSchema = z.object({
-  id: CommonSchemas.uuid
+  id: CommonSchemas.uuid,
 });
 
 // Email validation
 const emailSchema = z.object({
-  email: CommonSchemas.email
+  email: CommonSchemas.email,
 });
 
 // URL validation
 const webhookSchema = z.object({
-  url: CommonSchemas.url
+  url: CommonSchemas.url,
 });
 
 // Date range
 const reportSchema = z.object({
   ...CommonSchemas.dateRange.shape,
-  format: z.enum(['json', 'csv'])
+  format: z.enum(['json', 'csv']),
 });
 ```
 
@@ -358,7 +378,7 @@ const reportSchema = z.object({
 import {
   createResponseValidator,
   CommonResponseSchemas,
-  buildRESTSchemaMap
+  buildRESTSchemaMap,
 } from './middleware/response-validator';
 
 const responseValidator = createResponseValidator();
@@ -368,12 +388,12 @@ const modelSchema = z.object({
   id: z.string(),
   name: z.string(),
   provider: z.enum(['openai', 'claude', 'llama.cpp']),
-  capabilities: z.array(z.string())
+  capabilities: z.array(z.string()),
 });
 
 // Build schema map
 const schemaMap = buildRESTSchemaMap(modelSchema, {
-  includePagination: true
+  includePagination: true,
 });
 
 // Apply validation
@@ -437,7 +457,7 @@ const sanitizer = createSanitizer({
   sanitizeBody: true,
   sanitizeQuery: true,
   sanitizeParams: true,
-  maxStringLength: 100000
+  maxStringLength: 100000,
 });
 
 app.use(sanitizer.middleware());
@@ -533,27 +553,29 @@ const throttle = createThrottle({
   cpuThreshold: 80, // percentage
   memoryThreshold: 85, // percentage
   burstWindow: 10000, // ms
-  burstLimit: 100
+  burstLimit: 100,
 });
 
-app.use(throttle.middleware({
-  getPriority: (req) => {
-    if (req.headers['x-priority'] === 'high') {
-      return RequestPriority.HIGH;
-    }
-    return RequestPriority.NORMAL;
-  }
-}));
+app.use(
+  throttle.middleware({
+    getPriority: (req) => {
+      if (req.headers['x-priority'] === 'high') {
+        return RequestPriority.HIGH;
+      }
+      return RequestPriority.NORMAL;
+    },
+  })
+);
 ```
 
 ### Priority Levels
 
 ```typescript
 enum RequestPriority {
-  LOW = 0,       // Queued first
-  NORMAL = 1,    // Default priority
-  HIGH = 2,      // Skip under moderate load
-  CRITICAL = 3   // Always processed
+  LOW = 0, // Queued first
+  NORMAL = 1, // Default priority
+  HIGH = 2, // Skip under moderate load
+  CRITICAL = 3, // Always processed
 }
 ```
 
@@ -566,7 +588,7 @@ console.log({
   activeRequests: status.activeRequests,
   queuedRequests: status.queuedRequests,
   cpuUsage: status.metrics.cpuUsage,
-  memoryUsage: status.metrics.memoryUsage
+  memoryUsage: status.metrics.memoryUsage,
 });
 ```
 
@@ -596,7 +618,7 @@ import rateLimitConfig from './config/api-rate-limits.json';
 const tierLimits = new Map(
   Object.entries(rateLimitConfig.tierLimits).map(([tier, limits]) => [
     tier as RateLimitTier,
-    limits
+    limits,
   ])
 );
 
@@ -629,7 +651,7 @@ THROTTLE_MEMORY_THRESHOLD=85
 // Update limits at runtime
 rateLimiter.updateConfig({
   cpuThreshold: 85,
-  memoryThreshold: 90
+  memoryThreshold: 90,
 });
 ```
 
@@ -645,7 +667,7 @@ import {
   createRequestValidator,
   createResponseValidator,
   createSanitizer,
-  createThrottle
+  createThrottle,
 } from './middleware';
 import Redis from 'ioredis';
 
@@ -674,12 +696,9 @@ const responseValidator = createResponseValidator();
 app.use(responseValidator.formatErrorResponse());
 
 // Routes
-app.post('/api/chat',
-  validator.validateBody(chatSchema),
-  async (req, res) => {
-    // Fully protected endpoint
-  }
-);
+app.post('/api/chat', validator.validateBody(chatSchema), async (req, res) => {
+  // Fully protected endpoint
+});
 
 app.listen(3000);
 ```
@@ -724,7 +743,7 @@ rateLimiter.on('rate_limit_exceeded', (userId, ip, endpoint) => {
 ```typescript
 // Enable detailed error messages
 const validator = createRequestValidator({
-  strictMode: true // Reject unknown fields
+  strictMode: true, // Reject unknown fields
 });
 
 // Check validation details
@@ -820,13 +839,14 @@ const config = {
   queueTimeout: 5000,
 
   // Disable adaptive throttling if not needed
-  adaptiveThrottling: false
+  adaptiveThrottling: false,
 };
 ```
 
 ## API Reference
 
 See TypeScript definitions in:
+
 - `/src/middleware/api-rate-limit.ts`
 - `/src/middleware/request-validator.ts`
 - `/src/middleware/response-validator.ts`

@@ -98,7 +98,10 @@ export CORS_ORIGIN=http://localhost:3000
 ### Track Performance
 
 ```typescript
-import { trackDatabaseQuery, trackAICall } from './middleware/performance-monitor';
+import {
+  trackDatabaseQuery,
+  trackAICall,
+} from './middleware/performance-monitor';
 
 // In your route handler
 const dbStart = Date.now();
@@ -177,22 +180,22 @@ spec:
   template:
     spec:
       containers:
-      - name: api
-        image: your-image
-        ports:
-        - containerPort: 3001
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3001
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health/ready
-            port: 3001
-          initialDelaySeconds: 10
-          periodSeconds: 5
+        - name: api
+          image: your-image
+          ports:
+            - containerPort: 3001
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3001
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 3001
+            initialDelaySeconds: 10
+            periodSeconds: 5
 ```
 
 ## Prometheus Configuration
@@ -211,6 +214,7 @@ scrape_configs:
 ## Grafana Dashboard
 
 Import dashboard using:
+
 1. Add Prometheus data source
 2. Import JSON from `/metrics/api` endpoint
 3. Or use `/metrics` with Prometheus queries
@@ -299,6 +303,7 @@ logs/
 ## Documentation
 
 For detailed documentation, see:
+
 - `/docs/api-monitoring.md` - Complete documentation
 - `/IMPLEMENTATION_SUMMARY.md` - Implementation details
 - Test files in `/__tests__/` - Usage examples
@@ -306,6 +311,7 @@ For detailed documentation, see:
 ## Support
 
 For issues or questions:
+
 1. Check `/docs/api-monitoring.md`
 2. Review test files for examples
 3. Check logs in `/logs/` directory

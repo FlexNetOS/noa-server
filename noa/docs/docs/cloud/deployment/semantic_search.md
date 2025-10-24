@@ -1,6 +1,8 @@
 # How to add semantic search to your LangGraph deployment
 
-This guide explains how to add semantic search to your LangGraph deployment's cross-thread [store](../../concepts/persistence.md#memory-store), so that your agent can search for memories and other documents by semantic similarity.
+This guide explains how to add semantic search to your LangGraph deployment's
+cross-thread [store](../../concepts/persistence.md#memory-store), so that your
+agent can search for memories and other documents by semantic similarity.
 
 ## Prerequisites
 
@@ -10,7 +12,8 @@ This guide explains how to add semantic search to your LangGraph deployment's cr
 
 ## Steps
 
-1. Update your `langgraph.json` configuration file to include the store configuration:
+1. Update your `langgraph.json` configuration file to include the store
+   configuration:
 
 ```json
 {
@@ -29,9 +32,11 @@ This configuration:
 
 - Uses OpenAI's text-embedding-3-small model for generating embeddings
 - Sets the embedding dimension to 1536 (matching the model's output)
-- Indexes all fields in your stored data (`["$"]` means index everything, or specify specific fields like `["text", "metadata.title"]`)
+- Indexes all fields in your stored data (`["$"]` means index everything, or
+  specify specific fields like `["text", "metadata.title"]`)
 
-2. To use the string embedding format above, make sure your dependencies include `langchain >= 0.3.8`:
+2. To use the string embedding format above, make sure your dependencies include
+   `langchain >= 0.3.8`:
 
 ```toml
 # In pyproject.toml
@@ -49,7 +54,8 @@ langchain>=0.3.8
 
 ## Usage
 
-Once configured, you can use semantic search in your LangGraph nodes. The store requires a namespace tuple to organize memories:
+Once configured, you can use semantic search in your LangGraph nodes. The store
+requires a namespace tuple to organize memories:
 
 ```python
 def search_memory(state: State, *, store: BaseStore):
@@ -66,7 +72,8 @@ def search_memory(state: State, *, store: BaseStore):
 
 ## Custom Embeddings
 
-If you want to use custom embeddings, you can pass a path to a custom embedding function:
+If you want to use custom embeddings, you can pass a path to a custom embedding
+function:
 
 ```json
 {
@@ -81,7 +88,8 @@ If you want to use custom embeddings, you can pass a path to a custom embedding 
 }
 ```
 
-The deployment will look for the function in the specified path. The function must be async and accept a list of strings:
+The deployment will look for the function in the specified path. The function
+must be async and accept a list of strings:
 
 ```python
 # path/to/embedding_function.py
@@ -104,7 +112,8 @@ async def aembed_texts(texts: list[str]) -> list[list[float]]:
 
 ## Querying via the API
 
-You can also query the store using the LangGraph SDK. Since the SDK uses async operations:
+You can also query the store using the LangGraph SDK. Since the SDK uses async
+operations:
 
 ```python
 from langgraph_sdk import get_client

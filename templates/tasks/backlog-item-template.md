@@ -17,6 +17,7 @@
 ## Example Backlog Items
 
 ### High Value, Medium Effort
+
 ```markdown
 - [ ] Implement GraphQL API endpoint
   - ID: BACKLOG-101
@@ -30,6 +31,7 @@
 ```
 
 ### Medium Value, Small Effort
+
 ```markdown
 - [ ] Add database query logging
   - ID: BACKLOG-102
@@ -43,6 +45,7 @@
 ```
 
 ### Low Value, Extra Small Effort
+
 ```markdown
 - [ ] Update API documentation theme
   - ID: BACKLOG-103
@@ -77,6 +80,7 @@
 ```
 
 ### Research Example
+
 ```markdown
 - [ ] Explore WebAssembly for performance-critical paths
   - ID: RESEARCH-301
@@ -116,6 +120,7 @@
 ```
 
 ### Recurring Example
+
 ```markdown
 - [ ] [TEMPLATE] Weekly security scan
   - ID: RECURRING-W01
@@ -135,6 +140,7 @@
 ## Value Assessment
 
 ### HIGH Value
+
 - Direct impact on revenue or user acquisition
 - Fixes critical bugs affecting production
 - Significantly improves user experience
@@ -142,6 +148,7 @@
 - Enables key business objectives
 
 ### MEDIUM Value
+
 - Improves team efficiency or productivity
 - Enhances existing features
 - Reduces technical debt
@@ -149,6 +156,7 @@
 - Supports business objectives indirectly
 
 ### LOW Value
+
 - Aesthetic improvements
 - Nice-to-have features
 - Minor convenience updates

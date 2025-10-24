@@ -21,7 +21,9 @@
       "Bash(ls:*)",
       "Bash(pnpm install:*)",
       "Bash(xargs ls:*)",
-      "Bash(bash:*)"
+      "Bash(bash:*)",
+      "Bash(/home/deflex/noa-server/tests/e2e/verify-setup.sh:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

@@ -11,8 +11,8 @@ services:
       dockerfile: Docker/Dockerfile.noa-server
       target: development
     ports:
-      - "3000:3000"
-      - "8080:8080"
+      - '3000:3000'
+      - '8080:8080'
     volumes:
       - .:/app:cached
       - node-modules:/app/node_modules
@@ -33,7 +33,7 @@ services:
     networks:
       - noa-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -47,14 +47,14 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: noa_dev
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./scripts/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - noa-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -64,13 +64,13 @@ services:
     image: redis:7-alpine
     command: redis-server --appendonly yes
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis-data:/data
     networks:
       - noa-network
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -81,13 +81,13 @@ services:
     environment:
       MONGO_INITDB_DATABASE: noa_dev
     ports:
-      - "27017:27017"
+      - '27017:27017'
     volumes:
       - mongo-data:/data/db
     networks:
       - noa-network
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -105,7 +105,7 @@ services:
     networks:
       - noa-network
     healthcheck:
-      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
+      test: ['CMD', 'python', '-c', 'import sys; sys.exit(0)']
       interval: 30s
       timeout: 5s
       retries: 3
@@ -130,7 +130,7 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
     ports:
-      - "9090:9090"
+      - '9090:9090'
     volumes:
       - ./config/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus-data:/prometheus
@@ -141,7 +141,7 @@ services:
   grafana:
     image: grafana/grafana:latest
     ports:
-      - "3001:3000"
+      - '3001:3000'
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_INSTALL_PLUGINS=

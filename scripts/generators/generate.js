@@ -73,7 +73,7 @@ function writeFile(filePath, content) {
 function toPascalCase(str) {
   return str
     .split(/[-_]/)
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join('');
 }
 
@@ -91,7 +91,7 @@ function toKebabCase(str) {
 
 // Generators
 const generators = {
-  package: function(name) {
+  package: function (name) {
     info(`Generating new package: ${name}`);
 
     const packagePath = path.join(process.cwd(), 'packages', name);
@@ -105,37 +105,53 @@ const generators = {
     ensureDir(path.join(packagePath, 'dist'));
 
     // package.json
-    writeFile(path.join(packagePath, 'package.json'), JSON.stringify({
-      name: `@noa-server/${kebabName}`,
-      version: '0.1.0',
-      description: `${pascalName} package for Noa Server`,
-      main: './dist/index.js',
-      types: './dist/index.d.ts',
-      scripts: {
-        build: 'tsc',
-        dev: 'tsc --watch',
-        test: 'vitest',
-        lint: 'eslint src',
-        typecheck: 'tsc --noEmit'
-      },
-      keywords: ['noa-server', kebabName],
-      author: 'Noa Server Team',
-      license: 'MIT'
-    }, null, 2));
+    writeFile(
+      path.join(packagePath, 'package.json'),
+      JSON.stringify(
+        {
+          name: `@noa-server/${kebabName}`,
+          version: '0.1.0',
+          description: `${pascalName} package for Noa Server`,
+          main: './dist/index.js',
+          types: './dist/index.d.ts',
+          scripts: {
+            build: 'tsc',
+            dev: 'tsc --watch',
+            test: 'vitest',
+            lint: 'eslint src',
+            typecheck: 'tsc --noEmit',
+          },
+          keywords: ['noa-server', kebabName],
+          author: 'Noa Server Team',
+          license: 'MIT',
+        },
+        null,
+        2
+      )
+    );
 
     // tsconfig.json
-    writeFile(path.join(packagePath, 'tsconfig.json'), JSON.stringify({
-      extends: '../../tsconfig.base.json',
-      compilerOptions: {
-        outDir: './dist',
-        rootDir: './src'
-      },
-      include: ['src/**/*'],
-      exclude: ['node_modules', 'dist', 'tests']
-    }, null, 2));
+    writeFile(
+      path.join(packagePath, 'tsconfig.json'),
+      JSON.stringify(
+        {
+          extends: '../../tsconfig.base.json',
+          compilerOptions: {
+            outDir: './dist',
+            rootDir: './src',
+          },
+          include: ['src/**/*'],
+          exclude: ['node_modules', 'dist', 'tests'],
+        },
+        null,
+        2
+      )
+    );
 
     // src/index.ts
-    writeFile(path.join(packagePath, 'src', 'index.ts'), `/**
+    writeFile(
+      path.join(packagePath, 'src', 'index.ts'),
+      `/**
  * ${pascalName} Package
  *
  * Main entry point for @noa-server/${kebabName}
@@ -143,10 +159,13 @@ const generators = {
 
 export * from './types';
 export * from './${kebabName}';
-`);
+`
+    );
 
     // src/types.ts
-    writeFile(path.join(packagePath, 'src', 'types.ts'), `/**
+    writeFile(
+      path.join(packagePath, 'src', 'types.ts'),
+      `/**
  * Type definitions for ${pascalName}
  */
 
@@ -157,10 +176,13 @@ export interface ${pascalName}Config {
 export interface ${pascalName}Options {
   // Add options here
 }
-`);
+`
+    );
 
     // src/${kebabName}.ts
-    writeFile(path.join(packagePath, 'src', `${kebabName}.ts`), `import { ${pascalName}Config, ${pascalName}Options } from './types';
+    writeFile(
+      path.join(packagePath, 'src', `${kebabName}.ts`),
+      `import { ${pascalName}Config, ${pascalName}Options } from './types';
 
 /**
  * ${pascalName} class
@@ -179,10 +201,13 @@ export class ${pascalName} {
     // Implementation here
   }
 }
-`);
+`
+    );
 
     // tests/${kebabName}.test.ts
-    writeFile(path.join(packagePath, 'tests', `${kebabName}.test.ts`), `import { describe, it, expect } from 'vitest';
+    writeFile(
+      path.join(packagePath, 'tests', `${kebabName}.test.ts`),
+      `import { describe, it, expect } from 'vitest';
 import { ${pascalName} } from '../src/${kebabName}';
 
 describe('${pascalName}', () => {
@@ -192,10 +217,13 @@ describe('${pascalName}', () => {
     expect(instance).toBeDefined();
   });
 });
-`);
+`
+    );
 
     // README.md
-    writeFile(path.join(packagePath, 'README.md'), `# @noa-server/${kebabName}
+    writeFile(
+      path.join(packagePath, 'README.md'),
+      `# @noa-server/${kebabName}
 
 ${pascalName} package for Noa Server.
 
@@ -226,7 +254,8 @@ Main class for ${kebabName} functionality.
 ## License
 
 MIT
-`);
+`
+    );
 
     success(`Package '${name}' generated successfully at ${packagePath}`);
     info('Next steps:');
@@ -235,7 +264,7 @@ MIT
     info('  3. pnpm build');
   },
 
-  'mcp-server': function(name) {
+  'mcp-server': function (name) {
     info(`Generating new MCP server: ${name}`);
 
     const serverPath = path.join(process.cwd(), 'mcp', 'servers', name);
@@ -245,15 +274,20 @@ MIT
     ensureDir(path.join(serverPath, 'tests'));
 
     // __init__.py
-    writeFile(path.join(serverPath, '__init__.py'), `"""${pascalName} MCP Server"""
+    writeFile(
+      path.join(serverPath, '__init__.py'),
+      `"""${pascalName} MCP Server"""
 from .server import main
 
 __version__ = "0.1.0"
 __all__ = ["main"]
-`);
+`
+    );
 
     // server.py
-    writeFile(path.join(serverPath, 'server.py'), `#!/usr/bin/env python3
+    writeFile(
+      path.join(serverPath, 'server.py'),
+      `#!/usr/bin/env python3
 """
 ${pascalName} MCP Server
 
@@ -294,10 +328,13 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-`);
+`
+    );
 
     // tools.py
-    writeFile(path.join(serverPath, 'tools.py'), `"""
+    writeFile(
+      path.join(serverPath, 'tools.py'),
+      `"""
 ${pascalName} MCP Tools
 
 Tool implementations for ${name} server.
@@ -351,10 +388,13 @@ class ${pascalName}Tools:
             "type": "text",
             "text": f"Processed: {param}"
         }]
-`);
+`
+    );
 
     // tests/test_${name}.py
-    writeFile(path.join(serverPath, 'tests', `test_${name}.py`), `"""
+    writeFile(
+      path.join(serverPath, 'tests', `test_${name}.py`),
+      `"""
 Tests for ${pascalName} MCP server
 """
 
@@ -380,10 +420,13 @@ async def test_example_tool():
 
     assert len(result) > 0
     assert "test" in result[0]["text"]
-`);
+`
+    );
 
     // README.md
-    writeFile(path.join(serverPath, 'README.md'), `# ${pascalName} MCP Server
+    writeFile(
+      path.join(serverPath, 'README.md'),
+      `# ${pascalName} MCP Server
 
 MCP server for ${name} functionality.
 
@@ -414,7 +457,8 @@ Example tool for ${name}.
 \`\`\`bash
 pytest tests/
 \`\`\`
-`);
+`
+    );
 
     success(`MCP server '${name}' generated successfully at ${serverPath}`);
     info('Next steps:');
@@ -424,7 +468,7 @@ pytest tests/
     info('  4. Update mcp-servers-config.json');
   },
 
-  'api-route': function(routePath) {
+  'api-route': function (routePath) {
     info(`Generating new API route: ${routePath}`);
 
     const routeName = routePath.split('/').pop();
@@ -436,7 +480,9 @@ pytest tests/
     ensureDir(apiPath);
 
     // index.ts
-    writeFile(path.join(apiPath, 'index.ts'), `import { Router } from 'express';
+    writeFile(
+      path.join(apiPath, 'index.ts'),
+      `import { Router } from 'express';
 import { ${toCamelCase(routeName)}Controller } from './controller';
 import { validate${pascalName} } from './validation';
 
@@ -473,10 +519,13 @@ router.put('/:id', validate${pascalName}, ${toCamelCase(routeName)}Controller.up
 router.delete('/:id', ${toCamelCase(routeName)}Controller.delete);
 
 export default router;
-`);
+`
+    );
 
     // controller.ts
-    writeFile(path.join(apiPath, 'controller.ts'), `import { Request, Response, NextFunction } from 'express';
+    writeFile(
+      path.join(apiPath, 'controller.ts'),
+      `import { Request, Response, NextFunction } from 'express';
 import { ${pascalName}Service } from './service';
 
 class ${pascalName}Controller {
@@ -546,10 +595,13 @@ class ${pascalName}Controller {
 }
 
 export const ${toCamelCase(routeName)}Controller = new ${pascalName}Controller();
-`);
+`
+    );
 
     // service.ts
-    writeFile(path.join(apiPath, 'service.ts'), `import { ${pascalName} } from './types';
+    writeFile(
+      path.join(apiPath, 'service.ts'),
+      `import { ${pascalName} } from './types';
 
 export class ${pascalName}Service {
   async findAll(): Promise<${pascalName}[]> {
@@ -576,10 +628,13 @@ export class ${pascalName}Service {
     // TODO: Implement database delete
   }
 }
-`);
+`
+    );
 
     // types.ts
-    writeFile(path.join(apiPath, 'types.ts'), `export interface ${pascalName} {
+    writeFile(
+      path.join(apiPath, 'types.ts'),
+      `export interface ${pascalName} {
   id: string;
   createdAt: Date;
   updatedAt: Date;
@@ -593,10 +648,13 @@ export interface Create${pascalName}Input {
 export interface Update${pascalName}Input {
   // Add optional fields
 }
-`);
+`
+    );
 
     // validation.ts
-    writeFile(path.join(apiPath, 'validation.ts'), `import { Request, Response, NextFunction } from 'express';
+    writeFile(
+      path.join(apiPath, 'validation.ts'),
+      `import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
 
 const ${toCamelCase(routeName)}Schema = Joi.object({
@@ -615,7 +673,8 @@ export function validate${pascalName}(req: Request, res: Response, next: NextFun
 
   next();
 }
-`);
+`
+    );
 
     success(`API route '${routePath}' generated successfully`);
     info('Next steps:');
@@ -625,23 +684,35 @@ export function validate${pascalName}(req: Request, res: Response, next: NextFun
     info(`  4. Add tests`);
   },
 
-  component: function(name) {
+  component: function (name) {
     info(`Generating new React component: ${name}`);
 
     const pascalName = toPascalCase(name);
     const kebabName = toKebabCase(name);
 
-    const componentPath = path.join(process.cwd(), 'packages', 'ui-dashboard', 'src', 'components', pascalName);
+    const componentPath = path.join(
+      process.cwd(),
+      'packages',
+      'ui-dashboard',
+      'src',
+      'components',
+      pascalName
+    );
 
     ensureDir(componentPath);
 
     // index.tsx
-    writeFile(path.join(componentPath, 'index.tsx'), `export { ${pascalName} } from './${pascalName}';
+    writeFile(
+      path.join(componentPath, 'index.tsx'),
+      `export { ${pascalName} } from './${pascalName}';
 export type { ${pascalName}Props } from './${pascalName}';
-`);
+`
+    );
 
     // ${pascalName}.tsx
-    writeFile(path.join(componentPath, `${pascalName}.tsx`), `import React from 'react';
+    writeFile(
+      path.join(componentPath, `${pascalName}.tsx`),
+      `import React from 'react';
 import './${pascalName}.css';
 
 export interface ${pascalName}Props {
@@ -656,16 +727,22 @@ export const ${pascalName}: React.FC<${pascalName}Props> = (props) => {
     </div>
   );
 };
-`);
+`
+    );
 
     // ${pascalName}.css
-    writeFile(path.join(componentPath, `${pascalName}.css`), `.${kebabName} {
+    writeFile(
+      path.join(componentPath, `${pascalName}.css`),
+      `.${kebabName} {
   /* Add styles here */
 }
-`);
+`
+    );
 
     // ${pascalName}.test.tsx
-    writeFile(path.join(componentPath, `${pascalName}.test.tsx`), `import { render, screen } from '@testing-library/react';
+    writeFile(
+      path.join(componentPath, `${pascalName}.test.tsx`),
+      `import { render, screen } from '@testing-library/react';
 import { ${pascalName} } from './${pascalName}';
 
 describe('${pascalName}', () => {
@@ -674,7 +751,8 @@ describe('${pascalName}', () => {
     expect(screen.getByText('${pascalName}')).toBeInTheDocument();
   });
 });
-`);
+`
+    );
 
     success(`Component '${name}' generated successfully`);
     info('Next steps:');
@@ -682,16 +760,16 @@ describe('${pascalName}', () => {
     info(`  2. Add styles`);
     info(`  3. Write tests`);
     info(`  4. Export from index.ts if needed`);
-  }
+  },
 };
 
 // CLI
-const [,, command, ...args] = process.argv;
+const [, , command, ...args] = process.argv;
 
 if (!command || !generators[command]) {
   error(`Unknown generator: ${command}`);
   console.log('\nAvailable generators:');
-  Object.keys(generators).forEach(gen => {
+  Object.keys(generators).forEach((gen) => {
     console.log(`  - ${gen}`);
   });
   process.exit(1);

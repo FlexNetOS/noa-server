@@ -1,41 +1,57 @@
 # Welcome to NOA Server Team!
 
-Welcome aboard! We're excited to have you join the NOA Server team. This guide will help you get oriented and set you up for success in your first weeks with us.
+Welcome aboard! We're excited to have you join the NOA Server team. This guide
+will help you get oriented and set you up for success in your first weeks with
+us.
 
 ## Project Overview
 
-**NOA Server** (Neural Orchestration & Automation Server) is a cutting-edge AI infrastructure platform that provides unified access to multiple AI providers (OpenAI, Claude, llama.cpp) with advanced features like:
+**NOA Server** (Neural Orchestration & Automation Server) is a cutting-edge AI
+infrastructure platform that provides unified access to multiple AI providers
+(OpenAI, Claude, llama.cpp) with advanced features like:
 
-- **Unified AI Provider System**: Single interface for OpenAI, Claude, and local llama.cpp models
-- **Intelligent Model Registry**: Automatic model selection, fallback chains, and health monitoring
-- **Advanced Caching**: Multi-layer caching (memory, Redis, database) with intelligent invalidation
+- **Unified AI Provider System**: Single interface for OpenAI, Claude, and local
+  llama.cpp models
+- **Intelligent Model Registry**: Automatic model selection, fallback chains,
+  and health monitoring
+- **Advanced Caching**: Multi-layer caching (memory, Redis, database) with
+  intelligent invalidation
 - **Rate Limiting**: Provider-specific rate limiting with queue management
-- **Message Queue System**: Asynchronous job processing with RabbitMQ, Kafka, Redis, and SQS support
-- **Comprehensive Monitoring**: Real-time dashboards, health checks, and performance tracking
-- **MCP Integration**: Claude Code compatibility with MCP (Model Context Protocol) servers
-- **Neural Processing**: Local AI model inference with llama.cpp and CUDA acceleration
+- **Message Queue System**: Asynchronous job processing with RabbitMQ, Kafka,
+  Redis, and SQS support
+- **Comprehensive Monitoring**: Real-time dashboards, health checks, and
+  performance tracking
+- **MCP Integration**: Claude Code compatibility with MCP (Model Context
+  Protocol) servers
+- **Neural Processing**: Local AI model inference with llama.cpp and CUDA
+  acceleration
 
 ### Our Mission
 
-To build the most reliable, scalable, and developer-friendly AI infrastructure platform that enables teams to build production-grade AI applications without worrying about provider complexity, reliability, or performance.
+To build the most reliable, scalable, and developer-friendly AI infrastructure
+platform that enables teams to build production-grade AI applications without
+worrying about provider complexity, reliability, or performance.
 
 ## Team Structure
 
 ### Core Teams
 
 **Backend Team**
+
 - AI Provider System development
 - API infrastructure
 - Message queue and job processing
 - Performance optimization
 
 **Infrastructure Team**
+
 - Deployment automation
 - Monitoring and observability
 - Database optimization
 - Cloud infrastructure
 
 **Platform Team**
+
 - Dashboard and UI development
 - Developer tools and CLI
 - Documentation and examples
@@ -45,15 +61,16 @@ To build the most reliable, scalable, and developer-friendly AI infrastructure p
 
 **Staff Engineers**: Technical leadership, architecture decisions, mentorship
 **Senior Engineers**: Feature development, code reviews, system design
-**Engineers**: Implementation, testing, bug fixes, documentation
-**DevOps Engineers**: CI/CD, deployment, infrastructure automation
-**QA Engineers**: Test automation, quality assurance, performance testing
+**Engineers**: Implementation, testing, bug fixes, documentation **DevOps
+Engineers**: CI/CD, deployment, infrastructure automation **QA Engineers**: Test
+automation, quality assurance, performance testing
 
 ## Communication Channels
 
 ### Slack Workspace: `noa-server.slack.com`
 
 **Primary Channels:**
+
 - `#general` - Company-wide announcements
 - `#engineering` - Engineering discussions
 - `#backend` - Backend development
@@ -62,12 +79,14 @@ To build the most reliable, scalable, and developer-friendly AI infrastructure p
 - `#random` - Casual conversation
 
 **Project Channels:**
+
 - `#ai-provider` - AI provider system discussions
 - `#message-queue` - Message queue development
 - `#monitoring` - Monitoring and dashboards
 - `#mcp-integration` - MCP server development
 
 **Support Channels:**
+
 - `#help` - Ask questions and get help
 - `#onboarding` - Onboarding support
 - `#code-review` - Code review requests
@@ -97,15 +116,16 @@ For real-time collaboration, pair programming, and community discussions.
 
 ## Code of Conduct
 
-We are committed to providing a welcoming and inclusive environment for everyone. Please read and follow our [Code of Conduct](../CODE_OF_CONDUCT.md).
+We are committed to providing a welcoming and inclusive environment for
+everyone. Please read and follow our [Code of Conduct](../CODE_OF_CONDUCT.md).
 
 ### Core Values
 
 **Collaboration**: We work together, share knowledge, and support each other
 **Quality**: We take pride in writing clean, well-tested, maintainable code
 **Learning**: We continuously learn, experiment, and share our knowledge
-**Transparency**: We communicate openly and document our decisions
-**Customer Focus**: We build with our users in mind
+**Transparency**: We communicate openly and document our decisions **Customer
+Focus**: We build with our users in mind
 
 ### Expected Behavior
 
@@ -121,6 +141,7 @@ We are committed to providing a welcoming and inclusive environment for everyone
 ### Mentorship Program
 
 You'll be assigned a mentor who will:
+
 - Help you get oriented in your first weeks
 - Answer questions and provide guidance
 - Review your code and provide feedback
@@ -131,6 +152,7 @@ You'll be assigned a mentor who will:
 ### Office Hours
 
 Senior engineers hold weekly office hours for questions and pair programming:
+
 - **Tuesday**: 3:00 PM - 5:00 PM
 - **Thursday**: 10:00 AM - 12:00 PM
 
@@ -205,22 +227,27 @@ Senior engineers hold weekly office hours for questions and pair programming:
 ## Learning Path
 
 ### Week 1: Foundation
+
 - Environment setup
 - Codebase navigation
 - First contribution
 
 ### Week 2-3: Core Systems
+
 - AI Provider System deep dive
 - Message Queue architecture
 - Monitoring and observability
 
 ### Week 4: Advanced Topics
+
 - Performance optimization
 - Security best practices
 - Deployment strategies
 
 ### Month 2+: Specialization
+
 Choose an area to specialize in:
+
 - AI/ML infrastructure
 - Distributed systems
 - Platform engineering
@@ -230,15 +257,20 @@ Choose an area to specialize in:
 
 ### From Our Team
 
-**"Don't be afraid to ask questions"** - Everyone on the team is here to help. No question is too small or too basic.
+**"Don't be afraid to ask questions"** - Everyone on the team is here to help.
+No question is too small or too basic.
 
-**"Read the code"** - The best way to learn the codebase is to read it. Start with the tests, they're great documentation.
+**"Read the code"** - The best way to learn the codebase is to read it. Start
+with the tests, they're great documentation.
 
-**"Break things in development"** - Experiment, try new things, and learn from failures. That's what development environments are for.
+**"Break things in development"** - Experiment, try new things, and learn from
+failures. That's what development environments are for.
 
-**"Document as you learn"** - When you figure something out, document it. Your future self and teammates will thank you.
+**"Document as you learn"** - When you figure something out, document it. Your
+future self and teammates will thank you.
 
-**"Pair program"** - Working with others is the fastest way to learn. Don't code in isolation.
+**"Pair program"** - Working with others is the fastest way to learn. Don't code
+in isolation.
 
 ### Common New Hire Mistakes
 
@@ -300,6 +332,7 @@ pnpm typecheck
 ## Welcome Gift
 
 As a welcome gift, you'll receive:
+
 - NOA Server team t-shirt
 - Stickers and swag
 - $100 learning budget for books/courses
@@ -307,9 +340,11 @@ As a welcome gift, you'll receive:
 
 ## We're Glad You're Here!
 
-Welcome to the team! We're excited to work with you and see what we'll build together.
+Welcome to the team! We're excited to work with you and see what we'll build
+together.
 
-If you have any questions or need help, reach out in `#onboarding` on Slack or message your mentor directly.
+If you have any questions or need help, reach out in `#onboarding` on Slack or
+message your mentor directly.
 
 Happy coding!
 

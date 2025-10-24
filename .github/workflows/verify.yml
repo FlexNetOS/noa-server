@@ -15,8 +15,8 @@ jobs:
       - name: Setup Node.js 20.17.0
         uses: actions/setup-node@v4
         with:
-          node-version: "20.17.0"
-          cache: "pnpm"
+          node-version: '20.17.0'
+          cache: 'pnpm'
 
       - name: Enable Corepack
         run: corepack enable
@@ -29,7 +29,7 @@ jobs:
       - name: Setup Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: '3.12'
 
       - name: Show tool versions
         run: |

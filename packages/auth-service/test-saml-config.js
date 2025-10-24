@@ -45,7 +45,7 @@ async function testSAMLConfig() {
     const validation = AuthConfigLoader.validateConfig(config);
     if (!validation.valid) {
       console.error('❌ Configuration validation failed:');
-      validation.errors.forEach(error => console.error(`  - ${error}`));
+      validation.errors.forEach((error) => console.error(`  - ${error}`));
       process.exit(1);
     }
 
@@ -71,7 +71,7 @@ async function testSAMLConfig() {
       const providerValidation = provider.validateConfig();
       if (!providerValidation.valid) {
         console.error(`❌ Provider '${providerConfig.name}' validation failed:`);
-        providerValidation.errors.forEach(error => console.error(`  - ${error}`));
+        providerValidation.errors.forEach((error) => console.error(`  - ${error}`));
         continue;
       }
 
@@ -83,10 +83,15 @@ async function testSAMLConfig() {
         const metadataPath = resolve(`./certs/saml-sp-metadata-${providerConfig.name}.xml`);
         writeFileSync(metadataPath, metadata, 'utf8');
         console.log(`📄 SP metadata generated: ${metadataPath}`);
-        console.log('   Upload this file to your IdP\'s SAML configuration');
+        console.log("   Upload this file to your IdP's SAML configuration");
       } catch (error) {
-        console.warn(`⚠️  Metadata generation failed for '${providerConfig.name}' (this is OK for testing):`, error.message);
-        console.log(`   You can manually create SAML metadata or use a test IdP that doesn't require signed metadata`);
+        console.warn(
+          `⚠️  Metadata generation failed for '${providerConfig.name}' (this is OK for testing):`,
+          error.message
+        );
+        console.log(
+          `   You can manually create SAML metadata or use a test IdP that doesn't require signed metadata`
+        );
       }
     }
 
@@ -94,9 +99,11 @@ async function testSAMLConfig() {
     console.log('\n📝 Next steps:');
     console.log('1. Set up your SAML Identity Provider (IdP)');
     console.log('2. Upload the generated SP metadata XML to your IdP');
-    console.log('3. Configure your IdP with the callback URL:', config.saml.providers[0].callbackUrl);
+    console.log(
+      '3. Configure your IdP with the callback URL:',
+      config.saml.providers[0].callbackUrl
+    );
     console.log('4. Test the SAML authentication flow');
-
   } catch (error) {
     console.error('❌ SAML configuration test failed:', error);
     process.exit(1);

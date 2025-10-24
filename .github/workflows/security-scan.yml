@@ -94,7 +94,7 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
-          category: "/language:${{ matrix.language }}"
+          category: '/language:${{ matrix.language }}'
 
   # ===================================
   # CONTAINER SCANNING
@@ -134,7 +134,7 @@ jobs:
       - name: Scan with Grype
         uses: anchore/scan-action@v3
         with:
-          image: "noa-server:scan"
+          image: 'noa-server:scan'
           fail-build: false
           severity-cutoff: high
         continue-on-error: true

@@ -2,7 +2,10 @@
 
 ## Overview
 
-The Hive-Mind Auto-Initialization System ensures that every task in the Noa-server starts with an active Claude Flow swarm coordination environment. This provides intelligent task distribution, memory persistence, and neural pattern learning across all development activities.
+The Hive-Mind Auto-Initialization System ensures that every task in the
+Noa-server starts with an active Claude Flow swarm coordination environment.
+This provides intelligent task distribution, memory persistence, and neural
+pattern learning across all development activities.
 
 ## Architecture
 
@@ -51,12 +54,14 @@ The Hive-Mind Auto-Initialization System ensures that every task in the Noa-serv
 **Purpose**: Automatically initializes Claude Flow swarm before task execution.
 
 **Features**:
+
 - Auto-detects optimal topology based on task description
 - Spawns appropriate coordinator agents
 - Initializes memory persistence layer
 - Health check validation
 
 **Usage**:
+
 ```bash
 # Manual initialization
 bash scripts/automation/hive-mind-init.sh "Build REST API backend" "high"
@@ -69,10 +74,12 @@ bash scripts/automation/hive-mind-init.sh
 ```
 
 **Parameters**:
+
 1. `task_description` (optional): Description of the task for topology detection
 2. `complexity` (optional): Task complexity (`simple`, `medium`, `complex`)
 
 **Output**:
+
 ```bash
 HIVE_MIND_SESSION_ID=swarm-1234567890-12345
 HIVE_MIND_TOPOLOGY=hierarchical
@@ -87,50 +94,62 @@ HIVE_MIND_STATUS=active
 **Available Hooks**:
 
 #### Pre-Task Hook
+
 ```bash
 bash scripts/automation/hive-mind-hooks.sh pre-task "Build feature X" "task-123"
 ```
+
 - Checks for active hive-mind session
 - Auto-initializes if needed
 - Runs Claude Flow pre-task hook
 - Stores task metadata
 
 #### Post-Task Hook
+
 ```bash
 bash scripts/automation/hive-mind-hooks.sh post-task "task-123" "completed"
 ```
+
 - Runs Claude Flow post-task hook
 - Updates task metadata
 - Generates execution summary
 
 #### Post-Edit Hook
+
 ```bash
 bash scripts/automation/hive-mind-hooks.sh post-edit "/path/to/file.js" "swarm/edits/feature-x"
 ```
+
 - Tracks file modifications
 - Stores in swarm memory
 - Enables neural pattern learning
 
 #### Session Restore Hook
+
 ```bash
 bash scripts/automation/hive-mind-hooks.sh session-restore "swarm-1234567890-12345"
 ```
+
 - Restores previous session state
 - Loads memory context
 - Reactivates agents
 
 #### Session End Hook
+
 ```bash
 bash scripts/automation/hive-mind-hooks.sh session-end true
 ```
+
 - Archives session data
 - Exports metrics
 - Clears active session
 
 #### Notification Hook
+
 ```bash
 bash scripts/automation/hive-mind-hooks.sh notify "Deployment completed" "info"
 ```
+
 - Sends notification to swarm
 - Logs to session notifications
 
@@ -142,16 +161,16 @@ bash scripts/automation/hive-mind-hooks.sh notify "Deployment completed" "info"
 
 ```yaml
 # Swarm topology (hierarchical, mesh, adaptive)
-topology: "adaptive"
+topology: 'adaptive'
 
 # Maximum concurrent agents
 maxAgents: 6
 
 # Coordinator types
 coordinatorTypes:
-  - "hierarchical-coordinator"
-  - "mesh-coordinator"
-  - "adaptive-coordinator"
+  - 'hierarchical-coordinator'
+  - 'mesh-coordinator'
+  - 'adaptive-coordinator'
 
 # Memory and neural features
 enableMemory: true
@@ -161,23 +180,24 @@ enableNeural: true
 autoAssignment:
   autoAssignByFileType: true
   fileTypeMapping:
-    - pattern: "*.js|*.ts"
-      agent: "coder"
-    - pattern: "*.test.*"
-      agent: "tester"
+    - pattern: '*.js|*.ts'
+      agent: 'coder'
+    - pattern: '*.test.*'
+      agent: 'tester'
 
 # Task complexity detection
 complexityDetection:
   enabled: true
   rules:
-    - keyword: "backend|api"
-      complexity: "high"
-      topology: "hierarchical"
+    - keyword: 'backend|api'
+      complexity: 'high'
+      topology: 'hierarchical'
 ```
 
 ## Integration with package.json
 
-The hive-mind system is automatically integrated with all major npm scripts via pre-hooks:
+The hive-mind system is automatically integrated with all major npm scripts via
+pre-hooks:
 
 ```json
 {
@@ -192,6 +212,7 @@ The hive-mind system is automatically integrated with all major npm scripts via 
 ### Adding Hive-Mind to Custom Tasks
 
 **Option 1: Automatic Pre-Hook**
+
 ```bash
 # Add to scripts/tasks/your-task.sh
 #!/bin/bash
@@ -208,6 +229,7 @@ bash "$(dirname "$0")/../automation/hive-mind-hooks.sh" post-task "task-id" "com
 ```
 
 **Option 2: Manual Integration**
+
 ```bash
 # Initialize hive-mind
 source <(bash scripts/automation/hive-mind-init.sh "Task description" "medium")
@@ -222,42 +244,52 @@ npx claude-flow@alpha task execute --session-id "$HIVE_MIND_SESSION_ID"
 ## Topology Selection Guide
 
 ### Hierarchical Topology
-**Best for**: Complex backend development, API design, multi-service architectures
+
+**Best for**: Complex backend development, API design, multi-service
+architectures
 
 **Characteristics**:
+
 - Coordinator agents manage worker agents
 - Clear task delegation hierarchy
 - Best for coordinated, sequential workflows
 
 **Auto-triggers**:
+
 - Task description contains: `backend`, `api`, `server`, `database`
 - Complexity: `high` or `complex`
 
 **Max Agents**: 10
 
 ### Mesh Topology
+
 **Best for**: Research, analysis, parallel independent tasks
 
 **Characteristics**:
+
 - All agents are peers
 - Direct agent-to-agent communication
 - Best for distributed, parallel workflows
 
 **Auto-triggers**:
+
 - Task description contains: `research`, `analyze`, `investigate`
 - Complexity: `simple` or `low`
 
 **Max Agents**: 3-5
 
 ### Adaptive Topology
+
 **Best for**: Testing, general development, mixed workflows
 
 **Characteristics**:
+
 - Dynamically adjusts based on workload
 - Learns optimal patterns over time
 - Best for varied, unpredictable workflows
 
 **Auto-triggers**:
+
 - Task description contains: `test`, `qa`, `validation`
 - Complexity: `medium`
 - Default when no specific pattern detected
@@ -267,6 +299,7 @@ npx claude-flow@alpha task execute --session-id "$HIVE_MIND_SESSION_ID"
 ## Memory Persistence
 
 ### Storage Structure
+
 ```
 .hive-mind/
 ├── memory/
@@ -288,6 +321,7 @@ npx claude-flow@alpha task execute --session-id "$HIVE_MIND_SESSION_ID"
 ```
 
 ### Session Metadata Format
+
 ```json
 {
   "sessionId": "swarm-1234567890-12345",
@@ -295,15 +329,13 @@ npx claude-flow@alpha task execute --session-id "$HIVE_MIND_SESSION_ID"
   "maxAgents": 10,
   "timestamp": "2025-10-22T07:00:00Z",
   "status": "active",
-  "coordinators": [
-    "hierarchical-coordinator",
-    "mesh-coordinator"
-  ],
+  "coordinators": ["hierarchical-coordinator", "mesh-coordinator"],
   "endTime": "2025-10-22T08:00:00Z"
 }
 ```
 
 ### Task Metadata Format
+
 ```json
 {
   "taskId": "task-123",
@@ -320,6 +352,7 @@ npx claude-flow@alpha task execute --session-id "$HIVE_MIND_SESSION_ID"
 Every task execution follows this coordination protocol:
 
 ### 1. Pre-Task Phase
+
 ```bash
 # Auto-run by hive-mind-hooks.sh
 npx claude-flow@alpha hooks pre-task --description "Build feature X"
@@ -327,6 +360,7 @@ npx claude-flow@alpha hooks session-restore --session-id "$HIVE_MIND_SESSION_ID"
 ```
 
 ### 2. During Task Execution
+
 ```bash
 # After file edits
 npx claude-flow@alpha hooks post-edit \
@@ -339,6 +373,7 @@ npx claude-flow@alpha hooks notify \
 ```
 
 ### 3. Post-Task Phase
+
 ```bash
 # Auto-run by hive-mind-hooks.sh
 npx claude-flow@alpha hooks post-task --task-id "task-123"
@@ -348,17 +383,20 @@ npx claude-flow@alpha hooks session-end --export-metrics true
 ## Health Monitoring
 
 ### Manual Health Check
+
 ```bash
 bash scripts/automation/hive-mind-init.sh && \
   grep "HEALTHY" logs/hive-mind/init.log
 ```
 
 ### Automated Health Checks
+
 Configured in `config/hive-mind/default-config.yaml`:
+
 ```yaml
 healthCheck:
   enabled: true
-  interval: 30  # seconds
+  interval: 30 # seconds
   checkMemory: true
   checkAgents: true
   checkSession: true
@@ -368,9 +406,11 @@ healthCheck:
 ## Troubleshooting
 
 ### Issue: No Active Session
+
 **Symptom**: `No active hive-mind session found`
 
 **Solution**:
+
 ```bash
 # Manual initialization
 bash scripts/automation/hive-mind-init.sh "Task description"
@@ -380,9 +420,11 @@ cat .hive-mind/sessions/current-session.txt
 ```
 
 ### Issue: Memory Initialization Failure
+
 **Symptom**: `Memory initialization had issues`
 
 **Solution**:
+
 ```bash
 # Check memory directory permissions
 ls -la .hive-mind/memory/
@@ -396,6 +438,7 @@ bash scripts/automation/hive-mind-init.sh
 ```
 
 ### Issue: Swarm Already Initialized
+
 **Symptom**: `Swarm may have been previously initialized`
 
 **Solution**: This is non-critical. The system will reuse the existing swarm.
@@ -412,11 +455,13 @@ bash scripts/automation/hive-mind-init.sh
 ## Performance Metrics
 
 ### Expected Performance Gains
+
 - **84.8%** SWE-Bench solve rate with swarm coordination
 - **32.3%** token reduction through memory reuse
 - **2.8-4.4x** speed improvement from parallel execution
 
 ### Monitoring Performance
+
 ```bash
 # View session metrics
 cat .hive-mind/sessions/swarm-*/metrics.json
@@ -431,6 +476,7 @@ tail -f logs/hive-mind/coordinators.log
 ## Advanced Usage
 
 ### Custom Topology Configuration
+
 ```bash
 # Override topology in config
 sed -i 's/topology: "adaptive"/topology: "hierarchical"/' \
@@ -441,6 +487,7 @@ bash scripts/automation/hive-mind-init.sh
 ```
 
 ### Multi-Session Management
+
 ```bash
 # Start new parallel session
 SESSION_ID="swarm-custom-$(date +%s)"
@@ -451,6 +498,7 @@ echo "swarm-new-session" > .hive-mind/sessions/current-session.txt
 ```
 
 ### Neural Pattern Training
+
 ```bash
 # Enable neural training in config
 sed -i 's/autoTrain: false/autoTrain: true/' \
@@ -463,6 +511,7 @@ npx claude-flow@alpha hooks neural-train --session-id "$HIVE_MIND_SESSION_ID"
 ## Best Practices
 
 ### 1. Always Use Pre-Task Hooks
+
 ```bash
 # Good
 bash scripts/automation/hive-mind-hooks.sh pre-task "Task description"
@@ -474,6 +523,7 @@ bash scripts/automation/hive-mind-hooks.sh post-task "task-id"
 ```
 
 ### 2. Provide Descriptive Task Names
+
 ```bash
 # Good - enables smart topology detection
 bash scripts/automation/hive-mind-init.sh "Build REST API with authentication" "high"
@@ -483,6 +533,7 @@ bash scripts/automation/hive-mind-init.sh "Do work"
 ```
 
 ### 3. Track All File Edits
+
 ```bash
 # After modifying file
 bash scripts/automation/hive-mind-hooks.sh post-edit \
@@ -491,6 +542,7 @@ bash scripts/automation/hive-mind-hooks.sh post-edit \
 ```
 
 ### 4. Clean Up Sessions
+
 ```bash
 # End session when task complete
 bash scripts/automation/hive-mind-hooks.sh session-end true

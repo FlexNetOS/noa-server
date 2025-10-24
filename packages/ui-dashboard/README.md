@@ -1,6 +1,7 @@
 # Claude Suite UI Dashboard
 
-Real-time automation dashboard with MCP integration, Claude-Flow telemetry, and agent swarm visualization.
+Real-time automation dashboard with MCP integration, Claude-Flow telemetry, and
+agent swarm visualization.
 
 ## Features
 
@@ -69,7 +70,8 @@ The dashboard expects the following API endpoints:
 
 ### Fallback Mode
 
-If the API is unavailable, the dashboard falls back to static file-based data from:
+If the API is unavailable, the dashboard falls back to static file-based data
+from:
 
 - `../../EvidenceLedger/runtime.json`
 - `../../EvidenceLedger/truth_gate.json`
@@ -103,13 +105,15 @@ If the API is unavailable, the dashboard falls back to static file-based data fr
 
 ### Python Build Script
 
-The original Python build script is preserved at `../../scripts/ui/build_dashboard.py`:
+The original Python build script is preserved at
+`../../scripts/ui/build_dashboard.py`:
 
 ```bash
 npm run build:python
 ```
 
-This generates a static HTML file at `dist/index.html` from repository artifacts.
+This generates a static HTML file at `dist/index.html` from repository
+artifacts.
 
 ## Deployment
 

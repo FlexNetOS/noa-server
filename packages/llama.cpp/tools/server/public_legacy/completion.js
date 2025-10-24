@@ -2,11 +2,10 @@ const paramDefaults = {
   stream: true,
   n_predict: 500,
   temperature: 0.2,
-  stop: ["</s>"]
+  stop: ['</s>'],
 };
 
 let generation_settings = null;
-
 
 // Completes the prompt as a generator. Recommended for most use cases.
 //
@@ -21,7 +20,7 @@ let generation_settings = null;
 //
 export async function* llama(prompt, params = {}, config = {}) {
   let controller = config.controller;
-  const api_url = config.api_url?.replace(/\/+$/, '') || "";
+  const api_url = config.api_url?.replace(/\/+$/, '') || '';
 
   if (!controller) {
     controller = new AbortController();
@@ -33,10 +32,10 @@ export async function* llama(prompt, params = {}, config = {}) {
     method: 'POST',
     body: JSON.stringify(completionParams),
     headers: {
-      'Connection': 'keep-alive',
+      Connection: 'keep-alive',
       'Content-Type': 'application/json',
-      'Accept': 'text/event-stream',
-      ...(params.api_key ? {'Authorization': `Bearer ${params.api_key}`} : {})
+      Accept: 'text/event-stream',
+      ...(params.api_key ? { Authorization: `Bearer ${params.api_key}` } : {}),
     },
     signal: controller.signal,
   });
@@ -44,8 +43,8 @@ export async function* llama(prompt, params = {}, config = {}) {
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
 
-  let content = "";
-  let leftover = ""; // Buffer for partially read lines
+  let content = '';
+  let leftover = ''; // Buffer for partially read lines
 
   try {
     let cont = true;
@@ -70,7 +69,7 @@ export async function* llama(prompt, params = {}, config = {}) {
       if (!endsWithLineBreak) {
         leftover = lines.pop();
       } else {
-        leftover = ""; // Reset leftover if we have a line break at the end
+        leftover = ''; // Reset leftover if we have a line break at the end
       }
 
       // Parse all sse events and add them to result
@@ -108,10 +107,12 @@ export async function* llama(prompt, params = {}, config = {}) {
                 // Throw an error to be caught by upstream callers
                 throw new Error('slot unavailable');
               } else {
-                console.error(`llama.cpp error [${result.error.code} - ${result.error.type}]: ${result.error.message}`);
+                console.error(
+                  `llama.cpp error [${result.error.code} - ${result.error.type}]: ${result.error.message}`
+                );
               }
-            } catch(e) {
-              console.error(`llama.cpp error ${result.error}`)
+            } catch (e) {
+              console.error(`llama.cpp error ${result.error}`);
             }
           }
         }
@@ -119,11 +120,10 @@ export async function* llama(prompt, params = {}, config = {}) {
     }
   } catch (e) {
     if (e.name !== 'AbortError') {
-      console.error("llama error: ", e);
+      console.error('llama error: ', e);
     }
     throw e;
-  }
-  finally {
+  } finally {
     controller.abort();
   }
 
@@ -144,23 +144,25 @@ export async function* llama(prompt, params = {}, config = {}) {
 export const llamaEventTarget = (prompt, params = {}, config = {}) => {
   const eventTarget = new EventTarget();
   (async () => {
-    let content = "";
+    let content = '';
     for await (const chunk of llama(prompt, params, config)) {
       if (chunk.data) {
         content += chunk.data.content;
-        eventTarget.dispatchEvent(new CustomEvent("message", { detail: chunk.data }));
+        eventTarget.dispatchEvent(new CustomEvent('message', { detail: chunk.data }));
       }
       if (chunk.data.generation_settings) {
-        eventTarget.dispatchEvent(new CustomEvent("generation_settings", { detail: chunk.data.generation_settings }));
+        eventTarget.dispatchEvent(
+          new CustomEvent('generation_settings', { detail: chunk.data.generation_settings })
+        );
       }
       if (chunk.data.timings) {
-        eventTarget.dispatchEvent(new CustomEvent("timings", { detail: chunk.data.timings }));
+        eventTarget.dispatchEvent(new CustomEvent('timings', { detail: chunk.data.timings }));
       }
     }
-    eventTarget.dispatchEvent(new CustomEvent("done", { detail: { content } }));
+    eventTarget.dispatchEvent(new CustomEvent('done', { detail: { content } }));
   })();
   return eventTarget;
-}
+};
 
 // Call llama, return a promise that resolves to the completed text. This does not support streaming
 //
@@ -177,7 +179,7 @@ export const llamaEventTarget = (prompt, params = {}, config = {}) => {
 //
 export const llamaPromise = (prompt, params = {}, config = {}) => {
   return new Promise(async (resolve, reject) => {
-    let content = "";
+    let content = '';
     try {
       for await (const chunk of llama(prompt, params, config)) {
         content += chunk.data.content;
@@ -196,14 +198,14 @@ export const llamaComplete = async (params, controller, callback) => {
   for await (const chunk of llama(params.prompt, params, { controller })) {
     callback(chunk);
   }
-}
+};
 
 // Get the model info from the server. This is useful for getting the context window and so on.
 export const llamaModelInfo = async (config = {}) => {
   if (!generation_settings) {
-    const api_url = config.api_url?.replace(/\/+$/, '') || "";
-    const props = await fetch(`${api_url}/props`).then(r => r.json());
+    const api_url = config.api_url?.replace(/\/+$/, '') || '';
+    const props = await fetch(`${api_url}/props`).then((r) => r.json());
     generation_settings = props.default_generation_settings;
   }
   return generation_settings;
-}
+};

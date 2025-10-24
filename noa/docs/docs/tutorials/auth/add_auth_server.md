@@ -1,26 +1,41 @@
 # Connect an authentication provider
 
-In [the last tutorial](resource_auth.md), you added [resource authorization](../../tutorials/auth/resource_auth.md) to give users private conversations. However, you are still using hard-coded tokens for authentication, which is not secure. Now you'll replace those tokens with real user accounts using [OAuth2](../auth/getting_started.md).
+In [the last tutorial](resource_auth.md), you added
+[resource authorization](../../tutorials/auth/resource_auth.md) to give users
+private conversations. However, you are still using hard-coded tokens for
+authentication, which is not secure. Now you'll replace those tokens with real
+user accounts using [OAuth2](../auth/getting_started.md).
 
-:::python
-You'll keep the same [`Auth`](../../cloud/reference/sdk/python_sdk_ref.md#langgraph_sdk.auth.Auth) object and [resource-level access control](../../concepts/auth.md#single-owner-resources), but upgrade authentication to use Supabase as your identity provider. While Supabase is used in this tutorial, the concepts apply to any OAuth2 provider. You'll learn how to:
-:::
+:::python You'll keep the same
+[`Auth`](../../cloud/reference/sdk/python_sdk_ref.md#langgraph_sdk.auth.Auth)
+object and
+[resource-level access control](../../concepts/auth.md#single-owner-resources),
+but upgrade authentication to use Supabase as your identity provider. While
+Supabase is used in this tutorial, the concepts apply to any OAuth2 provider.
+You'll learn how to: :::
 
-:::js
-You'll keep the same [`Auth`](../../cloud/reference/sdk/typescript_sdk_ref.md#auth) object and [resource-level access control](../../concepts/auth.md#single-owner-resources), but upgrade authentication to use Supabase as your identity provider. While Supabase is used in this tutorial, the concepts apply to any OAuth2 provider. You'll learn how to:
-:::
+:::js You'll keep the same
+[`Auth`](../../cloud/reference/sdk/typescript_sdk_ref.md#auth) object and
+[resource-level access control](../../concepts/auth.md#single-owner-resources),
+but upgrade authentication to use Supabase as your identity provider. While
+Supabase is used in this tutorial, the concepts apply to any OAuth2 provider.
+You'll learn how to: :::
 
 1. Replace test tokens with real JWT tokens
 2. Integrate with OAuth2 providers for secure user authentication
-3. Handle user sessions and metadata while maintaining our existing authorization logic
+3. Handle user sessions and metadata while maintaining our existing
+   authorization logic
 
 ## Background
 
 OAuth2 involves three main roles:
 
-1. **Authorization server**: The identity provider (e.g., Supabase, Auth0, Google) that handles user authentication and issues tokens
-2. **Application backend**: Your LangGraph application. This validates tokens and serves protected resources (conversation data)
-3. **Client application**: The web or mobile app where users interact with your service
+1. **Authorization server**: The identity provider (e.g., Supabase, Auth0,
+   Google) that handles user authentication and issues tokens
+2. **Application backend**: Your LangGraph application. This validates tokens
+   and serves protected resources (conversation data)
+3. **Client application**: The web or mobile app where users interact with your
+   service
 
 A standard OAuth2 flow works something like this:
 
@@ -45,11 +60,13 @@ sequenceDiagram
 Before you start this tutorial, ensure you have:
 
 - The [bot from the second tutorial](resource_auth.md) running without errors.
-- A [Supabase project](https://supabase.com/dashboard) to use as your authentication server.
+- A [Supabase project](https://supabase.com/dashboard) to use as your
+  authentication server.
 
 ## 1. Install dependencies
 
-Install the required dependencies. Start in your `custom-auth` directory and ensure you have the `langgraph-cli` installed:
+Install the required dependencies. Start in your `custom-auth` directory and
+ensure you have the `langgraph-cli` installed:
 
 :::python
 
@@ -87,7 +104,8 @@ Since you're using Supabase for this, you can do this in the Supabase dashboard:
     echo "SUPABASE_SERVICE_KEY=your-service-role-key" >> .env
     ```
 
-4.  Copy your "anon public" key and note it down. This will be used later when you set up our client code.
+4.  Copy your "anon public" key and note it down. This will be used later when
+    you set up our client code.
 
     ```bash
     SUPABASE_URL=your-project-url
@@ -96,24 +114,32 @@ Since you're using Supabase for this, you can do this in the Supabase dashboard:
 
 ## 3. Implement token validation
 
-:::python
-In the previous tutorials, you used the [`Auth`](../../cloud/reference/sdk/python_sdk_ref.md#langgraph_sdk.auth.Auth) object to [validate hard-coded tokens](getting_started.md) and [add resource ownership](resource_auth.md).
+:::python In the previous tutorials, you used the
+[`Auth`](../../cloud/reference/sdk/python_sdk_ref.md#langgraph_sdk.auth.Auth)
+object to [validate hard-coded tokens](getting_started.md) and
+[add resource ownership](resource_auth.md).
 
-Now you'll upgrade your authentication to validate real JWT tokens from Supabase. The main changes will all be in the [`@auth.authenticate`](../../cloud/reference/sdk/python_sdk_ref.md#langgraph_sdk.auth.Auth.authenticate) decorated function:
-:::
+Now you'll upgrade your authentication to validate real JWT tokens from
+Supabase. The main changes will all be in the
+[`@auth.authenticate`](../../cloud/reference/sdk/python_sdk_ref.md#langgraph_sdk.auth.Auth.authenticate)
+decorated function: :::
 
-:::js
-In the previous tutorials, you used the [`Auth`](../../cloud/reference/sdk/typescript_sdk_ref.md#auth) object to [validate hard-coded tokens](getting_started.md) and [add resource ownership](resource_auth.md).
+:::js In the previous tutorials, you used the
+[`Auth`](../../cloud/reference/sdk/typescript_sdk_ref.md#auth) object to
+[validate hard-coded tokens](getting_started.md) and
+[add resource ownership](resource_auth.md).
 
-Now you'll upgrade your authentication to validate real JWT tokens from Supabase. The main changes will all be in the [`auth.authenticate`](../../cloud/reference/sdk/typescript_sdk_ref.md#auth) decorated function:
-:::
+Now you'll upgrade your authentication to validate real JWT tokens from
+Supabase. The main changes will all be in the
+[`auth.authenticate`](../../cloud/reference/sdk/typescript_sdk_ref.md#auth)
+decorated function: :::
 
-- Instead of checking against a hard-coded list of tokens, you'll make an HTTP request to Supabase to validate the token.
+- Instead of checking against a hard-coded list of tokens, you'll make an HTTP
+  request to Supabase to validate the token.
 - You'll extract real user information (ID, email) from the validated token.
 - The existing resource authorization logic remains unchanged.
 
-:::python
-Update `src/security/auth.py` to implement this:
+:::python Update `src/security/auth.py` to implement this:
 
 ```python hl_lines="8-9 20-30" title="src/security/auth.py"
 import os
@@ -168,11 +194,10 @@ async def add_owner(ctx, value):
 
 :::
 
-:::js
-Update `src/security/auth.ts` to implement this:
+:::js Update `src/security/auth.ts` to implement this:
 
 ```typescript hl_lines="1-2 9-10 21-31" title="src/security/auth.ts"
-import { Auth } from "@langchain/langgraph-sdk";
+import { Auth } from '@langchain/langgraph-sdk';
 
 // This is loaded from the `.env` file you created above
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -181,14 +206,14 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const auth = new Auth()
   .authenticate(async (request) => {
     // Validate JWT tokens and extract user information.
-    const apiKey = request.headers.get("x-api-key");
+    const apiKey = request.headers.get('x-api-key');
     if (!apiKey || !isValidKey(apiKey)) {
-      throw new HTTPException(401, "Invalid API key");
+      throw new HTTPException(401, 'Invalid API key');
     }
 
-    const [scheme, token] = apiKey.split(" ");
-    if (scheme.toLowerCase() !== "bearer") {
-      throw new Error("Invalid authorization scheme");
+    const [scheme, token] = apiKey.split(' ');
+    if (scheme.toLowerCase() !== 'bearer') {
+      throw new Error('Invalid authorization scheme');
     }
 
     try {
@@ -201,7 +226,7 @@ const auth = new Auth()
       });
 
       if (response.status !== 200) {
-        throw new Error("Invalid token");
+        throw new Error('Invalid token');
       }
 
       const user = await response.json();
@@ -229,11 +254,15 @@ export { auth };
 
 :::
 
-The most important change is that we're now validating tokens with a real authentication server. Our authentication handler has the private key for our Supabase project, which we can use to validate the user's token and extract their information.
+The most important change is that we're now validating tokens with a real
+authentication server. Our authentication handler has the private key for our
+Supabase project, which we can use to validate the user's token and extract
+their information.
 
 ## 4. Test authentication flow
 
-Let's test out the new authentication flow. You can run the following code in a file or notebook. You will need to provide:
+Let's test out the new authentication flow. You can run the following code in a
+file or notebook. You will need to provide:
 
 - A valid email address
 - A Supabase project URL (from [above](#setup-auth-provider))
@@ -288,34 +317,34 @@ await sign_up(email2, password)
 :::js
 
 ```typescript
-import { Client } from "@langchain/langgraph-sdk";
+import { Client } from '@langchain/langgraph-sdk';
 
 // Get email from command line
-const email = process.env.TEST_EMAIL || "your-email@example.com";
-const baseEmail = email.split("@");
-const password = "secure-password"; // CHANGEME
+const email = process.env.TEST_EMAIL || 'your-email@example.com';
+const baseEmail = email.split('@');
+const password = 'secure-password'; // CHANGEME
 const email1 = `${baseEmail[0]}+1@${baseEmail[1]}`;
 const email2 = `${baseEmail[0]}+2@${baseEmail[1]}`;
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 if (!SUPABASE_URL) {
-  throw new Error("SUPABASE_URL environment variable is required");
+  throw new Error('SUPABASE_URL environment variable is required');
 }
 
 // This is your PUBLIC anon key (which is safe to use client-side)
 // Do NOT mistake this for the secret service role key
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 if (!SUPABASE_ANON_KEY) {
-  throw new Error("SUPABASE_ANON_KEY environment variable is required");
+  throw new Error('SUPABASE_ANON_KEY environment variable is required');
 }
 
 async function signUp(email: string, password: string) {
   /**Create a new user account.*/
   const response = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
-    method: "POST",
+    method: 'POST',
     headers: {
       apiKey: SUPABASE_ANON_KEY,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({ email, password }),
   });
@@ -335,9 +364,14 @@ await signUp(email2, password);
 
 :::
 
-⚠️ Before continuing: Check your email and click both confirmation links. Supabase will reject `/login` requests until after you have confirmed your users' email.
+⚠️ Before continuing: Check your email and click both confirmation links.
+Supabase will reject `/login` requests until after you have confirmed your
+users' email.
 
-Now test that users can only see their own data. Make sure the server is running (run `langgraph dev`) before proceeding. The following snippet requires the "anon public" key that you copied from the Supabase dashboard while [setting up the auth provider](#setup-auth-provider) previously.
+Now test that users can only see their own data. Make sure the server is running
+(run `langgraph dev`) before proceeding. The following snippet requires the
+"anon public" key that you copied from the Supabase dashboard while
+[setting up the auth provider](#setup-auth-provider) previously.
 
 :::python
 
@@ -401,10 +435,10 @@ async function login(email: string, password: string): Promise<string> {
   const response = await fetch(
     `${SUPABASE_URL}/auth/v1/token?grant_type=password`,
     {
-      method: "POST",
+      method: 'POST',
       headers: {
         apikey: SUPABASE_ANON_KEY,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ email, password }),
     }
@@ -421,7 +455,7 @@ async function login(email: string, password: string): Promise<string> {
 // Log in as user 1
 const user1Token = await login(email1, password);
 const user1Client = new Client({
-  apiUrl: "http://localhost:2024",
+  apiUrl: 'http://localhost:2024',
   headers: { Authorization: `Bearer ${user1Token}` },
 });
 
@@ -430,18 +464,18 @@ const thread = await user1Client.threads.create();
 console.log(`✅ User 1 created thread: ${thread.thread_id}`);
 
 // Try to access without a token
-const unauthenticatedClient = new Client({ apiUrl: "http://localhost:2024" });
+const unauthenticatedClient = new Client({ apiUrl: 'http://localhost:2024' });
 try {
   await unauthenticatedClient.threads.create();
-  console.log("❌ Unauthenticated access should fail!");
+  console.log('❌ Unauthenticated access should fail!');
 } catch (e) {
-  console.log("✅ Unauthenticated access blocked:", e.message);
+  console.log('✅ Unauthenticated access blocked:', e.message);
 }
 
 // Try to access user 1's thread as user 2
 const user2Token = await login(email2, password);
 const user2Client = new Client({
-  apiUrl: "http://localhost:2024",
+  apiUrl: 'http://localhost:2024',
   headers: { Authorization: `Bearer ${user2Token}` },
 });
 
@@ -468,27 +502,33 @@ Your authentication and authorization are working together:
 1. Users must log in to access the bot
 2. Each user can only see their own threads
 
-All users are managed by the Supabase auth provider, so you don't need to implement any additional user management logic.
+All users are managed by the Supabase auth provider, so you don't need to
+implement any additional user management logic.
 
 ## Next steps
 
-You've successfully built a production-ready authentication system for your LangGraph application! Let's review what you've accomplished:
+You've successfully built a production-ready authentication system for your
+LangGraph application! Let's review what you've accomplished:
 
 1. Set up an authentication provider (Supabase in this case)
 2. Added real user accounts with email/password authentication
 3. Integrated JWT token validation into your LangGraph server
-4. Implemented proper authorization to ensure users can only access their own data
-5. Created a foundation that's ready to handle your next authentication challenge 🚀
+4. Implemented proper authorization to ensure users can only access their own
+   data
+5. Created a foundation that's ready to handle your next authentication
+   challenge 🚀
 
 Now that you have production authentication, consider:
 
-1. Building a web UI with your preferred framework (see the [Custom Auth](https://github.com/langchain-ai/custom-auth) template for an example)
-2. Learn more about the other aspects of authentication and authorization in the [conceptual guide on authentication](../../concepts/auth.md).
+1. Building a web UI with your preferred framework (see the
+   [Custom Auth](https://github.com/langchain-ai/custom-auth) template for an
+   example)
+2. Learn more about the other aspects of authentication and authorization in the
+   [conceptual guide on authentication](../../concepts/auth.md).
 
-:::python
-3. Customize your handlers and setup further after reading the [reference docs](../../cloud/reference/sdk/python_sdk_ref.md#langgraph_sdk.auth.Auth).
+:::python 3. Customize your handlers and setup further after reading the
+[reference docs](../../cloud/reference/sdk/python_sdk_ref.md#langgraph_sdk.auth.Auth).
 :::
 
-:::js
-3. Customize your handlers and setup further after reading the [reference docs](../../cloud/reference/sdk/typescript_sdk_ref.md#auth).
-:::
+:::js 3. Customize your handlers and setup further after reading the
+[reference docs](../../cloud/reference/sdk/typescript_sdk_ref.md#auth). :::

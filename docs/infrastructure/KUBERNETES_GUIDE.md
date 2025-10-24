@@ -2,7 +2,8 @@
 
 ## Overview
 
-This guide covers deploying Noa Server to Kubernetes clusters using manifest-based deployments with Kustomize for environment management.
+This guide covers deploying Noa Server to Kubernetes clusters using
+manifest-based deployments with Kustomize for environment management.
 
 ## Architecture
 
@@ -14,15 +15,15 @@ This guide covers deploying Noa Server to Kubernetes clusters using manifest-bas
 
 ### Service Components
 
-| Component | Replicas (Prod) | Resources | Scaling |
-|-----------|----------------|-----------|---------|
-| MCP | 2-10 | 250m-1000m CPU, 256-512Mi RAM | HPA enabled |
-| Claude Flow | 2-8 | 500m-2000m CPU, 512Mi-1Gi RAM | HPA enabled |
-| UI Dashboard | 3-15 | 250m-1500m CPU, 384-768Mi RAM | HPA enabled |
-| Llama.cpp | 1 | 2-4 CPU, 2-4Gi RAM, 1 GPU | Manual |
-| AgenticOS | 2 | 500m-2000m CPU, 512Mi-1Gi RAM | Manual |
-| Redis | 1 | 100m-500m CPU, 128-256Mi RAM | Manual |
-| PostgreSQL | 1 | 250m-1000m CPU, 256-512Mi RAM | Manual |
+| Component    | Replicas (Prod) | Resources                     | Scaling     |
+| ------------ | --------------- | ----------------------------- | ----------- |
+| MCP          | 2-10            | 250m-1000m CPU, 256-512Mi RAM | HPA enabled |
+| Claude Flow  | 2-8             | 500m-2000m CPU, 512Mi-1Gi RAM | HPA enabled |
+| UI Dashboard | 3-15            | 250m-1500m CPU, 384-768Mi RAM | HPA enabled |
+| Llama.cpp    | 1               | 2-4 CPU, 2-4Gi RAM, 1 GPU     | Manual      |
+| AgenticOS    | 2               | 500m-2000m CPU, 512Mi-1Gi RAM | Manual      |
+| Redis        | 1               | 100m-500m CPU, 128-256Mi RAM  | Manual      |
+| PostgreSQL   | 1               | 250m-1000m CPU, 256-512Mi RAM | Manual      |
 
 ## Prerequisites
 
@@ -233,8 +234,8 @@ metadata:
 provisioner: kubernetes.io/aws-ebs
 parameters:
   type: gp3
-  iops: "3000"
-  throughput: "125"
+  iops: '3000'
+  throughput: '125'
 allowVolumeExpansion: true
 ```
 
@@ -401,9 +402,9 @@ spec:
     matchLabels:
       app: noa-mcp
   endpoints:
-  - port: http
-    path: /metrics
-    interval: 30s
+    - port: http
+      path: /metrics
+      interval: 30s
 ```
 
 ## Logging

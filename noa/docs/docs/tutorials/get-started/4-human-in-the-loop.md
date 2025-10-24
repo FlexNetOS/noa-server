@@ -1,16 +1,27 @@
 # Add human-in-the-loop controls
 
-Agents can be unreliable and may need human input to successfully accomplish tasks. Similarly, for some actions, you may want to require human approval before running to ensure that everything is running as intended.
+Agents can be unreliable and may need human input to successfully accomplish
+tasks. Similarly, for some actions, you may want to require human approval
+before running to ensure that everything is running as intended.
 
-LangGraph's [persistence](../../concepts/persistence.md) layer supports **human-in-the-loop** workflows, allowing execution to pause and resume based on user feedback. The primary interface to this functionality is the [`interrupt`](../../how-tos/human_in_the_loop/add-human-in-the-loop.md) function. Calling `interrupt` inside a node will pause execution. Execution can be resumed, together with new input from a human, by passing in a [Command](../../concepts/low_level.md#command).
+LangGraph's [persistence](../../concepts/persistence.md) layer supports
+**human-in-the-loop** workflows, allowing execution to pause and resume based on
+user feedback. The primary interface to this functionality is the
+[`interrupt`](../../how-tos/human_in_the_loop/add-human-in-the-loop.md)
+function. Calling `interrupt` inside a node will pause execution. Execution can
+be resumed, together with new input from a human, by passing in a
+[Command](../../concepts/low_level.md#command).
 
-:::python
-`interrupt` is ergonomically similar to Python's built-in `input()`, [with some caveats](../../how-tos/human_in_the_loop/add-human-in-the-loop.md).
+:::python `interrupt` is ergonomically similar to Python's built-in `input()`,
+[with some caveats](../../how-tos/human_in_the_loop/add-human-in-the-loop.md).
 :::
 
-:::js
-`interrupt` is ergonomically similar to Node.js's built-in `readline.question()` function, [with some caveats](../../how-tos/human_in_the_loop/add-human-in-the-loop.md).
-`interrupt` is ergonomically similar to Node.js's built-in `readline.question()` function, [with some caveats](../../how-tos/human_in_the_loop/add-human-in-the-loop.md).
+:::js `interrupt` is ergonomically similar to Node.js's built-in
+`readline.question()` function,
+[with some caveats](../../how-tos/human_in_the_loop/add-human-in-the-loop.md).
+`interrupt` is ergonomically similar to Node.js's built-in `readline.question()`
+function,
+[with some caveats](../../how-tos/human_in_the_loop/add-human-in-the-loop.md).
 :::
 
 !!! note
@@ -19,12 +30,14 @@ LangGraph's [persistence](../../concepts/persistence.md) layer supports **human-
 
 ## 1. Add the `human_assistance` tool
 
-Starting with the existing code from the [Add memory to the chatbot](./3-add-memory.md) tutorial, add the `human_assistance` tool to the chatbot. This tool uses `interrupt` to receive information from a human.
+Starting with the existing code from the
+[Add memory to the chatbot](./3-add-memory.md) tutorial, add the
+`human_assistance` tool to the chatbot. This tool uses `interrupt` to receive
+information from a human.
 
 Let's first select a chat model:
 
-:::python
-{% include-markdown "../../../snippets/chat_model_tabs.md" %}
+:::python {% include-markdown "../../../snippets/chat_model_tabs.md" %}
 
 <!---
 ```python
@@ -40,7 +53,7 @@ llm = init_chat_model("anthropic:claude-3-5-sonnet-latest")
 
 ```typescript
 // Add your API key here
-process.env.ANTHROPIC_API_KEY = "YOUR_API_KEY";
+process.env.ANTHROPIC_API_KEY = 'YOUR_API_KEY';
 ```
 
 :::
@@ -174,23 +187,23 @@ graph = graph_builder.compile(checkpointer=memory)
 :::js
 
 ```typescript hl_lines="3 11"
-import { StateGraph, MemorySaver, START, END } from "@langchain/langgraph";
+import { StateGraph, MemorySaver, START, END } from '@langchain/langgraph';
 
 const memory = new MemorySaver();
 
 const graph = new StateGraph(MessagesZodState)
-  .addNode("chatbot", chatbot)
-  .addNode("tools", new ToolNode(tools))
-  .addConditionalEdges("chatbot", toolsCondition, ["tools", END])
-  .addEdge("tools", "chatbot")
-  .addEdge(START, "chatbot")
+  .addNode('chatbot', chatbot)
+  .addNode('tools', new ToolNode(tools))
+  .addConditionalEdges('chatbot', toolsCondition, ['tools', END])
+  .addEdge('tools', 'chatbot')
+  .addEdge(START, 'chatbot')
   .compile({ checkpointer: memory });
 const graph = new StateGraph(MessagesZodState)
-  .addNode("chatbot", chatbot)
-  .addNode("tools", new ToolNode(tools))
-  .addConditionalEdges("chatbot", toolsCondition, ["tools", END])
-  .addEdge("tools", "chatbot")
-  .addEdge(START, "chatbot")
+  .addNode('chatbot', chatbot)
+  .addNode('tools', new ToolNode(tools))
+  .addConditionalEdges('chatbot', toolsCondition, ['tools', END])
+  .addEdge('tools', 'chatbot')
+  .addEdge(START, 'chatbot')
   .compile({ checkpointer: memory });
 ```
 
@@ -198,7 +211,8 @@ const graph = new StateGraph(MessagesZodState)
 
 ## 3. Visualize the graph (optional)
 
-Visualizing the graph, you get the same layout as before – just with the added tool!
+Visualizing the graph, you get the same layout as before – just with the added
+tool!
 
 :::python
 
@@ -217,8 +231,8 @@ except Exception:
 :::js
 
 ```typescript
-import * as fs from "node:fs/promises";
-import * as fs from "node:fs/promises";
+import * as fs from 'node:fs/promises';
+import * as fs from 'node:fs/promises';
 
 const drawableGraph = await graph.getGraphAsync();
 const drawableGraph = await graph.getGraphAsync();
@@ -226,8 +240,8 @@ const image = await drawableGraph.drawMermaidPng();
 const imageBuffer = new Uint8Array(await image.arrayBuffer());
 const imageBuffer = new Uint8Array(await image.arrayBuffer());
 
-await fs.writeFile("chatbot-with-tools.png", imageBuffer);
-await fs.writeFile("chatbot-with-tools.png", imageBuffer);
+await fs.writeFile('chatbot-with-tools.png', imageBuffer);
+await fs.writeFile('chatbot-with-tools.png', imageBuffer);
 ```
 
 :::
@@ -236,7 +250,8 @@ await fs.writeFile("chatbot-with-tools.png", imageBuffer);
 
 ## 4. Prompt the chatbot
 
-Now, prompt the chatbot with a question that will engage the new `human_assistance` tool:
+Now, prompt the chatbot with a question that will engage the new
+`human_assistance` tool:
 
 :::python
 
@@ -329,7 +344,8 @@ Tool calls: [
 
 :::
 
-The chatbot generated a tool call, but then execution has been interrupted. If you inspect the graph state, you see that it stopped at the tools node:
+The chatbot generated a tool call, but then execution has been interrupted. If
+you inspect the graph state, you see that it stopped at the tools node:
 
 :::python
 
@@ -347,9 +363,9 @@ snapshot.next
 :::js
 
 ```typescript
-const snapshot = await graph.getState({ configurable: { thread_id: "1" } });
+const snapshot = await graph.getState({ configurable: { thread_id: '1' } });
 snapshot.next;
-const snapshot = await graph.getState({ configurable: { thread_id: "1" } });
+const snapshot = await graph.getState({ configurable: { thread_id: '1' } });
 snapshot.next;
 ```
 
@@ -418,7 +434,9 @@ snapshot.next;
 
 ## 5. Resume execution
 
-To resume execution, pass a [`Command`](../../concepts/low_level.md#command) object containing data expected by the tool. The format of this data can be customized based on needs.
+To resume execution, pass a [`Command`](../../concepts/low_level.md#command)
+object containing data expected by the tool. The format of this data can be
+customized based on needs.
 
 :::python
 
@@ -474,11 +492,10 @@ Output is truncated. View as a scrollable element or open in a text editor. Adju
 
 :::
 
-:::js
-For this example, use an object with a key `"data"`:
+:::js For this example, use an object with a key `"data"`:
 
 ```typescript
-import { Command } from "@langchain/langgraph";
+import { Command } from '@langchain/langgraph';
 
 const humanResponse =
   "We, the experts are here to help! We'd recommend you check out LangGraph to build your agent." +
@@ -488,16 +505,16 @@ const humanResponse =
 const humanCommand = new Command({ resume: { data: humanResponse } });
 
 const resumeEvents = await graph.stream(humanCommand, {
-  configurable: { thread_id: "1" },
-  streamMode: "values",
+  configurable: { thread_id: '1' },
+  streamMode: 'values',
 });
 const resumeEvents = await graph.stream(humanCommand, {
-  configurable: { thread_id: "1" },
-  streamMode: "values",
+  configurable: { thread_id: '1' },
+  streamMode: 'values',
 });
 
 for await (const event of resumeEvents) {
-  if ("messages" in event) {
+  if ('messages' in event) {
     const lastMessage = event.messages.at(-1);
     console.log(`[${lastMessage?.getType()}]: ${lastMessage?.text}`);
     const lastMessage = event.messages.at(-1);
@@ -525,9 +542,17 @@ LangGraph is likely a framework or library designed specifically for creating AI
 
 :::
 
-The input has been received and processed as a tool message. Review this call's [LangSmith trace](https://smith.langchain.com/public/9f0f87e3-56a7-4dde-9c76-b71675624e91/r) to see the exact work that was done in the above call. Notice that the state is loaded in the first step so that our chatbot can continue where it left off.
+The input has been received and processed as a tool message. Review this call's
+[LangSmith trace](https://smith.langchain.com/public/9f0f87e3-56a7-4dde-9c76-b71675624e91/r)
+to see the exact work that was done in the above call. Notice that the state is
+loaded in the first step so that our chatbot can continue where it left off.
 
-**Congratulations!** You've used an `interrupt` to add human-in-the-loop execution to your chatbot, allowing for human oversight and intervention when needed. This opens up the potential UIs you can create with your AI systems. Since you have already added a **checkpointer**, as long as the underlying persistence layer is running, the graph can be paused **indefinitely** and resumed at any time as if nothing had happened.
+**Congratulations!** You've used an `interrupt` to add human-in-the-loop
+execution to your chatbot, allowing for human oversight and intervention when
+needed. This opens up the potential UIs you can create with your AI systems.
+Since you have already added a **checkpointer**, as long as the underlying
+persistence layer is running, the graph can be paused **indefinitely** and
+resumed at any time as if nothing had happened.
 
 Check out the code snippet below to review the graph from this tutorial:
 
@@ -697,4 +722,7 @@ const graph = new StateGraph(MessagesZodState)
 
 ## Next steps
 
-So far, the tutorial examples have relied on a simple state with one entry: a list of messages. You can go far with this simple state, but if you want to define complex behavior without relying on the message list, you can [add additional fields to the state](./5-customize-state.md).
+So far, the tutorial examples have relied on a simple state with one entry: a
+list of messages. You can go far with this simple state, but if you want to
+define complex behavior without relying on the message list, you can
+[add additional fields to the state](./5-customize-state.md).

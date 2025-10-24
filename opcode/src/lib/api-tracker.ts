@@ -21,13 +21,17 @@ function wrapApiMethod<T extends (...args: any[]) => Promise<any>>(
 ): T {
   return (async (...args: any[]) => {
     const startTime = performance.now();
-    const startMemory = ('memory' in performance ? (performance as any).memory?.usedJSHeapSize : 0) || 0;
+    const startMemory =
+      ('memory' in performance ? (performance as any).memory?.usedJSHeapSize : 0) || 0;
     let retryCount = 0;
-    
+
     const trackPerformance = (success: boolean, error?: any) => {
       const duration = performance.now() - startTime;
-      const memoryUsed = ((('memory' in performance ? (performance as any).memory?.usedJSHeapSize : 0) || 0) - startMemory) / (1024 * 1024); // Convert to MB
-      
+      const memoryUsed =
+        ((('memory' in performance ? (performance as any).memory?.usedJSHeapSize : 0) || 0) -
+          startMemory) /
+        (1024 * 1024); // Convert to MB
+
       // Track API errors
       if (!success && error) {
         const event = eventBuilders.apiError({
@@ -38,7 +42,7 @@ function wrapApiMethod<T extends (...args: any[]) => Promise<any>>(
         });
         analytics.track(event.event, event.properties);
       }
-      
+
       // Track performance bottlenecks
       if (duration > PERFORMANCE_THRESHOLDS.bottleneck) {
         const event = eventBuilders.performanceBottleneck({
@@ -49,12 +53,15 @@ function wrapApiMethod<T extends (...args: any[]) => Promise<any>>(
         });
         analytics.track(event.event, event.properties);
       }
-      
+
       // Track network performance
-      const connectionQuality = 
-        duration < PERFORMANCE_THRESHOLDS.fast ? 'excellent' :
-        duration < PERFORMANCE_THRESHOLDS.normal ? 'good' : 'poor';
-      
+      const connectionQuality =
+        duration < PERFORMANCE_THRESHOLDS.fast
+          ? 'excellent'
+          : duration < PERFORMANCE_THRESHOLDS.normal
+            ? 'good'
+            : 'poor';
+
       if (success) {
         const networkEvent = eventBuilders.networkPerformance({
           endpoint_type: 'api',
@@ -66,7 +73,7 @@ function wrapApiMethod<T extends (...args: any[]) => Promise<any>>(
         });
         analytics.track(networkEvent.event, networkEvent.properties);
       }
-      
+
       // Track memory warnings
       if (memoryUsed > MEMORY_WARNING_THRESHOLD) {
         const event = eventBuilders.memoryWarning({
@@ -78,7 +85,7 @@ function wrapApiMethod<T extends (...args: any[]) => Promise<any>>(
         analytics.track(event.event, event.properties);
       }
     };
-    
+
     try {
       const result = await method(...args);
       trackPerformance(true);
@@ -95,7 +102,7 @@ function wrapApiMethod<T extends (...args: any[]) => Promise<any>>(
  */
 function createTrackedApi() {
   const trackedApi: any = {};
-  
+
   // Wrap each method in the original API
   for (const [key, value] of Object.entries(originalApi)) {
     if (typeof value === 'function') {
@@ -104,7 +111,7 @@ function createTrackedApi() {
       trackedApi[key] = value;
     }
   }
-  
+
   return trackedApi as typeof originalApi;
 }
 

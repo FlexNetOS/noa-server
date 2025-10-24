@@ -1,12 +1,13 @@
 ---
-description: "Comprehensive PR review using specialized agents"
-argument-hint: "[review-aspects]"
-allowed-tools: ["Bash", "Glob", "Grep", "Read", "Task"]
+description: 'Comprehensive PR review using specialized agents'
+argument-hint: '[review-aspects]'
+allowed-tools: ['Bash', 'Glob', 'Grep', 'Read', 'Task']
 ---
 
 # Comprehensive PR Review
 
-Run a comprehensive pull request review using multiple specialized agents, each focusing on a different aspect of code quality.
+Run a comprehensive pull request review using multiple specialized agents, each
+focusing on a different aspect of code quality.
 
 **Review Aspects (optional):** "$ARGUMENTS"
 
@@ -18,7 +19,6 @@ Run a comprehensive pull request review using multiple specialized agents, each 
    - Default: Run all applicable reviews
 
 2. **Available Review Aspects:**
-
    - **comments** - Analyze code comment accuracy and maintainability
    - **tests** - Review test coverage quality and completeness
    - **errors** - Check error handling for silent failures
@@ -65,22 +65,28 @@ Run a comprehensive pull request review using multiple specialized agents, each 
 7. **Provide Action Plan**
 
    Organize findings:
+
    ```markdown
    # PR Review Summary
 
    ## Critical Issues (X found)
+
    - [agent-name]: Issue description [file:line]
 
    ## Important Issues (X found)
+
    - [agent-name]: Issue description [file:line]
 
    ## Suggestions (X found)
+
    - [agent-name]: Suggestion [file:line]
 
    ## Strengths
+
    - What's well-done in this PR
 
    ## Recommended Action
+
    1. Fix critical issues first
    2. Address important issues
    3. Consider suggestions
@@ -90,11 +96,13 @@ Run a comprehensive pull request review using multiple specialized agents, each 
 ## Usage Examples:
 
 **Full review (default):**
+
 ```
 /pr-review-toolkit:review-pr
 ```
 
 **Specific aspects:**
+
 ```
 /pr-review-toolkit:review-pr tests errors
 # Reviews only test coverage and error handling
@@ -107,6 +115,7 @@ Run a comprehensive pull request review using multiple specialized agents, each 
 ```
 
 **Parallel review:**
+
 ```
 /pr-review-toolkit:review-pr all parallel
 # Launches all agents in parallel
@@ -115,31 +124,37 @@ Run a comprehensive pull request review using multiple specialized agents, each 
 ## Agent Descriptions:
 
 **comment-analyzer**:
+
 - Verifies comment accuracy vs code
 - Identifies comment rot
 - Checks documentation completeness
 
 **pr-test-analyzer**:
+
 - Reviews behavioral test coverage
 - Identifies critical gaps
 - Evaluates test quality
 
 **silent-failure-hunter**:
+
 - Finds silent failures
 - Reviews catch blocks
 - Checks error logging
 
 **type-design-analyzer**:
+
 - Analyzes type encapsulation
 - Reviews invariant expression
 - Rates type design quality
 
 **code-reviewer**:
+
 - Checks CLAUDE.md compliance
 - Detects bugs and issues
 - Reviews general code quality
 
 **code-simplifier**:
+
 - Simplifies complex code
 - Improves clarity and readability
 - Applies project standards
@@ -156,6 +171,7 @@ Run a comprehensive pull request review using multiple specialized agents, each 
 ## Workflow Integration:
 
 **Before committing:**
+
 ```
 1. Write code
 2. Run: /pr-review-toolkit:review-pr code errors
@@ -164,6 +180,7 @@ Run a comprehensive pull request review using multiple specialized agents, each 
 ```
 
 **Before creating PR:**
+
 ```
 1. Stage all changes
 2. Run: /pr-review-toolkit:review-pr all
@@ -173,6 +190,7 @@ Run a comprehensive pull request review using multiple specialized agents, each 
 ```
 
 **After PR feedback:**
+
 ```
 1. Make requested changes
 2. Run targeted reviews based on feedback

@@ -13,7 +13,7 @@ const {
   subtractNumbers,
   readFile,
   writeFile,
-  fetchData
+  fetchData,
 } = require('../test-utils/helpers');
 
 describe('Edge Case Testing Suite', () => {
@@ -41,13 +41,13 @@ describe('Edge Case Testing Suite', () => {
 
   describe('POL-0118: Maximum/Minimum values', () => {
     test('handles maximum safe integer', () => {
-      expect(() => addNumbers(Number.MAX_SAFE_INTEGER, 1))
-        .toThrow('Integer overflow detected');
+      expect(() => addNumbers(Number.MAX_SAFE_INTEGER, 1)).toThrow('Integer overflow detected');
     });
 
     test('handles minimum safe integer', () => {
-      expect(() => subtractNumbers(Number.MIN_SAFE_INTEGER, 1))
-        .toThrow('Integer underflow detected');
+      expect(() => subtractNumbers(Number.MIN_SAFE_INTEGER, 1)).toThrow(
+        'Integer underflow detected'
+      );
     });
 
     test('handles large array sizes', () => {
@@ -126,13 +126,11 @@ describe('Edge Case Testing Suite', () => {
 
   describe('POL-0121: Filesystem errors', () => {
     test('handles permission denied errors', async () => {
-      await expect(readFile('/root/secret.txt'))
-        .rejects.toThrow(/Permission denied|EACCES/);
+      await expect(readFile('/root/secret.txt')).rejects.toThrow(/Permission denied|EACCES/);
     });
 
     test('handles file not found', async () => {
-      await expect(readFile('/nonexistent/path/file.txt'))
-        .rejects.toThrow(/ENOENT|not found/);
+      await expect(readFile('/nonexistent/path/file.txt')).rejects.toThrow(/ENOENT|not found/);
     });
 
     test('handles disk full error', async () => {
@@ -140,43 +138,42 @@ describe('Edge Case Testing Suite', () => {
       const mockWriteFile = jest.spyOn(require('fs').promises, 'writeFile');
       mockWriteFile.mockRejectedValue(
         Object.assign(new Error('ENOSPC: no space left on device'), {
-          code: 'ENOSPC'
+          code: 'ENOSPC',
         })
       );
 
-      await expect(writeFile('/tmp/test.txt', 'data'))
-        .rejects.toThrow(/ENOSPC|no space left/);
+      await expect(writeFile('/tmp/test.txt', 'data')).rejects.toThrow(/ENOSPC|no space left/);
 
       mockWriteFile.mockRestore();
     });
 
     test('handles read-only filesystem', async () => {
-      await expect(writeFile('/proc/test.txt', 'data'))
-        .rejects.toThrow(/EROFS|read-only/);
+      await expect(writeFile('/proc/test.txt', 'data')).rejects.toThrow(/EROFS|read-only/);
     });
 
     test('handles path too long error', async () => {
       const longPath = '/tmp/' + 'a'.repeat(4096);
-      await expect(readFile(longPath))
-        .rejects.toThrow(/ENAMETOOLONG|path too long/);
+      await expect(readFile(longPath)).rejects.toThrow(/ENAMETOOLONG|path too long/);
     });
   });
 
   describe('POL-0122: Network errors', () => {
     test('handles connection timeout', async () => {
-      await expect(
-        fetchData('http://10.255.255.1:12345', { timeout: 100 })
-      ).rejects.toThrow(/timeout|ETIMEDOUT/);
+      await expect(fetchData('http://10.255.255.1:12345', { timeout: 100 })).rejects.toThrow(
+        /timeout|ETIMEDOUT/
+      );
     }, 10000);
 
     test('handles connection refused', async () => {
-      await expect(fetchData('http://localhost:65535'))
-        .rejects.toThrow(/ECONNREFUSED|Connection refused/);
+      await expect(fetchData('http://localhost:65535')).rejects.toThrow(
+        /ECONNREFUSED|Connection refused/
+      );
     });
 
     test('handles DNS resolution failure', async () => {
-      await expect(fetchData('http://this-domain-does-not-exist-12345.com'))
-        .rejects.toThrow(/ENOTFOUND|getaddrinfo/);
+      await expect(fetchData('http://this-domain-does-not-exist-12345.com')).rejects.toThrow(
+        /ENOTFOUND|getaddrinfo/
+      );
     });
 
     test('handles network unreachable', async () => {
@@ -187,7 +184,7 @@ describe('Edge Case Testing Suite', () => {
     test('handles SSL/TLS errors', async () => {
       await expect(
         fetchData('https://self-signed.badssl.com/', {
-          rejectUnauthorized: true
+          rejectUnauthorized: true,
         })
       ).rejects.toThrow(/certificate|SSL/);
     });
@@ -195,7 +192,7 @@ describe('Edge Case Testing Suite', () => {
     test('handles request abort', async () => {
       const controller = new AbortController();
       const fetchPromise = fetchData('http://httpbin.org/delay/5', {
-        signal: controller.signal
+        signal: controller.signal,
       });
 
       setTimeout(() => controller.abort(), 100);
@@ -215,9 +212,9 @@ describe('Edge Case Testing Suite', () => {
     });
 
     test('handles concurrent file access', async () => {
-      const promises = Array(10).fill(null).map((_, i) =>
-        writeFile(`/tmp/concurrent-${i}.txt`, `data-${i}`)
-      );
+      const promises = Array(10)
+        .fill(null)
+        .map((_, i) => writeFile(`/tmp/concurrent-${i}.txt`, `data-${i}`));
 
       await expect(Promise.all(promises)).resolves.not.toThrow();
     });
@@ -226,8 +223,7 @@ describe('Edge Case Testing Suite', () => {
       const circular = { a: 1 };
       circular.self = circular;
 
-      expect(() => processObject(circular))
-        .toThrow('Circular reference detected');
+      expect(() => processObject(circular)).toThrow('Circular reference detected');
     });
   });
 });

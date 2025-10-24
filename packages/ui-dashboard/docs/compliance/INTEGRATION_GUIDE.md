@@ -1,6 +1,7 @@
 # Accessibility Integration Guide
 
-This guide shows how to integrate the accessibility features into your existing UI Dashboard components.
+This guide shows how to integrate the accessibility features into your existing
+UI Dashboard components.
 
 ## 1. Wrap Your App with AccessibilityProvider
 
@@ -62,9 +63,7 @@ export default function App() {
         {/* Main content */}
       </main>
 
-      <footer id="footer">
-        {/* Footer content */}
-      </footer>
+      <footer id="footer">{/* Footer content */}</footer>
     </div>
   );
 }
@@ -98,7 +97,7 @@ export function MetricCard({
   icon,
   trend,
   status,
-  className = ''
+  className = '',
 }: MetricCardProps) {
   const reducedMotion = useReducedMotion();
 
@@ -106,14 +105,14 @@ export function MetricCard({
     success: 'border-brand-success/30 bg-brand-success/5',
     warning: 'border-brand-warning/30 bg-brand-warning/5',
     danger: 'border-brand-danger/30 bg-brand-danger/5',
-    info: 'border-brand-info/30 bg-brand-info/5'
+    info: 'border-brand-info/30 bg-brand-info/5',
   };
 
   // Generate accessible label
-  const ariaLabel = `${title}: ${value}${
-    subtitle ? `, ${subtitle}` : ''
-  }${
-    trend ? `, ${trend.isPositive ? 'up' : 'down'} ${Math.abs(trend.value)} percent` : ''
+  const ariaLabel = `${title}: ${value}${subtitle ? `, ${subtitle}` : ''}${
+    trend
+      ? `, ${trend.isPositive ? 'up' : 'down'} ${Math.abs(trend.value)} percent`
+      : ''
   }`;
 
   return (
@@ -121,18 +120,12 @@ export function MetricCard({
       initial={reducedMotion ? false : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: reducedMotion ? 0 : 0.3 }}
-      className={`
-        bg-brand-card
-        border border-brand-border
-        rounded-lg p-6
-        ${status ? statusColors[status] : ''}
-        ${className}
-      `}
+      className={`bg-brand-card border-brand-border rounded-lg border p-6 ${status ? statusColors[status] : ''} ${className} `}
       role="article"
       aria-label={ariaLabel}
     >
-      <div className="flex items-start justify-between mb-2">
-        <h3 className="text-sm font-medium text-brand-muted uppercase tracking-wide">
+      <div className="mb-2 flex items-start justify-between">
+        <h3 className="text-brand-muted text-sm font-medium tracking-wide uppercase">
           {title}
         </h3>
         {icon && (
@@ -144,20 +137,15 @@ export function MetricCard({
 
       <div className="flex items-end justify-between">
         <div>
-          <p className="text-3xl font-bold text-white mb-1" aria-live="polite">
+          <p className="mb-1 text-3xl font-bold text-white" aria-live="polite">
             {value}
           </p>
-          {subtitle && (
-            <p className="text-sm text-brand-muted">{subtitle}</p>
-          )}
+          {subtitle && <p className="text-brand-muted text-sm">{subtitle}</p>}
         </div>
 
         {trend && (
           <div
-            className={`
-              flex items-center text-sm font-medium
-              ${trend.isPositive ? 'text-brand-success' : 'text-brand-danger'}
-            `}
+            className={`flex items-center text-sm font-medium ${trend.isPositive ? 'text-brand-success' : 'text-brand-danger'} `}
             aria-label={`Trend: ${trend.isPositive ? 'increasing' : 'decreasing'} by ${Math.abs(trend.value)} percent`}
           >
             <span className="mr-1" aria-hidden="true">
@@ -231,7 +219,9 @@ import { useEffect, useState } from 'react';
 import { useScreenReader } from '../../accessibility';
 
 export function SystemHealth() {
-  const [status, setStatus] = useState<'healthy' | 'warning' | 'critical'>('healthy');
+  const [status, setStatus] = useState<'healthy' | 'warning' | 'critical'>(
+    'healthy'
+  );
   const { announceStatus, announceError } = useScreenReader();
 
   useEffect(() => {
@@ -322,9 +312,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div className="modal-body">
-          {children}
-        </div>
+        <div className="modal-body">{children}</div>
       </div>
     </div>
   );
@@ -335,12 +323,19 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
 
 ```tsx
 // src/pages/monitoring/MetricsChart.tsx
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
 
 export function MetricsChart({ data }: { data: any[] }) {
   const dataDescription = `Chart showing ${data.length} data points.
-    Minimum value: ${Math.min(...data.map(d => d.value))}.
-    Maximum value: ${Math.max(...data.map(d => d.value))}.`;
+    Minimum value: ${Math.min(...data.map((d) => d.value))}.
+    Maximum value: ${Math.max(...data.map((d) => d.value))}.`;
 
   return (
     <div role="region" aria-label="Metrics chart">
@@ -483,10 +478,7 @@ describe('MetricCard Accessibility', () => {
   it('should have proper ARIA labels', () => {
     const { getByRole } = render(
       <AccessibilityProvider>
-        <MetricCard
-          title="Active Users"
-          value={1234}
-        />
+        <MetricCard title="Active Users" value={1234} />
       </AccessibilityProvider>
     );
 
@@ -521,6 +513,7 @@ npm run test:watch
 ## Best Practices
 
 ### 1. Always Use Semantic HTML
+
 ```tsx
 // ✅ Good
 <button onClick={handleClick}>Click me</button>
@@ -530,6 +523,7 @@ npm run test:watch
 ```
 
 ### 2. Provide Text Alternatives
+
 ```tsx
 // ✅ Good
 <img src="chart.png" alt="Sales increased by 25% this quarter" />
@@ -539,6 +533,7 @@ npm run test:watch
 ```
 
 ### 3. Use ARIA Appropriately
+
 ```tsx
 // ✅ Good - ARIA enhances semantic HTML
 <button aria-label="Close dialog">×</button>
@@ -548,6 +543,7 @@ npm run test:watch
 ```
 
 ### 4. Manage Focus
+
 ```tsx
 // ✅ Good - Return focus after modal closes
 const modalRef = useFocusTrap({ returnFocus: true });
@@ -557,6 +553,7 @@ const modalRef = useFocusTrap({ returnFocus: true });
 ```
 
 ### 5. Announce Dynamic Changes
+
 ```tsx
 // ✅ Good
 const { announceStatus } = useScreenReader();
@@ -576,6 +573,7 @@ announceStatus('Data loaded successfully');
 ## Support
 
 For questions about accessibility integration:
+
 - Check the [FAQ](./ACCESSIBILITY_FAQ.md)
 - Review [component examples](../../src/accessibility/components/)
 - Contact accessibility@noa-server.io

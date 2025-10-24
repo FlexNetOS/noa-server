@@ -1,6 +1,7 @@
 # Development Environment Setup
 
-This guide will help you set up your development environment for NOA Server. Follow each step carefully to ensure a smooth setup experience.
+This guide will help you set up your development environment for NOA Server.
+Follow each step carefully to ensure a smooth setup experience.
 
 ## Prerequisites
 
@@ -9,6 +10,7 @@ This guide will help you set up your development environment for NOA Server. Fol
 #### 1. Node.js (v20+)
 
 **macOS (using Homebrew):**
+
 ```bash
 brew install node@20
 echo 'export PATH="/opt/homebrew/opt/node@20/bin:$PATH"' >> ~/.zshrc
@@ -16,6 +18,7 @@ source ~/.zshrc
 ```
 
 **Linux (using nvm):**
+
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 source ~/.bashrc
@@ -25,11 +28,13 @@ nvm alias default 20
 ```
 
 **Windows (using Chocolatey):**
+
 ```powershell
 choco install nodejs-lts
 ```
 
 **Verify installation:**
+
 ```bash
 node --version  # Should be v20.x.x or higher
 npm --version   # Should be v10.x.x or higher
@@ -44,6 +49,7 @@ npm install -g pnpm@9.11.0
 ```
 
 **Verify installation:**
+
 ```bash
 pnpm --version  # Should be 9.11.0 or higher
 ```
@@ -51,20 +57,22 @@ pnpm --version  # Should be 9.11.0 or higher
 #### 3. Git
 
 **macOS:**
+
 ```bash
 brew install git
 ```
 
 **Linux:**
+
 ```bash
 sudo apt-get install git  # Ubuntu/Debian
 sudo yum install git      # CentOS/RHEL
 ```
 
-**Windows:**
-Download from https://git-scm.com/download/win
+**Windows:** Download from https://git-scm.com/download/win
 
 **Configure Git:**
+
 ```bash
 git config --global user.name "Your Name"
 git config --global user.email "your.email@noa-server.dev"
@@ -73,15 +81,18 @@ git config --global init.defaultBranch main
 
 #### 4. Docker & Docker Compose
 
-We use Docker for local development of services like Redis, RabbitMQ, and PostgreSQL.
+We use Docker for local development of services like Redis, RabbitMQ, and
+PostgreSQL.
 
 **macOS:**
+
 ```bash
 brew install --cask docker
 # Open Docker Desktop and complete setup
 ```
 
 **Linux:**
+
 ```bash
 # Install Docker
 curl -fsSL https://get.docker.com -o get-docker.sh
@@ -96,10 +107,11 @@ sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker
 sudo chmod +x /usr/local/bin/docker-compose
 ```
 
-**Windows:**
-Download Docker Desktop from https://www.docker.com/products/docker-desktop
+**Windows:** Download Docker Desktop from
+https://www.docker.com/products/docker-desktop
 
 **Verify installation:**
+
 ```bash
 docker --version
 docker-compose --version
@@ -111,6 +123,7 @@ docker run hello-world  # Test Docker
 Download VS Code from https://code.visualstudio.com/
 
 **Install Required Extensions:**
+
 ```bash
 code --install-extension dbaeumer.vscode-eslint
 code --install-extension esbenp.prettier-vscode
@@ -126,6 +139,7 @@ code --install-extension github.copilot  # Optional
 **Configure VS Code Settings:**
 
 Create `.vscode/settings.json` in your home directory:
+
 ```json
 {
   "editor.formatOnSave": true,
@@ -193,6 +207,7 @@ pnpm install
 ```
 
 **Expected output:**
+
 ```
 Packages: +2847
 +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -201,7 +216,8 @@ Progress: resolved 2847, reused 2710, downloaded 137, added 2847, done
 
 ### 3. Environment Variables Setup
 
-We use environment variables for configuration. Each package may have its own `.env` file.
+We use environment variables for configuration. Each package may have its own
+`.env` file.
 
 #### Root Environment Variables
 
@@ -214,6 +230,7 @@ nano .env  # or use your preferred editor
 ```
 
 **Required variables in root `.env`:**
+
 ```bash
 NODE_ENV=development
 
@@ -342,6 +359,7 @@ pnpm test:coverage
 ```
 
 **Expected output:**
+
 ```
  ✓ packages/ai-provider/src/__tests__/index.test.ts (10 tests) 523ms
  ✓ packages/message-queue/src/__tests__/queue.test.ts (8 tests) 412ms
@@ -364,6 +382,7 @@ pnpm --filter @noa/ai-inference-api dev
 ```
 
 **Expected output:**
+
 ```
 [INFO] Starting NOA Server AI Inference API...
 [INFO] Environment: development
@@ -428,6 +447,7 @@ pnpm lint:fix
 #### Issue: `pnpm install` fails with permission errors
 
 **Solution:**
+
 ```bash
 # Fix npm permissions
 sudo chown -R $USER:$USER ~/.npm
@@ -441,6 +461,7 @@ pnpm install
 #### Issue: Docker containers won't start
 
 **Solution:**
+
 ```bash
 # Check Docker is running
 docker info
@@ -458,6 +479,7 @@ lsof -i :5672  # RabbitMQ
 #### Issue: Tests fail with database connection errors
 
 **Solution:**
+
 ```bash
 # Verify PostgreSQL is running
 docker ps | grep postgres
@@ -472,6 +494,7 @@ docker restart noa-postgres
 #### Issue: TypeScript errors in IDE
 
 **Solution:**
+
 ```bash
 # Restart TypeScript server in VS Code
 # Command Palette (Cmd+Shift+P): "TypeScript: Restart TS Server"
@@ -486,6 +509,7 @@ rm -rf .vscode
 #### Issue: API key environment variables not loaded
 
 **Solution:**
+
 ```bash
 # Verify .env file exists
 ls -la .env packages/*/.env
@@ -532,7 +556,8 @@ docker run hello-world  # Should work without sudo
 
 Now that your environment is set up:
 
-1. **[Architecture Overview](ARCHITECTURE.md)** - Understand the system architecture
+1. **[Architecture Overview](ARCHITECTURE.md)** - Understand the system
+   architecture
 2. **[Codebase Tour](CODEBASE_TOUR.md)** - Navigate the codebase
 3. **[Development Workflow](WORKFLOW.md)** - Learn our Git workflow
 4. **[Testing Guide](TESTING.md)** - Write and run tests

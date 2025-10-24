@@ -2,7 +2,8 @@
 
 ## Overview
 
-Comprehensive monitoring and logging infrastructure for the AI Inference API, providing real-time insights into performance, errors, and usage patterns.
+Comprehensive monitoring and logging infrastructure for the AI Inference API,
+providing real-time insights into performance, errors, and usage patterns.
 
 ## Architecture
 
@@ -50,6 +51,7 @@ Comprehensive monitoring and logging infrastructure for the AI Inference API, pr
 **Location**: `/src/middleware/request-logger.ts`
 
 Structured logging with:
+
 - Unique request IDs
 - Correlation ID propagation
 - PII masking (GDPR compliant)
@@ -59,7 +61,10 @@ Structured logging with:
 **Example Usage**:
 
 ```typescript
-import { requestLogger, createContextLogger } from './middleware/request-logger';
+import {
+  requestLogger,
+  createContextLogger,
+} from './middleware/request-logger';
 
 // Apply middleware
 app.use(requestLogger);
@@ -96,6 +101,7 @@ app.get('/api/endpoint', (req, res) => {
 **Location**: `/src/middleware/performance-monitor.ts`
 
 Tracks:
+
 - Request duration (total, processing, DB, AI calls)
 - Memory usage per request
 - CPU utilization
@@ -108,7 +114,7 @@ Tracks:
 import {
   performanceMonitor,
   trackDatabaseQuery,
-  trackAICall
+  trackAICall,
 } from './middleware/performance-monitor';
 
 app.use(performanceMonitor);
@@ -128,6 +134,7 @@ app.get('/api/data', async (req, res) => {
 ```
 
 **Thresholds** (configurable in `monitoring-config.json`):
+
 - Slow query: 1 second (warning)
 - Very slow query: 5 seconds (alert)
 - Memory warning: 85% usage
@@ -138,6 +145,7 @@ app.get('/api/data', async (req, res) => {
 **Location**: `/src/middleware/error-tracker.ts`
 
 Features:
+
 - Automatic error categorization
 - Error rate tracking
 - Recovery suggestions
@@ -145,6 +153,7 @@ Features:
 - Alert thresholds
 
 **Error Categories**:
+
 - Client (4xx)
 - Server (5xx)
 - Provider (AI service errors)
@@ -169,6 +178,7 @@ app.get('/api/endpoint', async (req, res) => {
 ```
 
 **Alert Thresholds**:
+
 - Critical: 10 errors in 5 minutes
 - High: 50 errors in 15 minutes
 
@@ -177,6 +187,7 @@ app.get('/api/endpoint', async (req, res) => {
 **Location**: `/src/middleware/metrics-collector.ts`
 
 Collects:
+
 - Request count (total, by method, by endpoint)
 - Response status distribution
 - Throughput (requests/second)
@@ -184,6 +195,7 @@ Collects:
 - Cache hit/miss rates
 
 **Export Formats**:
+
 - Prometheus
 - JSON
 - StatsD
@@ -196,7 +208,7 @@ import {
   metricsCollector,
   trackCacheHit,
   trackCacheMiss,
-  getMetrics
+  getMetrics,
 } from './middleware/metrics-collector';
 
 app.use(metricsCollector);
@@ -221,11 +233,13 @@ console.log('Throughput:', metrics.performance.throughput);
 Provides Kubernetes-compatible health checks:
 
 #### Liveness Probe
+
 ```bash
 GET /health
 ```
 
 Response:
+
 ```json
 {
   "status": "healthy",
@@ -236,11 +250,13 @@ Response:
 ```
 
 #### Readiness Probe
+
 ```bash
 GET /health/ready
 ```
 
 Response:
+
 ```json
 {
   "status": "healthy",
@@ -264,6 +280,7 @@ Response:
 ```
 
 #### Detailed Health
+
 ```bash
 GET /health/detailed
 ```
@@ -275,6 +292,7 @@ Includes system metrics, dependency status, and application metrics.
 **Location**: `/src/routes/monitoring.ts`
 
 #### Prometheus Metrics
+
 ```bash
 GET /metrics
 ```
@@ -282,11 +300,13 @@ GET /metrics
 Returns metrics in Prometheus exposition format.
 
 #### JSON Metrics
+
 ```bash
 GET /metrics/api
 ```
 
 Response:
+
 ```json
 {
   "timestamp": "2025-10-23T12:34:56.789Z",
@@ -310,6 +330,7 @@ Response:
 ```
 
 #### Performance Metrics
+
 ```bash
 GET /metrics/performance
 ```
@@ -317,6 +338,7 @@ GET /metrics/performance
 Returns percentiles and performance statistics.
 
 #### Error Metrics
+
 ```bash
 GET /metrics/errors?window=300000
 ```
@@ -324,6 +346,7 @@ GET /metrics/errors?window=300000
 Returns error statistics for specified time window.
 
 #### API Status
+
 ```bash
 GET /status
 ```
@@ -331,6 +354,7 @@ GET /status
 Real-time API status dashboard data.
 
 #### Log Search
+
 ```bash
 GET /logs/search?level=error&limit=100&search=timeout
 ```
@@ -338,6 +362,7 @@ GET /logs/search?level=error&limit=100&search=timeout
 Search logs with filters.
 
 #### Log Export
+
 ```bash
 GET /logs/export?format=csv&level=error
 ```
@@ -345,6 +370,7 @@ GET /logs/export?format=csv&level=error
 Export logs in JSON or CSV format.
 
 #### Log Statistics
+
 ```bash
 GET /logs/stats
 ```
@@ -451,9 +477,9 @@ import monitoringRoutes from './routes/monitoring';
 const app = express();
 
 // Apply monitoring middleware (order matters)
-app.use(requestLogger);        // 1. Log all requests
-app.use(performanceMonitor);   // 2. Track performance
-app.use(metricsCollector);     // 3. Collect metrics
+app.use(requestLogger); // 1. Log all requests
+app.use(performanceMonitor); // 2. Track performance
+app.use(metricsCollector); // 3. Collect metrics
 
 // Routes
 app.use('/health', healthRoutes);
@@ -470,6 +496,7 @@ export default app;
 ### With Kubernetes
 
 **Liveness Probe**:
+
 ```yaml
 livenessProbe:
   httpGet:
@@ -480,6 +507,7 @@ livenessProbe:
 ```
 
 **Readiness Probe**:
+
 ```yaml
 readinessProbe:
   httpGet:
@@ -492,6 +520,7 @@ readinessProbe:
 ### With Prometheus
 
 **Scrape Config**:
+
 ```yaml
 scrape_configs:
   - job_name: 'ai-inference-api'
@@ -581,7 +610,7 @@ const logs = await logManager.searchLogs({
   level: 'error',
   startTime: new Date('2025-10-23'),
   search: 'timeout',
-  limit: 100
+  limit: 100,
 });
 
 // Export logs
@@ -647,4 +676,5 @@ MIT
 
 ## Support
 
-For issues or questions, please refer to the main project documentation or contact the development team.
+For issues or questions, please refer to the main project documentation or
+contact the development team.

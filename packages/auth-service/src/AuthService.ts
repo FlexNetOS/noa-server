@@ -18,12 +18,12 @@ import { RBACEngine } from './rbac/RBACEngine.js';
 import { RateLimiter, RateLimitPresets } from './security/RateLimiter.js';
 import { SessionManager } from './session/SessionManager.js';
 import {
-    AuthConfig,
-    AuthResult,
-    MFASetup,
-    MFAVerificationResult,
-    Role,
-    User
+  AuthConfig,
+  AuthResult,
+  MFASetup,
+  MFAVerificationResult,
+  Role,
+  User,
 } from './types/index.js';
 
 export class AuthService {

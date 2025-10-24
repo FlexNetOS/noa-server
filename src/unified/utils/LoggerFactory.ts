@@ -38,40 +38,52 @@ export enum LogLevel {
 export const LoggerConfigSchema = z.object({
   level: z.nativeEnum(LogLevel).default(LogLevel.INFO),
   format: z.enum(['json', 'simple', 'colorized']).default('json'),
-  transports: z.object({
-    console: z.object({
-      enabled: z.boolean().default(true),
-      level: z.nativeEnum(LogLevel).optional(),
-      colorize: z.boolean().default(true),
-    }).default({}),
-    file: z.object({
-      enabled: z.boolean().default(true),
-      level: z.nativeEnum(LogLevel).optional(),
-      directory: z.string().default('logs'),
-      filename: z.string().default('application.log'),
-      maxSize: z.number().default(10485760), // 10MB
-      maxFiles: z.number().default(5),
-      errorFilename: z.string().default('error.log'),
-    }).default({}),
-    http: z.object({
-      enabled: z.boolean().default(false),
-      endpoint: z.string().optional(),
-      headers: z.record(z.string()).optional(),
-    }).default({}),
-  }).default({}),
-  metadata: z.object({
-    service: z.string().default('noa-server'),
-    environment: z.string().default(process.env.NODE_ENV || 'development'),
-    version: z.string().optional(),
-    hostname: z.string().optional(),
-  }).default({}),
+  transports: z
+    .object({
+      console: z
+        .object({
+          enabled: z.boolean().default(true),
+          level: z.nativeEnum(LogLevel).optional(),
+          colorize: z.boolean().default(true),
+        })
+        .default({}),
+      file: z
+        .object({
+          enabled: z.boolean().default(true),
+          level: z.nativeEnum(LogLevel).optional(),
+          directory: z.string().default('logs'),
+          filename: z.string().default('application.log'),
+          maxSize: z.number().default(10485760), // 10MB
+          maxFiles: z.number().default(5),
+          errorFilename: z.string().default('error.log'),
+        })
+        .default({}),
+      http: z
+        .object({
+          enabled: z.boolean().default(false),
+          endpoint: z.string().optional(),
+          headers: z.record(z.string()).optional(),
+        })
+        .default({}),
+    })
+    .default({}),
+  metadata: z
+    .object({
+      service: z.string().default('noa-server'),
+      environment: z.string().default(process.env.NODE_ENV || 'development'),
+      version: z.string().optional(),
+      hostname: z.string().optional(),
+    })
+    .default({}),
   enableCorrelationId: z.boolean().default(true),
   enableTimestamps: z.boolean().default(true),
   enableStackTrace: z.boolean().default(true),
-  sampling: z.object({
-    enabled: z.boolean().default(false),
-    rate: z.number().min(0).max(1).default(1.0), // 1.0 = 100%
-  }).default({}),
+  sampling: z
+    .object({
+      enabled: z.boolean().default(false),
+      rate: z.number().min(0).max(1).default(1.0), // 1.0 = 100%
+    })
+    .default({}),
   moduleOverrides: z.record(z.nativeEnum(LogLevel)).default({}),
 });
 
@@ -312,10 +324,7 @@ export class LoggerFactory {
   /**
    * Extend Winston logger with custom methods
    */
-  private static extendLogger(
-    winstonLogger: winston.Logger,
-    module: string
-  ): CustomLogger {
+  private static extendLogger(winstonLogger: winston.Logger, module: string): CustomLogger {
     const customLogger = winstonLogger as CustomLogger;
 
     /**

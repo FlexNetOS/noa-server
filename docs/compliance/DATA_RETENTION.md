@@ -2,7 +2,8 @@
 
 ## Overview
 
-This document outlines the data retention policies and automated lifecycle management system for Noa Server.
+This document outlines the data retention policies and automated lifecycle
+management system for Noa Server.
 
 ## Table of Contents
 
@@ -17,11 +18,13 @@ This document outlines the data retention policies and automated lifecycle manag
 
 ### Storage Limitation (GDPR Article 5)
 
-Personal data must not be kept longer than necessary for the purposes for which it is processed.
+Personal data must not be kept longer than necessary for the purposes for which
+it is processed.
 
 ### Legal Requirements
 
 Different data types have different legal retention requirements:
+
 - **Financial Records**: 7 years (tax law)
 - **Transaction Data**: 1 year (PCI DSS)
 - **Audit Logs**: 7 years (SOC 2)
@@ -30,6 +33,7 @@ Different data types have different legal retention requirements:
 ### Business Needs
 
 Balance retention with:
+
 - Legal requirements
 - Business operations
 - Customer service
@@ -39,20 +43,21 @@ Balance retention with:
 
 ### Default Retention Policies
 
-| Data Type | Retention Period | Archive After | Legal Basis | Notes |
-|-----------|------------------|---------------|-------------|-------|
-| User Personal Data | 3 years | 1 year | GDPR Article 6 | Active users excluded |
-| Transaction Records | 1 year | 90 days | PCI DSS Req 3 | Financial compliance |
-| Audit Logs | 7 years | 2 years | SOC 2 | Security compliance |
-| Session Data | 90 days | N/A | Operational | Auto-cleanup |
-| Analytics Data | 2 years | 1 year | Legitimate Interest | Aggregated after 2y |
-| Backup Data | 30 days | N/A | Business Continuity | Rolling backups |
-| Communication Data | 1 year | 6 months | Legitimate Interest | Customer support |
-| System Logs | 180 days | 90 days | Operational | Security monitoring |
+| Data Type           | Retention Period | Archive After | Legal Basis         | Notes                 |
+| ------------------- | ---------------- | ------------- | ------------------- | --------------------- |
+| User Personal Data  | 3 years          | 1 year        | GDPR Article 6      | Active users excluded |
+| Transaction Records | 1 year           | 90 days       | PCI DSS Req 3       | Financial compliance  |
+| Audit Logs          | 7 years          | 2 years       | SOC 2               | Security compliance   |
+| Session Data        | 90 days          | N/A           | Operational         | Auto-cleanup          |
+| Analytics Data      | 2 years          | 1 year        | Legitimate Interest | Aggregated after 2y   |
+| Backup Data         | 30 days          | N/A           | Business Continuity | Rolling backups       |
+| Communication Data  | 1 year           | 6 months      | Legitimate Interest | Customer support      |
+| System Logs         | 180 days         | 90 days       | Operational         | Security monitoring   |
 
 ### Exceptions to Retention Periods
 
 Data may be retained longer if:
+
 1. **Legal Hold**: Ongoing litigation or investigation
 2. **Active Contract**: Data required for contract performance
 3. **User Request**: User explicitly requests retention
@@ -68,22 +73,26 @@ Creation → Active Use → Archival → Deletion
 ```
 
 #### 1. Creation
+
 - Data enters system
 - Retention policy automatically applied
 - Expiry date calculated
 
 #### 2. Active Use
+
 - Data accessible in primary storage
 - Normal processing operations
 - Regular backups
 
 #### 3. Archival
+
 - Moved to cold storage
 - Compressed and encrypted
 - Reduced access speed
 - Lower storage cost
 
 #### 4. Deletion
+
 - Secure multi-pass deletion
 - Verification required
 - Audit log created
@@ -92,11 +101,13 @@ Creation → Active Use → Archival → Deletion
 ### Lifecycle Triggers
 
 **Automatic Triggers**:
+
 - Time-based expiration
 - Policy-based rules
 - Storage optimization
 
 **Manual Triggers**:
+
 - User request (erasure)
 - Legal hold placement
 - Policy changes
@@ -106,11 +117,13 @@ Creation → Active Use → Archival → Deletion
 ### Automated Processes
 
 #### 1. Daily: Check Expiry
+
 ```bash
 npm run check-expiry
 ```
 
 **Actions**:
+
 - Identify expiring data (7, 30, 90 days)
 - Send notifications to compliance team
 - Generate expiry reports
@@ -119,11 +132,13 @@ npm run check-expiry
 **Schedule**: 2:00 AM daily
 
 #### 2. Weekly: Archive Data
+
 ```bash
 npm run archive-data
 ```
 
 **Actions**:
+
 - Identify records ready for archival
 - Compress and encrypt data
 - Move to cold storage
@@ -133,11 +148,13 @@ npm run archive-data
 **Schedule**: Sunday 3:00 AM weekly
 
 #### 3. Daily: Delete Expired
+
 ```bash
 npm run delete-expired
 ```
 
 **Actions**:
+
 - Identify expired records
 - Check for legal holds
 - Perform secure deletion
@@ -147,11 +164,13 @@ npm run delete-expired
 **Schedule**: 4:00 AM daily
 
 #### 4. Monthly: Generate Reports
+
 ```bash
 npm run generate-report
 ```
 
 **Actions**:
+
 - Compile retention statistics
 - Generate compliance report
 - Export to file
@@ -181,7 +200,9 @@ npm run generate-report
 
 ### What is a Legal Hold?
 
-A legal hold (litigation hold) prevents deletion of data that may be relevant to:
+A legal hold (litigation hold) prevents deletion of data that may be relevant
+to:
+
 - Ongoing litigation
 - Regulatory investigation
 - Internal investigation
@@ -194,13 +215,11 @@ import { RetentionPolicyEngine } from '@noa-server/data-retention';
 
 const engine = new RetentionPolicyEngine(db);
 
-await engine.placeLegalHold(
-  recordId,
-  "Ongoing litigation - Case #2025-12345"
-);
+await engine.placeLegalHold(recordId, 'Ongoing litigation - Case #2025-12345');
 ```
 
 **Effect**:
+
 - Prevents automatic deletion
 - Prevents archival
 - Overrides retention policy
@@ -213,6 +232,7 @@ await engine.releaseLegalHold(recordId);
 ```
 
 **When to Release**:
+
 - Litigation concluded
 - Investigation closed
 - No longer relevant to legal matter
@@ -237,11 +257,13 @@ ORDER BY created_at DESC;
 ### GDPR Compliance
 
 **Storage Limitation** (Article 5):
+
 - Data kept only as long as necessary
 - Retention periods must be documented
 - Automated deletion recommended
 
 **Accountability** (Article 5):
+
 - Demonstrate compliance with retention policies
 - Maintain audit logs of all deletions
 - Regular reporting to DPO
@@ -249,6 +271,7 @@ ORDER BY created_at DESC;
 ### PCI DSS Compliance
 
 **Requirement 3.1**: Keep cardholder data storage to minimum
+
 - Transaction data: 1 year maximum
 - Card details: Immediate deletion after processing
 - Audit logs: 1 year minimum
@@ -256,6 +279,7 @@ ORDER BY created_at DESC;
 ### SOC 2 Compliance
 
 **Availability**:
+
 - Audit logs retained for 7 years
 - System logs retained for 6 months
 - Change logs retained for 3 years
@@ -263,10 +287,12 @@ ORDER BY created_at DESC;
 ### Industry-Specific Requirements
 
 **Healthcare (HIPAA)**:
+
 - Medical records: 6 years minimum
 - Audit logs: 6 years minimum
 
 **Financial Services**:
+
 - Transaction records: 7 years
 - Customer communications: 7 years
 - Compliance records: 7 years
@@ -323,17 +349,13 @@ import { RetentionPolicyEngine } from '@noa-server/data-retention';
 const engine = new RetentionPolicyEngine(db);
 
 // Apply policy when creating user
-await engine.applyPolicy(
-  'users',
-  userId,
-  'user_data',
-  new Date()
-);
+await engine.applyPolicy('users', userId, 'user_data', new Date());
 ```
 
 ### 5. Monitoring
 
 **Key Metrics**:
+
 - Total records under management
 - Records expiring soon
 - Records ready for archival
@@ -342,6 +364,7 @@ await engine.applyPolicy(
 - Failed archival/deletion attempts
 
 **Dashboard Queries**:
+
 ```sql
 -- Overview
 SELECT COUNT(*) as total_records,
@@ -363,27 +386,32 @@ ORDER BY total_records DESC;
 ## Best Practices
 
 ### 1. Regular Audits
+
 - Monthly: Review retention policy effectiveness
 - Quarterly: Audit compliance with policies
 - Annually: Update policies based on legal changes
 
 ### 2. Documentation
+
 - Document all policy changes
 - Maintain audit trail of all deletions
 - Record reasons for legal holds
 
 ### 3. Communication
+
 - Inform users of retention periods in privacy policy
 - Provide transparency in data handling
 - Notify users before deletion (if required)
 
 ### 4. Security
+
 - Encrypt archived data
 - Secure deletion (multi-pass overwrite)
 - Verify deletion completion
 - Restrict access to archived data
 
 ### 5. Testing
+
 - Test archival process regularly
 - Test restoration from archives
 - Test deletion process
@@ -394,6 +422,7 @@ ORDER BY total_records DESC;
 ### Monthly Retention Report
 
 **Includes**:
+
 - Total records under management
 - Records expiring in next 30 days
 - Records archived this month
@@ -403,6 +432,7 @@ ORDER BY total_records DESC;
 - Failed operations and errors
 
 **Distribution**:
+
 - DPO
 - Compliance team
 - Legal department
@@ -411,6 +441,7 @@ ORDER BY total_records DESC;
 ### Annual Compliance Report
 
 **Includes**:
+
 - Summary of retention activities
 - Policy updates and changes
 - Legal holds placed and released
@@ -421,13 +452,14 @@ ORDER BY total_records DESC;
 
 ### Failed Archival
 
-**Symptoms**: Records not moving to archive
-**Causes**:
+**Symptoms**: Records not moving to archive **Causes**:
+
 - Storage space issues
 - Encryption key problems
 - Database connection errors
 
 **Resolution**:
+
 1. Check error logs
 2. Verify storage availability
 3. Test encryption keys
@@ -435,13 +467,14 @@ ORDER BY total_records DESC;
 
 ### Failed Deletion
 
-**Symptoms**: Records not being deleted
-**Causes**:
+**Symptoms**: Records not being deleted **Causes**:
+
 - Legal holds not properly checked
 - Cascading delete failures
 - Database constraints
 
 **Resolution**:
+
 1. Check for legal holds
 2. Review cascading relationships
 3. Check database logs
@@ -450,14 +483,15 @@ ORDER BY total_records DESC;
 ## Contact
 
 **Data Retention Questions**:
+
 - Email: data-retention@example.com
 - Team: Data Compliance
 
 **Technical Issues**:
+
 - Email: tech-support@example.com
 - Team: Platform Engineering
 
 ---
 
-*Last Updated: October 2025*
-*Version: 1.0*
+_Last Updated: October 2025_ _Version: 1.0_

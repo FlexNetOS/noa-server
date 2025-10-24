@@ -8,7 +8,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: "0 5 * * *"
+    - cron: '0 5 * * *'
   workflow_dispatch:
 
 permissions:
@@ -26,10 +26,10 @@ jobs:
       - name: Check links in Markdown files
         uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
-          folder-path: "docs/"
+          folder-path: 'docs/'
           check-modified-files-only: ${{ github.event_name != 'schedule' }}
-          file-path: "./README.md"
-          config-file: "./.markdown-link-check.config.json"
+          file-path: './README.md'
+          config-file: './.markdown-link-check.config.json'
 
   check-readmes-synced:
     # This checks that the repo README.md is identical to the libs/langgraph/README.md

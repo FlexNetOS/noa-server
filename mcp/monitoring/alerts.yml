@@ -12,8 +12,8 @@ groups:
           severity: warning
           component: mcp
         annotations:
-          summary: "High error rate detected"
-          description: "Error rate is {{ $value | humanizePercentage }} for {{ $labels.tool }}.{{ $labels.operation }}"
+          summary: 'High error rate detected'
+          description: 'Error rate is {{ $value | humanizePercentage }} for {{ $labels.tool }}.{{ $labels.operation }}'
 
       - alert: CriticalErrorRate
         expr: |
@@ -23,8 +23,8 @@ groups:
           severity: critical
           component: mcp
         annotations:
-          summary: "Critical error rate detected"
-          description: "Error rate is {{ $value | humanizePercentage }} for {{ $labels.tool }}.{{ $labels.operation }}"
+          summary: 'Critical error rate detected'
+          description: 'Error rate is {{ $value | humanizePercentage }} for {{ $labels.tool }}.{{ $labels.operation }}'
 
       - alert: HighRequestLatency
         expr: |
@@ -34,8 +34,8 @@ groups:
           severity: warning
           component: mcp
         annotations:
-          summary: "High request latency detected"
-          description: "P95 latency is {{ $value }}s for {{ $labels.tool }}.{{ $labels.operation }}"
+          summary: 'High request latency detected'
+          description: 'P95 latency is {{ $value }}s for {{ $labels.tool }}.{{ $labels.operation }}'
 
       - alert: RequestsStalled
         expr: |
@@ -45,8 +45,8 @@ groups:
           severity: critical
           component: mcp
         annotations:
-          summary: "No requests processed"
-          description: "MCP server has not processed any requests for 5 minutes"
+          summary: 'No requests processed'
+          description: 'MCP server has not processed any requests for 5 minutes'
 
   - name: mcp_agents
     interval: 30s
@@ -59,8 +59,8 @@ groups:
           severity: warning
           component: agents
         annotations:
-          summary: "High agent failure rate"
-          description: "Agent failure rate is {{ $value | humanizePercentage }} for {{ $labels.type }}"
+          summary: 'High agent failure rate'
+          description: 'Agent failure rate is {{ $value | humanizePercentage }} for {{ $labels.type }}'
 
       - alert: NoActiveAgents
         expr: |
@@ -70,8 +70,8 @@ groups:
           severity: warning
           component: agents
         annotations:
-          summary: "No active agents"
-          description: "No active agents detected for 5 minutes"
+          summary: 'No active agents'
+          description: 'No active agents detected for 5 minutes'
 
       - alert: TooManyActiveAgents
         expr: |
@@ -81,8 +81,8 @@ groups:
           severity: warning
           component: agents
         annotations:
-          summary: "Too many active agents"
-          description: "Active agent count is {{ $value }}, may indicate resource leak"
+          summary: 'Too many active agents'
+          description: 'Active agent count is {{ $value }}, may indicate resource leak'
 
   - name: mcp_tasks
     interval: 30s
@@ -95,8 +95,8 @@ groups:
           severity: warning
           component: tasks
         annotations:
-          summary: "High task queue depth"
-          description: "Task queue has {{ $value }} pending tasks"
+          summary: 'High task queue depth'
+          description: 'Task queue has {{ $value }} pending tasks'
 
       - alert: CriticalTaskQueueDepth
         expr: |
@@ -106,8 +106,8 @@ groups:
           severity: critical
           component: tasks
         annotations:
-          summary: "Critical task queue depth"
-          description: "Task queue has {{ $value }} pending tasks, system may be overloaded"
+          summary: 'Critical task queue depth'
+          description: 'Task queue has {{ $value }} pending tasks, system may be overloaded'
 
       - alert: TaskExecutionStalled
         expr: |
@@ -117,8 +117,8 @@ groups:
           severity: critical
           component: tasks
         annotations:
-          summary: "Task execution stalled"
-          description: "Tasks are pending but none are being executed"
+          summary: 'Task execution stalled'
+          description: 'Tasks are pending but none are being executed'
 
       - alert: LongRunningTasks
         expr: |
@@ -128,8 +128,8 @@ groups:
           severity: warning
           component: tasks
         annotations:
-          summary: "Long running tasks detected"
-          description: "P95 task duration is {{ $value }}s"
+          summary: 'Long running tasks detected'
+          description: 'P95 task duration is {{ $value }}s'
 
   - name: mcp_memory
     interval: 30s
@@ -142,8 +142,8 @@ groups:
           severity: warning
           component: memory
         annotations:
-          summary: "High memory usage"
-          description: "Memory usage is {{ $value | humanizePercentage }}"
+          summary: 'High memory usage'
+          description: 'Memory usage is {{ $value | humanizePercentage }}'
 
       - alert: CriticalMemoryUsage
         expr: |
@@ -153,8 +153,8 @@ groups:
           severity: critical
           component: memory
         annotations:
-          summary: "Critical memory usage"
-          description: "Memory usage is {{ $value | humanizePercentage }}, system may OOM"
+          summary: 'Critical memory usage'
+          description: 'Memory usage is {{ $value | humanizePercentage }}, system may OOM'
 
       - alert: MemoryLeakSuspected
         expr: |
@@ -164,8 +164,8 @@ groups:
           severity: warning
           component: memory
         annotations:
-          summary: "Potential memory leak"
-          description: "Memory usage has been steadily increasing for 1 hour"
+          summary: 'Potential memory leak'
+          description: 'Memory usage has been steadily increasing for 1 hour'
 
   - name: mcp_neural
     interval: 30s
@@ -178,8 +178,8 @@ groups:
           severity: warning
           component: neural
         annotations:
-          summary: "Slow neural inference"
-          description: "P95 inference time is {{ $value }}s for {{ $labels.model }}"
+          summary: 'Slow neural inference'
+          description: 'P95 inference time is {{ $value }}s for {{ $labels.model }}'
 
       - alert: LowTokenThroughput
         expr: |
@@ -189,8 +189,8 @@ groups:
           severity: warning
           component: neural
         annotations:
-          summary: "Low token throughput"
-          description: "Token processing rate is {{ $value }} tokens/sec for {{ $labels.model }}"
+          summary: 'Low token throughput'
+          description: 'Token processing rate is {{ $value }} tokens/sec for {{ $labels.model }}'
 
   - name: mcp_system
     interval: 30s
@@ -203,8 +203,8 @@ groups:
           severity: warning
           component: system
         annotations:
-          summary: "High CPU usage"
-          description: "CPU usage is {{ $value }}%"
+          summary: 'High CPU usage'
+          description: 'CPU usage is {{ $value }}%'
 
       - alert: CriticalCPUUsage
         expr: |
@@ -214,8 +214,8 @@ groups:
           severity: critical
           component: system
         annotations:
-          summary: "Critical CPU usage"
-          description: "CPU usage is {{ $value }}%, system may be unresponsive"
+          summary: 'Critical CPU usage'
+          description: 'CPU usage is {{ $value }}%, system may be unresponsive'
 
       - alert: HighSystemMemoryUsage
         expr: |
@@ -225,8 +225,8 @@ groups:
           severity: warning
           component: system
         annotations:
-          summary: "High system memory usage"
-          description: "System memory usage is {{ $value }}%"
+          summary: 'High system memory usage'
+          description: 'System memory usage is {{ $value }}%'
 
       - alert: CriticalSystemMemoryUsage
         expr: |
@@ -236,8 +236,8 @@ groups:
           severity: critical
           component: system
         annotations:
-          summary: "Critical system memory usage"
-          description: "System memory usage is {{ $value }}%, may trigger OOM killer"
+          summary: 'Critical system memory usage'
+          description: 'System memory usage is {{ $value }}%, may trigger OOM killer'
 
   - name: mcp_auth
     interval: 30s
@@ -250,8 +250,8 @@ groups:
           severity: warning
           component: auth
         annotations:
-          summary: "High authentication failure rate"
-          description: "Authentication failure rate is {{ $value | humanizePercentage }}"
+          summary: 'High authentication failure rate'
+          description: 'Authentication failure rate is {{ $value | humanizePercentage }}'
 
       - alert: PossibleBruteForceAttack
         expr: |
@@ -261,8 +261,8 @@ groups:
           severity: critical
           component: auth
         annotations:
-          summary: "Possible brute force attack"
-          description: "High rate of failed authentication attempts detected ({{ $value }}/sec)"
+          summary: 'Possible brute force attack'
+          description: 'High rate of failed authentication attempts detected ({{ $value }}/sec)'
 
       - alert: HighRateLimitViolations
         expr: |
@@ -272,8 +272,8 @@ groups:
           severity: warning
           component: auth
         annotations:
-          summary: "High rate limit violations"
-          description: "Multiple users are hitting rate limits ({{ $value }}/sec)"
+          summary: 'High rate limit violations'
+          description: 'Multiple users are hitting rate limits ({{ $value }}/sec)'
 
       - alert: NoAuthenticationAttempts
         expr: |
@@ -283,8 +283,8 @@ groups:
           severity: info
           component: auth
         annotations:
-          summary: "No authentication attempts"
-          description: "No authentication attempts for 10 minutes, system may be unreachable"
+          summary: 'No authentication attempts'
+          description: 'No authentication attempts for 10 minutes, system may be unreachable'
 
   - name: mcp_availability
     interval: 30s
@@ -297,8 +297,8 @@ groups:
           severity: critical
           component: availability
         annotations:
-          summary: "MCP server is down"
-          description: "MCP server has been unreachable for 1 minute"
+          summary: 'MCP server is down'
+          description: 'MCP server has been unreachable for 1 minute'
 
       - alert: MCPServerFlapping
         expr: |
@@ -308,5 +308,5 @@ groups:
           severity: warning
           component: availability
         annotations:
-          summary: "MCP server is flapping"
-          description: "MCP server has restarted {{ $value }} times in 10 minutes"
+          summary: 'MCP server is flapping'
+          description: 'MCP server has restarted {{ $value }} times in 10 minutes'

@@ -72,7 +72,7 @@ export class ProviderFactory {
     this.logger?.info(`Created ${config.type} provider`, {
       provider: config.type,
       baseURL: config.baseURL,
-      defaultModel: config.defaultModel
+      defaultModel: config.defaultModel,
     });
 
     return provider;
@@ -82,7 +82,7 @@ export class ProviderFactory {
    * Create multiple providers from an array of configurations
    */
   createProviders(configs: ProviderConfig[]): BaseProvider[] {
-    return configs.map(config => this.createProvider(config));
+    return configs.map((config) => this.createProvider(config));
   }
 
   /**
@@ -108,7 +108,7 @@ export class ProviderFactory {
    * Get providers by type
    */
   getProvidersByType(type: ProviderType): BaseProvider[] {
-    return this.getAllProviders().filter(provider => provider.getProviderType() === type);
+    return this.getAllProviders().filter((provider) => provider.getProviderType() === type);
   }
 
   /**
@@ -172,9 +172,13 @@ export class ProviderFactory {
       baseURL: process.env[`${envPrefix}BASE_URL`],
       organization: process.env[`${envPrefix}ORGANIZATION`],
       project: process.env[`${envPrefix}PROJECT`],
-      timeout: process.env[`${envPrefix}TIMEOUT`] ? parseInt(process.env[`${envPrefix}TIMEOUT`]!) : undefined,
-      maxRetries: process.env[`${envPrefix}MAX_RETRIES`] ? parseInt(process.env[`${envPrefix}MAX_RETRIES`]!) : undefined,
-      defaultModel: process.env[`${envPrefix}DEFAULT_MODEL`]
+      timeout: process.env[`${envPrefix}TIMEOUT`]
+        ? parseInt(process.env[`${envPrefix}TIMEOUT`]!)
+        : undefined,
+      maxRetries: process.env[`${envPrefix}MAX_RETRIES`]
+        ? parseInt(process.env[`${envPrefix}MAX_RETRIES`]!)
+        : undefined,
+      defaultModel: process.env[`${envPrefix}DEFAULT_MODEL`],
     };
 
     return this.createProvider(config);
@@ -209,28 +213,41 @@ export class ProviderFactory {
     return {
       timeout: this.config.defaultTimeout || config.timeout || 30000,
       maxRetries: this.config.defaultMaxRetries || config.maxRetries || 3,
-      ...config
+      ...config,
     };
   }
 }
 
 // Convenience functions for common use cases
-export function createProvider(config: ProviderConfig, factoryConfig?: ProviderFactoryConfig): BaseProvider {
+export function createProvider(
+  config: ProviderConfig,
+  factoryConfig?: ProviderFactoryConfig
+): BaseProvider {
   const factory = ProviderFactory.getInstance(factoryConfig);
   return factory.createProvider(config);
 }
 
-export function createProviders(configs: ProviderConfig[], factoryConfig?: ProviderFactoryConfig): BaseProvider[] {
+export function createProviders(
+  configs: ProviderConfig[],
+  factoryConfig?: ProviderFactoryConfig
+): BaseProvider[] {
   const factory = ProviderFactory.getInstance(factoryConfig);
   return factory.createProviders(configs);
 }
 
-export function createProviderFromEnv(providerType: ProviderType, envPrefix?: string, factoryConfig?: ProviderFactoryConfig): BaseProvider {
+export function createProviderFromEnv(
+  providerType: ProviderType,
+  envPrefix?: string,
+  factoryConfig?: ProviderFactoryConfig
+): BaseProvider {
   const factory = ProviderFactory.getInstance(factoryConfig);
   return factory.createProviderFromEnv(providerType, envPrefix);
 }
 
-export function createProvidersFromEnv(envPrefix?: string, factoryConfig?: ProviderFactoryConfig): BaseProvider[] {
+export function createProvidersFromEnv(
+  envPrefix?: string,
+  factoryConfig?: ProviderFactoryConfig
+): BaseProvider[] {
   const factory = ProviderFactory.getInstance(factoryConfig);
   return factory.createProvidersFromEnv(envPrefix);
 }

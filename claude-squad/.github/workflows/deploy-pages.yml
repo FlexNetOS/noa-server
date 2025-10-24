@@ -48,9 +48,9 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./web/out
-          
+
   deploy:
-    if: github.event_name == 'push'  # Only deploy on push to main, not on PR
+    if: github.event_name == 'push' # Only deploy on push to main, not on PR
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

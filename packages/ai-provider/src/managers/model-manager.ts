@@ -5,7 +5,7 @@ import {
   ModelCapability,
   AIProviderError,
   ModelNotFoundError,
-  ModelLoadError
+  ModelLoadError,
 } from '../types';
 import { ProviderFactory } from '../utils/factory';
 import { ConfigurationManager } from '../utils/config';
@@ -21,7 +21,6 @@ export interface ModelManagerState {
   currentModelKey: string | null;
   config: ModelManagerConfig;
 }
-
 
 export class ModelManager {
   private providerFactory: ProviderFactory;
@@ -43,7 +42,7 @@ export class ModelManager {
     this.config = {
       defaultProvider: config.defaultProvider || managerConfig.defaultProvider,
       autoLoadDefault: config.autoLoadDefault ?? managerConfig.autoLoadDefault ?? true,
-      maxLoadedModels: config.maxLoadedModels ?? managerConfig.maxLoadedModels ?? 10
+      maxLoadedModels: config.maxLoadedModels ?? managerConfig.maxLoadedModels ?? 10,
     };
 
     if (this.config.autoLoadDefault) {
@@ -58,7 +57,7 @@ export class ModelManager {
     try {
       const provider = this.providerFactory.createProvider(providerConfig);
       const models = await provider.getModels();
-      const modelInfo = models.find(m => m.id === modelId || m.name === modelId);
+      const modelInfo = models.find((m) => m.id === modelId || m.name === modelId);
 
       if (!modelInfo) {
         throw new ModelNotFoundError(
@@ -185,7 +184,7 @@ export class ModelManager {
    * Get models that support a specific capability
    */
   getModelsByCapability(capability: ModelCapability): ModelInfo[] {
-    return this.listModels().filter(model => model.capabilities.includes(capability));
+    return this.listModels().filter((model) => model.capabilities.includes(capability));
   }
 
   /**
@@ -195,7 +194,7 @@ export class ModelManager {
     return {
       loadedModels: new Map(this.loadedModels),
       currentModelKey: this.currentModelKey,
-      config: { ...this.config }
+      config: { ...this.config },
     };
   }
 
@@ -216,7 +215,7 @@ export class ModelManager {
       if (config.providers.length === 0) return;
 
       const defaultProviderConfig = this.config.defaultProvider
-        ? config.providers.find(p => p.type === this.config.defaultProvider)
+        ? config.providers.find((p) => p.type === this.config.defaultProvider)
         : config.providers[0];
 
       if (defaultProviderConfig && defaultProviderConfig.defaultModel) {

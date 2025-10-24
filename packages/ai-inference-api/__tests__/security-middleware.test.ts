@@ -6,14 +6,20 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { generateJWT, verifyJWT, JWTError, isTokenExpired } from '../src/utils/jwt.utils';
-import { hashPassword, verifyPassword, hashAPIKey, generateAPIKey, maskPII } from '../src/utils/crypto.utils';
+import {
+  hashPassword,
+  verifyPassword,
+  hashAPIKey,
+  generateAPIKey,
+  maskPII,
+} from '../src/utils/crypto.utils';
 import { UserRole, Permission } from '../src/types/auth.types';
 import { hasRole, hasPermission, hasResourceAccess } from '../src/middleware/authz';
 import {
   sanitizeString,
   sanitizeObject,
   isValidSQLInput,
-  isValidCommandInput
+  isValidCommandInput,
 } from '../src/middleware/validation';
 
 /**
@@ -25,7 +31,7 @@ describe('JWT Authentication', () => {
     sub: 'user123',
     email: 'test@example.com',
     role: UserRole.USER,
-    permissions: [Permission.READ, Permission.WRITE]
+    permissions: [Permission.READ, Permission.WRITE],
   };
 
   it('should generate valid JWT token', () => {
@@ -86,7 +92,7 @@ describe('JWT Authentication', () => {
   it('should support different expiry formats', () => {
     const formats = ['15s', '15m', '1h', '7d'];
 
-    formats.forEach(format => {
+    formats.forEach((format) => {
       const token = generateJWT(testPayload, secret, format, 'HS256');
       expect(token).toBeTruthy();
 
@@ -227,9 +233,9 @@ describe('Input Sanitization', () => {
     const malicious = {
       name: '<script>alert(1)</script>',
       nested: {
-        value: 'javascript:alert(1)'
+        value: 'javascript:alert(1)',
       },
-      array: ['<img onerror="alert(1)">']
+      array: ['<img onerror="alert(1)">'],
     };
 
     const sanitized = sanitizeObject(malicious);
@@ -339,10 +345,10 @@ describe('Attack Simulations', () => {
       '<svg onload=alert(1)>',
       'javascript:alert(1)',
       '<iframe src="javascript:alert(1)">',
-      '<body onload=alert(1)>'
+      '<body onload=alert(1)>',
     ];
 
-    xssVectors.forEach(vector => {
+    xssVectors.forEach((vector) => {
       const sanitized = sanitizeString(vector);
       expect(sanitized).not.toContain('script');
       expect(sanitized).not.toContain('onerror');
@@ -357,10 +363,10 @@ describe('Attack Simulations', () => {
       "'; DROP TABLE users--",
       "' UNION SELECT NULL--",
       "admin'--",
-      "' OR 1=1--"
+      "' OR 1=1--",
     ];
 
-    sqlVectors.forEach(vector => {
+    sqlVectors.forEach((vector) => {
       expect(isValidSQLInput(vector)).toBe(false);
     });
   });
@@ -372,10 +378,10 @@ describe('Attack Simulations', () => {
       '`whoami`',
       '$(cat /etc/shadow)',
       '&& malicious',
-      '|| dangerous'
+      '|| dangerous',
     ];
 
-    cmdVectors.forEach(vector => {
+    cmdVectors.forEach((vector) => {
       expect(isValidCommandInput(vector)).toBe(false);
     });
   });
@@ -392,7 +398,7 @@ describe('Token Refresh Mechanism', () => {
       sub: 'user123',
       email: 'test@example.com',
       role: UserRole.USER,
-      permissions: [Permission.READ]
+      permissions: [Permission.READ],
     };
 
     const token = generateJWT(payload, secret, '7d', 'HS256');
@@ -404,7 +410,7 @@ describe('Token Refresh Mechanism', () => {
       sub: 'user123',
       email: 'test@example.com',
       role: UserRole.USER,
-      permissions: [Permission.READ]
+      permissions: [Permission.READ],
     };
 
     const token = generateJWT(payload, secret, '7d', 'HS256');
@@ -421,13 +427,13 @@ describe('Multi-Tenancy', () => {
     const tenant1User = {
       id: 'user1',
       tenantId: 'tenant1',
-      role: UserRole.USER
+      role: UserRole.USER,
     };
 
     const tenant2User = {
       id: 'user2',
       tenantId: 'tenant2',
-      role: UserRole.USER
+      role: UserRole.USER,
     };
 
     expect(tenant1User.tenantId).not.toBe(tenant2User.tenantId);
@@ -436,7 +442,7 @@ describe('Multi-Tenancy', () => {
   it('should allow admin cross-tenant access', () => {
     const adminUser = {
       id: 'admin1',
-      role: UserRole.ADMIN
+      role: UserRole.ADMIN,
     };
 
     expect(adminUser.role).toBe(UserRole.ADMIN);

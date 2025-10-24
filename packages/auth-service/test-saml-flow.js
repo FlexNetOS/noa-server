@@ -67,7 +67,6 @@ async function testSAMLAuthFlow() {
     console.log('\n🔍 Test Users Available:');
     console.log('   testuser: Test User (test@example.com) - Groups: users, developers');
     console.log('   admin: Admin User (admin@example.com) - Groups: users, admins');
-
   } catch (error) {
     console.error('❌ SAML authentication flow test failed:', error);
     process.exit(1);

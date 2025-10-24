@@ -108,7 +108,7 @@ jobs:
           secret: ${{ secrets.GITHUB_TOKEN }}
           approvers: ops-team,sre-team
           minimum-approvals: 2
-          issue-title: "Emergency Rollback Approval Required"
+          issue-title: 'Emergency Rollback Approval Required'
           issue-body: |
             **Environment:** ${{ inputs.environment }}
             **Current Version:** ${{ steps.detect.outputs.current_version }}

@@ -30,58 +30,58 @@ spec:
         runAsUser: 1001
         fsGroup: 1001
       containers:
-      - name: agenticos
-        image: noa-server:latest
-        imagePullPolicy: IfNotPresent
-        args: ["agenticos-service"]
-        ports:
-        - name: http
-          containerPort: 9400
-          protocol: TCP
-        env:
-        - name: AGENTICOS_PORT
-          value: "9400"
-        - name: MCP_URL
-          valueFrom:
-            configMapKeyRef:
-              name: noa-server-config
-              key: MCP_URL
-        resources:
-          requests:
-            cpu: 500m
-            memory: 512Mi
-          limits:
-            cpu: 2000m
-            memory: 1Gi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 9400
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 9400
-          initialDelaySeconds: 10
-          periodSeconds: 5
-        volumeMounts:
-        - name: agenticos-data
-          mountPath: /app/data
-        - name: agenticos-artifacts
-          mountPath: /app/artifacts
-        securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          capabilities:
-            drop:
-            - ALL
+        - name: agenticos
+          image: noa-server:latest
+          imagePullPolicy: IfNotPresent
+          args: ['agenticos-service']
+          ports:
+            - name: http
+              containerPort: 9400
+              protocol: TCP
+          env:
+            - name: AGENTICOS_PORT
+              value: '9400'
+            - name: MCP_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: noa-server-config
+                  key: MCP_URL
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              cpu: 2000m
+              memory: 1Gi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 9400
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 9400
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          volumeMounts:
+            - name: agenticos-data
+              mountPath: /app/data
+            - name: agenticos-artifacts
+              mountPath: /app/artifacts
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
       volumes:
-      - name: agenticos-data
-        persistentVolumeClaim:
-          claimName: noa-agenticos-pvc
-      - name: agenticos-artifacts
-        emptyDir: {}
+        - name: agenticos-data
+          persistentVolumeClaim:
+            claimName: noa-agenticos-pvc
+        - name: agenticos-artifacts
+          emptyDir: {}
 
 ---
 apiVersion: v1
@@ -96,10 +96,10 @@ spec:
   selector:
     app: noa-agenticos
   ports:
-  - name: http
-    port: 9400
-    targetPort: 9400
-    protocol: TCP
+    - name: http
+      port: 9400
+      targetPort: 9400
+      protocol: TCP
 
 ---
 apiVersion: v1
@@ -109,7 +109,7 @@ metadata:
   namespace: noa-server
 spec:
   accessModes:
-  - ReadWriteOnce
+    - ReadWriteOnce
   resources:
     requests:
       storage: 10Gi

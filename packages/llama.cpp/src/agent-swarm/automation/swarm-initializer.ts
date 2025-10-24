@@ -33,7 +33,7 @@ export class SwarmInitializer {
         topology: 'hierarchical',
         maxAgents: 10,
         coordinatorType: 'integration-coordinator',
-        sessionPrefix: 'agent-integration'
+        sessionPrefix: 'agent-integration',
       },
       agents: {
         'config-updater': { enabled: true, priority: 'high' },
@@ -41,8 +41,8 @@ export class SwarmInitializer {
         'code-updater': { enabled: true, priority: 'medium' },
         'agent-registry-updater': { enabled: true, priority: 'high' },
         'test-creator': { enabled: true, priority: 'medium' },
-        'cross-reference-validator': { enabled: true, priority: 'low' }
-      }
+        'cross-reference-validator': { enabled: true, priority: 'low' },
+      },
     };
   }
 
@@ -80,13 +80,12 @@ export class SwarmInitializer {
         sessionId,
         agentInfo,
         startTime: new Date(),
-        spawnedAgents: []
+        spawnedAgents: [],
       };
 
       this.activeSessions.set(sessionId, session);
 
       return sessionId;
-
     } catch (error) {
       console.error('   ❌ Failed to initialize swarm:', error);
       throw new Error(`Swarm initialization failed: ${error.message}`);
@@ -96,10 +95,7 @@ export class SwarmInitializer {
   /**
    * Spawn integration agents
    */
-  async spawnIntegrationAgents(
-    sessionId: string,
-    agentInfo: AgentInfo
-  ): Promise<void> {
+  async spawnIntegrationAgents(sessionId: string, agentInfo: AgentInfo): Promise<void> {
     console.log('\n📦 Spawning integration agents...');
 
     const session = this.activeSessions.get(sessionId);
@@ -130,33 +126,33 @@ export class SwarmInitializer {
       {
         type: 'config-updater',
         task: `Update all configuration files to include new agent: ${agentInfo.name}`,
-        memoryKey: 'config-updates'
+        memoryKey: 'config-updates',
       },
       {
         type: 'doc-updater',
         task: `Update documentation (README.md, CLAUDE.md, guides) for agent: ${agentInfo.name}`,
-        memoryKey: 'doc-updates'
+        memoryKey: 'doc-updates',
       },
       {
         type: 'code-updater',
         task: `Integrate new agent into codebase and create examples: ${agentInfo.name}`,
-        memoryKey: 'code-updates'
+        memoryKey: 'code-updates',
       },
       {
         type: 'agent-registry-updater',
         task: `Register new agent in hierarchy and flow configs: ${agentInfo.name}`,
-        memoryKey: 'registry-updates'
+        memoryKey: 'registry-updates',
       },
       {
         type: 'test-creator',
         task: `Create comprehensive test suite for agent: ${agentInfo.name}`,
-        memoryKey: 'test-creation'
+        memoryKey: 'test-creation',
       },
       {
         type: 'cross-reference-validator',
         task: `Validate all cross-references and consistency for: ${agentInfo.name}`,
-        memoryKey: 'validation'
-      }
+        memoryKey: 'validation',
+      },
     ];
   }
 
@@ -179,7 +175,6 @@ export class SwarmInitializer {
       }
 
       console.log(`   ✅ Spawned: ${spec.type}`);
-
     } catch (error) {
       console.error(`   ❌ Failed to spawn ${spec.type}:`, error.message);
       // Continue with other agents

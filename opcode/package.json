@@ -73,10 +73,7 @@
     "typescript": "~5.6.2",
     "vite": "^6.0.3"
   },
-  "trustedDependencies": [
-    "@parcel/watcher",
-    "@tailwindcss/oxide"
-  ],
+  "trustedDependencies": ["@parcel/watcher", "@tailwindcss/oxide"],
   "optionalDependencies": {
     "@esbuild/linux-x64": "^0.25.6",
     "@rollup/rollup-linux-x64-gnu": "^4.45.1"

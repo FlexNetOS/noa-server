@@ -25,7 +25,7 @@ export class UnhandledRejectionHandler {
       logRejections: options.logRejections !== false,
       exitOnRejection: options.exitOnRejection || false,
       maxRejections: options.maxRejections || 10,
-      rejectionWindow: options.rejectionWindow || 60000 // 1 minute
+      rejectionWindow: options.rejectionWindow || 60000, // 1 minute
     };
   }
 
@@ -70,7 +70,7 @@ export class UnhandledRejectionHandler {
         reason: error.message,
         stack: error.stack,
         count: this.rejectionCount,
-        recentCount: this.rejectionTimestamps.length
+        recentCount: this.rejectionTimestamps.length,
       });
     }
 
@@ -80,12 +80,12 @@ export class UnhandledRejectionHandler {
         tags: {
           handler: 'unhandledRejection',
           rejectionCount: String(this.rejectionCount),
-          recentCount: String(this.rejectionTimestamps.length)
+          recentCount: String(this.rejectionTimestamps.length),
         },
         extra: {
           promise: this.serializePromise(promise),
-          isRateLimited: this.isRateLimited()
-        }
+          isRateLimited: this.isRateLimited(),
+        },
       });
     } catch (trackingError) {
       console.error('Failed to track unhandled rejection:', trackingError);
@@ -93,7 +93,9 @@ export class UnhandledRejectionHandler {
 
     // Check if we should exit
     if (this.shouldExit()) {
-      console.error(`Too many unhandled rejections (${this.rejectionTimestamps.length} in ${this.options.rejectionWindow}ms), exiting...`);
+      console.error(
+        `Too many unhandled rejections (${this.rejectionTimestamps.length} in ${this.options.rejectionWindow}ms), exiting...`
+      );
       await this.tracker.flush(2000);
       process.exit(1);
     }
@@ -105,7 +107,7 @@ export class UnhandledRejectionHandler {
   private cleanOldTimestamps(): void {
     const now = Date.now();
     const cutoff = now - this.options.rejectionWindow!;
-    this.rejectionTimestamps = this.rejectionTimestamps.filter(ts => ts > cutoff);
+    this.rejectionTimestamps = this.rejectionTimestamps.filter((ts) => ts > cutoff);
   }
 
   /**
@@ -133,7 +135,7 @@ export class UnhandledRejectionHandler {
     try {
       return JSON.stringify({
         constructor: promise.constructor.name,
-        toString: promise.toString()
+        toString: promise.toString(),
       });
     } catch {
       return 'Promise (could not serialize)';
@@ -153,7 +155,7 @@ export class UnhandledRejectionHandler {
     return {
       totalRejections: this.rejectionCount,
       recentRejections: this.rejectionTimestamps.length,
-      isRateLimited: this.isRateLimited()
+      isRateLimited: this.isRateLimited(),
     };
   }
 

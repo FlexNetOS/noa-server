@@ -1,6 +1,7 @@
 # @noa/database-optimizer
 
-Comprehensive database optimization and query analysis system for PostgreSQL, MongoDB, and MySQL.
+Comprehensive database optimization and query analysis system for PostgreSQL,
+MongoDB, and MySQL.
 
 ## Features
 

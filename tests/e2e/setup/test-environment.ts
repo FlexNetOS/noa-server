@@ -216,9 +216,24 @@ export class TestEnvironment {
     await this.waitForRedis(maxRetries, retryDelay);
 
     // Wait for mock providers
-    await this.waitForHttpService('Mock OpenAI', TEST_ENV_CONFIG.mockProviders.openai.port, maxRetries, retryDelay);
-    await this.waitForHttpService('Mock Claude', TEST_ENV_CONFIG.mockProviders.claude.port, maxRetries, retryDelay);
-    await this.waitForHttpService('llama.cpp', TEST_ENV_CONFIG.mockProviders.llamacpp.port, maxRetries, retryDelay);
+    await this.waitForHttpService(
+      'Mock OpenAI',
+      TEST_ENV_CONFIG.mockProviders.openai.port,
+      maxRetries,
+      retryDelay
+    );
+    await this.waitForHttpService(
+      'Mock Claude',
+      TEST_ENV_CONFIG.mockProviders.claude.port,
+      maxRetries,
+      retryDelay
+    );
+    await this.waitForHttpService(
+      'llama.cpp',
+      TEST_ENV_CONFIG.mockProviders.llamacpp.port,
+      maxRetries,
+      retryDelay
+    );
 
     console.log('All services are healthy!');
   }
@@ -238,7 +253,7 @@ export class TestEnvironment {
         if (i === maxRetries - 1) {
           throw new Error('PostgreSQL failed to start');
         }
-        await new Promise(resolve => setTimeout(resolve, retryDelay));
+        await new Promise((resolve) => setTimeout(resolve, retryDelay));
       }
     }
   }
@@ -258,7 +273,7 @@ export class TestEnvironment {
         if (i === maxRetries - 1) {
           throw new Error('Redis failed to start');
         }
-        await new Promise(resolve => setTimeout(resolve, retryDelay));
+        await new Promise((resolve) => setTimeout(resolve, retryDelay));
       }
     }
   }
@@ -283,7 +298,7 @@ export class TestEnvironment {
         if (i === maxRetries - 1) {
           throw new Error(`${name} failed to start`);
         }
-        await new Promise(resolve => setTimeout(resolve, retryDelay));
+        await new Promise((resolve) => setTimeout(resolve, retryDelay));
       }
     }
   }

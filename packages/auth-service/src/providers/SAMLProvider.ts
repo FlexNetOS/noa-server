@@ -80,7 +80,7 @@ export class SAMLProvider {
 
       // Group-based authorization (optional)
       if (this.config.allowedGroups && userInfo.groups) {
-        const hasAllowedGroup = userInfo.groups.some(group =>
+        const hasAllowedGroup = userInfo.groups.some((group) =>
           this.config.allowedGroups!.includes(group)
         );
         if (!hasAllowedGroup) {
@@ -98,26 +98,30 @@ export class SAMLProvider {
    * Extract user information from SAML profile
    */
   private extractUserInfo(profile: Profile): SAMLUserInfo {
-    const attributes = profile.attributes as any || {};
+    const attributes = (profile.attributes as any) || {};
 
     return {
       id: profile.nameID || profile.nameIDFormat || '',
-      email: attributes[this.config.emailAttribute || 'email'] ||
-             attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] ||
-             attributes['urn:oid:0.9.2342.19200300.100.1.3'] || // mail
-             '',
-      name: attributes[this.config.nameAttribute || 'name'] ||
-            attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] ||
-            attributes['urn:oid:2.5.4.3'] || // cn
-            '',
-      givenName: attributes[this.config.givenNameAttribute || 'givenName'] ||
-                 attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'] ||
-                 attributes['urn:oid:2.5.4.42'] || // givenName
-                 '',
-      familyName: attributes[this.config.familyNameAttribute || 'familyName'] ||
-                  attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'] ||
-                  attributes['urn:oid:2.5.4.4'] || // sn
-                  '',
+      email:
+        attributes[this.config.emailAttribute || 'email'] ||
+        attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] ||
+        attributes['urn:oid:0.9.2342.19200300.100.1.3'] || // mail
+        '',
+      name:
+        attributes[this.config.nameAttribute || 'name'] ||
+        attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] ||
+        attributes['urn:oid:2.5.4.3'] || // cn
+        '',
+      givenName:
+        attributes[this.config.givenNameAttribute || 'givenName'] ||
+        attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'] ||
+        attributes['urn:oid:2.5.4.42'] || // givenName
+        '',
+      familyName:
+        attributes[this.config.familyNameAttribute || 'familyName'] ||
+        attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'] ||
+        attributes['urn:oid:2.5.4.4'] || // sn
+        '',
       groups: this.extractGroups(attributes),
       attributes,
     };

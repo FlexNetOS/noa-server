@@ -1,26 +1,36 @@
 # Egress for Subscription Metrics and Operational Metadata
 
-> **Important: Self Hosted Only** 
-> This section only applies to customers who are not running in offline mode and assumes you are using a self-hosted LangGraph Platform instance.
-> This does not apply to SaaS or Hybrid deployments.
+> **Important: Self Hosted Only** This section only applies to customers who are
+> not running in offline mode and assumes you are using a self-hosted LangGraph
+> Platform instance. This does not apply to SaaS or Hybrid deployments.
 
-Self-Hosted LangGraph Platform instances store all information locally and will never send sensitive information outside of your network. We currently only track platform usage for billing purposes according to the entitlements in your order. In order to better remotely support our customers, we do require egress to `https://beacon.langchain.com`.
+Self-Hosted LangGraph Platform instances store all information locally and will
+never send sensitive information outside of your network. We currently only
+track platform usage for billing purposes according to the entitlements in your
+order. In order to better remotely support our customers, we do require egress
+to `https://beacon.langchain.com`.
 
-In the future, we will be introducing support diagnostics to help us ensure that the LangGraph Platform is running at an optimal level within your environment.
+In the future, we will be introducing support diagnostics to help us ensure that
+the LangGraph Platform is running at an optimal level within your environment.
 
 > **Warning**  
-> **This will require egress to `https://beacon.langchain.com` from your network.**
-> **If using an API key, you will also need to allow egress to `https://api.smith.langchain.com` or `https://eu.api.smith.langchain.com` for API key verification.**
+> **This will require egress to `https://beacon.langchain.com` from your
+> network.** **If using an API key, you will also need to allow egress to
+> `https://api.smith.langchain.com` or `https://eu.api.smith.langchain.com` for
+> API key verification.**
 
 Generally, data that we send to Beacon can be categorized as follows:
 
 - **Subscription Metrics**
-  - Subscription metrics are used to determine level of access and utilization of LangSmith. This includes, but are not limited to:
+  - Subscription metrics are used to determine level of access and utilization
+    of LangSmith. This includes, but are not limited to:
     - Nodes Executed
     - Runs Executed
     - License Key Verification
 - **Operational Metadata**
-  - This metadata will contain and collect the above subscription metrics to assist with remote support, allowing the LangChain team to diagnose and troubleshoot performance issues more effectively and proactively.
+  - This metadata will contain and collect the above subscription metrics to
+    assist with remote support, allowing the LangChain team to diagnose and
+    troubleshoot performance issues more effectively and proactively.
 
 ## Example Payloads
 
@@ -50,8 +60,7 @@ In an effort to maximize transparency, we provide sample payloads here:
 
 ### Api Key Verification (If using a LangSmith API Key)
 
-**Endpoint:**
-`POST api.smith.langchain.com/auth`
+**Endpoint:** `POST api.smith.langchain.com/auth`
 
 **Request:**
 
@@ -116,4 +125,7 @@ In an effort to maximize transparency, we provide sample payloads here:
 
 ## Our Commitment
 
-LangChain will not store any sensitive information in the Subscription Metrics or Operational Metadata. Any data collected will not be shared with a third party. If you have any concerns about the data being sent, please reach out to your account team.
+LangChain will not store any sensitive information in the Subscription Metrics
+or Operational Metadata. Any data collected will not be shared with a third
+party. If you have any concerns about the data being sent, please reach out to
+your account team.

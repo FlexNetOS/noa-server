@@ -110,10 +110,10 @@ export class MemoryProfiler {
     // Calculate growth rate (bytes per second)
     const firstHeap = this.snapshots[0]?.heapUsed || 0;
     const lastHeap = this.snapshots[this.snapshots.length - 1]?.heapUsed || 0;
-    const growthRate = ((lastHeap - firstHeap) / duration) * 1000 / 1024 / 1024; // MB/s
+    const growthRate = (((lastHeap - firstHeap) / duration) * 1000) / 1024 / 1024; // MB/s
 
     // Detect memory leak (sustained growth over 1MB/min)
-    const leakDetected = growthRate > (1 / 60); // >1MB per minute
+    const leakDetected = growthRate > 1 / 60; // >1MB per minute
 
     return {
       snapshots: this.snapshots,

@@ -1,6 +1,8 @@
 # llama.cpp Neural Processing Layer
 
-This package implements the neural processing layer for the Claude Suite using llama.cpp, providing GGUF model support, CUDA acceleration (when available), and unified APIs for model loading and inference.
+This package implements the neural processing layer for the Claude Suite using
+llama.cpp, providing GGUF model support, CUDA acceleration (when available), and
+unified APIs for model loading and inference.
 
 ## Architecture
 
@@ -19,12 +21,15 @@ packages/llama.cpp/
 ## Features
 
 - **GGUF Model Support**: Native support for GGUF format models
-- **CUDA Acceleration**: GPU acceleration with unified memory support (CUDA 13.0+)
+- **CUDA Acceleration**: GPU acceleration with unified memory support (CUDA
+  13.0+)
 - **CPU Fallback**: OpenMP-accelerated CPU inference
-- **Unified Memory**: Automatic CUDA Virtual Memory Management (VMM) for large models
+- **Unified Memory**: Automatic CUDA Virtual Memory Management (VMM) for large
+  models
 - **Unified APIs**: Chat, streaming, and benchmarking interfaces
 - **HTTP Bridge**: REST API for web integration
-- **Environment Configuration**: Flexible model selection via environment variables
+- **Environment Configuration**: Flexible model selection via environment
+  variables
 
 ## Quick Start
 
@@ -155,13 +160,13 @@ GET /info
 
 ### Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `LLM_MODEL_PATH` | Default path to GGUF models | None |
-| `LLAMA_CUDA` | Enable CUDA acceleration | `false` |
-| `LLAMA_CUDA_DEVICE_COUNT` | Number of CUDA devices | Auto-detect |
-| `LLAMA_CUDA_DEVICE` | CUDA device ID | `0` |
-| `LLAMA_CUDA_NO_VMM` | Disable unified memory (VMM) | `false` (enabled) |
+| Variable                  | Description                   | Default            |
+| ------------------------- | ----------------------------- | ------------------ |
+| `LLM_MODEL_PATH`          | Default path to GGUF models   | None               |
+| `LLAMA_CUDA`              | Enable CUDA acceleration      | `false`            |
+| `LLAMA_CUDA_DEVICE_COUNT` | Number of CUDA devices        | Auto-detect        |
+| `LLAMA_CUDA_DEVICE`       | CUDA device ID                | `0`                |
+| `LLAMA_CUDA_NO_VMM`       | Disable unified memory (VMM)  | `false` (enabled)  |
 | `LLAMA_CUDA_VMM_MAX_SIZE` | Maximum VMM pool size (bytes) | `1073741824` (1GB) |
 
 ### Model Requirements
@@ -256,7 +261,9 @@ export LLAMA_LOG_FILE=/tmp/llama.log
 
 ## Claude Code Integration
 
-This package includes full **Model Context Protocol (MCP)** integration with Claude Code, enabling seamless access to neural processing capabilities directly within Claude Code's chat interface.
+This package includes full **Model Context Protocol (MCP)** integration with
+Claude Code, enabling seamless access to neural processing capabilities directly
+within Claude Code's chat interface.
 
 ### MCP Architecture
 
@@ -282,7 +289,8 @@ This package includes full **Model Context Protocol (MCP)** integration with Cla
 
 ### MCP Server Setup
 
-The MCP server is automatically configured when Claude Code detects the `.mcp.json` file in the project directory.
+The MCP server is automatically configured when Claude Code detects the
+`.mcp.json` file in the project directory.
 
 #### MCP Prerequisites
 
@@ -299,7 +307,10 @@ The `.mcp.json` file configures the neural processing MCP server:
   "mcpServers": {
     "neural-processing": {
       "command": "/home/deflex/praisonai_env/bin/python3",
-      "args": ["/home/deflex/noa-server/packages/llama.cpp/shims/http_bridge.py", "mcp"],
+      "args": [
+        "/home/deflex/noa-server/packages/llama.cpp/shims/http_bridge.py",
+        "mcp"
+      ],
       "env": {
         "LLAMA_CPP_DIR": "/home/deflex/noa-server/packages/llama.cpp",
         "LLM_MODEL_PATH": "/home/deflex/noa-server/packages/llama.cpp/models",
@@ -454,7 +465,8 @@ claude --print "Explain how CUDA acceleration works in llama.cpp"
 
 ### MCP Server Implementation
 
-The MCP server is implemented in `shims/http_bridge.py` with the `LlamaMCPServer` class:
+The MCP server is implemented in `shims/http_bridge.py` with the
+`LlamaMCPServer` class:
 
 - **Async Communication**: Uses stdio protocol for MCP communication
 - **Tool Registration**: Dynamically registers neural processing tools
@@ -463,7 +475,8 @@ The MCP server is implemented in `shims/http_bridge.py` with the `LlamaMCPServer
 
 ### Security & Permissions
 
-- **Permission Model**: Claude Code requires explicit permission for MCP tool access
+- **Permission Model**: Claude Code requires explicit permission for MCP tool
+  access
 - **Sandboxing**: Neural processing runs in isolated Python environment
 - **File Access**: Restricted to configured model directories
 - **Resource Limits**: Configurable timeouts and memory constraints
@@ -548,4 +561,5 @@ tail -f ~/.cache/claude-cli-nodejs/*/mcp-logs-*/
 
 ## License
 
-This implementation uses llama.cpp (MIT License) and follows the Claude Suite licensing terms.
+This implementation uses llama.cpp (MIT License) and follows the Claude Suite
+licensing terms.

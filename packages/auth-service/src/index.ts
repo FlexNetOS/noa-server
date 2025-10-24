@@ -25,8 +25,11 @@ export { SessionManager } from './session/SessionManager.js';
 
 // Middleware
 export {
-    createExpressAuthMiddleware,
-    createFastifyAuthPlugin, optionalAuth, requirePermissions, requireRoles
+  createExpressAuthMiddleware,
+  createFastifyAuthPlugin,
+  optionalAuth,
+  requirePermissions,
+  requireRoles,
 } from './middleware/AuthMiddleware.js';
 
 // Security

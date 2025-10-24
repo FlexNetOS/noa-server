@@ -5,7 +5,7 @@ permissions:
 on:
   push:
     tags:
-      - "v*.*.*"
+      - 'v*.*.*'
     branches:
       - b-*
       - main

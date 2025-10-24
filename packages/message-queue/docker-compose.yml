@@ -7,7 +7,7 @@ services:
     container_name: noa-message-queue-api
     restart: unless-stopped
     ports:
-      - "8081:8081"
+      - '8081:8081'
     environment:
       NODE_ENV: production
       REDIS_HOST: redis
@@ -22,14 +22,14 @@ services:
     container_name: noa-queue-redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - '6379:6379'
     command: redis-server --appendonly yes
     volumes:
       - redis-data:/data
     networks:
       - queue-network
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
 networks:
   queue-network:

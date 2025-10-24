@@ -2,11 +2,11 @@
 
 ## Overview
 
-**Severity**: SEV1-SEV2 (Critical to High)
-**Estimated Duration**: Variable (1-8 hours)
-**Prerequisites**: Security team access, audit logs access
+**Severity**: SEV1-SEV2 (Critical to High) **Estimated Duration**: Variable (1-8
+hours) **Prerequisites**: Security team access, audit logs access
 
-**IMPORTANT**: Do NOT take actions that might destroy evidence. Document everything.
+**IMPORTANT**: Do NOT take actions that might destroy evidence. Document
+everything.
 
 ## Incident Types
 
@@ -23,6 +23,7 @@
 **Priority**: Prevent further damage while preserving evidence
 
 **For Unauthorized Access**:
+
 ```bash
 # Revoke suspicious API keys
 kubectl exec -n production api-0 -- curl -X DELETE \
@@ -42,6 +43,7 @@ kubectl exec -n networking nginx-0 -- \
 ```
 
 **For Data Leak**:
+
 ```bash
 # Rotate all API keys immediately
 kubectl exec -n production api-0 -- curl -X POST \
@@ -57,6 +59,7 @@ kubectl set env deployment/api -n production \
 ```
 
 **For DDoS Attack**:
+
 ```bash
 # Enable rate limiting
 kubectl set env deployment/api -n production \
@@ -77,6 +80,7 @@ kubectl scale deployment api -n production --replicas=50
 **DO NOT MODIFY SYSTEMS BEFORE COLLECTING EVIDENCE**
 
 **Collect Logs**:
+
 ```bash
 # Export all recent logs
 kubectl logs -n production --all-containers --since=24h > /secure/incident-logs-$(date +%Y%m%d-%H%M%S).log
@@ -94,6 +98,7 @@ kubectl exec -n production nginx-0 -- cat /var/log/nginx/access.log > /secure/ac
 ```
 
 **Network Traffic Capture**:
+
 ```bash
 # Capture network traffic from suspicious pod
 kubectl exec -n production api-0 -- tcpdump -w /tmp/capture.pcap -i eth0 &
@@ -104,6 +109,7 @@ kubectl cp production/api-0:/tmp/capture.pcap /secure/network-capture-$(date +%Y
 ```
 
 **System State**:
+
 ```bash
 # Snapshot all pod configurations
 kubectl get all -n production -o yaml > /secure/pod-state-$(date +%Y%m%d-%H%M%S).yaml
@@ -118,6 +124,7 @@ kubectl exec -n production api-0 -- ps aux > /secure/processes-$(date +%Y%m%d-%H
 ### Step 3: Assess Impact (15-30 minutes)
 
 **Determine Scope**:
+
 ```bash
 # Check access patterns
 kubectl exec -n database postgres-0 -- psql -U admin -d noa_db -c \
@@ -146,6 +153,7 @@ kubectl exec -n database postgres-0 -- psql -U admin -d noa_db -c \
 ```
 
 **Identify Affected Users**:
+
 ```bash
 # Query affected user accounts
 kubectl exec -n database postgres-0 -- psql -U admin -d noa_db -c \
@@ -165,6 +173,7 @@ kubectl exec -n database postgres-0 -- psql -U admin -d noa_db -c \
 ### Step 4: Notify Stakeholders (IMMEDIATE)
 
 **Internal Notification**:
+
 ```
 TO: security@noaserver.com, legal@noaserver.com, cto@noaserver.com
 SUBJECT: [SECURITY INCIDENT] [SEV1] Security Breach Detected
@@ -194,6 +203,7 @@ INCIDENT COMMANDER: [name]
 ```
 
 **Customer Notification** (if data breach):
+
 ```
 SUBJECT: Important Security Notice
 
@@ -226,6 +236,7 @@ For questions, contact: security@noaserver.com
 ### Step 5: Remediate and Recover (1-4 hours)
 
 **Patch Vulnerabilities**:
+
 ```bash
 # Update all containers to latest security patches
 kubectl set image deployment/api -n production \
@@ -244,6 +255,7 @@ kubectl delete secret api-secrets
 ```
 
 **Reset Access**:
+
 ```bash
 # Force password reset for all users
 kubectl exec -n production api-0 -- curl -X POST \
@@ -262,6 +274,7 @@ kubectl create secret generic db-credentials --from-literal=password=new-secure-
 ```
 
 **Harden Security**:
+
 ```bash
 # Enable WAF rules
 kubectl apply -f waf-rules-strict.yaml
@@ -279,6 +292,7 @@ kubectl apply -f ids-deployment.yaml
 ### Step 6: Verify Security (30-60 minutes)
 
 **Security Audit**:
+
 ```bash
 # Run security scan
 kubectl exec -n security trivy-scanner -- \
@@ -298,6 +312,7 @@ kubectl exec -n security access-tester -- \
 ```
 
 **Penetration Testing**:
+
 ```bash
 # Run automated penetration test
 kubectl exec -n security zap-scanner -- \
@@ -311,6 +326,7 @@ kubectl exec -n security nikto -- \
 ## Communication Templates
 
 ### Initial Alert
+
 ```
 [SEV1 SECURITY INCIDENT] Unauthorized Access Detected
 Status: Contained
@@ -321,6 +337,7 @@ Next Update: 30 minutes
 ```
 
 ### Update
+
 ```
 [SEV1 UPDATE] Security Incident
 Status: Under Investigation
@@ -331,6 +348,7 @@ Next Update: 1 hour
 ```
 
 ### Resolution
+
 ```
 [SEV1 RESOLVED] Security Incident
 Status: Resolved
@@ -345,12 +363,14 @@ Next Steps: Full security audit, post-mortem, enhanced security measures
 ## Legal and Compliance
 
 **Notification Requirements**:
+
 - GDPR: 72 hours to notify supervisory authority
 - CCPA: "Without unreasonable delay"
 - HIPAA: 60 days to notify affected individuals
 - PCI DSS: Immediate notification to card brands
 
 **Required Documentation**:
+
 - [ ] Incident timeline
 - [ ] Evidence collection log
 - [ ] Impact assessment

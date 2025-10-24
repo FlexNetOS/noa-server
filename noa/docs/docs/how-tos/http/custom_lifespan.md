@@ -1,8 +1,15 @@
 # How to add custom lifespan events
 
-When deploying agents to LangGraph Platform, you often need to initialize resources like database connections when your server starts up, and ensure they're properly closed when it shuts down. Lifespan events let you hook into your server's startup and shutdown sequence to handle these critical setup and teardown tasks.
+When deploying agents to LangGraph Platform, you often need to initialize
+resources like database connections when your server starts up, and ensure
+they're properly closed when it shuts down. Lifespan events let you hook into
+your server's startup and shutdown sequence to handle these critical setup and
+teardown tasks.
 
-This works the same way as [adding custom routes](./custom_routes.md). You just need to provide your own [`Starlette`](https://www.starlette.io/applications/) app (including [`FastAPI`](https://fastapi.tiangolo.com/), [`FastHTML`](https://fastht.ml/) and other compatible apps).
+This works the same way as [adding custom routes](./custom_routes.md). You just
+need to provide your own [`Starlette`](https://www.starlette.io/applications/)
+app (including [`FastAPI`](https://fastapi.tiangolo.com/),
+[`FastHTML`](https://fastht.ml/) and other compatible apps).
 
 Below is an example using FastAPI.
 
@@ -12,7 +19,9 @@ Below is an example using FastAPI.
 
 ## Create app
 
-Starting from an **existing** LangGraph Platform application, add the following lifespan code to your `webapp.py` file. If you are starting from scratch, you can create a new app from a template using the CLI.
+Starting from an **existing** LangGraph Platform application, add the following
+lifespan code to your `webapp.py` file. If you are starting from scratch, you
+can create a new app from a template using the CLI.
 
 ```bash
 langgraph new --template=new-langgraph-project-python my_new_project
@@ -47,7 +56,8 @@ app = FastAPI(lifespan=lifespan)
 
 ## Configure `langgraph.json`
 
-Add the following to your `langgraph.json` configuration file. Make sure the path points to the `webapp.py` file you created above.
+Add the following to your `langgraph.json` configuration file. Make sure the
+path points to the `webapp.py` file you created above.
 
 ```json
 {
@@ -71,12 +81,17 @@ Test the server out locally:
 langgraph dev --no-browser
 ```
 
-You should see your startup message printed when the server starts, and your cleanup message when you stop it with `Ctrl+C`.
+You should see your startup message printed when the server starts, and your
+cleanup message when you stop it with `Ctrl+C`.
 
 ## Deploying
 
-You can deploy your app as-is to LangGraph Platform or to your self-hosted platform.
+You can deploy your app as-is to LangGraph Platform or to your self-hosted
+platform.
 
 ## Next steps
 
-Now that you've added lifespan events to your deployment, you can use similar techniques to add [custom routes](./custom_routes.md) or [custom middleware](./custom_middleware.md) to further customize your server's behavior.
+Now that you've added lifespan events to your deployment, you can use similar
+techniques to add [custom routes](./custom_routes.md) or
+[custom middleware](./custom_middleware.md) to further customize your server's
+behavior.

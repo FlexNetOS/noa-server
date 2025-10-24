@@ -20,7 +20,6 @@ try {
   // Test getAuthUrl
   const authUrl = await samlProvider.getAuthUrl();
   console.log('✅ Auth URL generated:', authUrl);
-
 } catch (error) {
   console.error('❌ Error:', error);
   process.exit(1);

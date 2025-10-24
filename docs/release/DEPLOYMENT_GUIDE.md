@@ -13,7 +13,9 @@ Complete guide for zero-downtime deployments using the blue-green strategy.
 
 ## Overview
 
-Blue-green deployment maintains two identical production environments (blue and green). Only one serves production traffic at a time, allowing zero-downtime deployments.
+Blue-green deployment maintains two identical production environments (blue and
+green). Only one serves production traffic at a time, allowing zero-downtime
+deployments.
 
 ### Benefits
 
@@ -170,6 +172,7 @@ Gradual migration with validation at each stage:
 ```
 
 **Timeline**:
+
 - 0s: Deploy to target color
 - 30s: 10% traffic to new version
 - 60s: Monitor metrics
@@ -188,6 +191,7 @@ Faster migration for lower-risk changes:
 ```
 
 **Timeline**:
+
 - 0s: Deploy to target color
 - 30s: 50% traffic to new version
 - 60s: Monitor metrics
@@ -204,6 +208,7 @@ Final validation before complete switch:
 ```
 
 **Timeline**:
+
 - 0s: Deploy to target color
 - 30s: 90% traffic to new version
 - 60s: Monitor metrics
@@ -272,6 +277,7 @@ kubectl logs -n production -l color=green --tail=1000 | \
 ### Automatic Rollback
 
 Enabled by default, triggers on:
+
 - Health check failures
 - High error rates (>10 errors in 100 logs)
 - Smoke test failures
@@ -306,11 +312,13 @@ See [ROLLBACK_GUIDE.md](./ROLLBACK_GUIDE.md) for detailed procedures.
 ### Pre-deployment
 
 1. **Test in staging first**
+
    ```bash
    ./scripts/release/deploy-blue-green.sh staging v1.0.0 canary-10
    ```
 
 2. **Verify smoke tests locally**
+
    ```bash
    ./scripts/release/smoke-tests.sh http://localhost:8080
    ```
@@ -341,6 +349,7 @@ See [ROLLBACK_GUIDE.md](./ROLLBACK_GUIDE.md) for detailed procedures.
 ### Approval Process
 
 Production deployments require:
+
 - 2 approvals from ops-team or sre-team
 - Successful staging deployment
 - Business hours only (unless emergency)
@@ -354,6 +363,7 @@ Production deployments require:
 ### Communication
 
 Before production deployment:
+
 1. Notify in #deployments channel
 2. Update deployment calendar
 3. Prepare rollback plan
@@ -429,8 +439,8 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "9090"
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '9090'
 ```
 
 ### Database Migrations

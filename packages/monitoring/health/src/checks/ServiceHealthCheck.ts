@@ -33,7 +33,7 @@ export class ServiceHealthCheck extends BaseHealthCheck {
       enabled: true,
       critical: false,
       checkTypes: ['readiness'],
-      retries: 1
+      retries: 1,
     });
 
     this.url = options.url;
@@ -54,7 +54,7 @@ export class ServiceHealthCheck extends BaseHealthCheck {
       const response = await fetch(this.url, {
         method: this.method,
         headers: this.headers,
-        signal: controller.signal
+        signal: controller.signal,
       });
 
       clearTimeout(timeoutId);
@@ -75,23 +75,17 @@ export class ServiceHealthCheck extends BaseHealthCheck {
         responseTime,
         statusCode: response.status,
         lastSuccess: this.lastSuccess,
-        consecutiveFailures: this.consecutiveFailures
+        consecutiveFailures: this.consecutiveFailures,
       };
 
       // Check response time
       if (responseTime > this.warningResponseTime) {
-        return this.createDegradedResult(
-          responseTime,
-          `Slow response time: ${responseTime}ms`,
-          { metrics }
-        );
+        return this.createDegradedResult(responseTime, `Slow response time: ${responseTime}ms`, {
+          metrics,
+        });
       }
 
-      return this.createSuccessResult(
-        responseTime,
-        'Service responding normally',
-        { metrics }
-      );
+      return this.createSuccessResult(responseTime, 'Service responding normally', { metrics });
     } catch (error) {
       this.consecutiveFailures++;
 
@@ -99,7 +93,7 @@ export class ServiceHealthCheck extends BaseHealthCheck {
         url: this.url,
         responseTime: Date.now() - startTime,
         lastSuccess: this.lastSuccess || undefined,
-        consecutiveFailures: this.consecutiveFailures
+        consecutiveFailures: this.consecutiveFailures,
       };
 
       // Check if consecutive failures exceed threshold
@@ -134,7 +128,7 @@ export class ServiceHealthCheck extends BaseHealthCheck {
       url: this.url,
       responseTime: 0,
       lastSuccess: this.lastSuccess || undefined,
-      consecutiveFailures: this.consecutiveFailures
+      consecutiveFailures: this.consecutiveFailures,
     };
   }
 }

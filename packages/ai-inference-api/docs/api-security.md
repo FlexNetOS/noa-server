@@ -1,6 +1,7 @@
 # API Security Documentation
 
-Comprehensive security documentation for the AI Inference API, covering authentication, authorization, and security best practices.
+Comprehensive security documentation for the AI Inference API, covering
+authentication, authorization, and security best practices.
 
 ## Table of Contents
 
@@ -19,7 +20,8 @@ The AI Inference API supports multiple authentication methods:
 
 ### 1. JWT Token Authentication (Recommended)
 
-JWT (JSON Web Tokens) provide stateless authentication using RS256 or HS256 algorithms.
+JWT (JSON Web Tokens) provide stateless authentication using RS256 or HS256
+algorithms.
 
 #### Login Flow
 
@@ -183,7 +185,7 @@ The API uses Role-Based Access Control (RBAC) with three roles:
 ### Permission Matrix
 
 | Resource      | Admin | User | Guest |
-|---------------|-------|------|-------|
+| ------------- | ----- | ---- | ----- |
 | Models (read) | ✅    | ✅   | ✅    |
 | Inference     | ✅    | ✅   | ❌    |
 | Embeddings    | ✅    | ✅   | ❌    |
@@ -197,9 +199,10 @@ Multi-tenancy ensures data isolation between organizations:
 
 ```javascript
 // Tenant validation middleware
-app.use('/api/v1/models/:id',
+app.use(
+  '/api/v1/models/:id',
   authenticate,
-  validateTenantAccess(req => req.params.id)
+  validateTenantAccess((req) => req.params.id)
 );
 ```
 
@@ -271,29 +274,35 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 ```typescript
 const chatCompletionSchema = z.object({
   body: z.object({
-    messages: z.array(z.object({
-      role: z.enum(['system', 'user', 'assistant']),
-      content: z.string().min(1).max(50000)
-    })).min(1),
+    messages: z
+      .array(
+        z.object({
+          role: z.enum(['system', 'user', 'assistant']),
+          content: z.string().min(1).max(50000),
+        })
+      )
+      .min(1),
     model: z.string().regex(/^[a-zA-Z0-9\-_.]+$/),
-    config: z.object({
-      temperature: z.number().min(0).max(2).optional(),
-      max_tokens: z.number().int().positive().max(100000).optional()
-    }).optional()
-  })
+    config: z
+      .object({
+        temperature: z.number().min(0).max(2).optional(),
+        max_tokens: z.number().int().positive().max(100000).optional(),
+      })
+      .optional(),
+  }),
 });
 ```
 
 ### Attack Prevention
 
-| Attack Type          | Prevention Method                    |
-|----------------------|--------------------------------------|
-| XSS                  | HTML entity encoding, CSP            |
-| SQL Injection        | Parameterized queries, input validation |
-| Command Injection    | Character whitelist, escape sequences |
-| Path Traversal       | Path normalization, whitelist        |
-| CSRF                 | SameSite cookies, CSRF tokens        |
-| SSRF                 | URL whitelist, internal IP blocking  |
+| Attack Type       | Prevention Method                       |
+| ----------------- | --------------------------------------- |
+| XSS               | HTML entity encoding, CSP               |
+| SQL Injection     | Parameterized queries, input validation |
+| Command Injection | Character whitelist, escape sequences   |
+| Path Traversal    | Path normalization, whitelist           |
+| CSRF              | SameSite cookies, CSRF tokens           |
+| SSRF              | URL whitelist, internal IP blocking     |
 
 ## Audit Logging
 
@@ -408,7 +417,7 @@ Cannot reuse last 5 passwords
 ### 3. Rate Limiting
 
 | Role  | Requests/Minute |
-|-------|-----------------|
+| ----- | --------------- |
 | Admin | 1000            |
 | User  | 100             |
 | Guest | 10              |
@@ -431,6 +440,7 @@ if (process.env.NODE_ENV === 'production' && req.protocol !== 'https') {
 **Cause**: Expired or malformed JWT token
 
 **Solution**:
+
 ```bash
 # Refresh token
 POST /api/v1/auth/refresh

@@ -1,11 +1,11 @@
-import * as React from "react";
-import { Outlet } from "react-router-dom";
+import * as React from 'react';
+import { Outlet } from 'react-router-dom';
 
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { twMerge } from "tailwind-merge";
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { twMerge } from 'tailwind-merge';
 
-import { toast } from "react-hot-toast";
-import { isDev } from "@/utils";
+import { toast } from 'react-hot-toast';
+import { isDev } from '@/utils';
 
 interface authResponse {
   loginURL: string;
@@ -33,20 +33,20 @@ function getState() {
   }
 
   return {
-    domain: "example.com",
+    domain: 'example.com',
 
     identityProviders: [
       {
-        uid: "github",
-        displayName: "GitHub",
+        uid: 'github',
+        displayName: 'GitHub',
       },
       {
-        uid: "gitlab-1",
-        displayName: "Gitlab",
+        uid: 'gitlab-1',
+        displayName: 'Gitlab',
       },
       {
-        uid: "gitlab-2",
-        displayName: "Gitlab",
+        uid: 'gitlab-2',
+        displayName: 'Gitlab',
       },
     ],
   } as State;
@@ -62,12 +62,12 @@ const Page = () => {
 
   React.useEffect(() => {
     setReqCommon({
-      query: searchParams.toString() ?? "",
+      query: searchParams.toString() ?? '',
       userAgent: window.navigator.userAgent,
     });
 
-    if (searchParams.has("error")) {
-      toast.error(searchParams.get("error"));
+    if (searchParams.has('error')) {
+      toast.error(searchParams.get('error'));
     }
     searchParams.forEach((val, key, parent) => {
       searchParams.delete(key);
@@ -77,10 +77,10 @@ const Page = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-center mt-4 mb-3">
-        <div className="w-40 h-40 md:w-60 md:h-60 rounded-[50%] bg-black shadow-2xl flex items-center justify-center transition-all duration-300 hover:bg-zinc-900 hover:shadow-xl">
+      <div className="mb-3 mt-4 flex items-center justify-center">
+        <div className="flex h-40 w-40 items-center justify-center rounded-[50%] bg-black shadow-2xl transition-all duration-300 hover:bg-zinc-900 hover:shadow-xl md:h-60 md:w-60">
           <svg
-            className="w-20 h-20 md:w-40 md:h-40"
+            className="h-20 w-20 md:h-40 md:w-40"
             width="256"
             height="256"
             viewBox="0 0 256 256"
@@ -124,18 +124,18 @@ const Page = () => {
       </div>
 
       {(!state.identityProviders || state.identityProviders.length < 1) && (
-        <div className="container mx-auto mt-2 p-2 md:p-8 w-full max-w-lg">
-          <h2 className="font-bold text-2xl text-slate-700 flex items-center justify-center mb-4 text-center">
+        <div className="container mx-auto mt-2 w-full max-w-lg p-2 md:p-8">
+          <h2 className="mb-4 flex items-center justify-center text-center text-2xl font-bold text-slate-700">
             No Available Identity Providers
           </h2>
         </div>
       )}
       {state.identityProviders && state.identityProviders.length > 0 && (
-        <div className="container mx-auto mt-2 p-2 md:p-4 w-full max-w-lg">
+        <div className="container mx-auto mt-2 w-full max-w-lg p-2 md:p-4">
           <div
-            className="font-bold text-xl mb-4 text-zinc-700 text-center"
+            className="mb-4 text-center text-xl font-bold text-zinc-700"
             style={{
-              textShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
+              textShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
             }}
           >
             <span>Login to</span>
@@ -150,20 +150,20 @@ const Page = () => {
               return (
                 <button
                   className={twMerge(
-                    "w-full px-2 py-4 md:py-6 font-bold transition-all duration-500 mb-4",
-                    "shadow-2xl rounded-lg cursor-pointer",
-                    "bg-[#242323] hover:bg-black text-white text-lg",
-                    loginActive ? "!bg-[#777] shadow-none" : undefined
+                    'mb-4 w-full px-2 py-4 font-bold transition-all duration-500 md:py-6',
+                    'cursor-pointer rounded-lg shadow-2xl',
+                    'bg-[#242323] text-lg text-white hover:bg-black',
+                    loginActive ? '!bg-[#777] shadow-none' : undefined
                   )}
                   disabled={loginActive}
                   key={c.uid}
                   onClick={() => {
                     setLoginActive(true);
-                    fetch("/begin", {
-                      method: "POST",
+                    fetch('/begin', {
+                      method: 'POST',
                       headers: {
-                        "Content-Type": "application/json",
-                        Accept: "application/json",
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
                       },
                       body: JSON.stringify({
                         uid: c.uid,
@@ -176,10 +176,8 @@ const Page = () => {
                       });
                   }}
                 >
-                  <div className="w-full flex flex-row items-center justify-center">
-                    <span className="flex-1 flex items-center justify-center">
-                      {c.displayName}
-                    </span>
+                  <div className="flex w-full flex-row items-center justify-center">
+                    <span className="flex flex-1 items-center justify-center">{c.displayName}</span>
                   </div>
                 </button>
               );

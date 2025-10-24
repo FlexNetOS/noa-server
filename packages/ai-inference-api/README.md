@@ -1,10 +1,12 @@
 # AI Inference API - Secure REST API
 
-Production-ready REST API for AI model inference with comprehensive security features.
+Production-ready REST API for AI model inference with comprehensive security
+features.
 
 ## Features
 
 ### Security
+
 - **Multi-Method Authentication**
   - JWT tokens (RS256/HS256)
   - API keys with scoped permissions
@@ -38,6 +40,7 @@ Production-ready REST API for AI model inference with comprehensive security fea
   - Comprehensive security event tracking
 
 ### Performance
+
 - **Advanced Rate Limiting**
   - Sliding window algorithm
   - Per-user and per-endpoint limits
@@ -67,10 +70,12 @@ nano .env
 ### Environment Variables
 
 Required:
+
 - `JWT_ACCESS_SECRET` - Secret for access tokens (min 32 chars)
 - `JWT_REFRESH_SECRET` - Secret for refresh tokens (min 32 chars)
 
 Optional:
+
 - `REDIS_URL` - Redis URL for distributed rate limiting
 - `JWT_PRIVATE_KEY` - Private key for RS256 algorithm
 - `JWT_PUBLIC_KEY` - Public key for RS256 algorithm
@@ -157,28 +162,28 @@ curl -X POST http://localhost:3001/api/v1/inference/chat \
 
 ### Authentication
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| POST | `/api/v1/auth/login` | Login with credentials | No |
-| POST | `/api/v1/auth/refresh` | Refresh access token | No |
-| POST | `/api/v1/auth/logout` | Logout and invalidate session | Yes |
-| POST | `/api/v1/auth/api-keys` | Create API key | Yes (User+) |
-| GET | `/api/v1/auth/me` | Get current user info | Yes |
+| Method | Endpoint                | Description                   | Auth Required |
+| ------ | ----------------------- | ----------------------------- | ------------- |
+| POST   | `/api/v1/auth/login`    | Login with credentials        | No            |
+| POST   | `/api/v1/auth/refresh`  | Refresh access token          | No            |
+| POST   | `/api/v1/auth/logout`   | Logout and invalidate session | Yes           |
+| POST   | `/api/v1/auth/api-keys` | Create API key                | Yes (User+)   |
+| GET    | `/api/v1/auth/me`       | Get current user info         | Yes           |
 
 ### Inference
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| POST | `/api/v1/inference/chat` | Chat completion | Yes |
-| POST | `/api/v1/inference/chat/stream` | Streaming chat | Yes |
-| POST | `/api/v1/inference/embeddings` | Generate embeddings | Yes |
+| Method | Endpoint                        | Description         | Auth Required |
+| ------ | ------------------------------- | ------------------- | ------------- |
+| POST   | `/api/v1/inference/chat`        | Chat completion     | Yes           |
+| POST   | `/api/v1/inference/chat/stream` | Streaming chat      | Yes           |
+| POST   | `/api/v1/inference/embeddings`  | Generate embeddings | Yes           |
 
 ### Models
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| GET | `/api/v1/models` | List available models | Optional |
-| GET | `/api/v1/models/:id` | Get model details | Optional |
+| Method | Endpoint             | Description           | Auth Required |
+| ------ | -------------------- | --------------------- | ------------- |
+| GET    | `/api/v1/models`     | List available models | Optional      |
+| GET    | `/api/v1/models/:id` | Get model details     | Optional      |
 
 ## Security Best Practices
 
@@ -200,6 +205,7 @@ if (process.env.NODE_ENV === 'production' && req.protocol !== 'https') {
 ### 3. Use Strong Passwords
 
 Password requirements:
+
 - Minimum 12 characters
 - At least 1 uppercase letter
 - At least 1 lowercase letter
@@ -209,6 +215,7 @@ Password requirements:
 ### 4. Implement Rate Limiting
 
 Default limits per role:
+
 - Admin: 1000 requests/minute
 - User: 100 requests/minute
 - Guest: 10 requests/minute
@@ -216,6 +223,7 @@ Default limits per role:
 ### 5. Monitor Audit Logs
 
 Check audit logs regularly for:
+
 - Failed authentication attempts
 - Unauthorized access attempts
 - Unusual API key usage patterns
@@ -240,6 +248,7 @@ pnpm test:watch
 Current coverage: 90%+
 
 Test categories:
+
 - JWT authentication (8 tests)
 - Password hashing (4 tests)
 - API key management (4 tests)
@@ -252,8 +261,10 @@ Test categories:
 
 ## Documentation
 
-- [API Security Documentation](./docs/api-security.md) - Comprehensive security guide
-- [Swagger/OpenAPI](http://localhost:3001/api-docs) - Interactive API documentation
+- [API Security Documentation](./docs/api-security.md) - Comprehensive security
+  guide
+- [Swagger/OpenAPI](http://localhost:3001/api-docs) - Interactive API
+  documentation
 
 ## Architecture
 
@@ -323,7 +334,8 @@ Test categories:
 
 ## Troubleshooting
 
-See [API Security Documentation](./docs/api-security.md#troubleshooting) for common issues and solutions.
+See [API Security Documentation](./docs/api-security.md#troubleshooting) for
+common issues and solutions.
 
 ## Contributing
 

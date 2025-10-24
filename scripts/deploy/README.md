@@ -1,6 +1,7 @@
 # Deployment Scripts
 
-Comprehensive deployment automation for NOA Server with safety checks, rollback capabilities, and monitoring integration.
+Comprehensive deployment automation for NOA Server with safety checks, rollback
+capabilities, and monitoring integration.
 
 ## Quick Start
 
@@ -36,7 +37,8 @@ Comprehensive deployment automation for NOA Server with safety checks, rollback 
 
 - **utils/colors.sh** - Terminal color definitions
 - **utils/logging.sh** - Logging utilities
-- **utils/notifications.sh** - Multi-channel notifications (Slack, Email, Discord)
+- **utils/notifications.sh** - Multi-channel notifications (Slack, Email,
+  Discord)
 
 ## Deployment Strategies
 
@@ -57,6 +59,7 @@ Zero-downtime deployment using parallel environments.
 ```
 
 **Features:**
+
 - Zero downtime
 - Instant rollback
 - Traffic monitoring
@@ -71,6 +74,7 @@ Gradual rollout with automatic rollback.
 ```
 
 **Traffic phases:**
+
 - 10% → 25% → 50% → 100%
 - 5 minutes per phase
 - Automatic rollback on anomalies
@@ -87,6 +91,7 @@ cp .env.production.example ../../.env.production
 ```
 
 Edit with your configuration:
+
 - Database URLs
 - Redis URLs
 - API keys
@@ -95,6 +100,7 @@ Edit with your configuration:
 ### Deployment Configuration
 
 Edit `configs/deploy-config.json` for:
+
 - Approval requirements
 - Error thresholds
 - Health check retries
@@ -132,6 +138,7 @@ Post-deployment validation:
 ### Automatic Rollback
 
 Triggered on:
+
 - Health check failures
 - High error rate (>5%)
 - Migration failures
@@ -174,21 +181,25 @@ ls -lt backups/
 Configure notification channels in environment files:
 
 **Slack:**
+
 ```bash
 SLACK_WEBHOOK_URL=https://hooks.slack.com/services/...
 ```
 
 **Email:**
+
 ```bash
 NOTIFICATION_EMAIL=devops@example.com
 ```
 
 **Discord:**
+
 ```bash
 DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
 ```
 
 Notifications sent on:
+
 - Deployment start
 - Deployment success
 - Deployment failure
@@ -227,11 +238,13 @@ deploy/
 ### Deployment Fails
 
 Check logs:
+
 ```bash
 tail -f logs/deploy-*.log
 ```
 
 Review pre-checks:
+
 ```bash
 ./pre-deploy-checks.sh staging
 ```
@@ -239,11 +252,13 @@ Review pre-checks:
 ### Health Checks Fail
 
 Run health checks manually:
+
 ```bash
 ./health-check.sh production
 ```
 
 Check application logs:
+
 ```bash
 pm2 logs noa-server
 # or
@@ -253,6 +268,7 @@ journalctl -u noa-server -f
 ### Rollback Needed
 
 Immediate rollback:
+
 ```bash
 ./rollback.sh production auto
 ```
@@ -303,6 +319,7 @@ Full documentation: `/docs/deployment-guide.md`
 ## Support
 
 For issues or questions:
+
 - Review logs in `/scripts/deploy/logs/`
 - Check backups in `/scripts/deploy/backups/`
 - Consult `/docs/deployment-guide.md`

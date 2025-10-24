@@ -26,19 +26,21 @@ const server = createServer(app);
 app.use(helmet());
 
 // CORS configuration
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || '*',
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || '*',
+    credentials: true,
+  })
+);
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // Monitoring middleware (must be early in chain)
-app.use(requestLogger);        // 1. Log all requests with correlation IDs
-app.use(performanceMonitor);   // 2. Track performance metrics
-app.use(metricsCollector);     // 3. Collect request/response metrics
+app.use(requestLogger); // 1. Log all requests with correlation IDs
+app.use(performanceMonitor); // 2. Track performance metrics
+app.use(metricsCollector); // 3. Collect request/response metrics
 
 // Request logging (legacy, kept for backward compatibility)
 app.use(logger);

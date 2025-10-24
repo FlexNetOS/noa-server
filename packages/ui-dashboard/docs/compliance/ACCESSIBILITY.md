@@ -2,7 +2,9 @@
 
 ## Overview
 
-This document describes the accessibility features and compliance status of the Noa Server UI Dashboard. We are committed to ensuring our platform is accessible to all users, including those using assistive technologies.
+This document describes the accessibility features and compliance status of the
+Noa Server UI Dashboard. We are committed to ensuring our platform is accessible
+to all users, including those using assistive technologies.
 
 ## Compliance Status
 
@@ -36,6 +38,7 @@ All interactive elements are fully keyboard accessible:
 - **Home/End**: Jump to first/last items in lists
 
 **Skip Links** are provided to bypass navigation:
+
 - Skip to main content
 - Skip to navigation
 - Skip to search
@@ -52,6 +55,7 @@ Compatible with major screen readers:
 - **Narrator** (Windows)
 
 **Features**:
+
 - Semantic HTML for proper document structure
 - ARIA labels and descriptions for complex components
 - Live regions for dynamic content updates
@@ -214,6 +218,7 @@ Component-specific shortcuts are documented in context.
 ### Screen Readers
 
 Full support for:
+
 - Semantic navigation (landmarks, headings)
 - Form filling and validation
 - Table navigation
@@ -223,6 +228,7 @@ Full support for:
 ### Keyboard Navigation
 
 All functionality available via keyboard:
+
 - Navigation through all interactive elements
 - Form submission and validation
 - Modal and menu interactions
@@ -232,6 +238,7 @@ All functionality available via keyboard:
 ### Voice Control
 
 Compatible with voice control software:
+
 - Clear labels for all controls
 - Distinct button names
 - Voice commands for navigation
@@ -241,7 +248,8 @@ Compatible with voice control software:
 If you encounter any accessibility issues:
 
 1. **Email**: accessibility@noa-server.io
-2. **GitHub**: [Create an issue](https://github.com/noa-server/ui-dashboard/issues)
+2. **GitHub**:
+   [Create an issue](https://github.com/noa-server/ui-dashboard/issues)
 3. **Support**: Contact our support team
 
 We aim to respond to accessibility issues within 24 hours.

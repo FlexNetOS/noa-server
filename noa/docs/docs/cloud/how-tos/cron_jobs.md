@@ -1,6 +1,13 @@
 # Use cron jobs
 
-Sometimes you don't want to run your graph based on user interaction, but rather you would like to schedule your graph to run on a schedule - for example if you wish for your graph to compose and send out a weekly email of to-dos for your team. LangGraph Platform allows you to do this without having to write your own script by using the `Crons` client. To schedule a graph job, you need to pass a [cron expression](https://crontab.cronhub.io/) to inform the client when you want to run the graph. `Cron` jobs are run in the background and do not interfere with normal invocations of the graph.
+Sometimes you don't want to run your graph based on user interaction, but rather
+you would like to schedule your graph to run on a schedule - for example if you
+wish for your graph to compose and send out a weekly email of to-dos for your
+team. LangGraph Platform allows you to do this without having to write your own
+script by using the `Crons` client. To schedule a graph job, you need to pass a
+[cron expression](https://crontab.cronhub.io/) to inform the client when you
+want to run the graph. `Cron` jobs are run in the background and do not
+interfere with normal invocations of the graph.
 
 ## Setup
 
@@ -51,19 +58,18 @@ First, let's set up our SDK client, assistant, and thread:
 Output:
 
     {
-        'thread_id': '9dde5490-2b67-47c8-aa14-4bfec88af217', 
-        'created_at': '2024-08-30T23:07:38.242730+00:00', 
-        'updated_at': '2024-08-30T23:07:38.242730+00:00', 
-        'metadata': {}, 
-        'status': 'idle', 
-        'config': {}, 
+        'thread_id': '9dde5490-2b67-47c8-aa14-4bfec88af217',
+        'created_at': '2024-08-30T23:07:38.242730+00:00',
+        'updated_at': '2024-08-30T23:07:38.242730+00:00',
+        'metadata': {},
+        'status': 'idle',
+        'config': {},
         'values': None
     }
 
-## Cron job on a thread 
+## Cron job on a thread
 
 To create a cron job associated with a specific thread, you can write:
-
 
 === "Python"
 
@@ -102,7 +108,9 @@ To create a cron job associated with a specific thread, you can write:
         }'
     ```
 
-Note that it is **very** important to delete `Cron` jobs that are no longer useful. Otherwise you could rack up unwanted API charges to the LLM! You can delete a `Cron` job using the following code:
+Note that it is **very** important to delete `Cron` jobs that are no longer
+useful. Otherwise you could rack up unwanted API charges to the LLM! You can
+delete a `Cron` job using the following code:
 
 === "Python"
 

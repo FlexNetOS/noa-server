@@ -187,7 +187,9 @@ export function requirePermissions(resource: string, action: string) {
     }
 
     const permissions = user.permissions || [];
-    const hasPermission = permissions.some((p: Permission) => p.resource === resource && p.action === action);
+    const hasPermission = permissions.some(
+      (p: Permission) => p.resource === resource && p.action === action
+    );
 
     if (!hasPermission) {
       res.status(403).json({

@@ -1,19 +1,27 @@
 # Multimodal
 
-llama.cpp supports multimodal input via `libmtmd`. Currently, there are 2 tools support this feature:
-- [llama-mtmd-cli](../tools/mtmd/README.md)
-- [llama-server](../tools/server/README.md) via OpenAI-compatible `/chat/completions` API
+llama.cpp supports multimodal input via `libmtmd`. Currently, there are 2 tools
+support this feature:
 
-Currently, we support **image** and **audio** input. Audio is highly experimental and may have reduced quality.
+- [llama-mtmd-cli](../tools/mtmd/README.md)
+- [llama-server](../tools/server/README.md) via OpenAI-compatible
+  `/chat/completions` API
+
+Currently, we support **image** and **audio** input. Audio is highly
+experimental and may have reduced quality.
 
 To enable it, you can use one of the 2 methods below:
 
-- Use `-hf` option with a supported model (see a list of pre-quantized model below)
-    - To load a model using `-hf` while disabling multimodal, use `--no-mmproj`
-    - To load a model using `-hf` while using a custom mmproj file, use `--mmproj local_file.gguf`
-- Use `-m model.gguf` option with `--mmproj file.gguf` to specify text and multimodal projector respectively
+- Use `-hf` option with a supported model (see a list of pre-quantized model
+  below)
+  - To load a model using `-hf` while disabling multimodal, use `--no-mmproj`
+  - To load a model using `-hf` while using a custom mmproj file, use
+    `--mmproj local_file.gguf`
+- Use `-m model.gguf` option with `--mmproj file.gguf` to specify text and
+  multimodal projector respectively
 
-By default, multimodal projector will be offloaded to GPU. To disable this, add `--no-mmproj-offload`
+By default, multimodal projector will be offloaded to GPU. To disable this, add
+`--no-mmproj-offload`
 
 For example:
 
@@ -33,9 +41,12 @@ llama-server -hf ggml-org/gemma-3-4b-it-GGUF --no-mmproj-offload
 
 ## Pre-quantized models
 
-These are ready-to-use models, most of them come with `Q4_K_M` quantization by default. They can be found at the Hugging Face page of the ggml-org: https://huggingface.co/collections/ggml-org/multimodal-ggufs-68244e01ff1f39e5bebeeedc
+These are ready-to-use models, most of them come with `Q4_K_M` quantization by
+default. They can be found at the Hugging Face page of the ggml-org:
+https://huggingface.co/collections/ggml-org/multimodal-ggufs-68244e01ff1f39e5bebeeedc
 
-Replaces the `(tool_name)` with the name of binary you want to use. For example, `llama-mtmd-cli` or `llama-server`
+Replaces the `(tool_name)` with the name of binary you want to use. For example,
+`llama-mtmd-cli` or `llama-server`
 
 NOTE: some models may require large context window, for example: `-c 8192`
 
@@ -113,4 +124,5 @@ NOTE: some models may require large context window, for example: `-c 8192`
 
 ## Finding more models:
 
-GGUF models on Huggingface with vision capabilities can be found here: https://huggingface.co/models?pipeline_tag=image-text-to-text&sort=trending&search=gguf
+GGUF models on Huggingface with vision capabilities can be found here:
+https://huggingface.co/models?pipeline_tag=image-text-to-text&sort=trending&search=gguf

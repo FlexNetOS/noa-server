@@ -1,10 +1,19 @@
 # Add memory
 
-The chatbot can now [use tools](./2-add-tools.md) to answer user questions, but it does not remember the context of previous interactions. This limits its ability to have coherent, multi-turn conversations.
+The chatbot can now [use tools](./2-add-tools.md) to answer user questions, but
+it does not remember the context of previous interactions. This limits its
+ability to have coherent, multi-turn conversations.
 
-LangGraph solves this problem through **persistent checkpointing**. If you provide a `checkpointer` when compiling the graph and a `thread_id` when calling your graph, LangGraph automatically saves the state after each step. When you invoke the graph again using the same `thread_id`, the graph loads its saved state, allowing the chatbot to pick up where it left off.
+LangGraph solves this problem through **persistent checkpointing**. If you
+provide a `checkpointer` when compiling the graph and a `thread_id` when calling
+your graph, LangGraph automatically saves the state after each step. When you
+invoke the graph again using the same `thread_id`, the graph loads its saved
+state, allowing the chatbot to pick up where it left off.
 
-We will see later that **checkpointing** is _much_ more powerful than simple chat memory - it lets you save and resume complex state at any time for error recovery, human-in-the-loop workflows, time travel interactions, and more. But first, let's add checkpointing to enable multi-turn conversations.
+We will see later that **checkpointing** is _much_ more powerful than simple
+chat memory - it lets you save and resume complex state at any time for error
+recovery, human-in-the-loop workflows, time travel interactions, and more. But
+first, let's add checkpointing to enable multi-turn conversations.
 
 !!! note
 
@@ -27,18 +36,21 @@ memory = InMemorySaver()
 :::js
 
 ```typescript
-import { MemorySaver } from "@langchain/langgraph";
+import { MemorySaver } from '@langchain/langgraph';
 
 const memory = new MemorySaver();
 ```
 
 :::
 
-This is in-memory checkpointer, which is convenient for the tutorial. However, in a production application, you would likely change this to use `SqliteSaver` or `PostgresSaver` and connect a database.
+This is in-memory checkpointer, which is convenient for the tutorial. However,
+in a production application, you would likely change this to use `SqliteSaver`
+or `PostgresSaver` and connect a database.
 
 ## 2. Compile the graph
 
-Compile the graph with the provided checkpointer, which will checkpoint the `State` as the graph works through each node:
+Compile the graph with the provided checkpointer, which will checkpoint the
+`State` as the graph works through each node:
 
 :::python
 
@@ -52,11 +64,11 @@ graph = graph_builder.compile(checkpointer=memory)
 
 ```typescript hl_lines="7"
 const graph = new StateGraph(State)
-  .addNode("chatbot", chatbot)
-  .addNode("tools", new ToolNode(tools))
-  .addConditionalEdges("chatbot", toolsCondition, ["tools", END])
-  .addEdge("tools", "chatbot")
-  .addEdge(START, "chatbot")
+  .addNode('chatbot', chatbot)
+  .addNode('tools', new ToolNode(tools))
+  .addConditionalEdges('chatbot', toolsCondition, ['tools', END])
+  .addEdge('tools', 'chatbot')
+  .addEdge(START, 'chatbot')
   .compile({ checkpointer: memory });
 ```
 
@@ -79,7 +91,7 @@ Now you can interact with your bot!
     :::js
 
     ```typescript
-    const config = { configurable: { thread_id: "1" } };
+    const config = { configurable: { thread_id: '1' } };
     ```
 
     :::
@@ -119,11 +131,11 @@ Now you can interact with your bot!
     :::js
 
     ```typescript
-    const userInput = "Hi there! My name is Will.";
+    const userInput = 'Hi there! My name is Will.';
 
     const events = await graph.stream(
-      { messages: [{ type: "human", content: userInput }] },
-      { configurable: { thread_id: "1" }, streamMode: "values" }
+      { messages: [{ type: 'human', content: userInput }] },
+      { configurable: { thread_id: '1' }, streamMode: 'values' }
     );
 
     for await (const event of events) {
@@ -137,8 +149,7 @@ Now you can interact with your bot!
     ai: Hello Will! It's nice to meet you. How can I assist you today? Is there anything specific you'd like to know or discuss?
     ```
 
-    !!! note
-    !!! note
+    !!! note !!! note
 
         The config was provided as the **second parameter** when calling our graph. It importantly is _not_ nested within the graph inputs (`{"messages": []}`).
 
@@ -177,11 +188,11 @@ Of course, I remember your name, Will. I always try to pay attention to importan
 :::js
 
 ```typescript
-const userInput2 = "Remember my name?";
+const userInput2 = 'Remember my name?';
 
 const events2 = await graph.stream(
-  { messages: [{ type: "human", content: userInput2 }] },
-  { configurable: { thread_id: "1" }, streamMode: "values" }
+  { messages: [{ type: 'human', content: userInput2 }] },
+  { configurable: { thread_id: '1' }, streamMode: 'values' }
 );
 
 for await (const event of events2) {
@@ -197,7 +208,10 @@ ai: Yes, your name is Will. How can I help you today?
 
 :::
 
-**Notice** that we aren't using an external list for memory: it's all handled by the checkpointer! You can inspect the full execution in this [LangSmith trace](https://smith.langchain.com/public/29ba22b5-6d40-4fbe-8d27-b369e3329c84/r) to see what's going on.
+**Notice** that we aren't using an external list for memory: it's all handled by
+the checkpointer! You can inspect the full execution in this
+[LangSmith trace](https://smith.langchain.com/public/29ba22b5-6d40-4fbe-8d27-b369e3329c84/r)
+to see what's going on.
 
 Don't believe me? Try this using a different config.
 
@@ -230,9 +244,9 @@ I apologize, but I don't have any previous context or memory of your name. As an
 
 ```typescript hl_lines="3-4"
 const events3 = await graph.stream(
-  { messages: [{ type: "human", content: userInput2 }] },
+  { messages: [{ type: 'human', content: userInput2 }] },
   // The only difference is we change the `thread_id` here to "2" instead of "1"
-  { configurable: { thread_id: "2" }, streamMode: "values" }
+  { configurable: { thread_id: '2' }, streamMode: 'values' }
 );
 
 for await (const event of events3) {
@@ -248,13 +262,18 @@ ai: I don't have the ability to remember personal information about users betwee
 
 :::
 
-**Notice** that the **only** change we've made is to modify the `thread_id` in the config. See this call's [LangSmith trace](https://smith.langchain.com/public/51a62351-2f0a-4058-91cc-9996c5561428/r) for comparison.
+**Notice** that the **only** change we've made is to modify the `thread_id` in
+the config. See this call's
+[LangSmith trace](https://smith.langchain.com/public/51a62351-2f0a-4058-91cc-9996c5561428/r)
+for comparison.
 
 ## 5. Inspect the state
 
 :::python
 
-By now, we have made a few checkpoints across two different threads. But what goes into a checkpoint? To inspect a graph's `state` for a given config at any time, call `get_state(config)`.
+By now, we have made a few checkpoints across two different threads. But what
+goes into a checkpoint? To inspect a graph's `state` for a given config at any
+time, call `get_state(config)`.
 
 ```python
 snapshot = graph.get_state(config)
@@ -273,10 +292,12 @@ snapshot.next  # (since the graph ended this turn, `next` is empty. If you fetch
 
 :::js
 
-By now, we have made a few checkpoints across two different threads. But what goes into a checkpoint? To inspect a graph's `state` for a given config at any time, call `getState(config)`.
+By now, we have made a few checkpoints across two different threads. But what
+goes into a checkpoint? To inspect a graph's `state` for a given config at any
+time, call `getState(config)`.
 
 ```typescript
-await graph.getState({ configurable: { thread_id: "1" } });
+await graph.getState({ configurable: { thread_id: '1' } });
 ```
 
 ```typescript
@@ -340,7 +361,7 @@ await graph.getState({ configurable: { thread_id: "1" } });
 ```
 
 ```typescript
-import * as assert from "node:assert";
+import * as assert from 'node:assert';
 
 // Since the graph ended this turn, `next` is empty.
 // If you fetch a state from within a graph invocation, next tells which node will execute next)
@@ -349,9 +370,15 @@ assert.deepEqual(snapshot.next, []);
 
 :::
 
-The snapshot above contains the current state values, corresponding config, and the `next` node to process. In our case, the graph has reached an `END` state, so `next` is empty.
+The snapshot above contains the current state values, corresponding config, and
+the `next` node to process. In our case, the graph has reached an `END` state,
+so `next` is empty.
 
-**Congratulations!** Your chatbot can now maintain conversation state across sessions thanks to LangGraph's checkpointing system. This opens up exciting possibilities for more natural, contextual interactions. LangGraph's checkpointing even handles **arbitrarily complex graph states**, which is much more expressive and powerful than simple chat memory.
+**Congratulations!** Your chatbot can now maintain conversation state across
+sessions thanks to LangGraph's checkpointing system. This opens up exciting
+possibilities for more natural, contextual interactions. LangGraph's
+checkpointing even handles **arbitrarily complex graph states**, which is much
+more expressive and powerful than simple chat memory.
 
 Check out the code snippet below to review the graph from this tutorial:
 
@@ -446,5 +473,6 @@ const graph = new StateGraph(State)
 
 ## Next steps
 
-In the next tutorial, you will [add human-in-the-loop to the chatbot](./4-human-in-the-loop.md) to handle situations where it may need guidance or verification before proceeding.
-
+In the next tutorial, you will
+[add human-in-the-loop to the chatbot](./4-human-in-the-loop.md) to handle
+situations where it may need guidance or verification before proceeding.

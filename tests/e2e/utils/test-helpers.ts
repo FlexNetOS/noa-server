@@ -115,17 +115,13 @@ export async function waitFor(
  * Sleep helper
  */
 export function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
  * Retry helper with exponential backoff
  */
-export async function retry<T>(
-  fn: () => Promise<T>,
-  maxAttempts = 3,
-  delayMs = 1000
-): Promise<T> {
+export async function retry<T>(fn: () => Promise<T>, maxAttempts = 3, delayMs = 1000): Promise<T> {
   let lastError: Error | undefined;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -164,9 +160,7 @@ export async function assertJsonContains(
 
   for (const [key, value] of Object.entries(expectedFields)) {
     if (data[key] !== value) {
-      throw new Error(
-        `Expected ${key}=${value}, got ${key}=${data[key]}`
-      );
+      throw new Error(`Expected ${key}=${value}, got ${key}=${data[key]}`);
     }
   }
 }
@@ -273,7 +267,7 @@ export async function concurrentRequests<T>(
   const executing: Promise<void>[] = [];
 
   for (const request of requests) {
-    const promise = request().then(result => {
+    const promise = request().then((result) => {
       results.push(result);
     });
 
@@ -282,7 +276,7 @@ export async function concurrentRequests<T>(
     if (executing.length >= concurrency) {
       await Promise.race(executing);
       executing.splice(
-        executing.findIndex(p => p === promise),
+        executing.findIndex((p) => p === promise),
         1
       );
     }

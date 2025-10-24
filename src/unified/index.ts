@@ -79,11 +79,13 @@ export const MODULE_NAME = 'unified';
  *
  * @param config - Global configuration
  */
-export async function initializeUnified(config: {
-  logger?: any;
-  redis?: any;
-  eventBus?: any;
-} = {}): Promise<void> {
+export async function initializeUnified(
+  config: {
+    logger?: any;
+    redis?: any;
+    eventBus?: any;
+  } = {}
+): Promise<void> {
   // Initialize logger
   if (config.logger) {
     LoggerFactory.configure(config.logger);

@@ -54,14 +54,14 @@ export function SwarmVisualization({ agents }: SwarmVisualizationProps) {
   };
 
   return (
-    <div className="bg-brand-card border border-brand-border rounded-lg p-6">
-      <h2 className="text-xl font-bold text-white mb-4">Agent Swarm Network</h2>
+    <div className="rounded-lg border border-brand-border bg-brand-card p-6">
+      <h2 className="mb-4 text-xl font-bold text-white">Agent Swarm Network</h2>
 
       <div
-        className="relative bg-brand-bg/50 rounded-lg overflow-hidden"
+        className="relative overflow-hidden rounded-lg bg-brand-bg/50"
         style={{ height: `${height}px` }}
       >
-        <svg width={width} height={height} className="w-full h-full">
+        <svg width={width} height={height} className="h-full w-full">
           {/* Connection lines */}
           {nodes.map((node) =>
             node.connections.map((connId) => {
@@ -123,7 +123,7 @@ export function SwarmVisualization({ agents }: SwarmVisualizationProps) {
                 y={node.y}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                className="text-xs font-medium fill-white pointer-events-none"
+                className="pointer-events-none fill-white text-xs font-medium"
               >
                 {index + 1}
               </text>
@@ -134,19 +134,19 @@ export function SwarmVisualization({ agents }: SwarmVisualizationProps) {
         {/* Legend */}
         <div className="absolute bottom-4 left-4 flex gap-4 text-xs">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-brand-success" />
+            <div className="h-3 w-3 rounded-full bg-brand-success" />
             <span className="text-white">Running</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-brand-muted" />
+            <div className="h-3 w-3 rounded-full bg-brand-muted" />
             <span className="text-white">Idle</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-brand-warning" />
+            <div className="h-3 w-3 rounded-full bg-brand-warning" />
             <span className="text-white">Paused</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-brand-danger" />
+            <div className="h-3 w-3 rounded-full bg-brand-danger" />
             <span className="text-white">Error</span>
           </div>
         </div>

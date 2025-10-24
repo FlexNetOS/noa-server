@@ -3,8 +3,8 @@ name: Deploy
 on:
   push:
     tags:
-      - 'v*'  # Trigger on version tags (e.g., v1.0.0)
-  workflow_dispatch:  # Allow manual deployment
+      - 'v*' # Trigger on version tags (e.g., v1.0.0)
+  workflow_dispatch: # Allow manual deployment
     inputs:
       environment:
         description: 'Deployment environment'

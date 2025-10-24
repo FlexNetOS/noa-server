@@ -17,7 +17,10 @@ Common questions and answers about Noa Server.
 
 ### What is Noa Server?
 
-Noa Server is a comprehensive platform for orchestrating AI agent swarms, managing workflows, and performing neural processing. It combines agent coordination, MCP (Model Context Protocol) integration, and local AI processing to enable systematic, scalable development workflows.
+Noa Server is a comprehensive platform for orchestrating AI agent swarms,
+managing workflows, and performing neural processing. It combines agent
+coordination, MCP (Model Context Protocol) integration, and local AI processing
+to enable systematic, scalable development workflows.
 
 ### What makes Noa Server different?
 
@@ -30,15 +33,19 @@ Noa Server is a comprehensive platform for orchestrating AI agent swarms, managi
 
 ### Is Noa Server free?
 
-Yes, Noa Server is open source. Optional cloud features via Flow-Nexus require registration but include free tiers.
+Yes, Noa Server is open source. Optional cloud features via Flow-Nexus require
+registration but include free tiers.
 
 ### What are the system requirements?
 
 **Minimum**:
+
 - Node.js 18+, 4GB RAM, 10GB disk, 2 CPU cores
 
 **Recommended**:
-- Node.js 20+, 8GB+ RAM, 50GB+ disk, 4+ CPU cores, CUDA GPU for neural processing
+
+- Node.js 20+, 8GB+ RAM, 50GB+ disk, 4+ CPU cores, CUDA GPU for neural
+  processing
 
 ## Installation and Setup
 
@@ -55,7 +62,8 @@ See the [Getting Started Guide](GETTING_STARTED.md) for details.
 
 ### Do I need Claude Code?
 
-Claude Code is recommended for using MCP features. You can run Noa Server standalone, but MCP integration enhances coordination capabilities.
+Claude Code is recommended for using MCP features. You can run Noa Server
+standalone, but MCP integration enhances coordination capabilities.
 
 ### What MCP servers are required?
 
@@ -98,7 +106,8 @@ npm run test        # Verify
 
 ### What is a swarm?
 
-A swarm is a coordinated group of AI agents working together to solve complex tasks. Agents communicate through shared memory and coordination protocols.
+A swarm is a coordinated group of AI agents working together to solve complex
+tasks. Agents communicate through shared memory and coordination protocols.
 
 ### Which topology should I use?
 
@@ -109,6 +118,7 @@ A swarm is a coordinated group of AI agents working together to solve complex ta
 ### How many agents can I run?
 
 Depends on your hardware:
+
 - **4GB RAM**: Up to 5 agents
 - **8GB RAM**: Up to 10 agents
 - **16GB+ RAM**: Up to 20+ agents
@@ -118,6 +128,7 @@ Use auto-scaling to optimize based on load.
 ### What agent types are available?
 
 54+ agents including:
+
 - **Development**: coder, backend-dev, frontend-dev, mobile-dev
 - **Quality**: reviewer, tester, debugger
 - **Architecture**: system-architect, code-analyzer
@@ -128,7 +139,8 @@ See [Features](FEATURES.md) for the complete list.
 
 ### How do I create a custom agent?
 
-See [Custom Agent Example](../developer/examples/custom-agent.md) in developer documentation.
+See [Custom Agent Example](../developer/examples/custom-agent.md) in developer
+documentation.
 
 ### Can agents work across multiple repositories?
 
@@ -141,6 +153,7 @@ npx claude-flow@alpha agent spawn --type multi-repo-swarm
 ### How do agents coordinate?
 
 Through:
+
 - **Shared memory**: Key-value store for context
 - **Hooks**: Pre/post operation coordination
 - **Message passing**: Direct agent communication
@@ -150,11 +163,13 @@ Through:
 
 ### What is MCP?
 
-Model Context Protocol (MCP) is a standard for connecting AI agents with tools and data sources. It enables coordinated tool usage across multiple agents.
+Model Context Protocol (MCP) is a standard for connecting AI agents with tools
+and data sources. It enables coordinated tool usage across multiple agents.
 
 ### What MCP tools are available?
 
 70+ tools including:
+
 - **Swarm**: init, scale, status, metrics
 - **Agents**: spawn, list, metrics
 - **Tasks**: orchestrate, status, results
@@ -184,23 +199,27 @@ mcp__claude-flow__swarm_status
 
 ### Do MCP tools work without internet?
 
-Yes! Core MCP tools (claude-flow, neural-processing) work completely offline. Only Flow-Nexus cloud features require internet.
+Yes! Core MCP tools (claude-flow, neural-processing) work completely offline.
+Only Flow-Nexus cloud features require internet.
 
 ## Neural Processing
 
 ### What is neural processing?
 
-Local AI model inference using llama.cpp. Run LLaMA, Mistral, and other models on your hardware without external APIs.
+Local AI model inference using llama.cpp. Run LLaMA, Mistral, and other models
+on your hardware without external APIs.
 
 ### Do I need a GPU?
 
 No, but highly recommended:
+
 - **CPU only**: Works but slower (minutes per response)
 - **GPU (CUDA)**: Up to 10x faster (seconds per response)
 
 ### What models are supported?
 
 Any GGUF format model:
+
 - LLaMA 2 (7B, 13B, 70B)
 - Mistral (7B)
 - CodeLLaMA
@@ -223,6 +242,7 @@ mcp__neural-processing__validate_model --model-path "models/<model-file>.gguf"
 - Insufficient memory
 
 **Solutions**:
+
 - Enable CUDA if available
 - Use quantized model (Q4_K_M)
 - Reduce context size
@@ -231,11 +251,13 @@ mcp__neural-processing__validate_model --model-path "models/<model-file>.gguf"
 ### Can I use external APIs instead?
 
 Yes! Noa Server supports:
+
 - OpenAI API
 - Anthropic API
 - Custom API endpoints
 
 Configure in `.env`:
+
 ```env
 EXTERNAL_AI_PROVIDER=openai
 OPENAI_API_KEY=your-key
@@ -285,6 +307,7 @@ npx claude-flow@alpha perf analyze --identify-bottlenecks
 ### Is Noa Server secure?
 
 Yes, with multiple security layers:
+
 - JWT authentication
 - Role-based access control (RBAC)
 - TLS/SSL encryption
@@ -332,6 +355,7 @@ npx claude-flow@alpha security audit \
 ### Are communications encrypted?
 
 Yes:
+
 - TLS/SSL for external communications
 - Encrypted storage for sensitive data
 - Secure agent-to-agent communication
@@ -342,11 +366,13 @@ Yes:
 ### The server won't start
 
 **Common causes**:
+
 - Port already in use
 - Database connection failed
 - Missing environment variables
 
 **Solution**:
+
 ```bash
 # Check port
 lsof -i :3000
@@ -363,11 +389,13 @@ See [Troubleshooting Guide](TROUBLESHOOTING.md) for details.
 ### Agents aren't spawning
 
 **Common causes**:
+
 - Swarm not initialized
 - Resource limits reached
 - MCP connection lost
 
 **Solution**:
+
 ```bash
 # Check swarm
 npx claude-flow@alpha swarm status
@@ -382,11 +410,13 @@ npx claude-flow@alpha metrics system
 ### MCP tools aren't working
 
 **Common causes**:
+
 - MCP server not connected
 - Permissions issue
 - Version mismatch
 
 **Solution**:
+
 ```bash
 # Reconnect MCP server
 claude mcp remove claude-flow
@@ -399,11 +429,13 @@ claude mcp list
 ### Neural processing is slow
 
 **Common causes**:
+
 - Using CPU instead of GPU
 - Model too large
 - Insufficient memory
 
 **Solution**:
+
 ```bash
 # Check CUDA
 nvidia-smi
@@ -419,11 +451,13 @@ export LLAMA_BATCH_SIZE=512
 ### Out of memory errors
 
 **Common causes**:
+
 - Too many agents
 - Memory leaks
 - Large models
 
 **Solution**:
+
 ```bash
 # Reduce agents
 npx claude-flow@alpha swarm scale --agents 5
@@ -439,7 +473,8 @@ node --max-old-space-size=4096 dist/server.js
 
 - **Documentation**: [docs/](../)
 - **Troubleshooting**: [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
-- **GitHub Issues**: [Report bugs](https://github.com/your-org/noa-server/issues)
+- **GitHub Issues**:
+  [Report bugs](https://github.com/your-org/noa-server/issues)
 - **Discord**: [Join community](#)
 - **Email**: support@noa-server.com
 
@@ -453,4 +488,5 @@ node --max-old-space-size=4096 dist/server.js
 
 ---
 
-**Can't find your question?** [Ask on GitHub Discussions](https://github.com/your-org/noa-server/discussions)
+**Can't find your question?**
+[Ask on GitHub Discussions](https://github.com/your-org/noa-server/discussions)

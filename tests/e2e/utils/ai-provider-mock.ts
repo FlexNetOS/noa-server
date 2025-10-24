@@ -244,11 +244,14 @@ export class AIProviderMock {
   /**
    * Send streaming response
    */
-  private async sendStreamingResponse(res: ServerResponse, request: ChatCompletionRequest): Promise<void> {
+  private async sendStreamingResponse(
+    res: ServerResponse,
+    request: ChatCompletionRequest
+  ): Promise<void> {
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
+      Connection: 'keep-alive',
     });
 
     const lastMessage = request.messages[request.messages.length - 1];
@@ -295,7 +298,7 @@ export class AIProviderMock {
   private async readBody<T>(req: IncomingMessage): Promise<T> {
     return new Promise((resolve, reject) => {
       let body = '';
-      req.on('data', chunk => {
+      req.on('data', (chunk) => {
         body += chunk.toString();
       });
       req.on('end', () => {
@@ -321,7 +324,7 @@ export class AIProviderMock {
    * Sleep helper
    */
   private sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**

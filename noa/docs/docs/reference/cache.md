@@ -1,5 +1,3 @@
 ## Caching
 
-::: langgraph.cache.base
-::: langgraph.cache.memory
-::: langgraph.cache.sqlite
+::: langgraph.cache.base ::: langgraph.cache.memory ::: langgraph.cache.sqlite

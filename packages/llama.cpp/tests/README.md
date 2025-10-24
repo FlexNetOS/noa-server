@@ -1,10 +1,12 @@
 # llama.cpp Integration Test Suite
 
-Comprehensive test suite for llama.cpp neural processing integration with MCP (Model Context Protocol) and HTTP API.
+Comprehensive test suite for llama.cpp neural processing integration with MCP
+(Model Context Protocol) and HTTP API.
 
 ## Overview
 
 This test suite provides thorough testing coverage for:
+
 - **LlamaBridge**: Core llama.cpp integration layer
 - **LlamaHTTPBridge**: Flask-based REST API
 - **LlamaMCPServer**: MCP server for Claude Code integration
@@ -33,6 +35,7 @@ tests/
 ## Test Categories
 
 ### Unit Tests (200+ tests)
+
 - **LlamaBridge** (70+ tests):
   - Initialization and validation
   - Chat completion
@@ -60,6 +63,7 @@ tests/
   - System info via MCP
 
 ### Integration Tests (20+ tests)
+
 - Complete HTTP workflows
 - Multi-step operations
 - Error recovery
@@ -67,6 +71,7 @@ tests/
 - Performance testing
 
 ### End-to-End Tests (15+ tests)
+
 - Complete MCP workflows
 - Multi-model scenarios
 - Streaming workflows
@@ -249,18 +254,19 @@ duration = get_duration()
 
 ### Current Coverage Breakdown
 
-| Module | Coverage | Lines | Missing |
-|--------|----------|-------|---------|
-| shims/http_bridge.py | 95%+ | 760 | <40 |
-| LlamaBridge | 98% | 310 | <7 |
-| LlamaHTTPBridge | 93% | 195 | <14 |
-| LlamaMCPServer | 92% | 255 | <20 |
+| Module               | Coverage | Lines | Missing |
+| -------------------- | -------- | ----- | ------- |
+| shims/http_bridge.py | 95%+     | 760   | <40     |
+| LlamaBridge          | 98%      | 310   | <7      |
+| LlamaHTTPBridge      | 93%      | 195   | <14     |
+| LlamaMCPServer       | 92%      | 255   | <20     |
 
 ## Test Data
 
 ### Mock Models
 
 Tests use lightweight mock GGUF files with valid headers:
+
 - Size: 1-2 MB (configurable)
 - Header: Valid GGUF format
 - Content: Zero-filled data
@@ -268,6 +274,7 @@ Tests use lightweight mock GGUF files with valid headers:
 ### Mock Responses
 
 Realistic mock responses for various scenarios:
+
 - Simple questions and answers
 - Code examples in multiple languages
 - Long-form explanations
@@ -383,6 +390,7 @@ pip install mcp
 ### Import Errors
 
 Ensure package root is in path:
+
 ```python
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 ```
@@ -390,6 +398,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 ### Slow Tests
 
 Run fast tests only:
+
 ```bash
 pytest -m "not slow"
 ```
@@ -428,4 +437,5 @@ pytest --cov --cov-report=json
 
 ## License
 
-Tests are part of the llama.cpp integration and follow the same license as the parent project.
+Tests are part of the llama.cpp integration and follow the same license as the
+parent project.

@@ -1,16 +1,16 @@
-import { RouteObject } from "react-router-dom";
-import Root from "./index";
-import routerServices from "./Services/router";
-import routerNamespaces from './Namespaces/router'
-import Home from "./Home";
+import { RouteObject } from 'react-router-dom';
+import Root from './index';
+import routerServices from './Services/router';
+import routerNamespaces from './Namespaces/router';
+import Home from './Home';
 
 export default (): RouteObject => {
   return {
-    path: "/",
+    path: '/',
     element: <Root />,
     children: [
       {
-        path: "",
+        path: '',
         element: <Home />,
       },
       routerServices(),

@@ -2,11 +2,12 @@
 
 ## Overview
 
-This document summarizes the Phase 1 infrastructure improvements implemented for Noa Server, providing a production-ready foundation for containerized deployment.
+This document summarizes the Phase 1 infrastructure improvements implemented for
+Noa Server, providing a production-ready foundation for containerized
+deployment.
 
-**Completion Date:** October 22, 2025
-**Task ID:** infra-design-001
-**Status:** COMPLETED
+**Completion Date:** October 22, 2025 **Task ID:** infra-design-001 **Status:**
+COMPLETED
 
 ## Deliverables
 
@@ -73,17 +74,20 @@ Created 14 production-ready Kubernetes manifests:
 #### Environment Overlays
 
 **Development** (`k8s/overlays/dev/`)
+
 - Single replicas
 - Reduced resource limits
 - Debug logging
 - Development namespace
 
 **Staging** (`k8s/overlays/staging/`)
+
 - 2 replicas for testing
 - Production-like configuration
 - Staging namespace
 
 **Production** (`k8s/overlays/prod/`)
+
 - 3-5 replicas (high availability)
 - Full resource allocation
 - Production logging
@@ -105,13 +109,15 @@ Comprehensive health check guide covering:
 #### Health Check Endpoints
 
 All services implement:
+
 - `/health` - Liveness probe
 - `/health/ready` - Readiness probe
 - `/health/startup` - Startup verification
 
 ### 4. Environment Management
 
-**Location:** `/home/deflex/noa-server/docs/infrastructure/ENVIRONMENT_VARIABLES.md`
+**Location:**
+`/home/deflex/noa-server/docs/infrastructure/ENVIRONMENT_VARIABLES.md`
 
 Complete environment variable documentation:
 
@@ -186,6 +192,7 @@ Production-ready deployment script:
 - Service status monitoring
 
 **Commands:**
+
 ```bash
 # Deploy
 ENVIRONMENT=production DEPLOY_TYPE=kubernetes ./deploy.sh deploy
@@ -229,12 +236,14 @@ External Traffic
 ### Resource Allocation
 
 **Total Cluster Requirements (Production):**
+
 - CPU: 16+ vCPUs
 - Memory: 32+ GB RAM
 - Storage: 200+ GB SSD
 - GPU: 1x NVIDIA (optional, for llama.cpp)
 
 **Per-Service Limits:**
+
 - Lightweight services: 256-512Mi RAM
 - Medium services: 512Mi-1Gi RAM
 - Heavy services: 2-4Gi RAM (llama.cpp)
@@ -270,17 +279,20 @@ External Traffic
 ### Option 1: Docker Compose (Recommended for Development)
 
 **Pros:**
+
 - Simple setup (single command)
 - Fast iteration
 - Local development friendly
 - Lower resource requirements
 
 **Use Cases:**
+
 - Local development
 - Testing
 - Small production (<1000 users)
 
 **Quick Start:**
+
 ```bash
 cd /home/deflex/noa-server
 docker-compose -f docker/docker-compose.yml up -d
@@ -289,6 +301,7 @@ docker-compose -f docker/docker-compose.yml up -d
 ### Option 2: Kubernetes (Recommended for Production)
 
 **Pros:**
+
 - Auto-scaling
 - High availability
 - Self-healing
@@ -296,11 +309,13 @@ docker-compose -f docker/docker-compose.yml up -d
 - Multi-region support
 
 **Use Cases:**
+
 - Production deployments
 - Staging environments
 - Large scale (>1000 users)
 
 **Quick Start:**
+
 ```bash
 kubectl apply -k k8s/overlays/prod/
 ```
@@ -310,16 +325,19 @@ kubectl apply -k k8s/overlays/prod/
 ### Horizontal Pod Autoscaling
 
 **MCP Service:**
+
 - Min: 2 replicas
 - Max: 10 replicas
 - Triggers: CPU >70%, Memory >80%
 
 **Claude Flow:**
+
 - Min: 2 replicas
 - Max: 8 replicas
 - Triggers: CPU >70%, Memory >80%
 
 **UI Dashboard:**
+
 - Min: 3 replicas
 - Max: 15 replicas
 - Triggers: CPU >75%
@@ -327,28 +345,33 @@ kubectl apply -k k8s/overlays/prod/
 ### Database Scaling
 
 **PostgreSQL:**
+
 - Read replicas for scaling
 - Connection pooling (configured)
 - Query optimization (indexed)
 
 **Redis:**
+
 - Sentinel for HA (configurable)
 - Cluster mode (ready)
 
 ## Monitoring & Observability
 
 ### Health Checks
+
 - All services have health endpoints
 - Docker health checks configured
 - Kubernetes probes configured
 - Prometheus metrics ready
 
 ### Logging
+
 - JSON structured logging
 - Log aggregation ready (Fluent Bit)
 - 10MB rotation with 3-file retention
 
 ### Metrics
+
 - Prometheus annotations
 - Custom metrics per service
 - Grafana dashboard ready
@@ -424,6 +447,7 @@ kubectl apply -k k8s/overlays/prod/
 ## File Summary
 
 ### Docker Files (5 files)
+
 ```
 /home/deflex/noa-server/docker/
 ├── Dockerfile                    # Multi-stage production Dockerfile
@@ -435,6 +459,7 @@ kubectl apply -k k8s/overlays/prod/
 ```
 
 ### Kubernetes Files (21 files)
+
 ```
 /home/deflex/noa-server/k8s/
 ├── base/
@@ -465,6 +490,7 @@ kubectl apply -k k8s/overlays/prod/
 ```
 
 ### Documentation Files (6 files)
+
 ```
 /home/deflex/noa-server/docs/infrastructure/
 ├── INFRASTRUCTURE_OVERVIEW.md   # Architecture overview
@@ -476,6 +502,7 @@ kubectl apply -k k8s/overlays/prod/
 ```
 
 ### Automation Scripts (1 file)
+
 ```
 /home/deflex/noa-server/scripts/infrastructure/
 └── deploy.sh                    # Deployment automation
@@ -495,6 +522,7 @@ All deliverables have been created and validated:
 ## Testing Recommendations
 
 ### Docker Testing
+
 ```bash
 # Test build
 docker-compose -f docker/docker-compose.yml build
@@ -509,6 +537,7 @@ done
 ```
 
 ### Kubernetes Testing
+
 ```bash
 # Validate manifests
 kubectl apply -k k8s/base/ --dry-run=server
@@ -523,6 +552,7 @@ kubectl get pods -n noa-server-dev -w
 ## Support
 
 For questions or issues:
+
 1. Check the comprehensive guides in `/docs/infrastructure/`
 2. Review service-specific README files
 3. Check health endpoints and logs

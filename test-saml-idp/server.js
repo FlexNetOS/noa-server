@@ -18,24 +18,24 @@ const PORT = 8080;
 
 // Test users
 const TEST_USERS = {
-  'testuser': {
+  testuser: {
     id: 'testuser',
     email: 'test@example.com',
     name: 'Test User',
     givenName: 'Test',
     familyName: 'User',
     groups: ['users', 'developers'],
-    roles: ['user', 'developer']
+    roles: ['user', 'developer'],
   },
-  'admin': {
+  admin: {
     id: 'admin',
     email: 'admin@example.com',
     name: 'Admin User',
     givenName: 'Admin',
     familyName: 'User',
     groups: ['users', 'admins'],
-    roles: ['user', 'admin']
-  }
+    roles: ['user', 'admin'],
+  },
 };
 
 // SAML Response template
@@ -120,7 +120,9 @@ app.get('/', (req, res) => {
       <h1>Mock SAML Identity Provider</h1>
       <p>Select a test user to authenticate:</p>
 
-      ${Object.entries(TEST_USERS).map(([username, user]) => `
+      ${Object.entries(TEST_USERS)
+        .map(
+          ([username, user]) => `
         <div class="user-card">
           <h3>${user.name} (${username})</h3>
           <p>Email: ${user.email}</p>
@@ -133,7 +135,9 @@ app.get('/', (req, res) => {
             <button type="submit" class="login-btn">Login as ${user.name}</button>
           </form>
         </div>
-      `).join('')}
+      `
+        )
+        .join('')}
 
       <h2>Metadata</h2>
       <p><a href="/saml/metadata">SAML Metadata</a></p>
@@ -187,8 +191,7 @@ app.post('/saml/login', (req, res) => {
   const now = new Date();
   const notOnOrAfter = new Date(now.getTime() + 5 * 60 * 1000); // 5 minutes
 
-  let samlResponse = SAML_RESPONSE_TEMPLATE
-    .replace(/_RESPONSE_ID_/g, `_${Date.now()}_response`)
+  let samlResponse = SAML_RESPONSE_TEMPLATE.replace(/_RESPONSE_ID_/g, `_${Date.now()}_response`)
     .replace(/_ASSERTION_ID_/g, `_${Date.now()}_assertion`)
     .replace(/_ISSUE_INSTANT_/g, now.toISOString())
     .replace(/_NOT_BEFORE_/g, now.toISOString())
@@ -240,14 +243,18 @@ app.post('/saml/sso', (req, res) => {
   const { SAMLRequest, RelayState } = req.body;
 
   // Redirect to login page with SAML request
-  res.redirect(`/?SAMLRequest=${encodeURIComponent(SAMLRequest || '')}&RelayState=${encodeURIComponent(RelayState || '')}`);
+  res.redirect(
+    `/?SAMLRequest=${encodeURIComponent(SAMLRequest || '')}&RelayState=${encodeURIComponent(RelayState || '')}`
+  );
 });
 
 app.get('/saml/sso', (req, res) => {
   const { SAMLRequest, RelayState } = req.query;
 
   // Redirect to login page with SAML request
-  res.redirect(`/?SAMLRequest=${encodeURIComponent(SAMLRequest || '')}&RelayState=${encodeURIComponent(RelayState || '')}`);
+  res.redirect(
+    `/?SAMLRequest=${encodeURIComponent(SAMLRequest || '')}&RelayState=${encodeURIComponent(RelayState || '')}`
+  );
 });
 
 // Start server
@@ -257,7 +264,9 @@ server.listen(PORT, () => {
   console.log(`🚀 Mock SAML IdP running at http://localhost:${PORT}`);
   console.log(`📋 Available test users:`);
   Object.entries(TEST_USERS).forEach(([username, user]) => {
-    console.log(`   - ${username}: ${user.name} (${user.email}) - Groups: ${user.groups.join(', ')}`);
+    console.log(
+      `   - ${username}: ${user.name} (${user.email}) - Groups: ${user.groups.join(', ')}`
+    );
   });
   console.log(`📄 SAML Metadata: http://localhost:${PORT}/saml/metadata`);
 });

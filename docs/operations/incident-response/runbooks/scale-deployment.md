@@ -263,16 +263,19 @@ kubectl run load-test --image=williamyeh/hey:latest -i --rm --restart=Never -- \
 ### Pods Not Scaling Up
 
 **Check HPA**:
+
 ```bash
 kubectl describe hpa api -n production
 ```
 
 **Check Resource Availability**:
+
 ```bash
 kubectl describe nodes | grep -A 5 "Non-terminated Pods"
 ```
 
 **Check Pod Events**:
+
 ```bash
 kubectl get events -n production --sort-by='.lastTimestamp' | tail -20
 ```
@@ -280,11 +283,13 @@ kubectl get events -n production --sort-by='.lastTimestamp' | tail -20
 ### Pods Stuck in Pending
 
 **Check Resource Constraints**:
+
 ```bash
 kubectl describe pod <pending-pod> -n production
 ```
 
 **Add Nodes**:
+
 ```bash
 # Trigger cluster autoscaler or manually add nodes
 ```
@@ -292,11 +297,13 @@ kubectl describe pod <pending-pod> -n production
 ### Uneven Load Distribution
 
 **Check Service**:
+
 ```bash
 kubectl describe svc api -n production
 ```
 
 **Verify Pod Labels**:
+
 ```bash
 kubectl get pods -n production -l app=api --show-labels
 ```
@@ -334,12 +341,12 @@ spec:
   minReplicas: 3
   maxReplicas: 20
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
 ```
 
 ### Custom Metrics Scaling
@@ -358,13 +365,13 @@ spec:
   minReplicas: 3
   maxReplicas: 30
   metrics:
-  - type: Pods
-    pods:
-      metric:
-        name: http_requests_per_second
-      target:
-        type: AverageValue
-        averageValue: "1000"
+    - type: Pods
+      pods:
+        metric:
+          name: http_requests_per_second
+        target:
+          type: AverageValue
+          averageValue: '1000'
 ```
 
 ## Post-Scaling Checks

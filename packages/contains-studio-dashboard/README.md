@@ -4,8 +4,10 @@ Real-time monitoring and control dashboard for Contains Studio Agents platform.
 
 ## Features
 
-- **Real-Time Agent Monitoring**: Track all 37 specialized AI agents across 7 domains
-- **Workflow Management**: Submit and monitor automated feature development workflows
+- **Real-Time Agent Monitoring**: Track all 37 specialized AI agents across 7
+  domains
+- **Workflow Management**: Submit and monitor automated feature development
+  workflows
 - **System Health Monitoring**: Real-time CPU, memory, disk, and network metrics
 - **Interactive Controls**: Submit feature requests and control agent workflows
 - **WebSocket Integration**: Live updates via Socket.IO for instant feedback
@@ -32,6 +34,7 @@ npm run dev
 ```
 
 The dashboard will be available at:
+
 - Frontend: http://localhost:3000
 - WebSocket Server: http://localhost:3001
 
@@ -65,30 +68,35 @@ npm start
 ## Dashboard Tabs
 
 ### Overview
+
 - System statistics and quick metrics
 - Active workflows with real-time progress
 - System health overview
 - Quick access to create new features
 
 ### Agents (37 total)
+
 - Browse all agents by domain
 - Filter by status, domain, or capabilities
 - View agent performance metrics
 - See current tasks and completion rates
 
 ### Workflows
+
 - View all workflows (active, pending, completed)
 - Monitor phase-by-phase progress
 - See assigned agents and timelines
 - Submit new feature requests
 
 ### System Health
+
 - Real-time resource monitoring
 - Docker service status
 - Service uptime and response times
 - Performance metrics
 
 ### Documentation
+
 - Quick links to all documentation
 - Health check reports
 - Integration guides
@@ -278,6 +286,4 @@ MIT License - see LICENSE file for details
 
 ---
 
-**Version**: 1.0.0
-**Last Updated**: October 22, 2025
-**Status**: ✅ Operational
+**Version**: 1.0.0 **Last Updated**: October 22, 2025 **Status**: ✅ Operational

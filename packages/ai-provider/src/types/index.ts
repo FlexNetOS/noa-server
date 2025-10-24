@@ -4,7 +4,7 @@ import { z } from 'zod';
 export enum ProviderType {
   OPENAI = 'openai',
   CLAUDE = 'claude',
-  LLAMA_CPP = 'llama.cpp'
+  LLAMA_CPP = 'llama.cpp',
 }
 
 // Model Information
@@ -26,7 +26,7 @@ export enum ModelCapability {
   FUNCTION_CALLING = 'function_calling',
   VISION = 'vision',
   STREAMING = 'streaming',
-  JSON_MODE = 'json_mode'
+  JSON_MODE = 'json_mode',
 }
 
 // Message Types
@@ -151,14 +151,14 @@ export enum PromptOptimizationLevel {
   NONE = 'none',
   BASIC = 'basic',
   ADVANCED = 'advanced',
-  MAXIMUM = 'maximum'
+  MAXIMUM = 'maximum',
 }
 
 export enum PromptQualityThreshold {
   LOW = 'low',
   MEDIUM = 'medium',
   HIGH = 'high',
-  CRITICAL = 'critical'
+  CRITICAL = 'critical',
 }
 
 export interface PromptOptimizationConfig {
@@ -244,7 +244,11 @@ export class AuthenticationError extends AIProviderError {
 }
 
 export class RateLimitError extends AIProviderError {
-  constructor(message: string, provider: ProviderType, public retryAfter?: number) {
+  constructor(
+    message: string,
+    provider: ProviderType,
+    public retryAfter?: number
+  ) {
     super(message, provider, 'RATE_LIMIT_ERROR', 429, true);
     this.name = 'RateLimitError';
   }
@@ -265,7 +269,13 @@ export class ContextLengthError extends AIProviderError {
 }
 
 export class LlamaCppError extends AIProviderError {
-  constructor(message: string, provider: ProviderType, code?: string, statusCode?: number, retryable: boolean = false) {
+  constructor(
+    message: string,
+    provider: ProviderType,
+    code?: string,
+    statusCode?: number,
+    retryable: boolean = false
+  ) {
     super(message, provider, code, statusCode, retryable);
     this.name = 'LlamaCppError';
   }
@@ -297,10 +307,12 @@ export const MessageSchema = z.object({
   role: z.enum(['system', 'user', 'assistant', 'function']),
   content: z.union([z.string(), z.array(z.any())]),
   name: z.string().optional(),
-  function_call: z.object({
-    name: z.string(),
-    arguments: z.string()
-  }).optional()
+  function_call: z
+    .object({
+      name: z.string(),
+      arguments: z.string(),
+    })
+    .optional(),
 });
 
 export const GenerationConfigSchema = z.object({
@@ -313,27 +325,31 @@ export const GenerationConfigSchema = z.object({
   stop: z.union([z.string(), z.array(z.string())]).optional(),
   logit_bias: z.record(z.number()).optional(),
   user: z.string().optional(),
-  functions: z.array(z.object({
-    name: z.string(),
-    description: z.string().optional(),
-    parameters: z.record(z.any())
-  })).optional(),
-  function_call: z.union([
-    z.literal('none'),
-    z.literal('auto'),
-    z.object({ name: z.string() })
-  ]).optional(),
-  response_format: z.object({
-    type: z.enum(['text', 'json_object'])
-  }).optional(),
-  timeout: z.number().positive().optional()
+  functions: z
+    .array(
+      z.object({
+        name: z.string(),
+        description: z.string().optional(),
+        parameters: z.record(z.any()),
+      })
+    )
+    .optional(),
+  function_call: z
+    .union([z.literal('none'), z.literal('auto'), z.object({ name: z.string() })])
+    .optional(),
+  response_format: z
+    .object({
+      type: z.enum(['text', 'json_object']),
+    })
+    .optional(),
+  timeout: z.number().positive().optional(),
 });
 
 export const PromptEnhancementRuleSchema = z.object({
   pattern: z.string(),
   replacement: z.string(),
   condition: z.string().optional(),
-  priority: z.number().default(1)
+  priority: z.number().default(1),
 });
 
 export const PromptOptimizationConfigSchema = z.object({
@@ -346,7 +362,7 @@ export const PromptOptimizationConfigSchema = z.object({
   bypassPatterns: z.array(z.string()).default([]),
   enhancementRules: z.array(PromptEnhancementRuleSchema).default([]),
   performanceMode: z.boolean().default(false),
-  monitoringEnabled: z.boolean().default(true)
+  monitoringEnabled: z.boolean().default(true),
 });
 
 export const PromptCacheEntrySchema = z.object({
@@ -355,7 +371,7 @@ export const PromptCacheEntrySchema = z.object({
   qualityScore: z.number().min(0).max(1),
   timestamp: z.number(),
   accessCount: z.number().nonnegative().default(0),
-  lastAccessed: z.number()
+  lastAccessed: z.number(),
 });
 
 export const ProviderConfigSchema = z.object({
@@ -368,7 +384,7 @@ export const ProviderConfigSchema = z.object({
   maxRetries: z.number().nonnegative().optional(),
   defaultModel: z.string().optional(),
   additionalOptions: z.record(z.any()).optional(),
-  promptOptimization: PromptOptimizationConfigSchema.optional()
+  promptOptimization: PromptOptimizationConfigSchema.optional(),
 });
 
 // Type Guards

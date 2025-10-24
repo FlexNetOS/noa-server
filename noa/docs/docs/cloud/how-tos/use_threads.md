@@ -1,6 +1,7 @@
 # Use threads
 
-In this guide, we will show how to create, view, and inspect [threads](../../concepts/persistence.md#threads).
+In this guide, we will show how to create, view, and inspect
+[threads](../../concepts/persistence.md#threads).
 
 ## Create a thread
 
@@ -8,7 +9,12 @@ To run your graph and the state persisted, you must first create a thread.
 
 ### Empty thread
 
-To create a new thread, use the [LangGraph SDK](../../concepts/sdk.md) `create` method. See the [Python](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/python_sdk_ref/#langgraph_sdk.client.ThreadsClient.create) and [JS](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/js_ts_sdk_ref/#create_3) SDK reference docs for more information.
+To create a new thread, use the [LangGraph SDK](../../concepts/sdk.md) `create`
+method. See the
+[Python](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/python_sdk_ref/#langgraph_sdk.client.ThreadsClient.create)
+and
+[JS](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/js_ts_sdk_ref/#create_3)
+SDK reference docs for more information.
 
 === "Python"
 
@@ -54,7 +60,14 @@ Output:
 
 ### Copy thread
 
-Alternatively, if you already have a thread in your application whose state you wish to copy, you can use the `copy` method. This will create an independent thread whose history is identical to the original thread at the time of the operation. See the [Python](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/python_sdk_ref/#langgraph_sdk.client.ThreadsClient.copy) and [JS](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/js_ts_sdk_ref/#copy) SDK reference docs for more information.
+Alternatively, if you already have a thread in your application whose state you
+wish to copy, you can use the `copy` method. This will create an independent
+thread whose history is identical to the original thread at the time of the
+operation. See the
+[Python](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/python_sdk_ref/#langgraph_sdk.client.ThreadsClient.copy)
+and
+[JS](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/js_ts_sdk_ref/#copy)
+SDK reference docs for more information.
 
 === "Python"
 
@@ -77,7 +90,9 @@ Alternatively, if you already have a thread in your application whose state you 
 
 ### Prepopulated State
 
-Finally, you can create a thread with an arbitrary pre-defined state by providing a list of `supersteps` into the `create` method. The `supersteps` describe a list of a sequence of state updates. For example:
+Finally, you can create a thread with an arbitrary pre-defined state by
+providing a list of `supersteps` into the `create` method. The `supersteps`
+describe a list of a sequence of state updates. For example:
 
 === "Python"
 
@@ -233,11 +248,20 @@ Output:
 
 ### LangGraph SDK
 
-To list threads, use the [LangGraph SDK](../../concepts/sdk.md) `search` method. This will list the threads in the application that match the provided filters. See the [Python](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/python_sdk_ref/#langgraph_sdk.client.ThreadsClient.search) and [JS](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/js_ts_sdk_ref/#search_2) SDK reference docs for more information.
+To list threads, use the [LangGraph SDK](../../concepts/sdk.md) `search` method.
+This will list the threads in the application that match the provided filters.
+See the
+[Python](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/python_sdk_ref/#langgraph_sdk.client.ThreadsClient.search)
+and
+[JS](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/js_ts_sdk_ref/#search_2)
+SDK reference docs for more information.
 
 #### Filter by thread status
 
-Use the `status` field to filter threads based on their status. Supported values are `idle`, `busy`, `interrupted`, and `error`. See [here](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/python_sdk_ref/?h=thread+status#langgraph_sdk.auth.types.ThreadStatus) for information on each status. For example, to view `idle` threads:
+Use the `status` field to filter threads based on their status. Supported values
+are `idle`, `busy`, `interrupted`, and `error`. See
+[here](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/python_sdk_ref/?h=thread+status#langgraph_sdk.auth.types.ThreadStatus)
+for information on each status. For example, to view `idle` threads:
 
 === "Python"
 
@@ -313,15 +337,18 @@ Output:
 
 #### Sorting
 
-The SDK also supports sorting threads by `thread_id`, `status`, `created_at`, and `updated_at` using the `sort_by` and `sort_order` params.
+The SDK also supports sorting threads by `thread_id`, `status`, `created_at`,
+and `updated_at` using the `sort_by` and `sort_order` params.
 
 ### LangGraph Platform UI
 
 You can also view threads in a deployment via the LangGraph Platform UI.
 
-Inside your deployment, select the "Threads" tab. This will load a table of all of the threads in your deployment.
+Inside your deployment, select the "Threads" tab. This will load a table of all
+of the threads in your deployment.
 
-To filter by thread status, select a status in the top bar. To sort by a supported property, click on the arrow icon for the desired column.
+To filter by thread status, select a status in the top bar. To sort by a
+supported property, click on the arrow icon for the desired column.
 
 ## Inspect threads
 
@@ -449,7 +476,8 @@ Output:
         "parent_checkpoint_id": "1f02f46f-7308-616c-8000-1b158a9a6955"
     }
 
-Optionally, to view the state of a thread at a given checkpoint, simply pass in the checkpoint id (or the entire checkpoint object):
+Optionally, to view the state of a thread at a given checkpoint, simply pass in
+the checkpoint id (or the entire checkpoint object):
 
 === "Python"
 
@@ -476,12 +504,20 @@ Optionally, to view the state of a thread at a given checkpoint, simply pass in 
 
 #### Inspect Full Thread History
 
-To view a thread's history, use the `get_history` method. This returns a list of every state the thread experienced. For more information see the [Python](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/python_sdk_ref/?h=thread+status#langgraph_sdk.client.ThreadsClient.get_history) and [JS](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/js_ts_sdk_ref/#gethistory) reference docs.
+To view a thread's history, use the `get_history` method. This returns a list of
+every state the thread experienced. For more information see the
+[Python](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/python_sdk_ref/?h=thread+status#langgraph_sdk.client.ThreadsClient.get_history)
+and
+[JS](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/js_ts_sdk_ref/#gethistory)
+reference docs.
 
 ### LangGraph Platform UI
 
 You can also view threads in a deployment via the LangGraph Platform UI.
 
-Inside your deployment, select the "Threads" tab. This will load a table of all of the threads in your deployment.
+Inside your deployment, select the "Threads" tab. This will load a table of all
+of the threads in your deployment.
 
-Select a thread to inspect its current state. To view its full history and for further debugging, open the thread in [LangGraph Studio](../../concepts//langgraph_studio.md).
+Select a thread to inspect its current state. To view its full history and for
+further debugging, open the thread in
+[LangGraph Studio](../../concepts//langgraph_studio.md).

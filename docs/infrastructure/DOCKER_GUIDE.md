@@ -2,7 +2,8 @@
 
 ## Overview
 
-This guide covers the Docker-based deployment of Noa Server, including multi-service orchestration, health monitoring, and production best practices.
+This guide covers the Docker-based deployment of Noa Server, including
+multi-service orchestration, health monitoring, and production best practices.
 
 ## Architecture
 
@@ -66,10 +67,9 @@ docker-compose \
 
 ### MCP Service
 
-**Image**: Built from `Dockerfile` stage `mcp-service`
-**Port**: 8001
-**Health Check**: `http://localhost:8001/health`
-**Resources**: 0.5-1.0 CPU, 256-512MB RAM
+**Image**: Built from `Dockerfile` stage `mcp-service` **Port**: 8001 **Health
+Check**: `http://localhost:8001/health` **Resources**: 0.5-1.0 CPU, 256-512MB
+RAM
 
 ```bash
 # Access MCP service
@@ -81,28 +81,25 @@ docker-compose logs -f mcp
 
 ### Claude Flow Service
 
-**Image**: Built from `Dockerfile` stage `claude-flow-service`
-**Port**: 9100
-**Health Check**: `http://localhost:9100/health`
-**Resources**: 1.0-2.0 CPU, 512MB-1GB RAM
+**Image**: Built from `Dockerfile` stage `claude-flow-service` **Port**: 9100
+**Health Check**: `http://localhost:9100/health` **Resources**: 1.0-2.0 CPU,
+512MB-1GB RAM
 
 Depends on MCP service being healthy.
 
 ### UI Dashboard
 
-**Image**: Built from `Dockerfile` stage `ui-dashboard`
-**Port**: 9200
-**Health Check**: `http://localhost:9200/api/health`
-**Resources**: 0.5-1.5 CPU, 384-768MB RAM
+**Image**: Built from `Dockerfile` stage `ui-dashboard` **Port**: 9200 **Health
+Check**: `http://localhost:9200/api/health` **Resources**: 0.5-1.5 CPU,
+384-768MB RAM
 
 Next.js application with server-side rendering.
 
 ### Llama.cpp Neural Service
 
-**Image**: Built from `Dockerfile` stage `llama-service`
-**Port**: 9300
-**Health Check**: `http://localhost:9300/health`
-**Resources**: 2.0-4.0 CPU, 2-4GB RAM, 1 GPU (optional)
+**Image**: Built from `Dockerfile` stage `llama-service` **Port**: 9300 **Health
+Check**: `http://localhost:9300/health` **Resources**: 2.0-4.0 CPU, 2-4GB RAM, 1
+GPU (optional)
 
 ```bash
 # Enable GPU support
@@ -114,10 +111,9 @@ nvidia-smi
 
 ### AgenticOS Service
 
-**Image**: Built from `Dockerfile` stage `agenticos-service`
-**Port**: 9400
-**Health Check**: `http://localhost:9400/health`
-**Resources**: 1.0-2.0 CPU, 512MB-1GB RAM
+**Image**: Built from `Dockerfile` stage `agenticos-service` **Port**: 9400
+**Health Check**: `http://localhost:9400/health` **Resources**: 1.0-2.0 CPU,
+512MB-1GB RAM
 
 ## Environment Variables
 

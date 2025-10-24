@@ -68,7 +68,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       try {
         // Load theme preference
         const savedTheme = await api.getSetting(THEME_STORAGE_KEY);
-        
+
         if (savedTheme) {
           const themeMode = savedTheme as ThemeMode;
           setThemeState(themeMode);
@@ -81,7 +81,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
         // Load custom colors
         const savedColors = await api.getSetting(CUSTOM_COLORS_STORAGE_KEY);
-        
+
         if (savedColors) {
           const colors = JSON.parse(savedColors) as CustomThemeColors;
           setCustomColorsState(colors);
@@ -102,13 +102,13 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Apply theme to document
   const applyTheme = useCallback(async (themeMode: ThemeMode, colors: CustomThemeColors) => {
     const root = document.documentElement;
-    
+
     // Remove all theme classes
     root.classList.remove('theme-dark', 'theme-gray', 'theme-light', 'theme-custom');
-    
+
     // Add new theme class
     root.classList.add(`theme-${themeMode}`);
-    
+
     // If custom theme, apply custom colors as CSS variables
     if (themeMode === 'custom') {
       Object.entries(colors).forEach(([key, value]) => {
@@ -126,43 +126,49 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     // Note: Window theme updates removed since we're using custom titlebar
   }, []);
 
-  const setTheme = useCallback(async (newTheme: ThemeMode) => {
-    try {
-      setIsLoading(true);
-      
-      // Apply theme immediately
-      setThemeState(newTheme);
-      await applyTheme(newTheme, customColors);
-      
-      // Save to storage
-      await api.saveSetting(THEME_STORAGE_KEY, newTheme);
-    } catch (error) {
-      console.error('Failed to save theme preference:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [customColors, applyTheme]);
+  const setTheme = useCallback(
+    async (newTheme: ThemeMode) => {
+      try {
+        setIsLoading(true);
 
-  const setCustomColors = useCallback(async (colors: Partial<CustomThemeColors>) => {
-    try {
-      setIsLoading(true);
-      
-      const newColors = { ...customColors, ...colors };
-      setCustomColorsState(newColors);
-      
-      // Apply immediately if custom theme is active
-      if (theme === 'custom') {
-        await applyTheme('custom', newColors);
+        // Apply theme immediately
+        setThemeState(newTheme);
+        await applyTheme(newTheme, customColors);
+
+        // Save to storage
+        await api.saveSetting(THEME_STORAGE_KEY, newTheme);
+      } catch (error) {
+        console.error('Failed to save theme preference:', error);
+      } finally {
+        setIsLoading(false);
       }
-      
-      // Save to storage
-      await api.saveSetting(CUSTOM_COLORS_STORAGE_KEY, JSON.stringify(newColors));
-    } catch (error) {
-      console.error('Failed to save custom colors:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [theme, customColors, applyTheme]);
+    },
+    [customColors, applyTheme]
+  );
+
+  const setCustomColors = useCallback(
+    async (colors: Partial<CustomThemeColors>) => {
+      try {
+        setIsLoading(true);
+
+        const newColors = { ...customColors, ...colors };
+        setCustomColorsState(newColors);
+
+        // Apply immediately if custom theme is active
+        if (theme === 'custom') {
+          await applyTheme('custom', newColors);
+        }
+
+        // Save to storage
+        await api.saveSetting(CUSTOM_COLORS_STORAGE_KEY, JSON.stringify(newColors));
+      } catch (error) {
+        console.error('Failed to save custom colors:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [theme, customColors, applyTheme]
+  );
 
   const value: ThemeContextType = {
     theme,
@@ -172,11 +178,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     isLoading,
   };
 
-  return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 };
 
 export const useThemeContext = () => {

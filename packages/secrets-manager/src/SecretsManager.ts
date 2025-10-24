@@ -4,19 +4,19 @@ import { GCPSecretProvider } from './providers/GCPSecretProvider';
 import { LocalProvider } from './providers/LocalProvider';
 import { VaultProvider } from './providers/VaultProvider';
 import {
-    AuditEvent,
-    AWSConfig,
-    AzureConfig,
-    GCPConfig,
-    ISecretProvider,
-    LocalConfig,
-    ProviderConfig,
-    ProviderConfigSchema,
-    Secret,
-    SecretMetadata,
-    SecretProvider,
-    ValidationError,
-    VaultConfig,
+  AuditEvent,
+  AWSConfig,
+  AzureConfig,
+  GCPConfig,
+  ISecretProvider,
+  LocalConfig,
+  ProviderConfig,
+  ProviderConfigSchema,
+  Secret,
+  SecretMetadata,
+  SecretProvider,
+  ValidationError,
+  VaultConfig,
 } from './types';
 
 /**
@@ -343,7 +343,7 @@ export function createSecretsManager(overrides?: Partial<ProviderConfig>): Secre
         namespace: process.env.VAULT_NAMESPACE,
         mountPath: 'secret',
         tlsVerify: true,
-        ...overrides as Partial<VaultConfig>,
+        ...(overrides as Partial<VaultConfig>),
       };
       return new SecretsManager(vaultConfig);
     } else if (envProvider === SecretProvider.AWS) {
@@ -352,7 +352,7 @@ export function createSecretsManager(overrides?: Partial<ProviderConfig>): Secre
         region: process.env.AWS_REGION || 'us-east-1',
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-        ...overrides as Partial<AWSConfig>,
+        ...(overrides as Partial<AWSConfig>),
       };
       return new SecretsManager(awsConfig);
     } else if (envProvider === SecretProvider.AZURE) {
@@ -362,7 +362,7 @@ export function createSecretsManager(overrides?: Partial<ProviderConfig>): Secre
         tenantId: process.env.AZURE_TENANT_ID,
         clientId: process.env.AZURE_CLIENT_ID,
         clientSecret: process.env.AZURE_CLIENT_SECRET,
-        ...overrides as Partial<AzureConfig>,
+        ...(overrides as Partial<AzureConfig>),
       };
       return new SecretsManager(azureConfig);
     } else if (envProvider === SecretProvider.GCP) {
@@ -370,7 +370,7 @@ export function createSecretsManager(overrides?: Partial<ProviderConfig>): Secre
         provider: SecretProvider.GCP,
         projectId: process.env.GCP_PROJECT_ID || '',
         keyFilename: process.env.GCP_KEY_FILE,
-        ...overrides as Partial<GCPConfig>,
+        ...(overrides as Partial<GCPConfig>),
       };
       return new SecretsManager(gcpConfig);
     }

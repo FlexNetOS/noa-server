@@ -197,11 +197,7 @@ export class QueueInstrumentation {
   /**
    * Record message sent to dead letter queue
    */
-  public recordDeadLetter(
-    queueName: string,
-    messageId: string,
-    reason: string
-  ): void {
+  public recordDeadLetter(queueName: string, messageId: string, reason: string): void {
     this.spanManager.addEvent('message.dead_letter', {
       'messaging.destination': queueName,
       'messaging.message_id': messageId,

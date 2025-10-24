@@ -15,7 +15,7 @@ const DEFAULT_CONFIG = {
   corsOrigins: (process.env.CORS_ORIGINS || 'http://localhost:3000').split(','),
   enableWebSocket: process.env.ENABLE_WEBSOCKET !== 'false',
   enableMetrics: process.env.ENABLE_METRICS !== 'false',
-  authEnabled: process.env.AUTH_ENABLED === 'true'
+  authEnabled: process.env.AUTH_ENABLED === 'true',
 };
 
 // Queue manager configuration
@@ -28,25 +28,25 @@ const QUEUE_CONFIG = {
       config: {
         host: process.env.REDIS_HOST || 'localhost',
         port: parseInt(process.env.REDIS_PORT || '6379'),
-        password: process.env.REDIS_PASSWORD
-      }
-    }
+        password: process.env.REDIS_PASSWORD,
+      },
+    },
   ],
   queues: {
-    'default': { provider: 'redis' },
+    default: { provider: 'redis' },
     'jobs-default': { provider: 'redis' },
     'high-priority': { provider: 'redis' },
-    'low-priority': { provider: 'redis' }
+    'low-priority': { provider: 'redis' },
   },
   monitoring: {
     enabled: true,
     metricsInterval: 30000, // 30 seconds
-    healthCheckInterval: 60000 // 1 minute
+    healthCheckInterval: 60000, // 1 minute
   },
   retryPolicy: {
     maxRetries: 3,
-    retryDelay: 1000
-  }
+    retryDelay: 1000,
+  },
 };
 
 async function main() {
@@ -60,15 +60,12 @@ async function main() {
     ),
     transports: [
       new winston.transports.Console({
-        format: winston.format.combine(
-          winston.format.colorize(),
-          winston.format.simple()
-        )
+        format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
       }),
       new winston.transports.File({
-        filename: 'logs/queue-api-server.log'
-      })
-    ]
+        filename: 'logs/queue-api-server.log',
+      }),
+    ],
   });
 
   try {
@@ -79,7 +76,7 @@ async function main() {
       config: QUEUE_CONFIG,
       logger,
       enableMonitoring: true,
-      enableHealthChecks: true
+      enableHealthChecks: true,
     });
 
     await queueManager.start();
@@ -91,7 +88,7 @@ async function main() {
 
     logger.info('Message Queue API Server started successfully', {
       port: DEFAULT_CONFIG.port,
-      host: DEFAULT_CONFIG.host
+      host: DEFAULT_CONFIG.host,
     });
 
     // Graceful shutdown
@@ -120,7 +117,6 @@ async function main() {
 
       process.exit(0);
     });
-
   } catch (error) {
     logger.error('Failed to start server', { error });
     process.exit(1);

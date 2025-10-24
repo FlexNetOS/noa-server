@@ -29,13 +29,16 @@ export class AuthConfigLoader {
       },
       oauth: this.loadOAuthConfig(),
       saml: this.loadSAMLConfig(),
-      ldap: process.env.LDAP_ENABLED === 'true' ? {
-        url: process.env.LDAP_URL || '',
-        bindDN: process.env.LDAP_BIND_DN || '',
-        bindCredentials: process.env.LDAP_BIND_PASSWORD || '',
-        searchBase: process.env.LDAP_SEARCH_BASE || '',
-        searchFilter: process.env.LDAP_SEARCH_FILTER || '',
-      } : undefined,
+      ldap:
+        process.env.LDAP_ENABLED === 'true'
+          ? {
+              url: process.env.LDAP_URL || '',
+              bindDN: process.env.LDAP_BIND_DN || '',
+              bindCredentials: process.env.LDAP_BIND_PASSWORD || '',
+              searchBase: process.env.LDAP_SEARCH_BASE || '',
+              searchFilter: process.env.LDAP_SEARCH_FILTER || '',
+            }
+          : undefined,
       mfa: {
         enabled: process.env.MFA_ENABLED !== 'false',
         issuer: process.env.MFA_ISSUER || 'Noa Server',
@@ -52,8 +55,12 @@ export class AuthConfigLoader {
         preventCommon: process.env.PASSWORD_PREVENT_COMMON !== 'false',
         preventUserInfo: process.env.PASSWORD_PREVENT_USER_INFO !== 'false',
         preventReuse: parseInt(process.env.PASSWORD_PREVENT_REUSE || '5'),
-        maxAge: process.env.PASSWORD_MAX_AGE_DAYS ? parseInt(process.env.PASSWORD_MAX_AGE_DAYS) : undefined,
-        minAge: process.env.PASSWORD_MIN_AGE_DAYS ? parseInt(process.env.PASSWORD_MIN_AGE_DAYS) : undefined,
+        maxAge: process.env.PASSWORD_MAX_AGE_DAYS
+          ? parseInt(process.env.PASSWORD_MAX_AGE_DAYS)
+          : undefined,
+        minAge: process.env.PASSWORD_MIN_AGE_DAYS
+          ? parseInt(process.env.PASSWORD_MIN_AGE_DAYS)
+          : undefined,
       },
       session: {
         redis: {
@@ -152,7 +159,9 @@ export class AuthConfigLoader {
       if (process.env.SAML_PRIVATE_KEY_PATH) {
         privateKey = readFileSync(resolve(process.env.SAML_PRIVATE_KEY_PATH), 'utf8');
       } else {
-        throw new Error('SAML_PRIVATE_KEY_PATH environment variable is required when SAML is enabled');
+        throw new Error(
+          'SAML_PRIVATE_KEY_PATH environment variable is required when SAML is enabled'
+        );
       }
 
       // Optional IdP certificate for response validation
@@ -161,7 +170,9 @@ export class AuthConfigLoader {
       }
     } catch (error) {
       console.error('Failed to load SAML certificates:', error);
-      throw new Error('SAML certificate files could not be loaded. Please check SAML_CERT_PATH, SAML_PRIVATE_KEY_PATH, and SAML_IDP_CERT_PATH.');
+      throw new Error(
+        'SAML certificate files could not be loaded. Please check SAML_CERT_PATH, SAML_PRIVATE_KEY_PATH, and SAML_IDP_CERT_PATH.'
+      );
     }
 
     providers.push({
@@ -201,8 +212,10 @@ export class AuthConfigLoader {
       errors.push('JWT_SECRET is required when using HS256 algorithm');
     }
 
-    if ((config.jwt.algorithm === 'RS256' || config.jwt.algorithm === 'ES256') &&
-        (!config.jwt.privateKey || !config.jwt.publicKey)) {
+    if (
+      (config.jwt.algorithm === 'RS256' || config.jwt.algorithm === 'ES256') &&
+      (!config.jwt.privateKey || !config.jwt.publicKey)
+    ) {
       errors.push('JWT_PRIVATE_KEY_PATH and JWT_PUBLIC_KEY_PATH are required for RS256/ES256');
     }
 

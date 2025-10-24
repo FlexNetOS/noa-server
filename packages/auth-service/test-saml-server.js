@@ -46,7 +46,8 @@ async function startServer() {
     app.use(express.urlencoded({ extended: true }));
 
     // SAML login endpoint
-    app.get('/auth/saml/login',
+    app.get(
+      '/auth/saml/login',
       passport.authenticate('saml', { failureRedirect: '/login' }),
       (req, res) => {
         // This should not be reached - passport will redirect to IdP
@@ -55,7 +56,8 @@ async function startServer() {
     );
 
     // SAML callback endpoint
-    app.post('/auth/saml/callback',
+    app.post(
+      '/auth/saml/callback',
       passport.authenticate('saml', { failureRedirect: '/login' }),
       async (req, res) => {
         try {
@@ -71,7 +73,7 @@ async function startServer() {
             name: samlUser.name,
             groups: samlUser.groups || [],
             roles: samlUser.roles || [],
-            permissions: samlUser.permissions || []
+            permissions: samlUser.permissions || [],
           });
 
           console.log('🎫 JWT token generated');
@@ -84,20 +86,19 @@ async function startServer() {
               email: samlUser.email,
               name: samlUser.name,
               groups: samlUser.groups,
-              roles: samlUser.roles
+              roles: samlUser.roles,
             },
             token: {
               accessToken: token,
               tokenType: 'Bearer',
-              expiresIn: config.jwt?.accessTokenExpiry || '15m'
-            }
+              expiresIn: config.jwt?.accessTokenExpiry || '15m',
+            },
           });
-
         } catch (error) {
           console.error('❌ SAML callback error:', error);
           res.status(500).json({
             error: 'SAML authentication failed',
-            details: error.message
+            details: error.message,
           });
         }
       }
@@ -110,8 +111,8 @@ async function startServer() {
         saml: {
           enabled: config.saml?.enabled || false,
           entryPoint: config.saml?.entryPoint,
-          issuer: config.saml?.issuer
-        }
+          issuer: config.saml?.issuer,
+        },
       });
     });
 
@@ -166,7 +167,6 @@ async function startServer() {
         process.exit(0);
       });
     });
-
   } catch (error) {
     console.error('❌ Server startup failed:', error);
     process.exit(1);
