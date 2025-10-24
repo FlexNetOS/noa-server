@@ -127,6 +127,7 @@ html = f"""
     </div>
     <div class="card">
       <h2>Swarm Hooks</h2>
+      <!-- Use the `newline` variable to join lines for HTML output to avoid f-string escape issues with backslashes -->
       <pre>{newline.join(recent_hooks) if recent_hooks else "No hook events recorded."}</pre>
     </div>
   </section>
