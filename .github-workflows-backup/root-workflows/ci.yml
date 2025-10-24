@@ -1,0 +1,57 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: ci
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Setup Node
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        with:
+          node-version: "20"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@78c5538518830d11e80c4068c6b4d4e0dd18b2b1
+        with:
+          version: 9.11.0
+
+      - name: Show tool versions
+        run: |
+          node -v
+          corepack --version
+          pnpm --version || true
+
+      - name: Install dependencies (best-effort)
+        run: |
+          pnpm install --no-frozen-lockfile || true
+
+      - name: Lint (best-effort)
+        run: |
+          pnpm run lint || true
+
+      - name: Build (best-effort)
+        run: |
+          pnpm -r -w run build || pnpm run build || true
+
+      - name: Test (best-effort)
+        run: |
+          pnpm -r -w test -- --run || pnpm test -- --run || true

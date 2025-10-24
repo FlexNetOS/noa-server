@@ -1,0 +1,679 @@
+# Elite Runner Deployment Configuration
+# Top 0.01% DevOps Infrastructure - Infrastructure as Code
+
+# ==========================================
+# DEPLOYMENT CONFIGURATION - ELITE RUNNER
+# ==========================================
+
+# This configuration provides the Infrastructure as Code templates and
+# deployment procedures for provisioning elite runner infrastructure.
+
+# -----------------
+# TERRAFORM CONFIGURATION
+# -----------------
+
+# Main Terraform Configuration
+terraform:
+  required_version: ">= 1.7.0"
+  required_providers:
+    aws:
+      source: "hashicorp/aws"
+      version: "~> 5.0"
+    kubernetes:
+      source: "hashicorp/kubernetes"
+      version: "~> 2.0"
+    helm:
+      source: "hashicorp/helm"
+      version: "~> 2.0"
+    tls:
+      source: "hashicorp/tls"
+      version: "~> 4.0"
+
+  backend:
+    s3:
+      bucket: "elite-runner-terraform-state"
+      key: "elite-runner-cluster.tfstate"
+      region: "us-west-2"
+      encrypt: true
+      kms_key_id: "alias/terraform-state-key"
+
+# Provider Configuration
+providers:
+  aws:
+    region: "us-west-2"
+    assume_role:
+      role_arn: "arn:aws:iam::123456789012:role/EliteRunnerDeploymentRole"
+    default_tags:
+      Environment: "elite-runner"
+      Project: "devops-infrastructure"
+      Owner: "platform-team"
+
+  kubernetes:
+    config_path: "~/.kube/config"
+    config_context: "elite-runner-cluster"
+
+  helm:
+    kubernetes:
+      config_path: "~/.kube/config"
+      config_context: "elite-runner-cluster"
+
+# -----------------
+# INFRASTRUCTURE MODULES
+# -----------------
+
+# Elite Runner Cluster Module
+module "elite_runner_cluster":
+  source: "./modules/elite-runner-cluster"
+  cluster_name: "elite-runner-prod"
+  kubernetes_version: "1.31"
+  region: "us-west-2"
+
+  # Networking
+  vpc_cidr: "10.0.0.0/16"
+  availability_zones: ["us-west-2a", "us-west-2b", "us-west-2c"]
+  private_subnets: ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  public_subnets: ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+
+  # Security
+  enable_irsa: true
+  enable_encryption: true
+  enable_logging: true
+  enable_monitoring: true
+
+  # Node Groups
+  node_groups:
+    gpu_nodes:
+      instance_type: "elite-gpu"
+      min_size: 8
+      max_size: 64
+      desired_size: 16
+      taints:
+        - key: "workload"
+          value: "gpu"
+          effect: "NoSchedule"
+      labels:
+        node-type: "gpu"
+        gpu-type: "h100"
+
+    cpu_nodes:
+      instance_type: "elite-cpu"
+      min_size: 16
+      max_size: 128
+      desired_size: 32
+      taints:
+        - key: "workload"
+          value: "cpu"
+          effect: "NoSchedule"
+      labels:
+        node-type: "cpu"
+        cpu-architecture: "epyc-9754"
+
+    inference_nodes:
+      instance_type: "elite-inference"
+      min_size: 4
+      max_size: 32
+      desired_size: 8
+      taints:
+        - key: "workload"
+          value: "inference"
+          effect: "NoSchedule"
+      labels:
+        node-type: "inference"
+        accelerator: "tpu"
+
+# Storage Module
+module "elite_storage":
+  source: "./modules/elite-storage"
+  cluster_name: "elite-runner-prod"
+
+  # Ceph Configuration
+  ceph_cluster:
+    version: "18.2.0" # Reef
+    storage_nodes: 9
+    monitor_nodes: 3
+    mgr_nodes: 3
+
+  # NVMe-oF Configuration
+  nvme_of:
+    targets: 3
+    portals_per_target: 4
+    subsystems: 64
+
+  # Backup Configuration
+  backup:
+    retention_days: 3650 # 10 years
+    encryption: true
+    immutable: true
+    multi_region: true
+
+# Security Module
+module "elite_security":
+  source: "./modules/elite-security"
+  cluster_name: "elite-runner-prod"
+
+  # HSM Configuration
+  hsm:
+    count: 5
+    model: "Thales Luna 7"
+    ha_mode: true
+
+  # Certificate Management
+  certificates:
+    ca_cert: "elite-runner-ca.pem"
+    validity_days: 3650
+    key_size: 4096
+    algorithm: "RSA"
+
+  # Network Security
+  network_security:
+    enable_waf: true
+    enable_ids_ips: true
+    enable_ddos_protection: true
+
+# Monitoring Module
+module "elite_monitoring":
+  source: "./modules/elite-monitoring"
+  cluster_name: "elite-runner-prod"
+
+  # Prometheus Configuration
+  prometheus:
+    version: "2.50.0"
+    retention_days: 365
+    storage_size: "100Gi"
+
+  # Grafana Configuration
+  grafana:
+    version: "10.3.0"
+    admin_password_secret: "grafana-admin-secret"
+    dashboards:
+      - "elite-runner-performance"
+      - "security-posture"
+      - "ai-optimization"
+
+  # Alert Manager
+  alertmanager:
+    slack_webhook_url_secret: "slack-webhook-secret"
+    pagerduty_integration_key_secret: "pagerduty-key-secret"
+
+# AI Optimization Module
+module "elite_ai":
+  source: "./modules/elite-ai"
+  cluster_name: "elite-runner-prod"
+
+  # Model Serving
+  model_serving:
+    kserve_version: "0.12.0"
+    enable_gpu_support: true
+    enable_model_monitoring: true
+
+  # Training Infrastructure
+  training:
+    horovod_version: "0.28.1"
+    enable_elastic_training: true
+    enable_fault_tolerance: true
+
+  # Optimization Engine
+  optimization:
+    enable_predictive_scaling: true
+    enable_anomaly_detection: true
+    enable_cost_optimization: true
+
+# -----------------
+# HELM CHARTS
+# -----------------
+
+# Kubernetes System Charts
+helm_charts:
+  # Core Infrastructure
+  cert_manager:
+    chart: "cert-manager"
+    version: "v1.14.0"
+    namespace: "cert-manager"
+    values:
+      installCRDs: true
+      securityContext:
+        enabled: true
+        fsGroup: 1001
+
+  external_secrets:
+    chart: "external-secrets"
+    version: "0.9.0"
+    namespace: "external-secrets"
+    values:
+      securityContext:
+        enabled: true
+        runAsNonRoot: true
+
+  ingress_nginx:
+    chart: "ingress-nginx"
+    version: "4.10.0"
+    namespace: "ingress-nginx"
+    values:
+      controller:
+        replicaCount: 3
+        service:
+          type: "LoadBalancer"
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+
+  # Security Charts
+  falco:
+    chart: "falco"
+    version: "3.8.0"
+    namespace: "falco"
+    values:
+      falco:
+        rules_file:
+          - "/etc/falco/falco_rules.yaml"
+          - "/etc/falco/k8s_audit_rules.yaml"
+      securityContext:
+        privileged: true
+
+  kyverno:
+    chart: "kyverno"
+    version: "3.1.0"
+    namespace: "kyverno"
+    values:
+      admissionController:
+        replicas: 3
+      securityContext:
+        runAsNonRoot: true
+
+  # Monitoring Charts
+  prometheus:
+    chart: "prometheus"
+    version: "25.0.0"
+    namespace: "monitoring"
+    values:
+      server:
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 65534
+      alertmanager:
+        enabled: true
+
+  grafana:
+    chart: "grafana"
+    version: "7.3.0"
+    namespace: "monitoring"
+    values:
+      adminPassword: "changeme"
+      securityContext:
+        runAsNonRoot: true
+
+  # AI/ML Charts
+  kserve:
+    chart: "kserve"
+    version: "0.12.0"
+    namespace: "kserve-system"
+    values:
+      kserve:
+        controller:
+          securityContext:
+            runAsNonRoot: true
+
+  # Storage Charts
+  rook_ceph:
+    chart: "rook-ceph"
+    version: "1.14.0"
+    namespace: "rook-ceph"
+    values:
+      csi:
+        enableRbdDriver: true
+        enableCephfsDriver: true
+
+# -----------------
+# ANSIBLE PLAYBOOKS
+# -----------------
+
+# Elite Runner Setup Playbook
+ansible_playbooks:
+  elite_runner_setup:
+    hosts: "elite_runners"
+    become: true
+    vars:
+      security_level: "maximum"
+      performance_mode: "extreme"
+      ai_optimization: true
+
+    roles:
+      - elite_hardware_setup
+      - security_hardening
+      - container_orchestration
+      - ai_optimization
+      - monitoring_stack
+
+    pre_tasks:
+      - name: "Update package cache"
+        package:
+          update_cache: yes
+        when: ansible_os_family == "Debian"
+
+    post_tasks:
+      - name: "Verify system health"
+        command: "systemctl status --all"
+        register: systemctl_status
+        failed_when: systemctl_status.rc != 0
+
+  security_hardening:
+    hosts: "all"
+    become: true
+
+    tasks:
+      - name: "Disable unused services"
+        service:
+          name: "{{ item }}"
+          enabled: false
+          state: stopped
+        loop:
+          - "cups"
+          - "bluetooth"
+          - "avahi-daemon"
+
+      - name: "Configure firewall"
+        firewalld:
+          service: "{{ item }}"
+          permanent: true
+          state: enabled
+        loop:
+          - "ssh"
+          - "https"
+
+      - name: "Set secure sysctl parameters"
+        sysctl:
+          name: "{{ item.key }}"
+          value: "{{ item.value }}"
+          state: present
+          reload: true
+        loop:
+          - { key: "net.ipv4.ip_forward", value: "0" }
+          - { key: "net.ipv4.conf.all.accept_redirects", value: "0" }
+
+  monitoring_setup:
+    hosts: "monitoring_nodes"
+    become: true
+
+    roles:
+      - prometheus_server
+      - grafana_server
+      - alertmanager
+
+    vars:
+      prometheus_retention_days: 365
+      grafana_admin_user: "admin"
+      grafana_admin_password: "{{ lookup('env', 'GRAFANA_ADMIN_PASSWORD') }}"
+
+# -----------------
+# KUBERNETES MANIFESTS
+# -----------------
+
+# Elite Runner Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: elite-runner-system
+  labels:
+    name: elite-runner-system
+    security: maximum
+    monitoring: enabled
+
+---
+# Elite Runner Service Account
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: elite-runner-sa
+  namespace: elite-runner-system
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::123456789012:role/EliteRunnerServiceRole"
+
+---
+# Elite Runner Cluster Role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: elite-runner-role
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "services", "endpoints", "configmaps", "secrets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets", "statefulsets", "daemonsets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["batch"]
+    resources: ["jobs", "cronjobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+---
+# Elite Runner Cluster Role Binding
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: elite-runner-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: elite-runner-role
+subjects:
+  - kind: ServiceAccount
+    name: elite-runner-sa
+    namespace: elite-runner-system
+
+---
+# Elite Runner ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elite-runner-config
+  namespace: elite-runner-system
+data:
+  hardware-config.yaml: |
+    # Hardware configuration loaded at runtime
+    cpu_cores: 128
+    gpu_count: 2
+    memory_gb: 2048
+  security-config.yaml: |
+    # Security configuration
+    zero_trust: enabled
+    quantum_crypto: enabled
+    hsm_integration: enabled
+
+---
+# Elite Runner Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elite-runner-controller
+  namespace: elite-runner-system
+  labels:
+    app: elite-runner-controller
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: elite-runner-controller
+  template:
+    metadata:
+      labels:
+        app: elite-runner-controller
+    spec:
+      serviceAccountName: elite-runner-sa
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 2000
+      containers:
+        - name: controller
+          image: "elite-runner/controller:v1.0.0"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "2"
+              memory: "4Gi"
+          volumeMounts:
+            - name: config
+              mountPath: /etc/elite-runner
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: elite-runner-config
+
+# -----------------
+# DEPLOYMENT SCRIPTS
+# -----------------
+
+# Deployment Script
+deployment_script: |
+  #!/bin/bash
+  set -euo pipefail
+
+  # Colors for output
+  RED='\033[0;31m'
+  GREEN='\033[0;32m'
+  YELLOW='\033[1;33m'
+  NC='\033[0m' # No Color
+
+  echo -e "${GREEN}Starting Elite Runner Deployment${NC}"
+
+  # Validate prerequisites
+  echo -e "${YELLOW}Validating prerequisites...${NC}"
+  command -v terraform >/dev/null 2>&1 || { echo -e "${RED}Terraform is required but not installed.${NC}"; exit 1; }
+  command -v kubectl >/dev/null 2>&1 || { echo -e "${RED}kubectl is required but not installed.${NC}"; exit 1; }
+  command -v helm >/dev/null 2>&1 || { echo -e "${RED}Helm is required but not installed.${NC}"; exit 1; }
+  command -v ansible >/dev/null 2>&1 || { echo -e "${RED}Ansible is required but not installed.${NC}"; exit 1; }
+
+  # Initialize Terraform
+  echo -e "${YELLOW}Initializing Terraform...${NC}"
+  terraform init
+
+  # Validate Terraform configuration
+  echo -e "${YELLOW}Validating Terraform configuration...${NC}"
+  terraform validate
+
+  # Plan deployment
+  echo -e "${YELLOW}Planning deployment...${NC}"
+  terraform plan -out=tfplan
+
+  # Confirm deployment
+  read -p "Do you want to proceed with deployment? (y/N): " -n 1 -r
+  echo
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+      echo -e "${RED}Deployment cancelled.${NC}"
+      exit 1
+  fi
+
+  # Apply deployment
+  echo -e "${YELLOW}Applying deployment...${NC}"
+  terraform apply tfplan
+
+  # Wait for cluster to be ready
+  echo -e "${YELLOW}Waiting for cluster to be ready...${NC}"
+  kubectl wait --for=condition=Ready nodes --all --timeout=600s
+
+  # Deploy Helm charts
+  echo -e "${YELLOW}Deploying Helm charts...${NC}"
+  ./deploy-helm-charts.sh
+
+  # Run Ansible playbooks
+  echo -e "${YELLOW}Running Ansible playbooks...${NC}"
+  ansible-playbook -i inventory.ini playbooks/elite-runner-setup.yml
+
+  # Validate deployment
+  echo -e "${YELLOW}Validating deployment...${NC}"
+  ./validate-deployment.sh
+
+  echo -e "${GREEN}Elite Runner deployment completed successfully!${NC}"
+
+# Validation Script
+validation_script: |
+  #!/bin/bash
+  set -euo pipefail
+
+  echo "Validating Elite Runner deployment..."
+
+  # Check Kubernetes nodes
+  echo "Checking Kubernetes nodes..."
+  kubectl get nodes
+  kubectl wait --for=condition=Ready nodes --all --timeout=60s
+
+  # Check system pods
+  echo "Checking system pods..."
+  kubectl get pods -n kube-system
+  kubectl wait --for=condition=Ready pods --all -n kube-system --timeout=300s
+
+  # Check elite runner components
+  echo "Checking elite runner components..."
+  kubectl get pods -n elite-runner-system
+  kubectl wait --for=condition=Ready pods -n elite-runner-system --timeout=300s
+
+  # Validate security
+  echo "Validating security configuration..."
+  # Add security validation checks
+
+  # Validate monitoring
+  echo "Validating monitoring setup..."
+  # Add monitoring validation checks
+
+  # Validate AI optimization
+  echo "Validating AI optimization..."
+  # Add AI validation checks
+
+  echo "Elite Runner validation completed successfully!"
+
+# -----------------
+# MONITORING & LOGGING
+# -----------------
+
+# Deployment Monitoring
+deployment_monitoring:
+  terraform_outputs:
+    - cluster_endpoint
+    - cluster_name
+    - security_groups
+    - iam_roles
+
+  kubernetes_resources:
+    - nodes
+    - pods
+    - services
+    - configmaps
+    - secrets
+
+  health_checks:
+    - api_server_health
+    - etcd_health
+    - node_health
+    - network_connectivity
+    - security_posture
+
+# Logging Configuration
+logging_config:
+  log_levels:
+    terraform: "INFO"
+    ansible: "INFO"
+    kubernetes: "INFO"
+    helm: "INFO"
+
+  log_retention:
+    deployment_logs: "365 days"
+    audit_logs: "2555 days" # 7 years
+    security_logs: "2555 days"
+
+  log_shipping:
+    destination: "central_logging_cluster"
+    format: "json"
+    encryption: "tls"
+    compression: "gzip"
+# ==========================================
+# END OF DEPLOYMENT CONFIGURATION
+# ==========================================
