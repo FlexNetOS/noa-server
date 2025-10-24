@@ -27,21 +27,25 @@ jobs:
         run: npm ci
 
       - name: Copilot Code Review
-        uses: copilot/copilot-code-review-action@e2d1b1c4c3e2f1a9b8c7d6e5f4a3b2c1d0e9f8a
+        uses: anthropics/claude-code-action@f8749bd14b87cec4372f05f03ef45d57f3d0db7a
         with:
-          review_type: "pull_request"
-          model: "gpt-4"
-          temperature: 0.2
-          max_tokens: 1000
-          system_message: |
-            You are an expert code reviewer for a Node.js/TypeScript monorepo.
-            Focus on:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            Please review this pull request and provide feedback on:
             - Code quality and best practices
-            - Security vulnerabilities
-            - Performance optimizations
-            - TypeScript type safety
-            - Testing coverage
-            - Documentation completeness
+            - Potential bugs or issues
+            - Performance considerations
+            - Security concerns
+            - Test coverage
+
+            Use the repository's CLAUDE.md for guidance on style and conventions. Be constructive and helpful in your feedback.
+
+            Use \`gh pr comment\` with your Bash tool to leave your review as a comment on the PR.
+
+          claude_args: '--allowed-tools "Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*)"'
 
   copilot-workflow-suggestions:
     name: Copilot Workflow Suggestions
@@ -52,11 +56,21 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Copilot Workflow Analysis
-        uses: copilot/copilot-workflow-suggestions-action@f2d1b1c4c3e2f1a9b8c7d6e5f4a3b2c1d0e9f8a
+        uses: anthropics/claude-code-action@f8749bd14b87cec4372f05f03ef45d57f3d0db7a
         with:
-          analysis_type: "workflow_optimization"
-          context_files: ".github/workflows/*.yml"
-          suggestions_file: "workflow-suggestions.md"
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Analyze the GitHub Actions workflows in this repository and provide suggestions for optimization.
+            Focus on:
+            - Performance improvements
+            - Security enhancements
+            - Best practices
+            - Redundancy reduction
+            - CI/CD efficiency
+
+            Write your analysis to a file called workflow-suggestions.md
+
+          claude_args: '--allowed-tools "Bash(find .github/workflows -name *.yml -exec cat {} \;),Bash(echo > workflow-suggestions.md)"'
 
       - name: Comment workflow suggestions
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
@@ -81,15 +95,11 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Copilot Chat Response
-        uses: copilot/copilot-chat-action@g2d1b1c4c3e2f1a9b8c7d6e5f4a3b2c1d0e9f8a
+        uses: anthropics/claude-code-action@f8749bd14b87cec4372f05f03ef45d57f3d0db7a
         with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: ${{ github.event.comment.body }}
-          context: |
-            Repository: ${{ github.repository }}
-            Issue/PR: ${{ github.event.issue.number || github.event.pull_request.number }}
-            User: ${{ github.event.sender.login }}
-          max_tokens: 2000
-          temperature: 0.7
+          claude_args: '--allowed-tools "Bash(gh pr:*)"'
 
       - name: Post Copilot response
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
