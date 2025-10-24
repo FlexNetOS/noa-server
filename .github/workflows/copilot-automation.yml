@@ -1,0 +1,105 @@
+name: Copilot Workflow Automation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  issue_comment:
+    types: [created]
+
+jobs:
+  copilot-code-review:
+    name: Copilot Code Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Copilot Code Review
+        uses: copilot/copilot-code-review-action@v1
+        with:
+          review_type: 'pull_request'
+          model: 'gpt-4'
+          temperature: 0.2
+          max_tokens: 1000
+          system_message: |
+            You are an expert code reviewer for a Node.js/TypeScript monorepo.
+            Focus on:
+            - Code quality and best practices
+            - Security vulnerabilities
+            - Performance optimizations
+            - TypeScript type safety
+            - Testing coverage
+            - Documentation completeness
+
+  copilot-workflow-suggestions:
+    name: Copilot Workflow Suggestions
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && contains(github.event.pull_request.body, 'workflow')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Copilot Workflow Analysis
+        uses: copilot/copilot-workflow-suggestions-action@v1
+        with:
+          analysis_type: 'workflow_optimization'
+          context_files: '.github/workflows/*.yml'
+          suggestions_file: 'workflow-suggestions.md'
+
+      - name: Comment workflow suggestions
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const suggestions = fs.readFileSync('workflow-suggestions.md', 'utf8');
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🤖 Copilot Workflow Suggestions\n\n${suggestions}`
+            });
+
+  copilot-chat-integration:
+    name: Copilot Chat Integration
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issue_comment' && contains(github.event.comment.body, '@copilot')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Copilot Chat Response
+        uses: copilot/copilot-chat-action@v1
+        with:
+          prompt: ${{ github.event.comment.body }}
+          context: |
+            Repository: ${{ github.repository }}
+            Issue/PR: ${{ github.event.issue.number || github.event.pull_request.number }}
+            User: ${{ github.event.sender.login }}
+          max_tokens: 2000
+          temperature: 0.7
+
+      - name: Post Copilot response
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const response = process.env.COPILOT_RESPONSE;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🤖 Copilot Response\n\n${response}`
+            });
