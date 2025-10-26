@@ -6,10 +6,11 @@ Python examples for llama.cpp neural processing with robust error handling.
 
 import sys
 import os
+import json
 import time
 import traceback
 from pathlib import Path
-from typing import Optional
+from typing import Any, Dict, List, Optional
 
 # ============================================================================
 # SETUP
@@ -150,7 +151,7 @@ def example_embeddings() -> None:
             gpu_layers=0
         )
 
-        texts = [
+        texts: List[str] = [
             "Artificial intelligence is transforming technology.",
             "Machine learning models can process vast amounts of data.",
             "Neural networks are inspired by biological neurons."
@@ -187,7 +188,7 @@ def example_batch_processing() -> None:
             batch_size=4
         )
 
-        prompts = [
+        prompts: List[str] = [
             "Explain REST APIs",
             "What is Docker?",
             "Define microservices",
@@ -202,11 +203,27 @@ def example_batch_processing() -> None:
             temperature=0.7
         )
 
+        batch_output: List[Dict[str, Any]] = []
+
         for i, (prompt, result) in enumerate(zip(prompts, results), 1):
             print(f"Prompt {i}: {prompt}")
             result_text = safe_get(result, 'text', default='[No response]')
             print(f"Response: {str(result_text)[:100]}...")
             print()
+
+            batch_output.append({
+                'prompt': prompt,
+                'response': str(result_text)
+            })
+
+        # Serialize batch results to JSON for logging/debugging
+        print("Batch results JSON:")
+        print(json.dumps(batch_output, indent=2))
+                print(json.dumps(batch_output, indent=2))
+            except TypeError as e:
+                print(f"❌ Error serializing batch results to JSON: {e}")
+                print("Raw batch output:")
+                print(batch_output)
 
         print("✅ Batch processing example complete\n")
 
