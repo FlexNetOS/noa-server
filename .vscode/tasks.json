@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "analyze",
+			"path": "packages/database-optimizer",
+			"problemMatcher": [],
+			"label": "npm: analyze - packages/database-optimizer",
+			"detail": "node --loader ts-node/esm dist/cli.js analyze"
+		}
+	]
+}
