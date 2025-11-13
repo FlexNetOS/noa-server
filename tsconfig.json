@@ -4,6 +4,7 @@
     "module": "NodeNext",
     "noEmit": true,
     "strict": true,
+    "types": ["node", "vitest/globals"],
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
