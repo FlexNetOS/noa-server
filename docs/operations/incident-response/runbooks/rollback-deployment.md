@@ -286,6 +286,7 @@ kubectl logs -n production -l app=api | grep "database"
 ### Deployment Strategies
 
 **Blue-Green Deployment**:
+
 ```bash
 # Deploy new version alongside old
 kubectl apply -f deployment-blue.yaml
@@ -297,6 +298,7 @@ kubectl patch svc api -n production -p \
 ```
 
 **Canary Deployment**:
+
 ```bash
 # Deploy canary with 10% traffic
 kubectl apply -f deployment-canary.yaml
@@ -324,21 +326,21 @@ spec:
   template:
     spec:
       containers:
-      - name: api
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: 8080
-          initialDelaySeconds: 10
-          periodSeconds: 5
-          failureThreshold: 3
+        - name: api
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 3
 ```
 
 ## Emergency Rollback
@@ -385,6 +387,8 @@ Next Steps: Investigation and root cause analysis
 
 ## References
 
-- Kubernetes Rollout Docs: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-back-a-deployment
+- Kubernetes Rollout Docs:
+  https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-back-a-deployment
 - Deployment Strategies: [docs/operations/deployment-strategies.md]
-- Incident Response Plan: [docs/operations/incident-response/INCIDENT_RESPONSE_PLAN.md]
+- Incident Response Plan:
+  [docs/operations/incident-response/INCIDENT_RESPONSE_PLAN.md]

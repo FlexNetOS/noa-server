@@ -25,8 +25,8 @@ export class SQSProvider extends BaseQueueProvider {
         endpoint: this.config.endpoint, // For local development with LocalStack
         maxRetries: this.config.maxRetries || 3,
         retryDelayOptions: {
-          base: this.config.retryDelay || 100
-        }
+          base: this.config.retryDelay || 100,
+        },
       });
 
       // Test connection
@@ -60,7 +60,7 @@ export class SQSProvider extends BaseQueueProvider {
       return this.createHealthStatus(true, {
         connected: true,
         region: this.config.region,
-        endpoint: this.config.endpoint
+        endpoint: this.config.endpoint,
       });
     } catch (error) {
       return this.createHealthStatus(false, { connected: false }, error as Error);
@@ -78,18 +78,23 @@ export class SQSProvider extends BaseQueueProvider {
 
       let totalMessages = 0;
       let totalMessagesNotVisible = 0;
-      const queueDetails: Array<{name: string, url: string, messages?: number}> = [];
+      const queueDetails: Array<{ name: string; url: string; messages?: number }> = [];
 
       // Get attributes for each queue
       for (const queueUrl of queueUrls) {
         try {
           const attributes = await this.sqs!.getQueueAttributes({
             QueueUrl: queueUrl,
-            AttributeNames: ['ApproximateNumberOfMessages', 'ApproximateNumberOfMessagesNotVisible']
+            AttributeNames: [
+              'ApproximateNumberOfMessages',
+              'ApproximateNumberOfMessagesNotVisible',
+            ],
           }).promise();
 
           const messages = parseInt(attributes.Attributes?.ApproximateNumberOfMessages || '0');
-          const messagesNotVisible = parseInt(attributes.Attributes?.ApproximateNumberOfMessagesNotVisible || '0');
+          const messagesNotVisible = parseInt(
+            attributes.Attributes?.ApproximateNumberOfMessagesNotVisible || '0'
+          );
 
           totalMessages += messages;
           totalMessagesNotVisible += messagesNotVisible;
@@ -98,7 +103,7 @@ export class SQSProvider extends BaseQueueProvider {
           queueDetails.push({
             name: queueName,
             url: queueUrl,
-            messages: messages + messagesNotVisible
+            messages: messages + messagesNotVisible,
           });
         } catch (error) {
           // Skip queues we can't access
@@ -114,7 +119,7 @@ export class SQSProvider extends BaseQueueProvider {
           region: this.config.region,
           queues: queueDetails,
           messagesVisible: totalMessages,
-          messagesNotVisible: totalMessagesNotVisible
+          messagesNotVisible: totalMessagesNotVisible,
         }
       );
     } catch (error) {
@@ -134,7 +139,7 @@ export class SQSProvider extends BaseQueueProvider {
     const messageData = JSON.stringify({
       ...message,
       id: messageId,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     const params: AWS.SQS.SendMessageRequest = {
@@ -143,17 +148,17 @@ export class SQSProvider extends BaseQueueProvider {
       MessageAttributes: {
         MessageId: {
           DataType: 'String',
-          StringValue: messageId
+          StringValue: messageId,
         },
         Priority: {
           DataType: 'Number',
-          StringValue: message.metadata.priority.toString()
+          StringValue: message.metadata.priority.toString(),
         },
         RetryCount: {
           DataType: 'Number',
-          StringValue: message.metadata.retryCount.toString()
-        }
-      }
+          StringValue: message.metadata.retryCount.toString(),
+        },
+      },
     };
 
     // Add delay if specified
@@ -163,7 +168,11 @@ export class SQSProvider extends BaseQueueProvider {
 
     const result = await this.sqs.sendMessage(params).promise();
 
-    this.emitProviderEvent('message_sent', { queueName, messageId, sqsMessageId: result.MessageId });
+    this.emitProviderEvent('message_sent', {
+      queueName,
+      messageId,
+      sqsMessageId: result.MessageId,
+    });
     return messageId;
   }
 
@@ -181,7 +190,7 @@ export class SQSProvider extends BaseQueueProvider {
       MaxNumberOfMessages: 1,
       MessageAttributeNames: ['All'],
       VisibilityTimeout: this.config.visibilityTimeout || 30,
-      WaitTimeSeconds: this.config.waitTimeSeconds || 0
+      WaitTimeSeconds: this.config.waitTimeSeconds || 0,
     };
 
     const result = await this.sqs.receiveMessage(params).promise();
@@ -204,7 +213,7 @@ export class SQSProvider extends BaseQueueProvider {
       this.emitProviderEvent('message_received', {
         queueName,
         messageId: message.id,
-        sqsMessageId: sqsMessage.MessageId
+        sqsMessageId: sqsMessage.MessageId,
       });
 
       return message;
@@ -212,7 +221,7 @@ export class SQSProvider extends BaseQueueProvider {
       this.emitProviderEvent('message_parse_error', {
         queueName,
         error,
-        messageBody: sqsMessage.Body
+        messageBody: sqsMessage.Body,
       });
       throw new Error(`Failed to parse message: ${(error as Error).message}`);
     }
@@ -240,10 +249,12 @@ export class SQSProvider extends BaseQueueProvider {
 
     const queueUrl = await this.getQueueUrl(queueName);
 
-    await this.sqs.deleteMessage({
-      QueueUrl: queueUrl,
-      ReceiptHandle: receiptHandle
-    }).promise();
+    await this.sqs
+      .deleteMessage({
+        QueueUrl: queueUrl,
+        ReceiptHandle: receiptHandle,
+      })
+      .promise();
 
     this.emitProviderEvent('message_deleted', { queueName, receiptHandle });
   }
@@ -257,13 +268,17 @@ export class SQSProvider extends BaseQueueProvider {
 
     const queueUrl = await this.getQueueUrl(queueName);
 
-    const attributes = await this.sqs.getQueueAttributes({
-      QueueUrl: queueUrl,
-      AttributeNames: ['ApproximateNumberOfMessages', 'ApproximateNumberOfMessagesNotVisible']
-    }).promise();
+    const attributes = await this.sqs
+      .getQueueAttributes({
+        QueueUrl: queueUrl,
+        AttributeNames: ['ApproximateNumberOfMessages', 'ApproximateNumberOfMessagesNotVisible'],
+      })
+      .promise();
 
     const visible = parseInt(attributes.Attributes?.ApproximateNumberOfMessages || '0');
-    const notVisible = parseInt(attributes.Attributes?.ApproximateNumberOfMessagesNotVisible || '0');
+    const notVisible = parseInt(
+      attributes.Attributes?.ApproximateNumberOfMessagesNotVisible || '0'
+    );
 
     return visible + notVisible;
   }
@@ -278,12 +293,12 @@ export class SQSProvider extends BaseQueueProvider {
     const params: AWS.SQS.CreateQueueRequest = {
       QueueName: queueName,
       Attributes: {
-        'VisibilityTimeout': (options?.visibilityTimeout || 30).toString(),
-        'MessageRetentionPeriod': (options?.messageRetentionPeriod || 345600).toString(), // 4 days
-        'MaximumMessageSize': (options?.maximumMessageSize || 262144).toString(), // 256 KB
-        'DelaySeconds': (options?.delaySeconds || 0).toString(),
-        'ReceiveMessageWaitTimeSeconds': (options?.waitTimeSeconds || 0).toString()
-      }
+        VisibilityTimeout: (options?.visibilityTimeout || 30).toString(),
+        MessageRetentionPeriod: (options?.messageRetentionPeriod || 345600).toString(), // 4 days
+        MaximumMessageSize: (options?.maximumMessageSize || 262144).toString(), // 256 KB
+        DelaySeconds: (options?.delaySeconds || 0).toString(),
+        ReceiveMessageWaitTimeSeconds: (options?.waitTimeSeconds || 0).toString(),
+      },
     };
 
     const result = await this.sqs.createQueue(params).promise();
@@ -302,9 +317,11 @@ export class SQSProvider extends BaseQueueProvider {
 
     const queueUrl = await this.getQueueUrl(queueName);
 
-    await this.sqs.deleteQueue({
-      QueueUrl: queueUrl
-    }).promise();
+    await this.sqs
+      .deleteQueue({
+        QueueUrl: queueUrl,
+      })
+      .promise();
 
     this.queueUrls.delete(queueName);
     this.emitProviderEvent('queue_deleted', { queueName, queueUrl });
@@ -319,9 +336,11 @@ export class SQSProvider extends BaseQueueProvider {
 
     const queueUrl = await this.getQueueUrl(queueName);
 
-    await this.sqs.purgeQueue({
-      QueueUrl: queueUrl
-    }).promise();
+    await this.sqs
+      .purgeQueue({
+        QueueUrl: queueUrl,
+      })
+      .promise();
 
     this.emitProviderEvent('queue_purged', { queueName, queueUrl });
   }
@@ -337,9 +356,11 @@ export class SQSProvider extends BaseQueueProvider {
 
     // Try to get existing queue URL
     try {
-      const result = await this.sqs.getQueueUrl({
-        QueueName: queueName
-      }).promise();
+      const result = await this.sqs
+        .getQueueUrl({
+          QueueName: queueName,
+        })
+        .promise();
 
       const queueUrl = result.QueueUrl!;
       this.queueUrls.set(queueName, queueUrl);

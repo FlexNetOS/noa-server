@@ -76,7 +76,7 @@ export class WorkerManager extends EventEmitter {
 
     // Stop all workers
     const stopPromises: Promise<void>[] = [];
-    this.workers.forEach(worker => {
+    this.workers.forEach((worker) => {
       stopPromises.push(worker.stop());
     });
 
@@ -107,7 +107,7 @@ export class WorkerManager extends EventEmitter {
     const workerId = `worker-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const worker = new JobWorker(this.queueManager, {
       timeout: this.config.workerTimeout,
-      queues: ['jobs-default'] // Default queue
+      queues: ['jobs-default'], // Default queue
     });
 
     // Set up worker event handlers
@@ -265,14 +265,17 @@ export class WorkerManager extends EventEmitter {
     const stats = this.getStats();
     const utilizationRate = stats.totalLoad / (stats.workerCount * stats.averageLoadPerWorker || 1);
 
-    if (utilizationRate > this.config.autoScaling.scaleUpThreshold &&
-        stats.workerCount < this.config.maxWorkers) {
+    if (
+      utilizationRate > this.config.autoScaling.scaleUpThreshold &&
+      stats.workerCount < this.config.maxWorkers
+    ) {
       // Scale up
       await this.createWorker();
       this.emit('auto-scaled-up', { utilizationRate, newWorkerCount: stats.workerCount + 1 });
-
-    } else if (utilizationRate < this.config.autoScaling.scaleDownThreshold &&
-               stats.workerCount > this.config.minWorkers) {
+    } else if (
+      utilizationRate < this.config.autoScaling.scaleDownThreshold &&
+      stats.workerCount > this.config.minWorkers
+    ) {
       // Scale down - remove the least loaded worker
       const leastLoadedWorkerId = this.getLeastLoadedWorkerId();
       if (leastLoadedWorkerId) {
@@ -329,7 +332,7 @@ export class WorkerManager extends EventEmitter {
       totalLoad,
       averageLoadPerWorker,
       loadBalancingStrategy: this.config.loadBalancingStrategy,
-      autoScalingEnabled: this.config.autoScaling.enabled
+      autoScalingEnabled: this.config.autoScaling.enabled,
     };
   }
 
@@ -345,7 +348,7 @@ export class WorkerManager extends EventEmitter {
         id: workerId,
         load: this.workerLoad.get(workerId) || 0,
         available: stats.isRunning && !stats.isProcessing,
-        stats
+        stats,
       });
     });
 
@@ -366,7 +369,6 @@ export class WorkerManager extends EventEmitter {
         promises.push(this.createWorker());
       }
       await Promise.allSettled(promises);
-
     } else if (targetCount < currentCount) {
       // Scale down
       const workersToRemove: string[] = [];
@@ -383,7 +385,7 @@ export class WorkerManager extends EventEmitter {
       }
 
       const promises: Promise<void>[] = [];
-      workersToRemove.forEach(workerId => {
+      workersToRemove.forEach((workerId) => {
         promises.push(this.removeWorker(workerId));
       });
       await Promise.allSettled(promises);

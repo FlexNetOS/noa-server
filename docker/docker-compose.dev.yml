@@ -15,7 +15,7 @@ services:
       - ../mcp:/app/mcp:cached
       - ../config:/app/config:cached
       - mcp-node-modules:/app/node_modules
-    command: ["npm", "run", "dev"]
+    command: ['npm', 'run', 'dev']
     deploy:
       resources:
         limits:
@@ -32,7 +32,7 @@ services:
     volumes:
       - ../claude-flow:/app/claude-flow:cached
       - claude-flow-node-modules:/app/node_modules
-    command: ["npx", "claude-flow", "mcp", "start", "--dev"]
+    command: ['npx', 'claude-flow', 'mcp', 'start', '--dev']
 
   ui-dashboard:
     build:
@@ -44,7 +44,7 @@ services:
       - ../packages/contains-studio-dashboard/src:/app/packages/contains-studio-dashboard/src:cached
       - ../packages/contains-studio-dashboard/public:/app/packages/contains-studio-dashboard/public:cached
       - ui-node-modules:/app/packages/contains-studio-dashboard/node_modules
-    command: ["npm", "run", "dev"]
+    command: ['npm', 'run', 'dev']
 
   llama-cpp:
     environment:

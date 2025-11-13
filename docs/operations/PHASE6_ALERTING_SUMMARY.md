@@ -2,13 +2,17 @@
 
 ## Overview
 
-Phase 6 of the Noa Server upgrade plan implements a comprehensive automated alerting, incident response, and performance monitoring system. This system provides multi-provider alerting, intelligent incident management, and real-time performance dashboards to ensure rapid detection and response to issues.
+Phase 6 of the Noa Server upgrade plan implements a comprehensive automated
+alerting, incident response, and performance monitoring system. This system
+provides multi-provider alerting, intelligent incident management, and real-time
+performance dashboards to ensure rapid detection and response to issues.
 
 ## Implemented Components
 
 ### 1. Automated Alerting System (`packages/alerting/`)
 
 #### Core Features
+
 - **Multi-Provider Support**: PagerDuty and OpsGenie integration
 - **Alert Management**: Deduplication, grouping, and suppression
 - **Escalation Policies**: Multi-level escalation with configurable delays
@@ -16,6 +20,7 @@ Phase 6 of the Noa Server upgrade plan implements a comprehensive automated aler
 - **Maintenance Windows**: Automatic alert suppression during maintenance
 
 #### Key Files
+
 - `AlertManager.ts` - Core alert routing and management
 - `IncidentManager.ts` - Incident lifecycle coordination
 - `providers/PagerDutyProvider.ts` - PagerDuty integration
@@ -25,6 +30,7 @@ Phase 6 of the Noa Server upgrade plan implements a comprehensive automated aler
 - `escalation/EscalationPolicy.ts` - Escalation coordination
 
 #### Test Coverage
+
 - `tests/AlertManager.test.ts` - Alert management tests
 - `tests/IncidentManager.test.ts` - Incident management tests
 - `tests/RuleEvaluator.test.ts` - Rule evaluation tests
@@ -33,6 +39,7 @@ Phase 6 of the Noa Server upgrade plan implements a comprehensive automated aler
 ### 2. Incident Response Documentation (`docs/operations/incident-response/`)
 
 #### Incident Response Plan
+
 - **INCIDENT_RESPONSE_PLAN.md**: Complete incident response framework
   - Severity classification (SEV1-SEV4)
   - Response roles and responsibilities
@@ -41,6 +48,7 @@ Phase 6 of the Noa Server upgrade plan implements a comprehensive automated aler
   - On-call procedures
 
 #### Playbooks (Complete Response Procedures)
+
 1. **database-failure.md**: Database outage response
    - Severity: SEV1 (Critical)
    - Steps: Verify, diagnose, restart, failover
@@ -67,6 +75,7 @@ Phase 6 of the Noa Server upgrade plan implements a comprehensive automated aler
    - Duration: 1-4 hours
 
 #### Runbooks (Quick Reference Guides)
+
 1. **restart-service.md**: Service restart procedures
 2. **scale-deployment.md**: Scaling applications
 3. **rollback-deployment.md**: Deployment rollback
@@ -77,6 +86,7 @@ Phase 6 of the Noa Server upgrade plan implements a comprehensive automated aler
 #### Grafana Dashboards
 
 **1. API Performance Dashboard** (`api-performance.json`)
+
 - Request rate and throughput
 - Response time (P95, P99)
 - Error rate tracking
@@ -85,6 +95,7 @@ Phase 6 of the Noa Server upgrade plan implements a comprehensive automated aler
 - Status code distribution
 
 **2. Database Performance Dashboard** (`database-performance.json`)
+
 - Connection pool monitoring
 - Query duration (P95)
 - Transactions per second
@@ -94,6 +105,7 @@ Phase 6 of the Noa Server upgrade plan implements a comprehensive automated aler
 - Deadlock detection
 
 **3. Infrastructure Dashboard** (`infrastructure.json`)
+
 - Cluster CPU/Memory usage
 - Pod status monitoring
 - Node health tracking
@@ -102,6 +114,7 @@ Phase 6 of the Noa Server upgrade plan implements a comprehensive automated aler
 - Container restart tracking
 
 **4. SLA/SLO Tracking Dashboard** (`sla-tracking.json`)
+
 - API availability (99.9% target)
 - P95 latency SLO (<2s target)
 - Error budget tracking
@@ -113,12 +126,14 @@ Phase 6 of the Noa Server upgrade plan implements a comprehensive automated aler
 #### Alert Rules
 
 **Prometheus Alert Rules** (`prometheus-rules.yml`)
+
 - API alerts: High latency, error rates
 - Database alerts: Connections, downtime, replication lag
 - Infrastructure alerts: CPU, memory, pod crashes
 - SLA alerts: Availability breach, error budget
 
 **Grafana Alert Rules** (`grafana-alerts.yml`)
+
 - Application alerts with conditions
 - Contact point configuration (PagerDuty, OpsGenie, Slack)
 - Notification policies by severity
@@ -127,12 +142,14 @@ Phase 6 of the Noa Server upgrade plan implements a comprehensive automated aler
 ## Architecture
 
 ### Alert Flow
+
 ```
 Metric Source → Rule Evaluation → Alert Generation → Deduplication →
 Provider Routing → Incident Creation → Escalation → Resolution → Post-Mortem
 ```
 
 ### Components Integration
+
 ```
 Prometheus Metrics
     ↓
@@ -152,17 +169,20 @@ Resolution & Post-Mortem
 ## Performance Targets
 
 ### Alert Response Time
+
 - **Target**: <30 seconds from trigger to notification
 - **Critical Alerts**: <10 seconds
 - **Deduplication Window**: 5 minutes (configurable)
 
 ### Incident Response Times
+
 - **SEV1 MTTA**: 5 minutes (Mean Time To Acknowledge)
 - **SEV1 MTTR**: 1 hour (Mean Time To Resolve)
 - **SEV2 MTTA**: 15 minutes
 - **SEV2 MTTR**: 4 hours
 
 ### SLA Targets
+
 - **API Availability**: 99.9% (43.2 minutes downtime/month)
 - **Database Availability**: 99.95% (21.6 minutes downtime/month)
 - **P95 Latency**: <2 seconds
@@ -171,6 +191,7 @@ Resolution & Post-Mortem
 ## Configuration
 
 ### Environment Variables
+
 ```bash
 # PagerDuty
 PAGERDUTY_API_KEY=your-api-key
@@ -187,29 +208,31 @@ LOG_LEVEL=info
 ```
 
 ### Alert Manager Configuration
+
 ```typescript
 const alertManager = new AlertManager({
   providers: [
     {
       type: 'pagerduty',
       apiKey: process.env.PAGERDUTY_API_KEY!,
-      routingKey: process.env.PAGERDUTY_ROUTING_KEY!
+      routingKey: process.env.PAGERDUTY_ROUTING_KEY!,
     },
     {
       type: 'opsgenie',
-      apiKey: process.env.OPSGENIE_API_KEY!
-    }
+      apiKey: process.env.OPSGENIE_API_KEY!,
+    },
   ],
   enableDeduplication: true,
   deduplicationWindow: 300,
   enableGrouping: true,
-  groupingWindow: 60
+  groupingWindow: 60,
 });
 ```
 
 ## Deployment
 
 ### Install Dependencies
+
 ```bash
 cd /home/deflex/noa-server/packages/alerting
 npm install
@@ -218,6 +241,7 @@ npm test
 ```
 
 ### Deploy Grafana Dashboards
+
 ```bash
 # Copy dashboards to Grafana provisioning directory
 cp docs/operations/dashboards/grafana/*.json /etc/grafana/provisioning/dashboards/
@@ -230,6 +254,7 @@ kubectl rollout restart deployment/grafana -n monitoring
 ```
 
 ### Deploy Prometheus Alert Rules
+
 ```bash
 # Apply alert rules
 kubectl create configmap prometheus-rules \
@@ -242,6 +267,7 @@ kubectl patch prometheus prometheus -n monitoring --type merge \
 ```
 
 ### Configure Alert Providers
+
 ```bash
 # Create secret for provider credentials
 kubectl create secret generic alerting-credentials \
@@ -256,6 +282,7 @@ kubectl apply -f k8s/alerting-deployment.yaml
 ## Testing
 
 ### Run Unit Tests
+
 ```bash
 cd packages/alerting
 npm test
@@ -263,6 +290,7 @@ npm run test:coverage
 ```
 
 ### Test Alert Flow
+
 ```bash
 # Send test alert
 curl -X POST http://localhost:8080/admin/test-alert \
@@ -277,6 +305,7 @@ curl -X POST http://localhost:8080/admin/test-alert \
 ```
 
 ### Test Incident Creation
+
 ```bash
 # Create test incident
 curl -X POST http://localhost:8080/admin/test-incident \
@@ -291,6 +320,7 @@ curl -X POST http://localhost:8080/admin/test-incident \
 ## Monitoring
 
 ### Key Metrics to Monitor
+
 - Alert response time
 - Incident resolution time
 - False positive rate
@@ -300,6 +330,7 @@ curl -X POST http://localhost:8080/admin/test-incident \
 - Error budget consumption
 
 ### Dashboard Access
+
 - **Grafana**: https://grafana.noaserver.com
 - **Prometheus**: https://prometheus.noaserver.com
 - **PagerDuty**: https://noaserver.pagerduty.com
@@ -308,6 +339,7 @@ curl -X POST http://localhost:8080/admin/test-incident \
 ## Best Practices
 
 ### Alert Tuning
+
 1. **Reduce Noise**: Adjust thresholds to minimize false positives
 2. **Meaningful Alerts**: Every alert should be actionable
 3. **Clear Messages**: Include context and runbook links
@@ -315,6 +347,7 @@ curl -X POST http://localhost:8080/admin/test-incident \
 5. **Regular Review**: Weekly review of alert patterns
 
 ### Incident Response
+
 1. **Document Everything**: Keep detailed timeline
 2. **Communicate Often**: Regular status updates
 3. **Blameless Culture**: Focus on systems, not individuals
@@ -322,6 +355,7 @@ curl -X POST http://localhost:8080/admin/test-incident \
 5. **Test Runbooks**: Regular practice drills
 
 ### Performance Optimization
+
 1. **Monitor SLOs**: Track against defined objectives
 2. **Error Budget**: Use error budget for decision making
 3. **Proactive Actions**: Address issues before SLA breach
@@ -331,6 +365,7 @@ curl -X POST http://localhost:8080/admin/test-incident \
 ## Files Created
 
 ### Source Code (13 files)
+
 ```
 packages/alerting/
 ├── package.json
@@ -359,6 +394,7 @@ packages/alerting/
 ```
 
 ### Documentation (10 files)
+
 ```
 docs/operations/
 ├── PHASE6_ALERTING_SUMMARY.md (this file)
@@ -391,6 +427,7 @@ docs/operations/
 ## Success Criteria
 
 ### Functional Requirements
+
 - [x] Multi-provider alerting (PagerDuty, OpsGenie)
 - [x] Alert deduplication and grouping
 - [x] Escalation policies with delays
@@ -401,6 +438,7 @@ docs/operations/
 - [x] Real-time rule evaluation
 
 ### Technical Requirements
+
 - [x] TypeScript with strict typing
 - [x] Comprehensive test coverage (85%+)
 - [x] Integration with Prometheus metrics
@@ -409,6 +447,7 @@ docs/operations/
 - [x] Alert response time <30 seconds
 
 ### Operational Requirements
+
 - [x] Incident response playbooks
 - [x] Runbooks for common operations
 - [x] SLA/SLO tracking dashboards
@@ -419,6 +458,7 @@ docs/operations/
 ## Next Steps
 
 ### Immediate Actions
+
 1. Deploy alerting package to production
 2. Configure provider credentials
 3. Import Grafana dashboards
@@ -427,6 +467,7 @@ docs/operations/
 6. Train team on incident response procedures
 
 ### Short-term Improvements
+
 1. Add more alert providers (Slack, email)
 2. Implement automated remediation
 3. Add machine learning for anomaly detection
@@ -435,6 +476,7 @@ docs/operations/
 6. Add synthetic monitoring
 
 ### Long-term Enhancements
+
 1. Predictive alerting using ML
 2. Automated root cause analysis
 3. Self-healing systems
@@ -445,12 +487,17 @@ docs/operations/
 ## Support
 
 ### Documentation
+
 - Alerting Package: `/home/deflex/noa-server/packages/alerting/README.md`
-- Incident Response: `/home/deflex/noa-server/docs/operations/incident-response/INCIDENT_RESPONSE_PLAN.md`
-- Playbooks: `/home/deflex/noa-server/docs/operations/incident-response/playbooks/`
-- Runbooks: `/home/deflex/noa-server/docs/operations/incident-response/runbooks/`
+- Incident Response:
+  `/home/deflex/noa-server/docs/operations/incident-response/INCIDENT_RESPONSE_PLAN.md`
+- Playbooks:
+  `/home/deflex/noa-server/docs/operations/incident-response/playbooks/`
+- Runbooks:
+  `/home/deflex/noa-server/docs/operations/incident-response/runbooks/`
 
 ### Contacts
+
 - DevOps Team: devops@noaserver.com
 - On-Call: oncall@noaserver.com
 - Incidents: incidents@noaserver.com
@@ -458,13 +505,19 @@ docs/operations/
 
 ## Conclusion
 
-Phase 6 implementation provides a comprehensive, production-ready alerting and incident response system. The system enables rapid detection, intelligent escalation, and coordinated response to incidents while maintaining detailed tracking and learning from every event.
+Phase 6 implementation provides a comprehensive, production-ready alerting and
+incident response system. The system enables rapid detection, intelligent
+escalation, and coordinated response to incidents while maintaining detailed
+tracking and learning from every event.
 
 **Key Achievements**:
+
 - Multi-provider alerting with intelligent routing
 - Comprehensive incident management with automation
 - Real-time performance monitoring and SLA tracking
 - Detailed playbooks and runbooks for common scenarios
 - Production-ready dashboards and alert rules
 
-The system is designed to scale with the organization, support continuous improvement through post-mortems, and maintain high availability through proactive monitoring and rapid response capabilities.
+The system is designed to scale with the organization, support continuous
+improvement through post-mortems, and maintain high availability through
+proactive monitoring and rapid response capabilities.

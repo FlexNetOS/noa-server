@@ -20,52 +20,52 @@ spec:
     scaleUp:
       stabilizationWindowSeconds: 45
       policies:
-      - type: Pods
-        value: 2
-        periodSeconds: 45
-      - type: Percent
-        value: 50
-        periodSeconds: 45
+        - type: Pods
+          value: 2
+          periodSeconds: 45
+        - type: Percent
+          value: 50
+          periodSeconds: 45
       selectPolicy: Max
 
     scaleDown:
       stabilizationWindowSeconds: 300
       policies:
-      - type: Pods
-        value: 1
-        periodSeconds: 300
+        - type: Pods
+          value: 1
+          periodSeconds: 300
       selectPolicy: Min
 
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 60
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 60
 
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: 75
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 75
 
-  - type: Pods
-    pods:
-      metric:
-        name: mcp_tool_executions_per_second
-      target:
-        type: AverageValue
-        averageValue: "50"
+    - type: Pods
+      pods:
+        metric:
+          name: mcp_tool_executions_per_second
+        target:
+          type: AverageValue
+          averageValue: '50'
 
-  - type: Pods
-    pods:
-      metric:
-        name: mcp_active_sessions
-      target:
-        type: AverageValue
-        averageValue: "20"
+    - type: Pods
+      pods:
+        metric:
+          name: mcp_active_sessions
+        target:
+          type: AverageValue
+          averageValue: '20'
 
 ---
 apiVersion: monitoring.coreos.com/v1
@@ -75,16 +75,16 @@ metadata:
   namespace: noa-system
 spec:
   groups:
-  - name: mcp-server-scaling
-    interval: 30s
-    rules:
-    - alert: MCPServerHighLoad
-      expr: |
-        avg(rate(mcp_tool_executions_total[5m])) > 400
-      for: 5m
-      labels:
-        severity: warning
-        component: mcp-server
-      annotations:
-        summary: "MCP Server experiencing high load"
-        description: "Tool execution rate is {{ $value }} per second"
+    - name: mcp-server-scaling
+      interval: 30s
+      rules:
+        - alert: MCPServerHighLoad
+          expr: |
+            avg(rate(mcp_tool_executions_total[5m])) > 400
+          for: 5m
+          labels:
+            severity: warning
+            component: mcp-server
+          annotations:
+            summary: 'MCP Server experiencing high load'
+            description: 'Tool execution rate is {{ $value }} per second'

@@ -44,7 +44,7 @@ import { WorkflowDashboard, WorkflowBuilder, WorkflowExecution } from './pages';
 import { RealTimeDashboard } from './pages';
 
 // Live metrics dashboard with charts
-<RealTimeDashboard />
+<RealTimeDashboard />;
 ```
 
 ### Admin Panel
@@ -260,7 +260,8 @@ npm run typecheck
 
 ## Support
 
-- Documentation: `/home/deflex/noa-server/packages/ui-dashboard/DASHBOARD_IMPLEMENTATION.md`
+- Documentation:
+  `/home/deflex/noa-server/packages/ui-dashboard/DASHBOARD_IMPLEMENTATION.md`
 - Issues: Report bugs via your issue tracker
 - Questions: Contact your development team
 

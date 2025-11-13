@@ -1,12 +1,14 @@
 # Load Testing Framework
 
-Comprehensive load testing infrastructure using K6 for performance validation and stress testing.
+Comprehensive load testing infrastructure using K6 for performance validation
+and stress testing.
 
 ## Overview
 
 This load testing framework provides:
 
-- **Multiple Test Scenarios**: Smoke, Load, Stress, Spike, Soak, and Breakpoint tests
+- **Multiple Test Scenarios**: Smoke, Load, Stress, Spike, Soak, and Breakpoint
+  tests
 - **Performance Metrics**: Response times, throughput, error rates
 - **Detailed Reports**: JSON, HTML, and text summaries
 - **Configurable Thresholds**: Pass/fail criteria for automated testing
@@ -225,26 +227,29 @@ cat docs/reports/load-test-*.txt
 
 ### Target Performance
 
-| Metric | Target |
-|--------|--------|
-| p(95) Response Time | < 500ms |
+| Metric              | Target   |
+| ------------------- | -------- |
+| p(95) Response Time | < 500ms  |
 | p(99) Response Time | < 1000ms |
-| Error Rate | < 1% |
-| Check Success Rate | > 95% |
+| Error Rate          | < 1%     |
+| Check Success Rate  | > 95%    |
 
 ### Identifying Issues
 
 **High Response Times**:
+
 - Database query optimization needed
 - Insufficient server resources
 - Network latency
 
 **High Error Rates**:
+
 - Server overload
 - Resource exhaustion
 - Rate limiting activated
 
 **Degrading Performance**:
+
 - Memory leaks
 - Connection pool exhaustion
 - Cache inefficiency
@@ -288,6 +293,7 @@ cat docs/reports/load-test-*.txt
 ### Common Issues
 
 **K6 not installed**:
+
 ```bash
 # Verify installation
 k6 version
@@ -297,6 +303,7 @@ brew reinstall k6
 ```
 
 **API not accessible**:
+
 ```bash
 # Check API is running
 curl http://localhost:3000/api/health
@@ -306,6 +313,7 @@ k6 run --env BASE_URL=http://correct-url tests/load/api-load.js
 ```
 
 **Tests failing thresholds**:
+
 ```bash
 # Run with more lenient thresholds
 k6 run --no-thresholds tests/load/api-load.js
@@ -314,6 +322,7 @@ k6 run --no-thresholds tests/load/api-load.js
 ```
 
 **Out of memory**:
+
 ```bash
 # Reduce virtual users
 k6 run --vus 10 tests/load/api-load.js
@@ -369,6 +378,4 @@ For issues or questions:
 
 ---
 
-**Last Updated**: 2025-10-22
-**Framework Version**: 1.0.0
-**K6 Version**: Latest
+**Last Updated**: 2025-10-22 **Framework Version**: 1.0.0 **K6 Version**: Latest

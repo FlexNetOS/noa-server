@@ -1,20 +1,24 @@
 # Template System Overview
 
-Flow Nexus provides a comprehensive template marketplace with pre-built solutions for AI development, automation, and cloud orchestration.
+Flow Nexus provides a comprehensive template marketplace with pre-built
+solutions for AI development, automation, and cloud orchestration.
 
 ## Template Categories
 
 Based on actual template data, Flow Nexus offers these verified categories:
 
 ### AI/ML Tools (3 templates)
+
 - **TensorFlow.js ML Engine**: High-performance neural network training
 - **DAA Swarm Orchestrator**: Decentralized Autonomous Agents
 - **BMSSP Graph Optimizer**: 403x faster graph optimization
 
-### GitHub Integration (1 template)  
+### GitHub Integration (1 template)
+
 - **GitHub + Claude Flow Integration**: Complete GitHub workflow automation
 
 ### AI Coordination (3 templates)
+
 - **Claude Flow Swarm**: Dynamic agent swarm orchestration
 - **Claude Flow Hive Mind**: Hierarchical AI coordination
 - **Claude Code Deployment**: Automated code generation
@@ -22,6 +26,7 @@ Based on actual template data, Flow Nexus offers these verified categories:
 ## Template Types
 
 ### Docker Templates
+
 Advanced containerized solutions with multi-service architecture:
 
 ```javascript
@@ -42,6 +47,7 @@ Advanced containerized solutions with multi-service architecture:
 ```
 
 ### E2B Sandbox Templates
+
 Lightweight execution environments for development:
 
 ```javascript
@@ -59,6 +65,7 @@ Lightweight execution environments for development:
 ```
 
 ### Sandbox Templates
+
 Standard execution environments with package management:
 
 ```javascript
@@ -78,10 +85,11 @@ Standard execution environments with package management:
 ## Core Template Features
 
 ### Featured Templates (7 verified)
+
 Templates marked as featured have proven reliability and performance:
 
 - Claude Code Deployment (19 uses)
-- Claude Flow Swarm (12 uses) 
+- Claude Flow Swarm (12 uses)
 - GitHub + Claude Flow (6 uses)
 - Claude Flow Hive Mind (5 uses)
 - DAA Swarm Orchestrator (2 uses)
@@ -96,7 +104,7 @@ All templates include:
 {
   id: "unique-template-id",
   name: "template-name",
-  display_name: "Human Readable Name", 
+  display_name: "Human Readable Name",
   description: "Detailed description with features",
   category: "template-category",
   template_type: "docker|e2b|sandbox",
@@ -135,9 +143,9 @@ Templates support typed variables with validation:
   description: "Your Anthropic API key"
 }
 
-// Number variables  
+// Number variables
 "max_agents": {
-  type: "number", 
+  type: "number",
   default: 8,
   required: false,
   description: "Maximum number of agents"
@@ -166,7 +174,7 @@ required_variables: [
 variables: {
   strategy: {
     type: "string",
-    default: "adaptive", 
+    default: "adaptive",
     required: false
   }
 }
@@ -175,27 +183,30 @@ variables: {
 ## Package Management
 
 ### Auto-Installation
+
 Templates automatically install dependencies:
 
 ```javascript
 install_packages: [
-  "@anthropic-ai/claude-code@latest",
-  "claude-flow@alpha", 
-  "flow-nexus@latest",
-  "git"
-]
+  '@anthropic-ai/claude-code@latest',
+  'claude-flow@alpha',
+  'flow-nexus@latest',
+  'git',
+];
 ```
 
 ### Startup Scripts
+
 Automated environment setup:
 
 ```javascript
-startup_script: "npm install -g @anthropic/claude-code claude-flow@alpha && claude --version && echo 'Ready'"
+startup_script: "npm install -g @anthropic/claude-code claude-flow@alpha && claude --version && echo 'Ready'";
 ```
 
 ## Claude Integration
 
 ### Command Templates
+
 Templates can define Claude-specific execution patterns:
 
 ```javascript
@@ -209,12 +220,13 @@ claude_args: {
 ```
 
 ### Claude Flow Integration
+
 Many templates include Claude Flow for coordination:
 
 ```javascript
 config: {
   claude_flow_init: true,
-  coordination_mode: "hive-mind", 
+  coordination_mode: "hive-mind",
   parallel_execution: true
 }
 ```
@@ -222,17 +234,23 @@ config: {
 ## Template Usage Patterns
 
 ### Development Templates
+
 For code generation and testing:
+
 - Claude Code Deployment (most popular - 19 uses)
 - GitHub + Claude Flow Integration
 
-### AI Coordination Templates  
+### AI Coordination Templates
+
 For multi-agent orchestration:
+
 - Claude Flow Swarm (dynamic agent spawning)
 - Claude Flow Hive Mind (hierarchical coordination)
 
 ### Specialized AI Templates
+
 For specific AI workloads:
+
 - TensorFlow.js ML Engine (neural network training)
 - BMSSP Graph Optimizer (graph algorithms)
 - DAA Swarm Orchestrator (autonomous agents)
@@ -240,6 +258,7 @@ For specific AI workloads:
 ## Performance Characteristics
 
 ### Resource Allocation
+
 Templates specify computational requirements:
 
 - **Light**: 1 CPU, 512MB memory (BMSSP Optimizer)
@@ -247,15 +266,19 @@ Templates specify computational requirements:
 - **Heavy**: Custom scaling with persistent storage
 
 ### Timeout Management
+
 Execution time limits vary by use case:
 
 - Standard: 3600 seconds (1 hour)
 - Extended: 7200 seconds (2 hours) for ML training
 
 ### Port Configuration
+
 Templates expose services on configured ports:
 
 - Single service: Port 3000
 - Multi-service: Ports 3000-3005 for complex orchestration
 
-The template system provides production-ready environments with minimal configuration, enabling rapid deployment of AI-powered applications and workflows.
+The template system provides production-ready environments with minimal
+configuration, enabling rapid deployment of AI-powered applications and
+workflows.

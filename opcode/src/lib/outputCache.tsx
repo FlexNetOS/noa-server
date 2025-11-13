@@ -3,7 +3,7 @@ import { api } from './api';
 
 // Use the same message interface as AgentExecution for consistency
 export interface ClaudeStreamMessage {
-  type: "system" | "assistant" | "user" | "result";
+  type: 'system' | 'assistant' | 'user' | 'result';
   subtype?: string;
   message?: {
     content?: any[];
@@ -55,16 +55,19 @@ export function OutputCacheProvider({ children }: OutputCacheProviderProps) {
   const [isPolling, setIsPolling] = useState(false);
   const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null);
 
-  const getCachedOutput = useCallback((sessionId: number): CachedSessionOutput | null => {
-    return cache.get(sessionId) || null;
-  }, [cache]);
+  const getCachedOutput = useCallback(
+    (sessionId: number): CachedSessionOutput | null => {
+      return cache.get(sessionId) || null;
+    },
+    [cache]
+  );
 
   const setCachedOutput = useCallback((sessionId: number, data: CachedSessionOutput) => {
-    setCache(prev => new Map(prev.set(sessionId, data)));
+    setCache((prev) => new Map(prev.set(sessionId, data)));
   }, []);
 
   const updateSessionStatus = useCallback((sessionId: number, status: string) => {
-    setCache(prev => {
+    setCache((prev) => {
       const existing = prev.get(sessionId);
       if (existing) {
         const updated = new Map(prev);
@@ -77,7 +80,7 @@ export function OutputCacheProvider({ children }: OutputCacheProviderProps) {
 
   const clearCache = useCallback((sessionId?: number) => {
     if (sessionId) {
-      setCache(prev => {
+      setCache((prev) => {
         const updated = new Map(prev);
         updated.delete(sessionId);
         return updated;
@@ -90,7 +93,7 @@ export function OutputCacheProvider({ children }: OutputCacheProviderProps) {
   const parseOutput = useCallback((rawOutput: string): ClaudeStreamMessage[] => {
     if (!rawOutput) return [];
 
-    const lines = rawOutput.split('\n').filter(line => line.trim());
+    const lines = rawOutput.split('\n').filter((line) => line.trim());
     const parsedMessages: ClaudeStreamMessage[] = [];
 
     for (const line of lines) {
@@ -98,13 +101,13 @@ export function OutputCacheProvider({ children }: OutputCacheProviderProps) {
         const message = JSON.parse(line) as ClaudeStreamMessage;
         parsedMessages.push(message);
       } catch (err) {
-        console.error("Failed to parse message:", err, line);
+        console.error('Failed to parse message:', err, line);
         // Add a fallback message for unparseable content
         parsedMessages.push({
           type: 'result',
           subtype: 'error',
           error: 'Failed to parse message',
-          raw_content: line
+          raw_content: line,
         });
       }
     }
@@ -112,26 +115,29 @@ export function OutputCacheProvider({ children }: OutputCacheProviderProps) {
     return parsedMessages;
   }, []);
 
-  const updateSessionCache = useCallback(async (sessionId: number, status: string) => {
-    try {
-      const rawOutput = await api.getSessionOutput(sessionId);
-      const messages = parseOutput(rawOutput);
-      
-      setCachedOutput(sessionId, {
-        output: rawOutput,
-        messages,
-        lastUpdated: Date.now(),
-        status
-      });
-    } catch (error) {
-      console.warn(`Failed to update cache for session ${sessionId}:`, error);
-    }
-  }, [parseOutput, setCachedOutput]);
+  const updateSessionCache = useCallback(
+    async (sessionId: number, status: string) => {
+      try {
+        const rawOutput = await api.getSessionOutput(sessionId);
+        const messages = parseOutput(rawOutput);
+
+        setCachedOutput(sessionId, {
+          output: rawOutput,
+          messages,
+          lastUpdated: Date.now(),
+          status,
+        });
+      } catch (error) {
+        console.warn(`Failed to update cache for session ${sessionId}:`, error);
+      }
+    },
+    [parseOutput, setCachedOutput]
+  );
 
   const pollRunningSessions = useCallback(async () => {
     try {
       const runningSessions = await api.listRunningAgentSessions();
-      
+
       // Update cache for all running sessions
       for (const session of runningSessions) {
         if (session.id && session.status === 'running') {
@@ -140,8 +146,8 @@ export function OutputCacheProvider({ children }: OutputCacheProviderProps) {
       }
 
       // Clean up cache for sessions that are no longer running
-      const runningIds = new Set(runningSessions.map(s => s.id).filter(Boolean));
-      setCache(prev => {
+      const runningIds = new Set(runningSessions.map((s) => s.id).filter(Boolean));
+      setCache((prev) => {
         const updated = new Map();
         for (const [sessionId, data] of prev) {
           if (runningIds.has(sessionId) || data.status !== 'running') {
@@ -187,9 +193,5 @@ export function OutputCacheProvider({ children }: OutputCacheProviderProps) {
     stopBackgroundPolling,
   };
 
-  return (
-    <OutputCacheContext.Provider value={value}>
-      {children}
-    </OutputCacheContext.Provider>
-  );
+  return <OutputCacheContext.Provider value={value}>{children}</OutputCacheContext.Provider>;
 }

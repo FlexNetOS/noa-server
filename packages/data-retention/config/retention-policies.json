@@ -29,7 +29,11 @@
       "archiveDays": 730,
       "legalBasis": "SOC 2 Compliance & Security Requirements",
       "description": "Security audit logs, access logs, and compliance records",
-      "exceptions": ["legal_hold", "security_incident", "regulatory_investigation"],
+      "exceptions": [
+        "legal_hold",
+        "security_incident",
+        "regulatory_investigation"
+      ],
       "notifyBeforeDeletion": false,
       "anonymizeInsteadOfDelete": false
     },

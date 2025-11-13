@@ -1,6 +1,7 @@
 # LangGraph SQLite Checkpoint
 
-Implementation of LangGraph CheckpointSaver that uses SQLite DB (both sync and async, via `aiosqlite`)
+Implementation of LangGraph CheckpointSaver that uses SQLite DB (both sync and
+async, via `aiosqlite`)
 
 ## Usage
 

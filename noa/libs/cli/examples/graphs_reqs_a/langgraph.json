@@ -1,8 +1,6 @@
 {
   "$schema": "https://langgra.ph/schema.json",
-  "dependencies": [
-    "."
-  ],
+  "dependencies": ["."],
   "env": "../.env",
   "graphs": {
     "graph": "./hello.py:graph"

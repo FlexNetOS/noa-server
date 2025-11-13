@@ -1,6 +1,7 @@
 # Noa Server User Guide
 
-Complete guide to using Noa Server for workflow orchestration, agent swarms, and neural processing.
+Complete guide to using Noa Server for workflow orchestration, agent swarms, and
+neural processing.
 
 ## 📋 Table of Contents
 
@@ -17,7 +18,8 @@ Complete guide to using Noa Server for workflow orchestration, agent swarms, and
 
 ## Overview
 
-Noa Server is a comprehensive platform for orchestrating AI agent swarms, managing workflows, and performing neural processing. It combines:
+Noa Server is a comprehensive platform for orchestrating AI agent swarms,
+managing workflows, and performing neural processing. It combines:
 
 - **Agent Swarms**: Coordinate multiple AI agents to solve complex tasks
 - **MCP Integration**: Leverage Model Context Protocol for tool coordination
@@ -46,18 +48,19 @@ Agents are specialized AI workers that perform specific tasks. Each agent has:
 - **Hooks**: Integration points for coordination
 
 Example agent types:
+
 ```javascript
 // Development agents
-"coder", "reviewer", "tester", "debugger"
+('coder', 'reviewer', 'tester', 'debugger');
 
 // Specialized agents
-"backend-dev", "frontend-dev", "mobile-dev", "ml-developer"
+('backend-dev', 'frontend-dev', 'mobile-dev', 'ml-developer');
 
 // Coordination agents
-"hierarchical-coordinator", "mesh-coordinator", "adaptive-coordinator"
+('hierarchical-coordinator', 'mesh-coordinator', 'adaptive-coordinator');
 
 // Analysis agents
-"code-analyzer", "perf-analyzer", "security-manager"
+('code-analyzer', 'perf-analyzer', 'security-manager');
 ```
 
 ### Swarms
@@ -74,16 +77,19 @@ A swarm is a coordinated group of agents working together. Swarms have:
 Different topologies for different use cases:
 
 **Mesh Topology**:
+
 - All agents can communicate directly
 - Best for: Collaborative tasks, peer review
 - Overhead: Higher communication cost
 
 **Hierarchical Topology**:
+
 - Tree structure with coordinators
 - Best for: Large teams, complex workflows
 - Overhead: Lower, more organized
 
 **Adaptive Topology**:
+
 - Dynamically adjusts based on task
 - Best for: Variable workloads
 - Overhead: Intelligent optimization
@@ -469,6 +475,7 @@ CUDA_DEVICE=0
 ```
 
 Verify CUDA:
+
 ```bash
 nvidia-smi
 python -c "import torch; print(torch.cuda.is_available())"
@@ -607,20 +614,22 @@ npx claude-flow@alpha diagnostics --verbose
 ### 2. Optimize Agent Selection
 
 Match agents to tasks:
+
 ```javascript
 // Backend work
-["backend-dev", "security-manager", "tester"]
-
-// Frontend work
-["frontend-dev", "designer", "reviewer"]
-
-// Full-stack
-["backend-dev", "frontend-dev", "tester", "reviewer"]
+['backend-dev', 'security-manager', 'tester'][
+  // Frontend work
+  ('frontend-dev', 'designer', 'reviewer')
+][
+  // Full-stack
+  ('backend-dev', 'frontend-dev', 'tester', 'reviewer')
+];
 ```
 
 ### 3. Use Hooks for Coordination
 
 Always run hooks in agents:
+
 ```bash
 # Before task
 npx claude-flow@alpha hooks pre-task --description "Task details"
@@ -635,6 +644,7 @@ npx claude-flow@alpha hooks post-task --task-id "task-123"
 ### 4. Leverage Memory
 
 Store decisions and context:
+
 ```bash
 # Store architectural decisions
 npx claude-flow@alpha memory store \
@@ -649,6 +659,7 @@ npx claude-flow@alpha memory retrieve \
 ### 5. Monitor Performance
 
 Track metrics regularly:
+
 ```bash
 # Set up monitoring
 npx claude-flow@alpha monitor enable \
@@ -662,6 +673,7 @@ npx claude-flow@alpha metrics dashboard
 ### 6. Batch Operations
 
 Execute related tasks concurrently:
+
 ```bash
 # Batch task execution
 npx claude-flow@alpha task execute --batch tasks/sprint-tasks.json
@@ -686,6 +698,7 @@ npx claude-flow@alpha agent prune --idle-timeout 1h
 ---
 
 **Next Steps**:
+
 - Explore [Features](FEATURES.md) for detailed feature documentation
 - Try [Tutorials](tutorials/) for hands-on learning
 - Check [Troubleshooting](TROUBLESHOOTING.md) for common issues

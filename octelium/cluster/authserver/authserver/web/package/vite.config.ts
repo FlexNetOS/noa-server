@@ -1,11 +1,11 @@
-import { defineConfig, loadEnv } from "vite";
-import react from "@vitejs/plugin-react-swc";
-import path from "path";
-import svgr from "vite-plugin-svgr";
-import { visualizer } from "rollup-plugin-visualizer";
+import { defineConfig, loadEnv } from 'vite';
+import react from '@vitejs/plugin-react-swc';
+import path from 'path';
+import svgr from 'vite-plugin-svgr';
+import { visualizer } from 'rollup-plugin-visualizer';
 
-import { createRequire } from "module";
-import type { RollupCommonJSOptions } from "@rollup/plugin-commonjs";
+import { createRequire } from 'module';
+import type { RollupCommonJSOptions } from '@rollup/plugin-commonjs';
 
 const require = createRequire(import.meta.url);
 
@@ -17,12 +17,12 @@ export default defineConfig({
     svgr(),
     visualizer({
       emitFile: true,
-      filename: "tmp/stats.html",
+      filename: 'tmp/stats.html',
     }),
   ],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "src"),
+      '@': path.resolve(__dirname, 'src'),
     },
   },
   build: {
@@ -34,9 +34,9 @@ export default defineConfig({
           if (module?.default) {
             return false;
           }
-          return "auto";
+          return 'auto';
         } catch (error) {
-          return "auto";
+          return 'auto';
         }
       },
       transformMixedEsModules: true,
@@ -45,14 +45,14 @@ export default defineConfig({
 
   server: {
     proxy: {
-      "/octelium.api": {
-        target: "http://127.0.0.1:10003",
+      '/octelium.api': {
+        target: 'http://127.0.0.1:10003',
         // changeOrigin: true,
         // secure: false,
         // proxyTimeout: 5000,
         headers: {
-          "x-octelium": "octelium",
-          "content-type": "application/grpc-web-text+proto",
+          'x-octelium': 'octelium',
+          'content-type': 'application/grpc-web-text+proto',
         },
       },
     },

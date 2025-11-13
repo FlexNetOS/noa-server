@@ -5,8 +5,8 @@ search:
 
 # LangGraph SDK
 
-:::python
-LangGraph Platform provides a python SDK for interacting with [LangGraph Server](./langgraph_server.md).
+:::python LangGraph Platform provides a python SDK for interacting with
+[LangGraph Server](./langgraph_server.md).
 
 !!! tip "Python SDK reference"
 
@@ -22,7 +22,8 @@ pip install langgraph-sdk
 
 ## Python sync vs. async
 
-The Python SDK provides both synchronous (`get_sync_client`) and asynchronous (`get_client`) clients for interacting with LangGraph Server:
+The Python SDK provides both synchronous (`get_sync_client`) and asynchronous
+(`get_client`) clients for interacting with LangGraph Server:
 
 === "Sync"
 
@@ -45,11 +46,10 @@ The Python SDK provides both synchronous (`get_sync_client`) and asynchronous (`
 ## Learn more
 
 - [Python SDK Reference](../cloud/reference/sdk/python_sdk_ref.md)
-- [LangGraph CLI API Reference](../cloud/reference/cli.md)
-  :::
+- [LangGraph CLI API Reference](../cloud/reference/cli.md) :::
 
-:::js
-LangGraph Platform provides a JS/TS SDK for interacting with [LangGraph Server](./langgraph_server.md).
+:::js LangGraph Platform provides a JS/TS SDK for interacting with
+[LangGraph Server](./langgraph_server.md).
 
 ## Installation
 
@@ -61,5 +61,4 @@ npm install @langchain/langgraph-sdk
 
 ## Learn more
 
-- [LangGraph CLI API Reference](../cloud/reference/cli.md)
-  :::
+- [LangGraph CLI API Reference](../cloud/reference/cli.md) :::

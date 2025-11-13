@@ -33,7 +33,7 @@ spec:
               name: mcp-servers
         - podSelector:
             matchLabels:
-              database-access: "true"
+              database-access: 'true'
       ports:
         - protocol: TCP
           port: 5432

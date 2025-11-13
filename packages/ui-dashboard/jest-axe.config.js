@@ -91,10 +91,7 @@ module.exports = {
     },
 
     // Element to exclude from testing
-    exclude: [
-      ['#webpack-dev-server-client-overlay'],
-      ['#webpack-dev-server-client-overlay-div'],
-    ],
+    exclude: [['#webpack-dev-server-client-overlay'], ['#webpack-dev-server-client-overlay-div']],
 
     // Options
     resultTypes: ['violations', 'incomplete'],

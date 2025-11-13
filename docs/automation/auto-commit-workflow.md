@@ -2,7 +2,10 @@
 
 ## Overview
 
-The Auto-Commit Workflow provides intelligent, automated git commits integrated with Claude Code agent workflows. It uses llama.cpp neural processing to generate meaningful commit messages following the Conventional Commits specification.
+The Auto-Commit Workflow provides intelligent, automated git commits integrated
+with Claude Code agent workflows. It uses llama.cpp neural processing to
+generate meaningful commit messages following the Conventional Commits
+specification.
 
 ## Architecture
 
@@ -48,9 +51,11 @@ The Auto-Commit Workflow provides intelligent, automated git commits integrated 
 Located in `scripts/automation/auto-commit-hooks/`:
 
 #### post-agent-task.sh
+
 Triggered after agent task completion.
 
 **Features:**
+
 - Analyzes git diff statistics
 - Detects breaking changes
 - Determines commit type from changed files
@@ -58,6 +63,7 @@ Triggered after agent task completion.
 - Creates commits with proper attribution
 
 **Usage:**
+
 ```bash
 # Automatic (via claude-flow hooks)
 npx claude-flow@alpha hooks post-task --task-id "task-123"
@@ -67,28 +73,34 @@ npx claude-flow@alpha hooks post-task --task-id "task-123"
 ```
 
 #### post-build.sh
+
 Triggered after successful builds.
 
 **Features:**
+
 - Commits build artifacts
 - Handles dependency updates
 - Supports multiple build environments
 
 **Usage:**
+
 ```bash
 # After build
 ./scripts/automation/auto-commit-hooks/post-build.sh 0 "production"
 ```
 
 #### post-test.sh
+
 Triggered after test runs.
 
 **Features:**
+
 - Commits new test files
 - Updates test coverage data
 - Only commits on passing tests
 
 **Usage:**
+
 ```bash
 # After tests
 ./scripts/automation/auto-commit-hooks/post-test.sh 0 "unit" 80
@@ -99,12 +111,14 @@ Triggered after test runs.
 Located at `src/automation/commit-message-generator.ts`:
 
 **Features:**
+
 - AI-powered message generation using llama.cpp
 - Template-based fallback
 - Conventional Commits compliance
 - Context-aware analysis
 
 **Input Format:**
+
 ```json
 {
   "taskId": "task-123",
@@ -122,6 +136,7 @@ Located at `src/automation/commit-message-generator.ts`:
 ```
 
 **Output Format:**
+
 ```
 feat(auth): add user authentication
 
@@ -146,6 +161,7 @@ Co-Authored-By: Coder <coder@claude-code.anthropic.com>
 Located at `config/automation/commit-policy.yaml`:
 
 **Key Settings:**
+
 ```yaml
 # Enable/disable features
 enabled: true
@@ -167,9 +183,9 @@ commit_message:
 # File filtering
 file_filters:
   exclude:
-    - "*.log"
-    - ".env"
-    - "credentials.*"
+    - '*.log'
+    - '.env'
+    - 'credentials.*'
 ```
 
 ## Integration with Agent Workflows
@@ -213,7 +229,8 @@ npx claude-flow@alpha hooks post-task --task-id "task-123"
 
 ## Conventional Commits
 
-The system follows the [Conventional Commits](https://www.conventionalcommits.org/) specification:
+The system follows the
+[Conventional Commits](https://www.conventionalcommits.org/) specification:
 
 ### Commit Types
 
@@ -242,6 +259,7 @@ The system follows the [Conventional Commits](https://www.conventionalcommits.or
 ### Examples
 
 **Feature:**
+
 ```
 feat(auth): add JWT token authentication
 
@@ -257,6 +275,7 @@ Co-Authored-By: Coder <coder@claude-code.anthropic.com>
 ```
 
 **Bug Fix:**
+
 ```
 fix(database): resolve connection timeout issue
 
@@ -272,6 +291,7 @@ Co-Authored-By: Reviewer <reviewer@claude-code.anthropic.com>
 ```
 
 **Breaking Change:**
+
 ```
 feat(api): redesign REST endpoint structure
 
@@ -323,7 +343,7 @@ Write a concise, professional commit message following Conventional Commits.
 commit_message:
   use_neural: true
   neural:
-    model_path: ""  # Auto-detect
+    model_path: '' # Auto-detect
     max_tokens: 150
     temperature: 0.7
     context_size: 2048
@@ -344,7 +364,7 @@ safety:
       - main
       - master
       - production
-    action: "warn"  # or "block"
+    action: 'warn' # or "block"
 ```
 
 ### 2. File Filtering
@@ -354,11 +374,11 @@ Excludes sensitive files:
 ```yaml
 file_filters:
   exclude:
-    - ".env"
-    - "*.key"
-    - "*.pem"
-    - "credentials.*"
-    - "secrets.*"
+    - '.env'
+    - '*.key'
+    - '*.pem'
+    - 'credentials.*'
+    - 'secrets.*'
 ```
 
 ### 3. Breaking Change Detection
@@ -369,9 +389,9 @@ Automatically detects breaking changes:
 breaking_changes:
   enabled: true
   patterns:
-    - "BREAKING CHANGE"
-    - "removed.*function"
-    - "incompatible"
+    - 'BREAKING CHANGE'
+    - 'removed.*function'
+    - 'incompatible'
 ```
 
 ### 4. Large Change Confirmation
@@ -445,6 +465,7 @@ npm run build
 ### Issue: Neural generation fails
 
 **Solution:**
+
 ```bash
 # Check llama.cpp setup
 python3 ~/noa-server/packages/llama.cpp/shims/http_bridge.py info
@@ -459,6 +480,7 @@ export USE_NEURAL_COMMITS=false
 ### Issue: No commits created
 
 **Solution:**
+
 ```bash
 # Check if changes exist
 git status
@@ -473,19 +495,21 @@ bash -x scripts/automation/auto-commit-hooks/post-agent-task.sh
 ### Issue: Wrong commit type detected
 
 **Solution:**
+
 ```yaml
 # Customize scope detection in config
 conventional_commits:
   auto_scope: true
   scopes:
-    src/api: "api"
-    src/auth: "auth"
-    src/db: "database"
+    src/api: 'api'
+    src/auth: 'auth'
+    src/db: 'database'
 ```
 
 ## Best Practices
 
-1. **Review Generated Messages**: Always review AI-generated messages before pushing
+1. **Review Generated Messages**: Always review AI-generated messages before
+   pushing
 2. **Configure File Filters**: Exclude sensitive and generated files
 3. **Use Scopes Consistently**: Define clear scopes for your project
 4. **Enable Notifications**: Get notified of auto-commits via hooks
@@ -496,6 +520,7 @@ conventional_commits:
 ## Performance Metrics
 
 Expected performance:
+
 - Neural generation: 2-5 seconds
 - Template fallback: <100ms
 - Total commit time: 3-10 seconds
@@ -518,6 +543,4 @@ Expected performance:
 
 ---
 
-**Generated with Claude Code**
-Version: 1.0.0
-Last Updated: 2025-10-22
+**Generated with Claude Code** Version: 1.0.0 Last Updated: 2025-10-22

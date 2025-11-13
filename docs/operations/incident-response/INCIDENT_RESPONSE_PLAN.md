@@ -2,7 +2,9 @@
 
 ## Overview
 
-This document outlines the incident response procedures for Noa Server, including severity classification, escalation paths, communication protocols, and resolution processes.
+This document outlines the incident response procedures for Noa Server,
+including severity classification, escalation paths, communication protocols,
+and resolution processes.
 
 ## Incident Severity Classification
 
@@ -11,41 +13,43 @@ This document outlines the incident response procedures for Noa Server, includin
 **Definition**: Complete service outage or data loss affecting all users.
 
 **Examples**:
+
 - Complete database failure
 - Authentication system down
 - Data corruption or loss
 - Security breach
 
-**Response Time**: Immediate
-**Update Frequency**: Every 15 minutes
+**Response Time**: Immediate **Update Frequency**: Every 15 minutes
 **Escalation**: Immediate to CTO/VP Engineering
 
 ### SEV2 - High
 
-**Definition**: Major functionality degraded or unavailable for significant user population.
+**Definition**: Major functionality degraded or unavailable for significant user
+population.
 
 **Examples**:
+
 - API performance degradation (>5s response time)
 - Partial service outage
 - Critical feature unavailable
 - Severe performance issues
 
-**Response Time**: Within 15 minutes
-**Update Frequency**: Every 30 minutes
+**Response Time**: Within 15 minutes **Update Frequency**: Every 30 minutes
 **Escalation**: Engineering Manager within 30 minutes
 
 ### SEV3 - Medium
 
-**Definition**: Minor functionality issues or degradation affecting subset of users.
+**Definition**: Minor functionality issues or degradation affecting subset of
+users.
 
 **Examples**:
+
 - Non-critical feature unavailable
 - Performance degradation (<5s response time)
 - Intermittent errors
 - Minor data inconsistencies
 
-**Response Time**: Within 1 hour
-**Update Frequency**: Every 2 hours
+**Response Time**: Within 1 hour **Update Frequency**: Every 2 hours
 **Escalation**: Team Lead within 2 hours
 
 ### SEV4 - Low
@@ -53,20 +57,21 @@ This document outlines the incident response procedures for Noa Server, includin
 **Definition**: Minor issues with minimal user impact or cosmetic problems.
 
 **Examples**:
+
 - UI bugs
 - Logging issues
 - Documentation errors
 - Non-urgent technical debt
 
-**Response Time**: Within 24 hours
-**Update Frequency**: Daily
-**Escalation**: None required
+**Response Time**: Within 24 hours **Update Frequency**: Daily **Escalation**:
+None required
 
 ## Incident Response Roles
 
 ### Incident Commander (IC)
 
 **Responsibilities**:
+
 - Overall incident coordination
 - Decision making authority
 - Communication orchestration
@@ -78,6 +83,7 @@ This document outlines the incident response procedures for Noa Server, includin
 ### Technical Lead
 
 **Responsibilities**:
+
 - Technical investigation
 - Solution implementation
 - System recovery
@@ -88,6 +94,7 @@ This document outlines the incident response procedures for Noa Server, includin
 ### Communications Lead
 
 **Responsibilities**:
+
 - Status page updates
 - Customer communication
 - Internal stakeholder updates
@@ -201,11 +208,13 @@ This document outlines the incident response procedures for Noa Server, includin
 ### Internal Communication
 
 **Slack Channels**:
+
 - `#incidents` - All incidents
 - `#incident-<id>` - Specific incident channel
 - `#on-call` - On-call coordination
 
 **Update Template**:
+
 ```
 [STATUS UPDATE - HH:MM UTC]
 Severity: SEV1/SEV2/SEV3/SEV4
@@ -220,6 +229,7 @@ Next Update: <time>
 **Status Page**: status.noaserver.com
 
 **Update Template**:
+
 ```
 Investigating: We are investigating reports of [issue]
 
@@ -234,6 +244,7 @@ operating normally.
 ```
 
 **Customer Communication**:
+
 - SEV1: Email to all affected customers
 - SEV2: Email to directly affected customers
 - SEV3: Status page only
@@ -242,20 +253,24 @@ operating normally.
 ## Escalation Matrix
 
 ### Level 1 (0-15 minutes)
+
 - On-call Primary Engineer
 - Notification: PagerDuty, Email, SMS
 
 ### Level 2 (15-30 minutes)
+
 - On-call Backup Engineer
 - Team Lead
 - Notification: Phone Call, SMS
 
 ### Level 3 (30-60 minutes)
+
 - Engineering Manager
 - Product Manager
 - Notification: Phone Call
 
 ### Level 4 (60+ minutes)
+
 - VP Engineering
 - CTO
 - CEO (for SEV1 only)
@@ -264,6 +279,7 @@ operating normally.
 ## On-Call Responsibilities
 
 ### Before Your Shift
+
 - [ ] Test PagerDuty/OpsGenie notifications
 - [ ] Review runbooks
 - [ ] Check recent incidents
@@ -271,6 +287,7 @@ operating normally.
 - [ ] Have laptop and phone charged
 
 ### During Your Shift
+
 - [ ] Respond to alerts within 5 minutes
 - [ ] Keep phone nearby at all times
 - [ ] Stay near reliable internet
@@ -278,6 +295,7 @@ operating normally.
 - [ ] Be prepared to escalate
 
 ### After an Incident
+
 - [ ] Update incident notes
 - [ ] Hand off if needed
 - [ ] Schedule post-mortem
@@ -286,6 +304,7 @@ operating normally.
 ## Tools and Access
 
 ### Required Access
+
 - PagerDuty/OpsGenie
 - Grafana dashboards
 - Prometheus alerts
@@ -295,12 +314,14 @@ operating normally.
 - Incident management system
 
 ### Monitoring Tools
+
 - Grafana: https://grafana.noaserver.com
 - Prometheus: https://prometheus.noaserver.com
 - Kibana: https://kibana.noaserver.com
 - Status Page: https://status.noaserver.com
 
 ### Communication Tools
+
 - Slack: #incidents channel
 - Zoom: For incident calls
 - Email: incidents@noaserver.com
@@ -308,12 +329,14 @@ operating normally.
 ## Incident Metrics
 
 ### Key Metrics
+
 - **MTTD** (Mean Time To Detect): Time from issue start to alert
 - **MTTA** (Mean Time To Acknowledge): Time from alert to acknowledgment
 - **MTTI** (Mean Time To Investigate): Time from acknowledgment to root cause
 - **MTTR** (Mean Time To Resolve): Time from acknowledgment to resolution
 
 ### Target SLAs
+
 - SEV1 MTTA: 5 minutes
 - SEV1 MTTR: 1 hour
 - SEV2 MTTA: 15 minutes

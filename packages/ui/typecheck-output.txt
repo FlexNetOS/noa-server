@@ -1,0 +1,70 @@
+
+> @noa/ui@1.0.0 typecheck /home/deflex/noa-server/packages/ui
+> tsc --noEmit
+
+src/components/charts/HeatmapChart.tsx(60,3): error TS2339: Property '_width' does not exist on type 'HeatmapChartProps'.
+src/components/charts/HeatmapChart.tsx(60,3): error TS6133: '_width' is declared but its value is never read.
+src/components/charts/ScatterChart.tsx(83,3): error TS2339: Property '_showRegressionLine' does not exist on type 'ScatterChartProps'.
+src/components/charts/ScatterChart.tsx(83,3): error TS6133: '_showRegressionLine' is declared but its value is never read.
+src/components/chat/ChatDemo.tsx(73,11): error TS6133: '_message' is declared but its value is never read.
+src/components/chat/StreamingChatDemo.tsx(133,13): error TS6133: '_messageId' is declared but its value is never read.
+src/components/dashboard/Dashboard.tsx(37,5): error TS2339: Property '_breakpoint' does not exist on type '{ currentLayout: DashboardLayout | null; savedLayouts: DashboardLayout[]; isEditing: boolean; isLocked: boolean; breakpoint: keyof LayoutBreakpoint; ... 20 more ...; clearAllLayouts: () => void; }'.
+src/components/dashboard/Dashboard.tsx(37,5): error TS6133: '_breakpoint' is declared but its value is never read.
+src/components/files/FileUpload.example.tsx(80,5): error TS2339: Property '_uploadFile' does not exist on type 'UseFileUploadReturn'.
+src/components/files/FileUpload.example.tsx(80,5): error TS6133: '_uploadFile' is declared but its value is never read.
+src/components/files/previews/MarkdownPreview.tsx(21,60): error TS2339: Property '_file' does not exist on type 'MarkdownPreviewProps'.
+src/components/files/previews/MarkdownPreview.tsx(21,60): error TS6133: '_file' is declared but its value is never read.
+src/components/files/previews/PDFPreview.tsx(23,50): error TS2339: Property '_file' does not exist on type 'PDFPreviewProps'.
+src/components/files/previews/PDFPreview.tsx(23,50): error TS6133: '_file' is declared but its value is never read.
+src/components/files/previews/TextPreview.tsx(15,52): error TS2339: Property '_file' does not exist on type 'TextPreviewProps'.
+src/components/files/previews/TextPreview.tsx(15,52): error TS6133: '_file' is declared but its value is never read.
+src/examples/streaming-chat-example.tsx(13,38): error TS6133: 'useCallback' is declared but its value is never read.
+src/pages/AnalyticsPage.tsx(16,29): error TS2554: Expected 1 arguments, but got 0.
+src/pages/AnalyticsPage.tsx(90,12): error TS2741: Property 'columns' is missing in type '{}' but required in type 'FilterPanelProps'.
+src/pages/AnalyticsPage.tsx(94,14): error TS2741: Property 'columns' is missing in type '{}' but required in type 'AggregationPanelProps'.
+src/pages/AnalyticsPage.tsx(105,17): error TS2322: Type '{ data: any[] | AggregationResult[]; loading: boolean; onRowClick: (row: any) => void; }' is not assignable to type 'IntrinsicAttributes & DataTableProps<any>'.
+  Property 'onRowClick' does not exist on type 'IntrinsicAttributes & DataTableProps<any>'.
+src/pages/AnalyticsPage.tsx(105,30): error TS7006: Parameter 'row' implicitly has an 'any' type.
+src/pages/AnalyticsPage.tsx(137,19): error TS2322: Type '{ data: { date: string; value: number; category: string; }[]; xKey: string; yKey: string; height: number; showGrid: true; showTooltip: true; }' is not assignable to type 'IntrinsicAttributes & LineChartProps'.
+  Property 'yKey' does not exist on type 'IntrinsicAttributes & LineChartProps'. Did you mean 'yKeys'?
+src/pages/AnalyticsPage.tsx(146,19): error TS2322: Type '{ data: { date: string; value: number; category: string; }[]; xKey: string; yKey: string; height: number; showGrid: true; showTooltip: true; }' is not assignable to type 'IntrinsicAttributes & BarChartProps'.
+  Property 'yKey' does not exist on type 'IntrinsicAttributes & BarChartProps'. Did you mean 'yKeys'?
+src/pages/ChatPage.tsx(15,26): error TS2339: Property 'activeConversationId' does not exist on type 'ChatHistoryState'.
+src/pages/ChatPage.tsx(15,48): error TS2339: Property '_setActiveConversation' does not exist on type 'ChatHistoryState'.
+src/pages/ChatPage.tsx(15,48): error TS6133: '_setActiveConversation' is declared but its value is never read.
+src/pages/ChatPage.tsx(103,38): error TS2551: Property 'updatedAt' does not exist on type 'Conversation'. Did you mean 'updated_at'?
+src/pages/ConversationPage.tsx(17,11): error TS2339: Property 'getConversation' does not exist on type 'ChatHistoryState'.
+src/pages/ConversationPage.tsx(17,28): error TS2339: Property 'setActiveConversation' does not exist on type 'ChatHistoryState'.
+src/pages/ConversationPage.tsx(70,56): error TS2339: Property 'toLowerCase' does not exist on type 'never'.
+src/pages/ConversationPage.tsx(107,47): error TS2345: Argument of type 'string' is not assignable to parameter of type '"" | ((prev: "") => "")'.
+src/pages/FilePreviewPage.tsx(28,9): error TS2353: Object literal may only specify known properties, and 'modifiedAt' does not exist in type 'FileItem | ((prevState: FileItem | null) => FileItem | null)'.
+src/pages/FilePreviewPage.tsx(112,23): error TS2339: Property 'modifiedAt' does not exist on type 'FileItem'.
+src/pages/FilePreviewPage.tsx(185,11): error TS2739: Type 'FileItem' is missing the following properties from type 'UploadedFile': file, category, status, progress, uploadedBytes
+src/pages/FilesPage.tsx(119,11): error TS2322: Type '{ onFileSelect: (file: FileItem) => void; onFileDoubleClick: (file: FileItem) => void; searchQuery: string; sortBy: "size" | "name" | "date"; viewMode: "grid" | "list"; className: string; }' is not assignable to type 'IntrinsicAttributes & FileBrowserProps'.
+  Property 'onFileSelect' does not exist on type 'IntrinsicAttributes & FileBrowserProps'. Did you mean 'onFileDelete'?
+src/routes/index.tsx(18,35): error TS2312: An interface can only extend an object type or intersection of object types with statically known members.
+src/routes/router.tsx(83,9): error TS2353: Object literal may only specify known properties, and 'index' does not exist in type 'AppRoute'.
+src/routes/router.tsx(91,9): error TS2353: Object literal may only specify known properties, and 'path' does not exist in type 'AppRoute'.
+src/routes/router.tsx(101,9): error TS2353: Object literal may only specify known properties, and 'path' does not exist in type 'AppRoute'.
+src/routes/router.tsx(111,9): error TS2353: Object literal may only specify known properties, and 'path' does not exist in type 'AppRoute'.
+src/routes/router.tsx(121,9): error TS2353: Object literal may only specify known properties, and 'path' does not exist in type 'AppRoute'.
+src/routes/router.tsx(131,9): error TS2353: Object literal may only specify known properties, and 'path' does not exist in type 'AppRoute'.
+src/routes/router.tsx(151,13): error TS2353: Object literal may only specify known properties, and 'index' does not exist in type 'AppRoute'.
+src/routes/router.tsx(155,13): error TS2353: Object literal may only specify known properties, and 'path' does not exist in type 'AppRoute'.
+src/routes/router.tsx(159,13): error TS2353: Object literal may only specify known properties, and 'path' does not exist in type 'AppRoute'.
+src/routes/router.tsx(163,13): error TS2353: Object literal may only specify known properties, and 'path' does not exist in type 'AppRoute'.
+src/routes/router.tsx(169,9): error TS2353: Object literal may only specify known properties, and 'path' does not exist in type 'AppRoute'.
+src/routes/types.ts(40,35): error TS2312: An interface can only extend an object type or intersection of object types with statically known members.
+src/stores/analyticsStore.ts(11,3): error TS6196: 'FilterCondition' is declared but never used.
+src/stores/analyticsStore.ts(13,3): error TS6196: 'GroupByConfig' is declared but never used.
+src/stores/chatHistory.ts(435,13): error TS6133: '_migrations' is declared but its value is never read.
+src/stores/chatHistory.ts(435,38): error TS2551: Property '_migrations' does not exist on type 'ChatHistoryDB'. Did you mean 'migrations'?
+src/stores/fileBrowser.ts(93,24): error TS1361: 'MIME_TYPE_CATEGORIES' cannot be used as a value because it was imported using 'import type'.
+src/stores/fileBrowser.ts(97,25): error TS1361: 'FILE_EXTENSIONS' cannot be used as a value because it was imported using 'import type'.
+src/utils/performance.ts(37,7): error TS6133: '_lastResult' is declared but its value is never read.
+src/utils/performance.ts(42,7): error TS2552: Cannot find name 'lastResult'. Did you mean '_lastResult'?
+src/utils/performance.ts(256,17): error TS2339: Property 'setTimeout' does not exist on type 'never'.
+src/widgets/ChatWidget.tsx(18,51): error TS6198: All destructured elements are unused.
+src/widgets/MetricCard.tsx(27,28): error TS2339: Property '_refresh' does not exist on type '{ data: WidgetData | null; isLoading: boolean; error: Error | null; refresh: () => Promise<void>; }'.
+src/widgets/MetricCard.tsx(27,28): error TS6133: '_refresh' is declared but its value is never read.
+ ELIFECYCLE  Command failed with exit code 2.

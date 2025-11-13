@@ -225,10 +225,7 @@ export class CustomProvider implements FeatureFlagProvider {
     return userPercentage <= percentage ? flag.defaultValue : false;
   }
 
-  private evaluateUser(
-    flag: FeatureFlagDefinition,
-    context: FeatureFlagContext
-  ): FeatureFlagValue {
+  private evaluateUser(flag: FeatureFlagDefinition, context: FeatureFlagContext): FeatureFlagValue {
     const targetUsers = (flag.strategy?.config.users as string[]) || [];
     const userId = context.userId || '';
 

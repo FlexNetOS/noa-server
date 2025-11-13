@@ -29,7 +29,7 @@ describe('ConfigurationManager env var sanitation', () => {
     const cfg = ConfigurationManager.getInstance().getConfig();
 
     // There should be a provider config for llama.cpp with the baseURL and model we set
-    const llama = cfg.providers.find(p => p.type === ProviderType.LLAMA_CPP);
+    const llama = cfg.providers.find((p) => p.type === ProviderType.LLAMA_CPP);
     expect(llama).toBeTruthy();
     expect(llama!.baseURL).toBe('http://example:8080');
     expect(llama!.defaultModel).toBe('llama-2-7b');

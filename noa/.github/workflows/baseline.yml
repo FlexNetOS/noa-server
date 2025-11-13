@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "libs/**"
+      - 'libs/**'
 
 permissions:
   contents: read
@@ -22,9 +22,9 @@ jobs:
       - name: Set up Python 3.11
         uses: astral-sh/setup-uv@v6
         with:
-          python-version: "3.11"
+          python-version: '3.11'
           enable-cache: true
-          cache-suffix: "bench"
+          cache-suffix: 'bench'
       - name: Install dependencies
         run: uv sync --group dev
       - name: Run benchmarks

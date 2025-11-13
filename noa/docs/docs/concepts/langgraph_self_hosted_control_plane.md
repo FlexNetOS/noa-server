@@ -1,6 +1,8 @@
 # Self-Hosted Control Plane
 
-There are two versions of the self-hosted deployment: [Self-Hosted Data Plane](./deployment_options.md#self-hosted-data-plane) and [Self-Hosted Control Plane](./deployment_options.md#self-hosted-control-plane).
+There are two versions of the self-hosted deployment:
+[Self-Hosted Data Plane](./deployment_options.md#self-hosted-data-plane) and
+[Self-Hosted Control Plane](./deployment_options.md#self-hosted-control-plane).
 
 !!! info "Important"
 
@@ -8,14 +10,21 @@ There are two versions of the self-hosted deployment: [Self-Hosted Data Plane](.
 
 ## Requirements
 
-- You use the [LangGraph CLI](./langgraph_cli.md) and/or [LangGraph Studio](./langgraph_studio.md) app to test graph locally.
+- You use the [LangGraph CLI](./langgraph_cli.md) and/or
+  [LangGraph Studio](./langgraph_studio.md) app to test graph locally.
 - You use `langgraph build` command to build image.
 - You have a Self-Hosted LangSmith instance deployed.
-- You are using Ingress for your LangSmith instance. All agents will be deployed as Kubernetes services behind this ingress.
+- You are using Ingress for your LangSmith instance. All agents will be deployed
+  as Kubernetes services behind this ingress.
 
 ## Self-Hosted Control Plane
 
-The [Self-Hosted Control Plane](./langgraph_self_hosted_control_plane.md) deployment option is a fully self-hosted model for deployment where you manage the [control plane](./langgraph_control_plane.md) and [data plane](./langgraph_data_plane.md) in your cloud. This option gives you full control and responsibility of the control plane and data plane infrastructure.
+The [Self-Hosted Control Plane](./langgraph_self_hosted_control_plane.md)
+deployment option is a fully self-hosted model for deployment where you manage
+the [control plane](./langgraph_control_plane.md) and
+[data plane](./langgraph_data_plane.md) in your cloud. This option gives you
+full control and responsibility of the control plane and data plane
+infrastructure.
 
 |                                    | [Control plane](../concepts/langgraph_control_plane.md)                                                                                     | [Data plane](../concepts/langgraph_data_plane.md)                                                                                                   |
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -29,7 +38,10 @@ The [Self-Hosted Control Plane](./langgraph_self_hosted_control_plane.md) deploy
 
 ### Compute Platforms
 
-- **Kubernetes**: The Self-Hosted Control Plane deployment option supports deploying control plane and data plane infrastructure to any Kubernetes cluster.
+- **Kubernetes**: The Self-Hosted Control Plane deployment option supports
+  deploying control plane and data plane infrastructure to any Kubernetes
+  cluster.
 
-!!! tip
-If you would like to enable this on your LangSmith instance, please follow the [Self-Hosted Control Plane deployment guide](../cloud/deployment/self_hosted_control_plane.md).
+!!! tip If you would like to enable this on your LangSmith instance, please
+follow the
+[Self-Hosted Control Plane deployment guide](../cloud/deployment/self_hosted_control_plane.md).

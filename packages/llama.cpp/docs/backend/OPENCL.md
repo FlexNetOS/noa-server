@@ -13,19 +13,29 @@
 
 ## Background
 
-OpenCL (Open Computing Language) is an open, royalty-free standard for cross-platform, parallel programming of diverse accelerators found in supercomputers, cloud servers, personal computers, mobile devices and embedded platforms. OpenCL specifies a programming language (based on C99) for programming these devices and application programming interfaces (APIs) to control the platform and execute programs on the compute devices. Similar to CUDA, OpenCL has been widely used to program GPUs and is supported by most GPU vendors.
+OpenCL (Open Computing Language) is an open, royalty-free standard for
+cross-platform, parallel programming of diverse accelerators found in
+supercomputers, cloud servers, personal computers, mobile devices and embedded
+platforms. OpenCL specifies a programming language (based on C99) for
+programming these devices and application programming interfaces (APIs) to
+control the platform and execute programs on the compute devices. Similar to
+CUDA, OpenCL has been widely used to program GPUs and is supported by most GPU
+vendors.
 
 ### Llama.cpp + OpenCL
 
-The llama.cpp OpenCL backend is designed to enable llama.cpp on **Qualcomm Adreno GPU** firstly via OpenCL. Thanks to the portabilty of OpenCL, the OpenCL backend can also run on certain Intel GPUs although the performance is not optimal.
+The llama.cpp OpenCL backend is designed to enable llama.cpp on **Qualcomm
+Adreno GPU** firstly via OpenCL. Thanks to the portabilty of OpenCL, the OpenCL
+backend can also run on certain Intel GPUs although the performance is not
+optimal.
 
 ## OS
 
-| OS      | Status  | Verified                                       |
-|---------|---------|------------------------------------------------|
-| Android | Support | Snapdragon 8 Gen 3, Snapdragon 8 Elite         |
-| Windows | Support | Windows 11 Arm64 with Snapdragon X Elite       |
-| Linux   | Support | Ubuntu 22.04 WSL2 with Intel 12700H            |
+| OS      | Status  | Verified                                 |
+| ------- | ------- | ---------------------------------------- |
+| Android | Support | Snapdragon 8 Gen 3, Snapdragon 8 Elite   |
+| Windows | Support | Windows 11 Arm64 with Snapdragon X Elite |
+| Linux   | Support | Ubuntu 22.04 WSL2 with Intel 12700H      |
 
 ## Hardware
 
@@ -33,48 +43,55 @@ The llama.cpp OpenCL backend is designed to enable llama.cpp on **Qualcomm Adren
 
 **Verified devices**
 
-| Adreno GPU                           | Status  |
-|:------------------------------------:|:-------:|
-| Adreno 750 (Snapdragon 8 Gen 3)      | Support |
-| Adreno 830 (Snapdragon 8 Elite)      | Support |
-| Adreno X85 (Snapdragon X Elite)      | Support |
+|           Adreno GPU            | Status  |
+| :-----------------------------: | :-----: |
+| Adreno 750 (Snapdragon 8 Gen 3) | Support |
+| Adreno 830 (Snapdragon 8 Elite) | Support |
+| Adreno X85 (Snapdragon X Elite) | Support |
 
 ## DataType Supports
 
-| DataType               | Status                     |
-|:----------------------:|:--------------------------:|
-| Q4_0                   | Support                    |
-| Q6_K                   | Support, but not optimized |
+| DataType |           Status           |
+| :------: | :------------------------: |
+|   Q4_0   |          Support           |
+|   Q6_K   | Support, but not optimized |
 
 ## Model Preparation
 
-You can refer to the general [*Prepare and Quantize*](README.md#prepare-and-quantize) guide for model prepration.
+You can refer to the general
+[_Prepare and Quantize_](README.md#prepare-and-quantize) guide for model
+prepration.
 
-Currently we support `Q4_0` quantization and have optimize for it. To achieve best performance on Adreno GPU, add `--pure` to `llama-quantize`. For example,
+Currently we support `Q4_0` quantization and have optimize for it. To achieve
+best performance on Adreno GPU, add `--pure` to `llama-quantize`. For example,
 
 ```sh
 ./llama-quantize --pure ggml-model-qwen2.5-3b-f16.gguf ggml-model-qwen-3b-Q4_0.gguf Q4_0
 ```
 
-Since `Q6_K` is also supported, `Q4_0` quantization without `--pure` will also work. However, the performance will be worse compared to pure `Q4_0` quantization.
+Since `Q6_K` is also supported, `Q4_0` quantization without `--pure` will also
+work. However, the performance will be worse compared to pure `Q4_0`
+quantization.
 
 ## CMake Options
 
-The OpenCL backend has the following CMake options that control the behavior of the backend.
+The OpenCL backend has the following CMake options that control the behavior of
+the backend.
 
-| CMake options                     | Default value  | Description                               |
-|:---------------------------------:|:--------------:|:------------------------------------------|
-| `GGML_OPENCL_EMBED_KERNELS`       | `ON`           | Embed OpenCL kernels into the executable. |
-| `GGML_OPENCL_USE_ADRENO_KERNELS`  | `ON`           | Use kernels optimized for Adreno.         |
+|          CMake options           | Default value | Description                               |
+| :------------------------------: | :-----------: | :---------------------------------------- |
+|   `GGML_OPENCL_EMBED_KERNELS`    |     `ON`      | Embed OpenCL kernels into the executable. |
+| `GGML_OPENCL_USE_ADRENO_KERNELS` |     `ON`      | Use kernels optimized for Adreno.         |
 
 ## Android
 
-Ubuntu 22.04 is used for targeting Android. Make sure the following tools are accessible from command line,
+Ubuntu 22.04 is used for targeting Android. Make sure the following tools are
+accessible from command line,
 
-* Git
-* CMake 3.29
-* Ninja
-* Python3
+- Git
+- CMake 3.29
+- Ninja
+- Python3
 
 ### I. Setup Environment
 
@@ -138,20 +155,22 @@ ninja
 
 ## Windows 11 Arm64
 
-A Snapdragon X Elite device with Windows 11 Arm64 is used. Make sure the following tools are accessible from command line,
+A Snapdragon X Elite device with Windows 11 Arm64 is used. Make sure the
+following tools are accessible from command line,
 
-* Git
-* CMake 3.29
-* Clang 19
-* Ninja
-* Visual Studio 2022
-* Powershell 7
+- Git
+- CMake 3.29
+- Clang 19
+- Ninja
+- Visual Studio 2022
+- Powershell 7
 
-Visual Studio provides necessary headers and libraries although it is not directly used for building.
-Alternatively, Visual Studio Build Tools can be installed instead of the full Visual Studio.
+Visual Studio provides necessary headers and libraries although it is not
+directly used for building. Alternatively, Visual Studio Build Tools can be
+installed instead of the full Visual Studio.
 
-Powershell 7 is used for the following commands.
-If an older version of Powershell is used, these commands may not work as they are.
+Powershell 7 is used for the following commands. If an older version of
+Powershell is used, these commands may not work as they are.
 
 ### I. Setup Environment
 

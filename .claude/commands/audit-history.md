@@ -5,6 +5,7 @@ View audit execution history and past results.
 ## What This Command Does
 
 Displays chronological audit execution history:
+
 - All past audits with results
 - Success/failure statistics
 - Confidence trends over time
@@ -197,6 +198,7 @@ To view a specific audit:
 ## Filtering Options
 
 ### By Status
+
 ```bash
 # Show only passed audits
 find .claude/audit-history -name "audit-result.json" -exec sh -c 'jq -r "select(.verified == true)" "$1" > /dev/null 2>&1 && dirname "$1"' _ {} \;
@@ -206,12 +208,14 @@ find .claude/audit-history -name "audit-result.json" -exec sh -c 'jq -r "select(
 ```
 
 ### By Confidence
+
 ```bash
 # Show audits below threshold (e.g., < 0.90)
 find .claude/audit-history -name "audit-result.json" -exec sh -c 'jq -r "select(.confidence < 0.90)" "$1" > /dev/null 2>&1 && dirname "$1"' _ {} \;
 ```
 
 ### By Discrepancies
+
 ```bash
 # Show audits with critical discrepancies
 find .claude/audit-history -name "audit-result.json" -exec sh -c 'jq -r "select(.discrepancies | map(select(.severity == \"critical\")) | length > 0)" "$1" > /dev/null 2>&1 && dirname "$1"' _ {} \;
@@ -220,6 +224,7 @@ find .claude/audit-history -name "audit-result.json" -exec sh -c 'jq -r "select(
 ## Cleanup
 
 To remove old audit history:
+
 ```bash
 # Remove audits older than 30 days
 find .claude/audit-history -maxdepth 1 -type d -mtime +30 -exec rm -rf {} \;

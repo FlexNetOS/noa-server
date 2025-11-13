@@ -126,11 +126,11 @@ export function Configuration({ initialConfig }: ConfigurationProps) {
   };
 
   return (
-    <div className="h-full flex">
+    <div className="flex h-full">
       {/* Sidebar */}
-      <div className="flex-none w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto">
+      <div className="w-64 flex-none overflow-y-auto border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
         <div className="p-4">
-          <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
+          <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">
             Configuration Sections
           </h3>
           <nav className="space-y-1" role="navigation">
@@ -138,10 +138,10 @@ export function Configuration({ initialConfig }: ConfigurationProps) {
               <button
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                   activeSection === section.id
                     ? 'bg-blue-600 text-white'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
                 }`}
               >
                 <span className="text-xl">{section.icon}</span>
@@ -154,15 +154,15 @@ export function Configuration({ initialConfig }: ConfigurationProps) {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
-        <div className="p-6 max-w-4xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
+        <div className="mx-auto max-w-4xl p-6">
+          <div className="mb-6 flex items-center justify-between">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
               System Configuration
             </h2>
             <button
               onClick={handleSave}
               disabled={saving}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-400"
             >
               {saving ? 'Saving...' : 'Save Changes'}
             </button>
@@ -171,44 +171,44 @@ export function Configuration({ initialConfig }: ConfigurationProps) {
           {/* General Settings */}
           {activeSection === 'general' && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
-              <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
+                <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
                   General Settings
                 </h3>
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Site Name
                     </label>
                     <input
                       type="text"
                       value={config.general.siteName}
                       onChange={(e) => updateConfig('general', 'siteName', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Site URL
                     </label>
                     <input
                       type="url"
                       value={config.general.siteUrl}
                       onChange={(e) => updateConfig('general', 'siteUrl', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Timezone
                     </label>
                     <select
                       value={config.general.timezone}
                       onChange={(e) => updateConfig('general', 'timezone', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     >
                       <option value="UTC">UTC</option>
                       <option value="America/New_York">America/New_York</option>
@@ -240,32 +240,32 @@ export function Configuration({ initialConfig }: ConfigurationProps) {
           {/* Swarm Settings */}
           {activeSection === 'swarm' && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
-              <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
+                <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
                   Swarm Configuration
                 </h3>
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Maximum Agents
                     </label>
                     <input
                       type="number"
                       value={config.swarm.maxAgents}
                       onChange={(e) => updateConfig('swarm', 'maxAgents', parseInt(e.target.value))}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Default Topology
                     </label>
                     <select
                       value={config.swarm.defaultTopology}
                       onChange={(e) => updateConfig('swarm', 'defaultTopology', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     >
                       <option value="mesh">Mesh</option>
                       <option value="hierarchical">Hierarchical</option>
@@ -274,7 +274,7 @@ export function Configuration({ initialConfig }: ConfigurationProps) {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Memory Retention (days)
                     </label>
                     <input
@@ -283,7 +283,7 @@ export function Configuration({ initialConfig }: ConfigurationProps) {
                       onChange={(e) =>
                         updateConfig('swarm', 'memoryRetention', parseInt(e.target.value))
                       }
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     />
                   </div>
 
@@ -310,8 +310,8 @@ export function Configuration({ initialConfig }: ConfigurationProps) {
           {/* Neural Settings */}
           {activeSection === 'neural' && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
-              <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
+                <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
                   Neural Processing
                 </h3>
 
@@ -333,19 +333,19 @@ export function Configuration({ initialConfig }: ConfigurationProps) {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Default Model
                     </label>
                     <input
                       type="text"
                       value={config.neural.defaultModel}
                       onChange={(e) => updateConfig('neural', 'defaultModel', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Max Concurrent Requests
                     </label>
                     <input
@@ -354,19 +354,19 @@ export function Configuration({ initialConfig }: ConfigurationProps) {
                       onChange={(e) =>
                         updateConfig('neural', 'maxConcurrent', parseInt(e.target.value))
                       }
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Timeout (seconds)
                     </label>
                     <input
                       type="number"
                       value={config.neural.timeout}
                       onChange={(e) => updateConfig('neural', 'timeout', parseInt(e.target.value))}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     />
                   </div>
                 </div>
@@ -377,14 +377,14 @@ export function Configuration({ initialConfig }: ConfigurationProps) {
           {/* Security Settings */}
           {activeSection === 'security' && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
-              <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
+                <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
                   Security Settings
                 </h3>
 
                 <div className="space-y-6">
                   <div>
-                    <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                    <h4 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
                       Rate Limiting
                     </h4>
                     <div className="space-y-3">
@@ -412,7 +412,7 @@ export function Configuration({ initialConfig }: ConfigurationProps) {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                           Max Requests per Window
                         </label>
                         <input
@@ -426,14 +426,14 @@ export function Configuration({ initialConfig }: ConfigurationProps) {
                               parseInt(e.target.value)
                             )
                           }
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                         />
                       </div>
                     </div>
                   </div>
 
                   <div>
-                    <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                    <h4 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
                       CORS
                     </h4>
                     <div className="flex items-center gap-3">
@@ -456,7 +456,7 @@ export function Configuration({ initialConfig }: ConfigurationProps) {
                   </div>
 
                   <div>
-                    <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                    <h4 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
                       Encryption
                     </h4>
                     <div className="space-y-3">
@@ -484,7 +484,7 @@ export function Configuration({ initialConfig }: ConfigurationProps) {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                           Algorithm
                         </label>
                         <select
@@ -497,7 +497,7 @@ export function Configuration({ initialConfig }: ConfigurationProps) {
                               e.target.value
                             )
                           }
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                         >
                           <option value="aes-256-gcm">AES-256-GCM</option>
                           <option value="aes-192-gcm">AES-192-GCM</option>

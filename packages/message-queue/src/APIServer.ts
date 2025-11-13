@@ -40,8 +40,8 @@ export class MessageQueueAPIServer {
       ),
       transports: [
         new winston.transports.Console(),
-        new winston.transports.File({ filename: 'logs/api-server.log' })
-      ]
+        new winston.transports.File({ filename: 'logs/api-server.log' }),
+      ],
     });
 
     this.app = express();
@@ -55,10 +55,12 @@ export class MessageQueueAPIServer {
 
   private setupMiddleware(): void {
     // CORS
-    this.app.use(cors({
-      origin: this.config.corsOrigins,
-      credentials: true
-    }));
+    this.app.use(
+      cors({
+        origin: this.config.corsOrigins,
+        credentials: true,
+      })
+    );
 
     // Body parsing
     this.app.use(express.json({ limit: '10mb' }));
@@ -68,7 +70,7 @@ export class MessageQueueAPIServer {
     this.app.use((_req, _res, next) => {
       this.logger.info(`${_req.method} ${_req.path}`, {
         ip: _req.ip,
-        userAgent: _req.get('User-Agent')
+        userAgent: _req.get('User-Agent'),
       });
       next();
     });
@@ -79,7 +81,11 @@ export class MessageQueueAPIServer {
     }
   }
 
-  private basicAuthMiddleware(req: express.Request, res: express.Response, next: express.NextFunction): void {
+  private basicAuthMiddleware(
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ): void {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Basic ')) {
@@ -114,7 +120,7 @@ export class MessageQueueAPIServer {
       res.json({
         status: 'healthy',
         timestamp: new Date().toISOString(),
-        uptime: process.uptime()
+        uptime: process.uptime(),
       });
     });
 
@@ -149,10 +155,12 @@ export class MessageQueueAPIServer {
     });
 
     // Error handler
-    this.app.use((error: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-      this.logger.error('API Error', { error: error.message, stack: error.stack });
-      res.status(500).json({ error: 'Internal server error' });
-    });
+    this.app.use(
+      (error: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+        this.logger.error('API Error', { error: error.message, stack: error.stack });
+        res.status(500).json({ error: 'Internal server error' });
+      }
+    );
   }
 
   private setupWebSocket(): void {
@@ -160,8 +168,8 @@ export class MessageQueueAPIServer {
     this.io = new SocketIOServer(this.server, {
       cors: {
         origin: this.config.corsOrigins,
-        methods: ['GET', 'POST']
-      }
+        methods: ['GET', 'POST'],
+      },
     });
 
     this.io.on('connection', (socket) => {
@@ -169,7 +177,7 @@ export class MessageQueueAPIServer {
 
       // Subscribe to real-time updates
       socket.on('subscribe', (channels: string[]) => {
-        channels.forEach(channel => {
+        channels.forEach((channel) => {
           socket.join(channel);
           this.logger.debug(`Client ${socket.id} subscribed to ${channel}`);
         });
@@ -177,7 +185,7 @@ export class MessageQueueAPIServer {
 
       // Unsubscribe from updates
       socket.on('unsubscribe', (channels: string[]) => {
-        channels.forEach(channel => {
+        channels.forEach((channel) => {
           socket.leave(channel);
           this.logger.debug(`Client ${socket.id} unsubscribed from ${channel}`);
         });
@@ -253,7 +261,7 @@ export class MessageQueueAPIServer {
       const messageId = await this.queueManager.sendMessage(queueName, payload, {
         priority,
         delay,
-        ttl
+        ttl,
       });
 
       res.json({ messageId, status: 'sent' });
@@ -345,7 +353,8 @@ export class MessageQueueAPIServer {
 
   private async submitJob(req: express.Request, res: express.Response): Promise<void> {
     try {
-      const { type, data, priority, maxRetries, retryDelay, timeout, scheduledFor, tags } = req.body;
+      const { type, data, priority, maxRetries, retryDelay, timeout, scheduledFor, tags } =
+        req.body;
 
       const jobId = await this.queueManager.submitJob(type, data, {
         priority,
@@ -353,7 +362,7 @@ export class MessageQueueAPIServer {
         retryDelay,
         timeout,
         scheduledFor: scheduledFor ? new Date(scheduledFor) : undefined,
-        tags
+        tags,
       });
 
       res.json({ jobId, status: 'submitted' });
@@ -423,7 +432,7 @@ export class MessageQueueAPIServer {
     const stats = this.queueManager.getStats();
     res.json({
       timestamp: new Date().toISOString(),
-      ...stats
+      ...stats,
     });
   }
 
@@ -441,7 +450,7 @@ export class MessageQueueAPIServer {
           this.logger.info('Message Queue API Server started', {
             host: this.config.host,
             port: this.config.port,
-            webSocket: this.config.enableWebSocket
+            webSocket: this.config.enableWebSocket,
           });
           resolve();
         });

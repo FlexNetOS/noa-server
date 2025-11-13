@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { eventBuilders, analytics } from '@/lib/analytics';
 
 interface PerformanceThresholds {
-  renderTime?: number;  // ms
+  renderTime?: number; // ms
   memoryUsage?: number; // MB
 }
 
@@ -21,16 +21,16 @@ export function usePerformanceMonitor(
   const renderCount = useRef(0);
   const lastRenderTime = useRef(performance.now());
   const mountTime = useRef(performance.now());
-  
+
   useEffect(() => {
     renderCount.current += 1;
     const currentTime = performance.now();
     const renderTime = currentTime - lastRenderTime.current;
     lastRenderTime.current = currentTime;
-    
+
     // Skip first render (mount)
     if (renderCount.current === 1) return;
-    
+
     // Check render performance
     if (thresholds.renderTime && renderTime > thresholds.renderTime) {
       const event = eventBuilders.performanceBottleneck({
@@ -41,7 +41,7 @@ export function usePerformanceMonitor(
       });
       analytics.track(event.event, event.properties);
     }
-    
+
     // Check memory usage if available
     if ('memory' in performance && (performance as any).memory && thresholds.memoryUsage) {
       const memoryMB = (performance as any).memory.usedJSHeapSize / (1024 * 1024);
@@ -56,16 +56,16 @@ export function usePerformanceMonitor(
       }
     }
   });
-  
+
   // Track component unmount metrics
   useEffect(() => {
     return () => {
       const lifetime = performance.now() - mountTime.current;
-      
+
       // Only track if component lived for more than 5 seconds and had many renders
       if (lifetime > 5000 && renderCount.current > 100) {
         const avgRenderTime = lifetime / renderCount.current;
-        
+
         // Track if average render time is high
         if (avgRenderTime > 10) {
           const event = eventBuilders.performanceBottleneck({
@@ -86,17 +86,17 @@ export function usePerformanceMonitor(
  */
 export function useAsyncPerformanceTracker(operationName: string) {
   const operationStart = useRef<number | null>(null);
-  
+
   const startTracking = () => {
     operationStart.current = performance.now();
   };
-  
+
   const endTracking = (success: boolean = true, dataSize?: number) => {
     if (!operationStart.current) return;
-    
+
     const duration = performance.now() - operationStart.current;
     operationStart.current = null;
-    
+
     // Track if operation took too long
     if (duration > 3000) {
       const event = eventBuilders.performanceBottleneck({
@@ -107,7 +107,7 @@ export function useAsyncPerformanceTracker(operationName: string) {
       });
       analytics.track(event.event, event.properties);
     }
-    
+
     // Track errors
     if (!success) {
       const event = eventBuilders.apiError({
@@ -119,6 +119,6 @@ export function useAsyncPerformanceTracker(operationName: string) {
       analytics.track(event.event, event.properties);
     }
   };
-  
+
   return { startTracking, endTracking };
 }

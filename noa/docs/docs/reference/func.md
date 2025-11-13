@@ -1,5 +1,1 @@
-::: langgraph.func
-    options:
-      members:
-        - task
-        - entrypoint
+::: langgraph.func options: members: - task - entrypoint

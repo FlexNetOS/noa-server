@@ -27,7 +27,7 @@ export class DatabaseHealthCheck extends BaseHealthCheck {
       enabled: true,
       critical: true,
       checkTypes: ['liveness', 'readiness'],
-      retries: 2
+      retries: 2,
     });
 
     this.pool = options.pool;
@@ -70,11 +70,10 @@ export class DatabaseHealthCheck extends BaseHealthCheck {
         );
       }
 
-      return this.createSuccessResult(
-        totalDuration,
-        'Database connection healthy',
-        { metrics, queryDuration }
-      );
+      return this.createSuccessResult(totalDuration, 'Database connection healthy', {
+        metrics,
+        queryDuration,
+      });
     } catch (error) {
       return this.createErrorResult(error as Error, Date.now() - startTime);
     } finally {
@@ -97,8 +96,8 @@ export class DatabaseHealthCheck extends BaseHealthCheck {
       connectionPool: {
         total: poolInfo.totalCount || 0,
         idle: poolInfo.idleCount || 0,
-        waiting: poolInfo.waitingCount || 0
-      }
+        waiting: poolInfo.waitingCount || 0,
+      },
     };
   }
 
@@ -110,7 +109,9 @@ export class DatabaseHealthCheck extends BaseHealthCheck {
 
     try {
       client = await this.pool.connect();
-      await client.query('CREATE TEMP TABLE IF NOT EXISTS health_check_test (id SERIAL PRIMARY KEY)');
+      await client.query(
+        'CREATE TEMP TABLE IF NOT EXISTS health_check_test (id SERIAL PRIMARY KEY)'
+      );
       await client.query('DROP TABLE IF EXISTS health_check_test');
       return true;
     } catch (error) {

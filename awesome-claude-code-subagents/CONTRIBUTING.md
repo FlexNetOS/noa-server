@@ -6,17 +6,22 @@ Thank you for your interest in contributing to this collection!
 
 ### Adding a New Subagent
 
-1. **Choose the right category** - Place your subagent in the most appropriate category folder
+1. **Choose the right category** - Place your subagent in the most appropriate
+   category folder
 2. **Test your subagent** - Ensure it works with Claude Code
 3. **Update required files** - When adding a new agent, you must update:
-   - **Main README.md**: Add your agent to the appropriate category section in alphabetical order
-   - **Category README.md**: Add detailed description, update Quick Selection Guide table, and if applicable, Common Technology Stacks
-   - **Your agent .md file**: Create the actual agent definition following the template
+   - **Main README.md**: Add your agent to the appropriate category section in
+     alphabetical order
+   - **Category README.md**: Add detailed description, update Quick Selection
+     Guide table, and if applicable, Common Technology Stacks
+   - **Your agent .md file**: Create the actual agent definition following the
+     template
 4. **Submit a PR** - Include a clear description of the subagent's purpose
 
 ### Subagent Requirements
 
 Each subagent should include:
+
 - Clear role definition
 - List of expertise areas
 - Required MCP tools (if any)
@@ -38,8 +43,8 @@ When you add a new agent, you MUST update these files:
    - Add detailed agent description in the "Available Subagents" section
    - Update the "Quick Selection Guide" table
    - If applicable, add to "Common Technology Stacks" section
-   
-3. **Your Agent File** (e.g., `categories/02-language-specialists/your-agent.md`)
+3. **Your Agent File** (e.g.,
+   `categories/02-language-specialists/your-agent.md`)
    - Follow the standard template structure
    - Include all required sections
 
@@ -70,4 +75,5 @@ When you add a new agent, you MUST update these files:
 
 ## 📝 License
 
-By contributing, you agree that your contributions will be licensed under the MIT License.
+By contributing, you agree that your contributions will be licensed under the
+MIT License.

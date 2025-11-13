@@ -58,16 +58,16 @@ export function WorkflowCanvas({
       ref={canvasRef}
       onDrop={onDrop}
       onDragOver={(e) => e.preventDefault()}
-      className="relative w-full h-full overflow-auto bg-gray-50 dark:bg-gray-900"
+      className="relative h-full w-full overflow-auto bg-gray-50 dark:bg-gray-900"
       style={{
         backgroundImage: `radial-gradient(circle, #cbd5e1 1px, transparent 1px)`,
         backgroundSize: '20px 20px',
       }}
     >
       {/* Canvas content area */}
-      <div className="relative min-w-[2000px] min-h-[2000px]">
+      <div className="relative min-h-[2000px] min-w-[2000px]">
         {/* Render edges */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }}>
+        <svg className="pointer-events-none absolute inset-0 h-full w-full" style={{ zIndex: 1 }}>
           <defs>
             <marker
               id="arrowhead"
@@ -172,7 +172,7 @@ export function WorkflowCanvas({
               top: node.position.y,
               zIndex: 10,
             }}
-            className={`w-32 p-3 rounded-lg shadow-lg cursor-pointer transition-all ${getNodeColor(
+            className={`w-32 cursor-pointer rounded-lg p-3 shadow-lg transition-all ${getNodeColor(
               node.type
             )} border-2 ${
               selectedNode?.id === node.id
@@ -186,26 +186,26 @@ export function WorkflowCanvas({
               <span className="text-2xl" role="img" aria-hidden="true">
                 {getNodeIcon(node.type)}
               </span>
-              <div className="text-sm font-medium text-gray-900 dark:text-white text-center">
+              <div className="text-center text-sm font-medium text-gray-900 dark:text-white">
                 {node.label}
               </div>
-              <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
+              <div className="text-center text-xs text-gray-500 dark:text-gray-400">
                 {node.type}
               </div>
             </div>
 
             {/* Connection points */}
-            <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-blue-500 rounded-full border-2 border-white dark:border-gray-800" />
-            <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-blue-500 rounded-full border-2 border-white dark:border-gray-800" />
+            <div className="absolute -top-1 left-1/2 h-3 w-3 -translate-x-1/2 transform rounded-full border-2 border-white bg-blue-500 dark:border-gray-800" />
+            <div className="absolute -bottom-1 left-1/2 h-3 w-3 -translate-x-1/2 transform rounded-full border-2 border-white bg-blue-500 dark:border-gray-800" />
           </motion.div>
         ))}
 
         {/* Instructions overlay when no nodes */}
         {nodes.length === 0 && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="text-center p-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg border-2 border-dashed border-gray-300 dark:border-gray-600">
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+            <div className="rounded-lg border-2 border-dashed border-gray-300 bg-white p-8 text-center shadow-lg dark:border-gray-600 dark:bg-gray-800">
               <svg
-                className="mx-auto h-12 w-12 text-gray-400 mb-4"
+                className="mx-auto mb-4 h-12 w-12 text-gray-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -218,7 +218,7 @@ export function WorkflowCanvas({
                   d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                 />
               </svg>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+              <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-white">
                 Start Building Your Workflow
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">

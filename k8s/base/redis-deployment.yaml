@@ -18,52 +18,52 @@ spec:
         tier: cache
     spec:
       containers:
-      - name: redis
-        image: redis:7-alpine
-        ports:
         - name: redis
-          containerPort: 6379
-          protocol: TCP
-        args:
-        - redis-server
-        - --appendonly
-        - "yes"
-        - --requirepass
-        - "$(REDIS_PASSWORD)"
-        env:
-        - name: REDIS_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: noa-server-secrets
-              key: REDIS_PASSWORD
-        resources:
-          requests:
-            cpu: 100m
-            memory: 128Mi
-          limits:
-            cpu: 500m
-            memory: 256Mi
-        livenessProbe:
-          exec:
-            command:
-            - redis-cli
-            - ping
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          exec:
-            command:
-            - redis-cli
-            - ping
-          initialDelaySeconds: 5
-          periodSeconds: 5
-        volumeMounts:
-        - name: redis-data
-          mountPath: /data
+          image: redis:7-alpine
+          ports:
+            - name: redis
+              containerPort: 6379
+              protocol: TCP
+          args:
+            - redis-server
+            - --appendonly
+            - 'yes'
+            - --requirepass
+            - '$(REDIS_PASSWORD)'
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: noa-server-secrets
+                  key: REDIS_PASSWORD
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          livenessProbe:
+            exec:
+              command:
+                - redis-cli
+                - ping
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - redis-cli
+                - ping
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
       volumes:
-      - name: redis-data
-        persistentVolumeClaim:
-          claimName: noa-redis-pvc
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: noa-redis-pvc
 
 ---
 apiVersion: v1
@@ -78,10 +78,10 @@ spec:
   selector:
     app: noa-redis
   ports:
-  - name: redis
-    port: 6379
-    targetPort: 6379
-    protocol: TCP
+    - name: redis
+      port: 6379
+      targetPort: 6379
+      protocol: TCP
 
 ---
 apiVersion: v1
@@ -91,7 +91,7 @@ metadata:
   namespace: noa-server
 spec:
   accessModes:
-  - ReadWriteOnce
+    - ReadWriteOnce
   resources:
     requests:
       storage: 5Gi

@@ -1,19 +1,19 @@
 import axios, { AxiosInstance } from 'axios';
 import {
-    AIProviderError,
-    ConfigurationError,
-    CreateChatCompletionRequest,
-    CreateEmbeddingRequest,
-    EmbeddingResponse,
-    GenerationConfig,
-    GenerationResponse,
-    LlamaCppConnectionError,
-    LlamaCppModelLoadError,
-    Message,
-    ModelCapability,
-    ModelInfo,
-    ProviderType,
-    StreamingChunk
+  AIProviderError,
+  ConfigurationError,
+  CreateChatCompletionRequest,
+  CreateEmbeddingRequest,
+  EmbeddingResponse,
+  GenerationConfig,
+  GenerationResponse,
+  LlamaCppConnectionError,
+  LlamaCppModelLoadError,
+  Message,
+  ModelCapability,
+  ModelInfo,
+  ProviderType,
+  StreamingChunk,
 } from '../types';
 import { BaseProvider } from './base';
 
@@ -132,7 +132,11 @@ export class LlamaCppProvider extends BaseProvider {
   private client: AxiosInstance;
   private models: ModelInfo[] = [];
   private availableModels: LlamaCppModel[] = [];
-  private connectionStatus: LlamaCppConnectionStatus = { connected: false, lastPing: 0, responseTime: 0 };
+  private connectionStatus: LlamaCppConnectionStatus = {
+    connected: false,
+    lastPing: 0,
+    responseTime: 0,
+  };
   private statusPollingInterval?: NodeJS.Timeout;
   private healthCheckInterval?: NodeJS.Timeout;
 
@@ -140,15 +144,18 @@ export class LlamaCppProvider extends BaseProvider {
     super(config);
 
     if (!config.baseURL) {
-      throw new ConfigurationError('Base URL is required for llama.cpp provider', ProviderType.LLAMA_CPP);
+      throw new ConfigurationError(
+        'Base URL is required for llama.cpp provider',
+        ProviderType.LLAMA_CPP
+      );
     }
 
     this.client = axios.create({
       baseURL: config.baseURL,
       timeout: config.timeout || 30000,
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
 
     // Add request interceptor for logging
@@ -179,7 +186,10 @@ export class LlamaCppProvider extends BaseProvider {
 
   protected validateConfig(): void {
     if (!this.config.baseURL) {
-      throw new ConfigurationError('Base URL is required for llama.cpp provider', ProviderType.LLAMA_CPP);
+      throw new ConfigurationError(
+        'Base URL is required for llama.cpp provider',
+        ProviderType.LLAMA_CPP
+      );
     }
   }
 
@@ -212,7 +222,7 @@ export class LlamaCppProvider extends BaseProvider {
       connected,
       lastPing: Date.now(),
       responseTime: connected ? Date.now() - this.connectionStatus.lastPing : 0,
-      error
+      error,
     };
   }
 
@@ -228,7 +238,10 @@ export class LlamaCppProvider extends BaseProvider {
       return true;
     } catch (error) {
       this.updateConnectionStatus(false, (error as Error).message);
-      throw new LlamaCppConnectionError(`Failed to ping server: ${(error as Error).message}`, ProviderType.LLAMA_CPP);
+      throw new LlamaCppConnectionError(
+        `Failed to ping server: ${(error as Error).message}`,
+        ProviderType.LLAMA_CPP
+      );
     }
   }
 
@@ -237,7 +250,7 @@ export class LlamaCppProvider extends BaseProvider {
     try {
       const [propsResponse, slotsResponse] = await Promise.all([
         this.client.get('/props'),
-        this.client.get('/slots')
+        this.client.get('/slots'),
       ]);
 
       const slots: LlamaCppSlotInfo[] = slotsResponse.data.map((slot: any) => ({
@@ -249,16 +262,16 @@ export class LlamaCppProvider extends BaseProvider {
         n_past: slot.n_past || 0,
         n_ctx: slot.n_ctx || 0,
         cache_tokens: slot.cache_tokens || 0,
-        cache_size: slot.cache_size || 0
+        cache_size: slot.cache_size || 0,
       }));
 
-      const models: LlamaCppModelInfo[] = this.availableModels.map(model => ({
+      const models: LlamaCppModelInfo[] = this.availableModels.map((model) => ({
         id: model.id,
         name: model.name,
         size: model.contextWindow * 4, // Rough estimation
         contextWindow: model.contextWindow,
         maxTokens: model.maxTokens,
-        loaded: true // Assuming loaded if in availableModels
+        loaded: true, // Assuming loaded if in availableModels
       }));
 
       return {
@@ -266,7 +279,7 @@ export class LlamaCppProvider extends BaseProvider {
         uptime: propsResponse.data.uptime || 0,
         version: propsResponse.data.version || 'unknown',
         slots,
-        models
+        models,
       };
     } catch (error) {
       this.logger.error('Failed to get health status:', error);
@@ -284,7 +297,7 @@ export class LlamaCppProvider extends BaseProvider {
         total_tokens_predicted: response.data.total_tokens_predicted || 0,
         total_tokens_processed: response.data.total_tokens_processed || 0,
         uptime_seconds: response.data.uptime_seconds || 0,
-        memory_usage: response.data.memory_usage || { total: 0, used: 0, free: 0 }
+        memory_usage: response.data.memory_usage || { total: 0, used: 0, free: 0 },
       };
     } catch (error) {
       // If metrics endpoint doesn't exist, return default metrics
@@ -295,7 +308,7 @@ export class LlamaCppProvider extends BaseProvider {
         total_tokens_predicted: 0,
         total_tokens_processed: 0,
         uptime_seconds: 0,
-        memory_usage: { total: 0, used: 0, free: 0 }
+        memory_usage: { total: 0, used: 0, free: 0 },
       };
     }
   }
@@ -327,7 +340,10 @@ export class LlamaCppProvider extends BaseProvider {
       await this.loadAvailableModels();
     } catch (error) {
       this.logger.error('Failed to load model:', error);
-      throw new LlamaCppModelLoadError(`Failed to load model ${request.model_alias || request.model_path}: ${(error as Error).message}`, ProviderType.LLAMA_CPP);
+      throw new LlamaCppModelLoadError(
+        `Failed to load model ${request.model_alias || request.model_path}: ${(error as Error).message}`,
+        ProviderType.LLAMA_CPP
+      );
     }
   }
 
@@ -339,7 +355,10 @@ export class LlamaCppProvider extends BaseProvider {
       await this.loadAvailableModels();
     } catch (error) {
       this.logger.error('Failed to unload model:', error);
-      throw new LlamaCppModelLoadError(`Failed to unload model ${modelId}: ${(error as Error).message}`, ProviderType.LLAMA_CPP);
+      throw new LlamaCppModelLoadError(
+        `Failed to unload model ${modelId}: ${(error as Error).message}`,
+        ProviderType.LLAMA_CPP
+      );
     }
   }
 
@@ -365,7 +384,7 @@ export class LlamaCppProvider extends BaseProvider {
       // Load available models from the server
       await this.loadAvailableModels();
 
-      this.models = this.availableModels.map(model => ({
+      this.models = this.availableModels.map((model) => ({
         id: model.id,
         name: model.name,
         provider: ProviderType.LLAMA_CPP,
@@ -374,12 +393,12 @@ export class LlamaCppProvider extends BaseProvider {
         capabilities: [
           ModelCapability.TEXT_GENERATION,
           ModelCapability.CHAT_COMPLETION,
-          ModelCapability.STREAMING
+          ModelCapability.STREAMING,
         ],
         metadata: {
           type: 'llama.cpp',
-          server_url: this.config.baseURL
-        }
+          server_url: this.config.baseURL,
+        },
       }));
 
       return this.models;
@@ -395,12 +414,12 @@ export class LlamaCppProvider extends BaseProvider {
           capabilities: [
             ModelCapability.TEXT_GENERATION,
             ModelCapability.CHAT_COMPLETION,
-            ModelCapability.STREAMING
+            ModelCapability.STREAMING,
           ],
           metadata: {
             type: 'llama.cpp',
-            server_url: this.config.baseURL
-          }
+            server_url: this.config.baseURL,
+          },
         },
         {
           id: 'llama-2-13b',
@@ -411,13 +430,13 @@ export class LlamaCppProvider extends BaseProvider {
           capabilities: [
             ModelCapability.TEXT_GENERATION,
             ModelCapability.CHAT_COMPLETION,
-            ModelCapability.STREAMING
+            ModelCapability.STREAMING,
           ],
           metadata: {
             type: 'llama.cpp',
-            server_url: this.config.baseURL
-          }
-        }
+            server_url: this.config.baseURL,
+          },
+        },
       ];
 
       return this.models;
@@ -427,32 +446,38 @@ export class LlamaCppProvider extends BaseProvider {
   async createChatCompletion(request: CreateChatCompletionRequest): Promise<GenerationResponse> {
     const requestId = this.generateRequestId();
 
-    return this.withRetry(async () => {
-      this.validateMessages(request.messages);
-      this.logRequest(requestId, 'createChatCompletion', request);
+    return this.withRetry(
+      async () => {
+        this.validateMessages(request.messages);
+        this.logRequest(requestId, 'createChatCompletion', request);
 
-      const modelInfo = await this.getModelInfo(request.model);
+        const modelInfo = await this.getModelInfo(request.model);
 
-      // Convert messages to llama.cpp format
-      const prompt = this.convertMessagesToPrompt(request.messages);
+        // Convert messages to llama.cpp format
+        const prompt = this.convertMessagesToPrompt(request.messages);
 
-      // Convert config to llama.cpp format
-      const llamaConfig = this.convertToLlamaConfig(request.config);
+        // Convert config to llama.cpp format
+        const llamaConfig = this.convertToLlamaConfig(request.config);
 
-      const response = await this.client.post('/completion', {
-        prompt,
-        ...llamaConfig,
-        stream: false
-      });
+        const response = await this.client.post('/completion', {
+          prompt,
+          ...llamaConfig,
+          stream: false,
+        });
 
-      const result = this.convertFromLlamaResponse(response.data, modelInfo);
-      this.logResponse(requestId, result);
+        const result = this.convertFromLlamaResponse(response.data, modelInfo);
+        this.logResponse(requestId, result);
 
-      return result;
-    }, 'createChatCompletion', requestId);
+        return result;
+      },
+      'createChatCompletion',
+      requestId
+    );
   }
 
-  async *createChatCompletionStream(request: CreateChatCompletionRequest): AsyncIterable<StreamingChunk> {
+  async *createChatCompletionStream(
+    request: CreateChatCompletionRequest
+  ): AsyncIterable<StreamingChunk> {
     const requestId = this.generateRequestId();
 
     try {
@@ -463,13 +488,17 @@ export class LlamaCppProvider extends BaseProvider {
       const prompt = this.convertMessagesToPrompt(request.messages);
       const llamaConfig = this.convertToLlamaConfig(request.config);
 
-      const response = await this.client.post('/completion', {
-        prompt,
-        ...llamaConfig,
-        stream: true
-      }, {
-        responseType: 'stream'
-      });
+      const response = await this.client.post(
+        '/completion',
+        {
+          prompt,
+          ...llamaConfig,
+          stream: true,
+        },
+        {
+          responseType: 'stream',
+        }
+      );
 
       let currentContent = '';
       let currentId = `llama-${Date.now()}`;
@@ -507,10 +536,10 @@ export class LlamaCppProvider extends BaseProvider {
                   {
                     index: 0,
                     delta: { content: data.content },
-                    finish_reason: data.stop ? 'stop' : null
-                  }
+                    finish_reason: data.stop ? 'stop' : null,
+                  },
                 ],
-                provider: ProviderType.LLAMA_CPP
+                provider: ProviderType.LLAMA_CPP,
               };
             }
 
@@ -524,10 +553,10 @@ export class LlamaCppProvider extends BaseProvider {
                   {
                     index: 0,
                     delta: {},
-                    finish_reason: 'stop'
-                  }
+                    finish_reason: 'stop',
+                  },
                 ],
-                provider: ProviderType.LLAMA_CPP
+                provider: ProviderType.LLAMA_CPP,
               };
             }
           } catch {
@@ -544,25 +573,29 @@ export class LlamaCppProvider extends BaseProvider {
   async createEmbedding(request: CreateEmbeddingRequest): Promise<EmbeddingResponse> {
     const requestId = this.generateRequestId();
 
-    return this.withRetry(async () => {
-      this.logRequest(requestId, 'createEmbedding', request);
+    return this.withRetry(
+      async () => {
+        this.logRequest(requestId, 'createEmbedding', request);
 
-      // llama.cpp doesn't have native embedding support, throw error
-      throw new AIProviderError(
-        'Embeddings are not supported by llama.cpp provider',
-        ProviderType.LLAMA_CPP,
-        'UNSUPPORTED_CAPABILITY',
-        400,
-        false
-      );
-    }, 'createEmbedding', requestId);
+        // llama.cpp doesn't have native embedding support, throw error
+        throw new AIProviderError(
+          'Embeddings are not supported by llama.cpp provider',
+          ProviderType.LLAMA_CPP,
+          'UNSUPPORTED_CAPABILITY',
+          400,
+          false
+        );
+      },
+      'createEmbedding',
+      requestId
+    );
   }
 
   supportsCapability(capability: ModelCapability): boolean {
     const supportedCapabilities = [
       ModelCapability.TEXT_GENERATION,
       ModelCapability.CHAT_COMPLETION,
-      ModelCapability.STREAMING
+      ModelCapability.STREAMING,
     ];
 
     return supportedCapabilities.includes(capability);
@@ -605,7 +638,7 @@ export class LlamaCppProvider extends BaseProvider {
           id: slot.model || 'unknown',
           name: slot.model || 'Unknown Model',
           contextWindow: 4096, // Default
-          maxTokens: 2048 // Default
+          maxTokens: 2048, // Default
         }));
       }
     } catch (error) {
@@ -615,17 +648,19 @@ export class LlamaCppProvider extends BaseProvider {
           id: 'llama-2-7b',
           name: 'Llama 2 7B',
           contextWindow: 4096,
-          maxTokens: 2048
-        }
+          maxTokens: 2048,
+        },
       ];
     }
   }
 
   private convertMessagesToPrompt(messages: Message[]): string {
-    return messages.map(message => {
-      const role = message.role === 'assistant' ? 'Assistant' : 'Human';
-      return `${role}: ${typeof message.content === 'string' ? message.content : message.content.map(c => c.text || '').join('')}`;
-    }).join('\n\n');
+    return messages
+      .map((message) => {
+        const role = message.role === 'assistant' ? 'Assistant' : 'Human';
+        return `${role}: ${typeof message.content === 'string' ? message.content : message.content.map((c) => c.text || '').join('')}`;
+      })
+      .join('\n\n');
   }
 
   private convertToLlamaConfig(config?: GenerationConfig): Partial<LlamaCppCompletionRequest> {
@@ -636,7 +671,7 @@ export class LlamaCppProvider extends BaseProvider {
       temperature: config.temperature,
       top_p: config.top_p,
       top_k: config.top_k,
-      stop: Array.isArray(config.stop) ? config.stop : config.stop ? [config.stop] : undefined
+      stop: Array.isArray(config.stop) ? config.stop : config.stop ? [config.stop] : undefined,
     };
   }
 
@@ -654,23 +689,23 @@ export class LlamaCppProvider extends BaseProvider {
           index: 0,
           message: {
             role: 'assistant',
-            content: response.content
+            content: response.content,
           },
           text: response.content,
-          finish_reason: response.stop ? 'stop' : null
-        }
+          finish_reason: response.stop ? 'stop' : null,
+        },
       ],
       usage: {
         prompt_tokens: response.tokens_cached + response.tokens_predicted,
         completion_tokens: response.tokens_predicted,
-        total_tokens: response.tokens_cached + (response.tokens_predicted * 2)
+        total_tokens: response.tokens_cached + response.tokens_predicted * 2,
       },
       provider: ProviderType.LLAMA_CPP,
       metadata: {
         timings: response.timings,
         generation_settings: response.generation_settings,
-        model_info: modelInfo
-      }
+        model_info: modelInfo,
+      },
     };
   }
 }

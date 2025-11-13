@@ -15,9 +15,9 @@ class DatabaseManager extends EventEmitter {
       dbPath: config.dbPath || 'data/mediaspend.db',
       schemaPath: config.schemaPath || 'schema.sql',
       mode: config.mode || 'WAL',
-      ...config
+      ...config,
     };
-    
+
     this.db = null;
     this.connected = false;
   }
@@ -35,28 +35,32 @@ class DatabaseManager extends EventEmitter {
 
       // Use absolute path for cross-platform compatibility
       const absoluteDbPath = path.resolve(this.config.dbPath);
-      
+
       // Create database connection
-      this.db = new sqlite3.Database(absoluteDbPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
-        if (err) {
-          console.error('Database connection error:', err.message);
-          this.emit('error', err);
-          return;
+      this.db = new sqlite3.Database(
+        absoluteDbPath,
+        sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
+        (err) => {
+          if (err) {
+            console.error('Database connection error:', err.message);
+            this.emit('error', err);
+            return;
+          }
+
+          this.connected = true;
+          this.emit('connected');
         }
-        
-        this.connected = true;
-        this.emit('connected');
-      });
+      );
 
       // Configure database for optimal performance
       await this.configureDatabase();
-      
+
       // Initialize schema
       await this.initializeSchema();
-      
+
       // Create system tables for Flow Nexus persistence
       await this.createSystemTables();
-      
+
       console.log('✅ Database initialized:', absoluteDbPath);
       return this;
     } catch (error) {
@@ -74,7 +78,7 @@ class DatabaseManager extends EventEmitter {
       'PRAGMA synchronous = NORMAL',
       'PRAGMA cache_size = 10000',
       'PRAGMA temp_store = MEMORY',
-      'PRAGMA foreign_keys = ON'
+      'PRAGMA foreign_keys = ON',
     ];
 
     for (const pragma of pragmas) {
@@ -113,7 +117,7 @@ class DatabaseManager extends EventEmitter {
         contact_email TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )`,
-      
+
       `CREATE TABLE IF NOT EXISTS insertion_orders (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         io_number TEXT UNIQUE,
@@ -127,7 +131,7 @@ class DatabaseManager extends EventEmitter {
         approved_at DATETIME,
         FOREIGN KEY (advertiser_id) REFERENCES advertisers(id)
       )`,
-      
+
       `CREATE TABLE IF NOT EXISTS line_items (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         insertion_order_id INTEGER,
@@ -139,7 +143,7 @@ class DatabaseManager extends EventEmitter {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (insertion_order_id) REFERENCES insertion_orders(id)
       )`,
-      
+
       `CREATE TABLE IF NOT EXISTS daily_spend (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         line_item_id INTEGER,
@@ -151,7 +155,7 @@ class DatabaseManager extends EventEmitter {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (line_item_id) REFERENCES line_items(id)
       )`,
-      
+
       `CREATE TABLE IF NOT EXISTS anomalies (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         line_item_id INTEGER,
@@ -163,7 +167,7 @@ class DatabaseManager extends EventEmitter {
         resolved_at DATETIME,
         FOREIGN KEY (line_item_id) REFERENCES line_items(id)
       )`,
-      
+
       `CREATE TABLE IF NOT EXISTS invoices (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         insertion_order_id INTEGER,
@@ -175,7 +179,7 @@ class DatabaseManager extends EventEmitter {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         paid_at DATETIME,
         FOREIGN KEY (insertion_order_id) REFERENCES insertion_orders(id)
-      )`
+      )`,
     ];
 
     for (const sql of basicTables) {
@@ -197,7 +201,7 @@ class DatabaseManager extends EventEmitter {
         expires_at DATETIME,
         status TEXT DEFAULT 'active'
       )`,
-      
+
       `CREATE TABLE IF NOT EXISTS flow_nexus_swarms (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         swarm_id TEXT UNIQUE,
@@ -208,7 +212,7 @@ class DatabaseManager extends EventEmitter {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         destroyed_at DATETIME
       )`,
-      
+
       `CREATE TABLE IF NOT EXISTS flow_nexus_agents (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         agent_id TEXT UNIQUE,
@@ -220,7 +224,7 @@ class DatabaseManager extends EventEmitter {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (swarm_id) REFERENCES flow_nexus_swarms(swarm_id)
       )`,
-      
+
       `CREATE TABLE IF NOT EXISTS flow_nexus_workflows (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         workflow_id TEXT UNIQUE,
@@ -231,7 +235,7 @@ class DatabaseManager extends EventEmitter {
         status TEXT DEFAULT 'active',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )`,
-      
+
       `CREATE TABLE IF NOT EXISTS flow_nexus_tasks (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         task_id TEXT UNIQUE,
@@ -243,18 +247,18 @@ class DatabaseManager extends EventEmitter {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         completed_at DATETIME
       )`,
-      
+
       `CREATE TABLE IF NOT EXISTS system_state (
         key TEXT PRIMARY KEY,
         value TEXT,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )`
+      )`,
     ];
 
     for (const sql of systemTables) {
       await this.run(sql);
     }
-    
+
     console.log('✅ System tables for Flow Nexus persistence created');
   }
 
@@ -264,7 +268,7 @@ class DatabaseManager extends EventEmitter {
   async saveSession(sessionData) {
     const { user, session } = sessionData;
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
-    
+
     await this.run(
       `INSERT OR REPLACE INTO flow_nexus_sessions 
        (user_id, user_email, session_token, expires_at) 
@@ -282,7 +286,7 @@ class DatabaseManager extends EventEmitter {
        WHERE status = 'active' AND expires_at > datetime('now') 
        ORDER BY authenticated_at DESC LIMIT 1`
     );
-    
+
     return session;
   }
 
@@ -307,12 +311,12 @@ class DatabaseManager extends EventEmitter {
        (agent_id, swarm_id, type, name, capabilities, status) 
        VALUES (?, ?, ?, ?, ?, ?)`,
       [
-        agentData.id || agentData.agentId, 
-        agentData.swarmId, 
-        agentData.type, 
+        agentData.id || agentData.agentId,
+        agentData.swarmId,
+        agentData.type,
         agentData.name,
-        JSON.stringify(agentData.capabilities || []), 
-        'active'
+        JSON.stringify(agentData.capabilities || []),
+        'active',
       ]
     );
   }
@@ -331,7 +335,7 @@ class DatabaseManager extends EventEmitter {
         workflowData.description,
         JSON.stringify(workflowData.steps || []),
         JSON.stringify(workflowData.triggers || []),
-        'active'
+        'active',
       ]
     );
   }
@@ -344,31 +348,31 @@ class DatabaseManager extends EventEmitter {
       this.restoreSession(),
       this.all(`SELECT * FROM flow_nexus_swarms WHERE status = 'active'`),
       this.all(`SELECT * FROM flow_nexus_agents WHERE status = 'active'`),
-      this.all(`SELECT * FROM flow_nexus_workflows WHERE status = 'active'`)
+      this.all(`SELECT * FROM flow_nexus_workflows WHERE status = 'active'`),
     ]);
 
     return {
       session,
-      swarms: swarms.map(s => ({
+      swarms: swarms.map((s) => ({
         swarmId: s.swarm_id,
         topology: s.topology,
         maxAgents: s.max_agents,
-        strategy: s.strategy
+        strategy: s.strategy,
       })),
-      agents: agents.map(a => ({
+      agents: agents.map((a) => ({
         id: a.agent_id,
         swarmId: a.swarm_id,
         type: a.type,
         name: a.name,
-        capabilities: JSON.parse(a.capabilities || '[]')
+        capabilities: JSON.parse(a.capabilities || '[]'),
       })),
-      workflows: workflows.map(w => ({
+      workflows: workflows.map((w) => ({
         id: w.workflow_id,
         name: w.name,
         description: w.description,
         steps: JSON.parse(w.steps || '[]'),
-        triggers: JSON.parse(w.triggers || '[]')
-      }))
+        triggers: JSON.parse(w.triggers || '[]'),
+      })),
     };
   }
 
@@ -386,7 +390,7 @@ class DatabaseManager extends EventEmitter {
    */
   run(sql, params = []) {
     return new Promise((resolve, reject) => {
-      this.db.run(sql, params, function(err) {
+      this.db.run(sql, params, function (err) {
         if (err) reject(err);
         else resolve({ id: this.lastID, changes: this.changes });
       });
@@ -443,17 +447,17 @@ class DatabaseManager extends EventEmitter {
       SELECT name FROM sqlite_master 
       WHERE type='table' AND name NOT LIKE 'sqlite_%'
     `);
-    
+
     const stats = {};
     for (const table of tables) {
       const count = await this.get(`SELECT COUNT(*) as count FROM ${table.name}`);
       stats[table.name] = count.count;
     }
-    
+
     return {
       tables: tables.length,
       counts: stats,
-      dbPath: this.config.dbPath
+      dbPath: this.config.dbPath,
     };
   }
 }

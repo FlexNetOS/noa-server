@@ -2,11 +2,15 @@
 
 ## Background
 
-IBM zDNN (Z Deep Neural Network) is a hardware acceleration library designed specifically to leverage the IBM NNPA (Neural Network Processor Assist) accelerator located within IBM Telum I and II processors. It provides significant performance improvements for neural network inference operations.
+IBM zDNN (Z Deep Neural Network) is a hardware acceleration library designed
+specifically to leverage the IBM NNPA (Neural Network Processor Assist)
+accelerator located within IBM Telum I and II processors. It provides
+significant performance improvements for neural network inference operations.
 
 ### Llama.cpp + IBM zDNN
 
-The llama.cpp zDNN backend is designed to enable llama.cpp on IBM z17 and later systems via the IBM zDNN hardware acceleration library.
+The llama.cpp zDNN backend is designed to enable llama.cpp on IBM z17 and later
+systems via the IBM zDNN hardware acceleration library.
 
 ## Software & Hardware Support
 
@@ -25,7 +29,8 @@ The llama.cpp zDNN backend is designed to enable llama.cpp on IBM z17 and later 
 
 ## CMake Options
 
-The IBM zDNN backend has the following CMake options that control the behaviour of the backend.
+The IBM zDNN backend has the following CMake options that control the behaviour
+of the backend.
 
 | CMake Option | Default Value | Description                         |
 | ------------ | ------------- | ----------------------------------- |
@@ -34,7 +39,9 @@ The IBM zDNN backend has the following CMake options that control the behaviour 
 
 ## 1. Install zDNN Library
 
-Note: Using the zDNN library provided via `apt` or `yum` may not work correctly as reported in [#15772](https://github.com/ggml-org/llama.cpp/issues/15772). It is preferred that you compile from source.
+Note: Using the zDNN library provided via `apt` or `yum` may not work correctly
+as reported in [#15772](https://github.com/ggml-org/llama.cpp/issues/15772). It
+is preferred that you compile from source.
 
 ```sh
 git clone --recurse-submodules https://github.com/IBM/zDNN

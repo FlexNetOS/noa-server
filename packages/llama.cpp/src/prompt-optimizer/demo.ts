@@ -10,35 +10,37 @@ const demoPrompts = [
   {
     name: 'Vague Technical Request',
     input: 'Write code',
-    description: 'Extremely vague, no context, no specifications'
+    description: 'Extremely vague, no context, no specifications',
   },
   {
     name: 'Creative Writing',
     input: 'Create a story about a robot who discovers emotions',
-    description: 'Creative domain with some context'
+    description: 'Creative domain with some context',
   },
   {
     name: 'Technical Analysis',
     input: 'Analyze my database performance and suggest optimizations for PostgreSQL',
-    description: 'Technical domain with specific technology'
+    description: 'Technical domain with specific technology',
   },
   {
     name: 'Educational Request',
     input: 'Explain machine learning to a beginner',
-    description: 'Educational with audience specification'
+    description: 'Educational with audience specification',
   },
   {
     name: 'Complex System Design',
     input: `Design a distributed microservices architecture for an e-commerce platform
             that handles 1M+ daily transactions, ensures 99.99% uptime, and scales horizontally`,
-    description: 'Complex multi-faceted request with constraints'
-  }
+    description: 'Complex multi-faceted request with constraints',
+  },
 ];
 
 async function runDemo() {
   console.log('╔═══════════════════════════════════════════════════════════════════════════════╗');
   console.log('║     🤖 MASTER-LEVEL AI PROMPT OPTIMIZATION SPECIALIST - INTERACTIVE DEMO      ║');
-  console.log('╚═══════════════════════════════════════════════════════════════════════════════╝\n');
+  console.log(
+    '╚═══════════════════════════════════════════════════════════════════════════════╝\n'
+  );
 
   console.log('This demo showcases the power of the 4-D Methodology:\n');
   console.log('  1️⃣  DECONSTRUCT - Extract intent, entities, requirements');
@@ -66,20 +68,30 @@ async function runDemo() {
     // Show 4-D Analysis
     console.log('🔍 1️⃣ DECONSTRUCT RESULTS:');
     console.log(`   Domain: ${result.deconstructResult.keyEntities.domain}`);
-    console.log(`   Primary Objective: ${result.deconstructResult.coreIntent.primaryObjective.substring(0, 60)}...`);
-    console.log(`   Action Verbs: ${result.deconstructResult.coreIntent.actionVerbs.join(', ') || 'None detected'}`);
+    console.log(
+      `   Primary Objective: ${result.deconstructResult.coreIntent.primaryObjective.substring(0, 60)}...`
+    );
+    console.log(
+      `   Action Verbs: ${result.deconstructResult.coreIntent.actionVerbs.join(', ') || 'None detected'}`
+    );
     console.log(`   Critical Gaps: ${result.deconstructResult.gapAnalysis.criticalGaps.length}\n`);
 
     console.log('🩺 2️⃣ DIAGNOSE RESULTS:');
     console.log(`   Clarity Score: ${result.diagnoseResult.clarityScore.score}/10`);
     console.log(`   Specificity Score: ${result.diagnoseResult.specificityCheck.score}/10`);
-    console.log(`   Completeness: ${result.diagnoseResult.completenessMatrix.completenessPercentage}%`);
+    console.log(
+      `   Completeness: ${result.diagnoseResult.completenessMatrix.completenessPercentage}%`
+    );
     console.log(`   Complexity: ${result.diagnoseResult.complexityAssessment.level}\n`);
 
     console.log('🛠️  3️⃣ DEVELOP RESULTS:');
     console.log(`   Strategy: ${result.developResult.strategySelection.primaryType}`);
-    console.log(`   Confidence: ${(result.developResult.strategySelection.confidence * 100).toFixed(1)}%`);
-    console.log(`   Techniques Applied: ${result.developResult.techniques.filter(t => t.applied).length}\n`);
+    console.log(
+      `   Confidence: ${(result.developResult.strategySelection.confidence * 100).toFixed(1)}%`
+    );
+    console.log(
+      `   Techniques Applied: ${result.developResult.techniques.filter((t) => t.applied).length}\n`
+    );
 
     console.log('🚀 4️⃣ DELIVER RESULTS:');
     console.log(`   Role Assigned: ${result.deliverResult.roleAssignment.persona}`);
@@ -99,7 +111,7 @@ async function runDemo() {
     console.log('─'.repeat(80));
 
     // Wait for user to review (in real demo)
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
 
   // Final statistics
@@ -110,7 +122,9 @@ async function runDemo() {
   const stats = promptOptimizer.getStats();
   console.log(`Total Optimizations: ${stats.optimizationCount}`);
   console.log(`Successful Optimizations: ${stats.successfulOptimizations}`);
-  console.log(`Success Rate: ${(stats.successfulOptimizations / stats.optimizationCount * 100).toFixed(1)}%`);
+  console.log(
+    `Success Rate: ${((stats.successfulOptimizations / stats.optimizationCount) * 100).toFixed(1)}%`
+  );
   console.log(`Average Quality Improvement: ${stats.averageQualityImprovement.toFixed(1)}%`);
   console.log(`Session ID: ${stats.sessionId}`);
 

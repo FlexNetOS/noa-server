@@ -1,10 +1,12 @@
 # Claude Flow Integration
 
-Complete integration layer for Claude Flow orchestration system, replacing Maestro stubs with production-ready functionality.
+Complete integration layer for Claude Flow orchestration system, replacing
+Maestro stubs with production-ready functionality.
 
 ## Features
 
-- **Full Claude Flow API Integration** - Complete client for Claude Flow orchestration
+- **Full Claude Flow API Integration** - Complete client for Claude Flow
+  orchestration
 - **Workflow Builder** - Fluent API for building complex workflows
 - **Pre-built Workflows** - Ready-to-use templates for common scenarios
 - **Maestro Compatibility** - Drop-in replacement for existing Maestro code
@@ -24,13 +26,17 @@ npm install @noa/claude-flow-integration
 ### Basic Usage
 
 ```typescript
-import { ClaudeFlowClient, AgentType, SwarmTopology } from '@noa/claude-flow-integration';
+import {
+  ClaudeFlowClient,
+  AgentType,
+  SwarmTopology,
+} from '@noa/claude-flow-integration';
 
 // Initialize client
 const client = new ClaudeFlowClient({
   apiEndpoint: 'http://localhost:3000',
   enableHooks: true,
-  enableMemory: true
+  enableMemory: true,
 });
 
 await client.initialize();
@@ -39,13 +45,13 @@ await client.initialize();
 const swarm = await client.initSwarm({
   topology: SwarmTopology.MESH,
   maxAgents: 10,
-  memoryEnabled: true
+  memoryEnabled: true,
 });
 
 // Spawn agents
 const agent = await client.spawnAgent({
   type: AgentType.CODER,
-  maxConcurrency: 5
+  maxConcurrency: 5,
 });
 
 // Orchestrate tasks
@@ -54,35 +60,39 @@ await client.orchestrateTasks([
     id: 'task-1',
     description: 'Implement REST API',
     agentType: AgentType.BACKEND_DEV,
-    priority: 'high'
+    priority: 'high',
   },
   {
     id: 'task-2',
     description: 'Write tests',
     agentType: AgentType.TESTER,
     priority: 'high',
-    dependencies: ['task-1']
-  }
+    dependencies: ['task-1'],
+  },
 ]);
 ```
 
 ### Using Workflow Builder
 
 ```typescript
-import { WorkflowBuilder, AgentType, TaskPriority } from '@noa/claude-flow-integration';
+import {
+  WorkflowBuilder,
+  AgentType,
+  TaskPriority,
+} from '@noa/claude-flow-integration';
 
 const workflow = WorkflowBuilder.meshSwarm('api-dev', 'Build REST API', 6)
   .addTask('design-api', 'Design API endpoints')
-    .withAgent(AgentType.SYSTEM_ARCHITECT)
-    .withPriority(TaskPriority.HIGH)
+  .withAgent(AgentType.SYSTEM_ARCHITECT)
+  .withPriority(TaskPriority.HIGH)
   .addTask('implement-api', 'Implement endpoints')
-    .withAgent(AgentType.BACKEND_DEV)
-    .withPriority(TaskPriority.HIGH)
-    .dependsOn('design-api')
+  .withAgent(AgentType.BACKEND_DEV)
+  .withPriority(TaskPriority.HIGH)
+  .dependsOn('design-api')
   .addTask('write-tests', 'Write API tests')
-    .withAgent(AgentType.TESTER)
-    .withPriority(TaskPriority.HIGH)
-    .dependsOn('implement-api')
+  .withAgent(AgentType.TESTER)
+  .withPriority(TaskPriority.HIGH)
+  .dependsOn('implement-api')
   .build();
 
 const results = await client.executeWorkflow(workflow);
@@ -124,21 +134,25 @@ await maestro.addAgent('coder');
 ## Available Workflows
 
 ### Development Workflows
+
 - `fullStackDevelopment` - Complete full-stack app development
 - `apiDevelopment` - REST API with testing and docs
 - `microservicesDevelopment` - Microservice with containerization
 - `tddWorkflow` - Test-driven development
 
 ### ML/AI Workflows
+
 - `mlPipeline` - Complete ML pipeline from data to deployment
 
 ### Maintenance Workflows
+
 - `codeReview` - Comprehensive code review
 - `securityAudit` - Security audit and remediation
 - `performanceOptimization` - Performance analysis and optimization
 - `databaseMigration` - Safe database migration
 
 ### Documentation Workflows
+
 - `documentationGeneration` - Generate comprehensive docs
 
 ## Agent Types
@@ -187,7 +201,9 @@ client.on('swarm.initialized', (event) => {
 
 ```typescript
 // Store data
-await client.storeMemory('user-schema', schemaDefinition, 3600000, ['database']);
+await client.storeMemory('user-schema', schemaDefinition, 3600000, [
+  'database',
+]);
 
 // Retrieve data
 const schema = await client.retrieveMemory('user-schema');
@@ -196,14 +212,18 @@ const schema = await client.retrieveMemory('user-schema');
 const entries = await client.queryMemory({
   tags: ['database'],
   after: Date.now() - 3600000,
-  limit: 10
+  limit: 10,
 });
 ```
 
 ## Error Handling
 
 ```typescript
-import { ClaudeFlowError, ValidationError, TimeoutError } from '@noa/claude-flow-integration';
+import {
+  ClaudeFlowError,
+  ValidationError,
+  TimeoutError,
+} from '@noa/claude-flow-integration';
 
 try {
   await client.executeWorkflow(workflow);
@@ -230,16 +250,16 @@ const workflow = new WorkflowBuilder('custom-workflow', 'My Workflow')
     maxAgents: 8,
     memoryEnabled: true,
     neuralEnabled: true,
-    autoHealing: true
+    autoHealing: true,
   })
   .withParallelExecution(true)
   .withFailFast(false)
   .addTask('task-1', 'First task')
-    .withAgent(AgentType.CODER)
-    .withPriority(TaskPriority.HIGH)
-    .withTimeout(60000)
-    .withRetries(5)
-    .withMetadata({ custom: 'data' })
+  .withAgent(AgentType.CODER)
+  .withPriority(TaskPriority.HIGH)
+  .withTimeout(60000)
+  .withRetries(5)
+  .withMetadata({ custom: 'data' })
   .build();
 ```
 
@@ -248,13 +268,13 @@ const workflow = new WorkflowBuilder('custom-workflow', 'My Workflow')
 ```typescript
 const sequential = WorkflowBuilder.sequential('seq', 'Sequential Tasks')
   .addTask('step-1', 'First step')
-    .withAgent(AgentType.PLANNER)
+  .withAgent(AgentType.PLANNER)
   .addTask('step-2', 'Second step')
-    .withAgent(AgentType.CODER)
-    .dependsOn('step-1')
+  .withAgent(AgentType.CODER)
+  .dependsOn('step-1')
   .addTask('step-3', 'Third step')
-    .withAgent(AgentType.TESTER)
-    .dependsOn('step-2')
+  .withAgent(AgentType.TESTER)
+  .dependsOn('step-2')
   .build();
 ```
 
@@ -305,23 +325,26 @@ const client = new ClaudeFlowClient({
   enableNeural: false,
 
   // Enable debug logging (default: false)
-  debug: false
+  debug: false,
 });
 ```
 
 ## Best Practices
 
 1. **Always initialize before use**
+
    ```typescript
    await client.initialize();
    ```
 
 2. **Use workflow builders for complex workflows**
+
    ```typescript
    const workflow = WorkflowBuilder.meshSwarm('id', 'name', 10);
    ```
 
 3. **Handle errors appropriately**
+
    ```typescript
    try {
      await client.executeWorkflow(workflow);
@@ -331,11 +354,13 @@ const client = new ClaudeFlowClient({
    ```
 
 4. **Clean up resources**
+
    ```typescript
    await client.shutdownSwarm();
    ```
 
 5. **Use memory for inter-agent communication**
+
    ```typescript
    await client.storeMemory('shared-data', data);
    ```
@@ -368,6 +393,7 @@ See [API Documentation](./docs/api.md) for complete API reference.
 ## Examples
 
 See [examples/](./examples/) directory for more examples:
+
 - Basic workflow execution
 - Custom agent configuration
 - Memory management patterns

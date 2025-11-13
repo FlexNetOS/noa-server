@@ -22,43 +22,43 @@ spec:
           minReplicas: 3
           maxReplicas: 10
           metrics:
-          - type: Resource
-            resource:
-              name: cpu
-              target:
-                type: Utilization
-                averageUtilization: 80
+            - type: Resource
+              resource:
+                name: cpu
+                target:
+                  type: Utilization
+                  averageUtilization: 80
 
     ingressGateways:
-    - name: istio-ingressgateway
-      enabled: true
-      k8s:
-        replicaCount: 3
-        resources:
-          requests:
-            cpu: 1000m
-            memory: 1Gi
-          limits:
-            cpu: 2000m
-            memory: 2Gi
-        service:
-          type: LoadBalancer
-          ports:
-          - port: 15021
-            targetPort: 15021
-            name: status-port
-          - port: 80
-            targetPort: 8080
-            name: http2
-          - port: 443
-            targetPort: 8443
-            name: https
+      - name: istio-ingressgateway
+        enabled: true
+        k8s:
+          replicaCount: 3
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 1Gi
+            limits:
+              cpu: 2000m
+              memory: 2Gi
+          service:
+            type: LoadBalancer
+            ports:
+              - port: 15021
+                targetPort: 15021
+                name: status-port
+              - port: 80
+                targetPort: 8080
+                name: http2
+              - port: 443
+                targetPort: 8443
+                name: https
 
     egressGateways:
-    - name: istio-egressgateway
-      enabled: true
-      k8s:
-        replicaCount: 2
+      - name: istio-egressgateway
+        enabled: true
+        k8s:
+          replicaCount: 2
 
   # Mesh configuration
   meshConfig:
@@ -137,46 +137,46 @@ metadata:
   namespace: noa-system
 spec:
   hosts:
-  - noa-server.io
-  - api.noa-server.io
+    - noa-server.io
+    - api.noa-server.io
   gateways:
-  - noa-gateway
+    - noa-gateway
   http:
-  # Canary deployment - 10% to v2, 90% to v1
-  - match:
-    - headers:
-        x-canary:
-          exact: "true"
-    route:
-    - destination:
-        host: noa-server
-        subset: v2
+    # Canary deployment - 10% to v2, 90% to v1
+    - match:
+        - headers:
+            x-canary:
+              exact: 'true'
+      route:
+        - destination:
+            host: noa-server
+            subset: v2
 
-  - route:
-    - destination:
-        host: noa-server
-        subset: v1
-      weight: 90
-    - destination:
-        host: noa-server
-        subset: v2
-      weight: 10
+    - route:
+        - destination:
+            host: noa-server
+            subset: v1
+          weight: 90
+        - destination:
+            host: noa-server
+            subset: v2
+          weight: 10
 
-    # Retry policy
-    retries:
-      attempts: 3
-      perTryTimeout: 5s
-      retryOn: 5xx,reset,connect-failure,refused-stream
+      # Retry policy
+      retries:
+        attempts: 3
+        perTryTimeout: 5s
+        retryOn: 5xx,reset,connect-failure,refused-stream
 
-    # Timeout
-    timeout: 30s
+      # Timeout
+      timeout: 30s
 
-    # Fault injection for testing (disabled in production)
-    # fault:
-    #   delay:
-    #     percentage:
-    #       value: 1.0
-    #     fixedDelay: 5s
+      # Fault injection for testing (disabled in production)
+      # fault:
+      #   delay:
+      #     percentage:
+      #       value: 1.0
+      #     fixedDelay: 5s
 
 ---
 # Destination Rule for traffic policies
@@ -217,25 +217,25 @@ spec:
 
   # Subsets for different versions
   subsets:
-  - name: v1
-    labels:
-      version: v1
-    trafficPolicy:
-      connectionPool:
-        tcp:
-          maxConnections: 100
-        http:
-          http1MaxPendingRequests: 100
+    - name: v1
+      labels:
+        version: v1
+      trafficPolicy:
+        connectionPool:
+          tcp:
+            maxConnections: 100
+          http:
+            http1MaxPendingRequests: 100
 
-  - name: v2
-    labels:
-      version: v2
-    trafficPolicy:
-      connectionPool:
-        tcp:
-          maxConnections: 50
-        http:
-          http1MaxPendingRequests: 50
+    - name: v2
+      labels:
+        version: v2
+      trafficPolicy:
+        connectionPool:
+          tcp:
+            maxConnections: 50
+          http:
+            http1MaxPendingRequests: 50
 
 ---
 # Gateway configuration
@@ -248,28 +248,28 @@ spec:
   selector:
     istio: ingressgateway
   servers:
-  # HTTP (redirect to HTTPS)
-  - port:
-      number: 80
-      name: http
-      protocol: HTTP
-    hosts:
-    - "*"
-    tls:
-      httpsRedirect: true
+    # HTTP (redirect to HTTPS)
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - '*'
+      tls:
+        httpsRedirect: true
 
-  # HTTPS
-  - port:
-      number: 443
-      name: https
-      protocol: HTTPS
-    hosts:
-    - noa-server.io
-    - api.noa-server.io
-    - "*.noa-server.io"
-    tls:
-      mode: SIMPLE
-      credentialName: noa-server-tls
+    # HTTPS
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      hosts:
+        - noa-server.io
+        - api.noa-server.io
+        - '*.noa-server.io'
+      tls:
+        mode: SIMPLE
+        credentialName: noa-server-tls
 
 ---
 # Service Entry for external services
@@ -280,12 +280,12 @@ metadata:
   namespace: noa-system
 spec:
   hosts:
-  - api.openai.com
-  - api.anthropic.com
+    - api.openai.com
+    - api.anthropic.com
   ports:
-  - number: 443
-    name: https
-    protocol: HTTPS
+    - number: 443
+      name: https
+      protocol: HTTPS
   location: MESH_EXTERNAL
   resolution: DNS
 
@@ -313,20 +313,20 @@ spec:
       app: noa-server
   action: ALLOW
   rules:
-  # Allow authenticated requests
-  - from:
-    - source:
-        principals:
-        - "cluster.local/ns/noa-system/sa/noa-server"
-    to:
-    - operation:
-        methods: ["GET", "POST", "PUT", "DELETE"]
-        paths: ["/api/*"]
+    # Allow authenticated requests
+    - from:
+        - source:
+            principals:
+              - 'cluster.local/ns/noa-system/sa/noa-server'
+      to:
+        - operation:
+            methods: ['GET', 'POST', 'PUT', 'DELETE']
+            paths: ['/api/*']
 
-  # Allow health checks
-  - to:
-    - operation:
-        paths: ["/health", "/metrics"]
+    # Allow health checks
+    - to:
+        - operation:
+            paths: ['/health', '/metrics']
 
 ---
 # Request Authentication with JWT
@@ -340,10 +340,10 @@ spec:
     matchLabels:
       app: noa-server
   jwtRules:
-  - issuer: "https://auth.noa-server.io"
-    jwksUri: "https://auth.noa-server.io/.well-known/jwks.json"
-    audiences:
-    - "noa-server-api"
+    - issuer: 'https://auth.noa-server.io'
+      jwksUri: 'https://auth.noa-server.io/.well-known/jwks.json'
+      audiences:
+        - 'noa-server-api'
 
 ---
 # Telemetry configuration
@@ -354,16 +354,16 @@ metadata:
   namespace: noa-system
 spec:
   metrics:
-  - providers:
-    - name: prometheus
-    dimensions:
-      request_protocol: request.protocol | "unknown"
-      response_code: response.code | 0
-      connection_security_policy: conditional((context.reporter.kind | "inbound") == "outbound", "unknown", conditional(connection.mtls | false, "mutual_tls", "none"))
+    - providers:
+        - name: prometheus
+      dimensions:
+        request_protocol: request.protocol | "unknown"
+        response_code: response.code | 0
+        connection_security_policy: conditional((context.reporter.kind | "inbound") == "outbound", "unknown", conditional(connection.mtls | false, "mutual_tls", "none"))
 
   accessLogging:
-  - providers:
-    - name: envoy
+    - providers:
+        - name: envoy
 
 ---
 # Sidecar resource to optimize resource usage
@@ -374,6 +374,6 @@ metadata:
   namespace: noa-system
 spec:
   egress:
-  - hosts:
-    - "./*"
-    - "istio-system/*"
+    - hosts:
+        - './*'
+        - 'istio-system/*'

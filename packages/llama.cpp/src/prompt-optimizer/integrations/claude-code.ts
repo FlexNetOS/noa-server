@@ -36,13 +36,12 @@ export class ClaudeCodeIntegration {
           originalLength: original.length,
           optimizedLength: optimized.length,
           bypassed: metadata.bypassed,
-          cached: metadata.cached
+          cached: metadata.cached,
         });
       });
 
       this.enabled = true;
       this.logger.info('Claude Code integration enabled');
-
     } catch (error) {
       this.logger.error('Failed to initialize Claude Code integration', error);
       throw error;
@@ -60,7 +59,7 @@ export class ClaudeCodeIntegration {
 
     const result = await mandatoryOptimizer.intercept(prompt, {
       source: 'claude-code',
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
     return result.optimized;
@@ -69,10 +68,7 @@ export class ClaudeCodeIntegration {
   /**
    * Wrap a Claude Code command with optimization
    */
-  async wrapCommand(
-    command: string,
-    args: any[] = []
-  ): Promise<{ command: string; args: any[] }> {
+  async wrapCommand(command: string, args: any[] = []): Promise<{ command: string; args: any[] }> {
     if (!this.enabled) {
       return { command, args };
     }

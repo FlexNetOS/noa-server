@@ -1,20 +1,20 @@
-import React, { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { api } from "@/lib/api";
-import { 
-  X, 
-  Folder, 
-  File, 
+import React, { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { api } from '@/lib/api';
+import {
+  X,
+  Folder,
+  File,
   ArrowLeft,
   FileCode,
   FileText,
   FileImage,
   Search,
-  ChevronRight
-} from "lucide-react";
-import type { FileEntry } from "@/lib/api";
-import { cn } from "@/lib/utils";
+  ChevronRight,
+} from 'lucide-react';
+import type { FileEntry } from '@/lib/api';
+import { cn } from '@/lib/utils';
 
 // Global caches that persist across component instances
 const globalDirectoryCache = new Map<string, FileEntry[]>();
@@ -53,25 +53,25 @@ interface FilePickerProps {
 // File icon mapping based on extension
 const getFileIcon = (entry: FileEntry) => {
   if (entry.is_directory) return Folder;
-  
+
   const ext = entry.extension?.toLowerCase();
   if (!ext) return File;
-  
+
   // Code files
   if (['ts', 'tsx', 'js', 'jsx', 'py', 'rs', 'go', 'java', 'cpp', 'c', 'h'].includes(ext)) {
     return FileCode;
   }
-  
+
   // Text/Markdown files
   if (['md', 'txt', 'json', 'yaml', 'yml', 'toml', 'xml', 'html', 'css'].includes(ext)) {
     return FileText;
   }
-  
+
   // Image files
   if (['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp', 'ico'].includes(ext)) {
     return FileImage;
   }
-  
+
   return File;
 };
 
@@ -86,7 +86,7 @@ const formatFileSize = (bytes: number): string => {
 
 /**
  * FilePicker component - File browser with fuzzy search
- * 
+ *
  * @example
  * <FilePicker
  *   basePath="/Users/example/project"
@@ -98,13 +98,13 @@ export const FilePicker: React.FC<FilePickerProps> = ({
   basePath,
   onSelect,
   onClose,
-  initialQuery = "",
+  initialQuery = '',
   className,
 }) => {
   const searchQuery = initialQuery;
-  
+
   const [currentPath, setCurrentPath] = useState(basePath);
-  const [entries, setEntries] = useState<FileEntry[]>(() => 
+  const [entries, setEntries] = useState<FileEntry[]>(() =>
     searchQuery.trim() ? [] : globalDirectoryCache.get(basePath) || []
   );
   const [searchResults, setSearchResults] = useState<FileEntry[]>(() => {
@@ -126,16 +126,16 @@ export const FilePicker: React.FC<FilePickerProps> = ({
     }
     return globalDirectoryCache.has(basePath);
   });
-  
+
   const searchDebounceRef = useRef<NodeJS.Timeout | null>(null);
   const fileListRef = useRef<HTMLDivElement>(null);
-  
+
   // Computed values
   const displayEntries = searchQuery.trim() ? searchResults : entries;
   const canGoBack = pathHistory.length > 1;
-  
+
   // Get relative path for display
-  const relativePath = currentPath.startsWith(basePath) 
+  const relativePath = currentPath.startsWith(basePath)
     ? currentPath.slice(basePath.length) || '/'
     : currentPath;
 
@@ -152,7 +152,7 @@ export const FilePicker: React.FC<FilePickerProps> = ({
 
     if (searchQuery.trim()) {
       const cacheKey = `${basePath}:${searchQuery}`;
-      
+
       // Immediately show cached results if available
       if (globalSearchCache.has(cacheKey)) {
         console.log('[FilePicker] Immediately showing cached search results for:', searchQuery);
@@ -160,7 +160,7 @@ export const FilePicker: React.FC<FilePickerProps> = ({
         setIsShowingCached(true);
         setError(null);
       }
-      
+
       // Schedule fresh search after debounce
       searchDebounceRef.current = setTimeout(() => {
         performSearch(searchQuery);
@@ -186,13 +186,13 @@ export const FilePicker: React.FC<FilePickerProps> = ({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const displayEntries = searchQuery.trim() ? searchResults : entries;
-      
+
       switch (e.key) {
         case 'Escape':
           e.preventDefault();
           onClose();
           break;
-          
+
         case 'Enter':
           e.preventDefault();
           // Enter always selects the current item (file or directory)
@@ -200,17 +200,17 @@ export const FilePicker: React.FC<FilePickerProps> = ({
             onSelect(displayEntries[selectedIndex]);
           }
           break;
-          
+
         case 'ArrowUp':
           e.preventDefault();
-          setSelectedIndex(prev => Math.max(0, prev - 1));
+          setSelectedIndex((prev) => Math.max(0, prev - 1));
           break;
-          
+
         case 'ArrowDown':
           e.preventDefault();
-          setSelectedIndex(prev => Math.min(displayEntries.length - 1, prev + 1));
+          setSelectedIndex((prev) => Math.min(displayEntries.length - 1, prev + 1));
           break;
-          
+
         case 'ArrowRight':
           e.preventDefault();
           // Right arrow enters directories
@@ -221,7 +221,7 @@ export const FilePicker: React.FC<FilePickerProps> = ({
             }
           }
           break;
-          
+
         case 'ArrowLeft':
           e.preventDefault();
           // Left arrow goes back to parent directory
@@ -249,7 +249,7 @@ export const FilePicker: React.FC<FilePickerProps> = ({
   const loadDirectory = async (path: string) => {
     try {
       console.log('[FilePicker] Loading directory:', path);
-      
+
       // Check cache first and show immediately
       if (globalDirectoryCache.has(path)) {
         console.log('[FilePicker] Showing cached contents for:', path);
@@ -260,14 +260,14 @@ export const FilePicker: React.FC<FilePickerProps> = ({
         // Only show loading if we don't have cached data
         setIsLoading(true);
       }
-      
+
       // Always fetch fresh data in background
       const contents = await api.listDirectoryContents(path);
       console.log('[FilePicker] Loaded fresh contents:', contents.length, 'items');
-      
+
       // Cache the results
       globalDirectoryCache.set(path, contents);
-      
+
       // Update with fresh data
       setEntries(contents);
       setIsShowingCached(false);
@@ -287,10 +287,10 @@ export const FilePicker: React.FC<FilePickerProps> = ({
   const performSearch = async (query: string) => {
     try {
       console.log('[FilePicker] Searching for:', query, 'in:', basePath);
-      
+
       // Create cache key that includes both query and basePath
       const cacheKey = `${basePath}:${query}`;
-      
+
       // Check cache first and show immediately
       if (globalSearchCache.has(cacheKey)) {
         console.log('[FilePicker] Showing cached search results for:', query);
@@ -301,14 +301,14 @@ export const FilePicker: React.FC<FilePickerProps> = ({
         // Only show loading if we don't have cached data
         setIsLoading(true);
       }
-      
+
       // Always fetch fresh results in background
       const results = await api.searchFiles(basePath, query);
       console.log('[FilePicker] Fresh search results:', results.length, 'items');
-      
+
       // Cache the results
       globalSearchCache.set(cacheKey, results);
-      
+
       // Update with fresh results
       setSearchResults(results);
       setIsShowingCached(false);
@@ -327,7 +327,7 @@ export const FilePicker: React.FC<FilePickerProps> = ({
 
   const navigateToDirectory = (path: string) => {
     setCurrentPath(path);
-    setPathHistory(prev => [...prev, path]);
+    setPathHistory((prev) => [...prev, path]);
   };
 
   const navigateBack = () => {
@@ -335,7 +335,7 @@ export const FilePicker: React.FC<FilePickerProps> = ({
       const newHistory = [...pathHistory];
       newHistory.pop(); // Remove current
       const previousPath = newHistory[newHistory.length - 1];
-      
+
       // Don't go beyond the base path
       if (previousPath.startsWith(basePath) || previousPath === basePath) {
         setCurrentPath(previousPath);
@@ -348,7 +348,7 @@ export const FilePicker: React.FC<FilePickerProps> = ({
     // Single click always selects (file or directory)
     onSelect(entry);
   };
-  
+
   const handleEntryDoubleClick = (entry: FileEntry) => {
     // Double click navigates into directories
     if (entry.is_directory) {
@@ -362,15 +362,15 @@ export const FilePicker: React.FC<FilePickerProps> = ({
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       className={cn(
-        "absolute bottom-full mb-2 left-0 z-50",
-        "w-[500px] h-[400px]",
-        "bg-background border border-border rounded-lg shadow-lg",
-        "flex flex-col overflow-hidden",
+        'absolute bottom-full left-0 z-50 mb-2',
+        'h-[400px] w-[500px]',
+        'bg-background border-border rounded-lg border shadow-lg',
+        'flex flex-col overflow-hidden',
         className
       )}
     >
       {/* Header */}
-      <div className="border-b border-border p-3">
+      <div className="border-border border-b p-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Button
@@ -382,59 +382,54 @@ export const FilePicker: React.FC<FilePickerProps> = ({
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
-            <span className="text-sm font-mono text-muted-foreground truncate max-w-[300px]">
+            <span className="text-muted-foreground max-w-[300px] truncate font-mono text-sm">
               {relativePath}
             </span>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onClose}
-            className="h-8 w-8"
-          >
+          <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8">
             <X className="h-4 w-4" />
           </Button>
         </div>
       </div>
 
       {/* File List */}
-      <div className="flex-1 overflow-y-auto relative">
+      <div className="relative flex-1 overflow-y-auto">
         {/* Show loading only if no cached data */}
         {isLoading && displayEntries.length === 0 && (
-          <div className="flex items-center justify-center h-full">
-            <span className="text-sm text-muted-foreground">Loading...</span>
+          <div className="flex h-full items-center justify-center">
+            <span className="text-muted-foreground text-sm">Loading...</span>
           </div>
         )}
 
         {/* Show subtle indicator when displaying cached data while fetching fresh */}
         {isShowingCached && isLoading && displayEntries.length > 0 && (
-          <div className="absolute top-1 right-2 text-xs text-muted-foreground/50 italic">
+          <div className="text-muted-foreground/50 absolute top-1 right-2 text-xs italic">
             updating...
           </div>
         )}
 
         {error && displayEntries.length === 0 && (
-          <div className="flex items-center justify-center h-full">
-            <span className="text-sm text-destructive">{error}</span>
+          <div className="flex h-full items-center justify-center">
+            <span className="text-destructive text-sm">{error}</span>
           </div>
         )}
 
         {!isLoading && !error && displayEntries.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full">
-            <Search className="h-8 w-8 text-muted-foreground mb-2" />
-            <span className="text-sm text-muted-foreground">
+          <div className="flex h-full flex-col items-center justify-center">
+            <Search className="text-muted-foreground mb-2 h-8 w-8" />
+            <span className="text-muted-foreground text-sm">
               {searchQuery.trim() ? 'No files found' : 'Empty directory'}
             </span>
           </div>
         )}
 
         {displayEntries.length > 0 && (
-          <div className="p-2 space-y-0.5" ref={fileListRef}>
+          <div className="space-y-0.5 p-2" ref={fileListRef}>
             {displayEntries.map((entry, index) => {
               const Icon = getFileIcon(entry);
               const isSearching = searchQuery.trim() !== '';
               const isSelected = index === selectedIndex;
-              
+
               return (
                 <button
                   key={entry.path}
@@ -443,34 +438,36 @@ export const FilePicker: React.FC<FilePickerProps> = ({
                   onDoubleClick={() => handleEntryDoubleClick(entry)}
                   onMouseEnter={() => setSelectedIndex(index)}
                   className={cn(
-                    "w-full flex items-center gap-2 px-2 py-1.5 rounded-md",
-                    "hover:bg-accent transition-colors",
-                    "text-left text-sm",
-                    isSelected && "bg-accent"
+                    'flex w-full items-center gap-2 rounded-md px-2 py-1.5',
+                    'hover:bg-accent transition-colors',
+                    'text-left text-sm',
+                    isSelected && 'bg-accent'
                   )}
-                  title={entry.is_directory ? "Click to select • Double-click to enter" : "Click to select"}
+                  title={
+                    entry.is_directory
+                      ? 'Click to select • Double-click to enter'
+                      : 'Click to select'
+                  }
                 >
-                  <Icon className={cn(
-                    "h-4 w-4 flex-shrink-0",
-                    entry.is_directory ? "text-blue-500" : "text-muted-foreground"
-                  )} />
-                  
-                  <span className="flex-1 truncate">
-                    {entry.name}
-                  </span>
-                  
+                  <Icon
+                    className={cn(
+                      'h-4 w-4 flex-shrink-0',
+                      entry.is_directory ? 'text-blue-500' : 'text-muted-foreground'
+                    )}
+                  />
+
+                  <span className="flex-1 truncate">{entry.name}</span>
+
                   {!entry.is_directory && entry.size > 0 && (
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-muted-foreground text-xs">
                       {formatFileSize(entry.size)}
                     </span>
                   )}
-                  
-                  {entry.is_directory && (
-                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                  )}
-                  
+
+                  {entry.is_directory && <ChevronRight className="text-muted-foreground h-4 w-4" />}
+
                   {isSearching && (
-                    <span className="text-xs text-muted-foreground font-mono truncate max-w-[150px]">
+                    <span className="text-muted-foreground max-w-[150px] truncate font-mono text-xs">
                       {entry.path.replace(basePath, '').replace(/^\//, '')}
                     </span>
                   )}
@@ -482,11 +479,11 @@ export const FilePicker: React.FC<FilePickerProps> = ({
       </div>
 
       {/* Footer */}
-      <div className="border-t border-border p-2">
-        <p className="text-xs text-muted-foreground text-center">
+      <div className="border-border border-t p-2">
+        <p className="text-muted-foreground text-center text-xs">
           ↑↓ Navigate • Enter Select • → Enter Directory • ← Go Back • Esc Close
         </p>
       </div>
     </motion.div>
   );
-}; 
+};

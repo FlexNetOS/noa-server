@@ -27,9 +27,7 @@ const JOB_STATUS_MAP: Record<string, TaskQueueItem['status']> = {
   failed: 'failed',
 };
 
-const normalizeTaskStatus = (
-  value: unknown
-): TaskQueueItem['status'] | 'cancelled' => {
+const normalizeTaskStatus = (value: unknown): TaskQueueItem['status'] | 'cancelled' => {
   if (typeof value !== 'string') {
     return 'pending';
   }
@@ -160,8 +158,7 @@ export const useDashboardStore = create<DashboardStore>((set) => ({
       switch (event.type) {
         case 'telemetry-update': {
           const data = event.data ?? {};
-          const messagesSent =
-            typeof data.messagesSent === 'number' ? data.messagesSent : 0;
+          const messagesSent = typeof data.messagesSent === 'number' ? data.messagesSent : 0;
           const messagesReceived =
             typeof data.messagesReceived === 'number' ? data.messagesReceived : 0;
 
@@ -207,9 +204,7 @@ export const useDashboardStore = create<DashboardStore>((set) => ({
             | undefined;
 
           if (metricsPayload) {
-            const metricsList = Array.isArray(metricsPayload.metrics)
-              ? metricsPayload.metrics
-              : [];
+            const metricsList = Array.isArray(metricsPayload.metrics) ? metricsPayload.metrics : [];
 
             if (metricsList.length) {
               const totalMessages = metricsList.reduce(
@@ -243,17 +238,13 @@ export const useDashboardStore = create<DashboardStore>((set) => ({
             }
 
             if (metricsPayload.stats) {
-              const { totalMessages, throughput, averageProcessingTime } =
-                metricsPayload.stats;
+              const { totalMessages, throughput, averageProcessingTime } = metricsPayload.stats;
 
               swarmMetrics = {
                 ...swarmMetrics,
                 totalTasks:
-                  typeof totalMessages === 'number'
-                    ? totalMessages
-                    : swarmMetrics.totalTasks,
-                throughput:
-                  typeof throughput === 'number' ? throughput : swarmMetrics.throughput,
+                  typeof totalMessages === 'number' ? totalMessages : swarmMetrics.totalTasks,
+                throughput: typeof throughput === 'number' ? throughput : swarmMetrics.throughput,
                 avgResponseTime:
                   typeof averageProcessingTime === 'number'
                     ? averageProcessingTime
@@ -264,17 +255,17 @@ export const useDashboardStore = create<DashboardStore>((set) => ({
             const healthStatuses = Array.isArray(
               (metricsPayload as { healthStatuses?: unknown }).healthStatuses
             )
-              ? (metricsPayload as {
-                  healthStatuses: Array<{ status?: string; latency?: number }>;
-                }).healthStatuses
+              ? (
+                  metricsPayload as {
+                    healthStatuses: Array<{ status?: string; latency?: number }>;
+                  }
+                ).healthStatuses
               : [];
 
             if (healthStatuses.length) {
               const derivedStatus = deriveOverallHealth(healthStatuses);
               const latencies = healthStatuses
-                .map((status) =>
-                  typeof status?.latency === 'number' ? status.latency : undefined
-                )
+                .map((status) => (typeof status?.latency === 'number' ? status.latency : undefined))
                 .filter((value): value is number => typeof value === 'number');
               const latency = latencies.length ? average(latencies) : undefined;
 
@@ -324,16 +315,13 @@ export const useDashboardStore = create<DashboardStore>((set) => ({
                 status: mappedStatus,
                 startedAt:
                   mappedStatus === 'running'
-                    ? previousTask.startedAt ?? timestampIso
+                    ? (previousTask.startedAt ?? timestampIso)
                     : previousTask.startedAt,
                 completedAt:
                   mappedStatus === 'completed' || mappedStatus === 'failed'
                     ? timestampIso
                     : previousTask.completedAt,
-                progress:
-                  mappedStatus === 'completed'
-                    ? 100
-                    : previousTask.progress,
+                progress: mappedStatus === 'completed' ? 100 : previousTask.progress,
               };
 
               nextQueue[existingIndex] = updatedTask;

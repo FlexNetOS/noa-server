@@ -173,7 +173,11 @@ export class MetricsCollector {
   /**
    * Increment a counter
    */
-  public incrementCounter(name: string, labels?: Record<string, string | number>, value: number = 1): void {
+  public incrementCounter(
+    name: string,
+    labels?: Record<string, string | number>,
+    value: number = 1
+  ): void {
     try {
       const counter = this.counters.get(this.getMetricName(name));
       if (counter) {
@@ -205,7 +209,11 @@ export class MetricsCollector {
   /**
    * Increment a gauge
    */
-  public incrementGauge(name: string, labels?: Record<string, string | number>, value: number = 1): void {
+  public incrementGauge(
+    name: string,
+    labels?: Record<string, string | number>,
+    value: number = 1
+  ): void {
     try {
       const gauge = this.gauges.get(this.getMetricName(name));
       if (gauge) {
@@ -221,7 +229,11 @@ export class MetricsCollector {
   /**
    * Decrement a gauge
    */
-  public decrementGauge(name: string, labels?: Record<string, string | number>, value: number = 1): void {
+  public decrementGauge(
+    name: string,
+    labels?: Record<string, string | number>,
+    value: number = 1
+  ): void {
     try {
       const gauge = this.gauges.get(this.getMetricName(name));
       if (gauge) {
@@ -237,7 +249,11 @@ export class MetricsCollector {
   /**
    * Observe a histogram value
    */
-  public observeHistogram(name: string, value: number, labels?: Record<string, string | number>): void {
+  public observeHistogram(
+    name: string,
+    value: number,
+    labels?: Record<string, string | number>
+  ): void {
     try {
       const histogram = this.histograms.get(this.getMetricName(name));
       if (histogram) {
@@ -253,7 +269,11 @@ export class MetricsCollector {
   /**
    * Observe a summary value
    */
-  public observeSummary(name: string, value: number, labels?: Record<string, string | number>): void {
+  public observeSummary(
+    name: string,
+    value: number,
+    labels?: Record<string, string | number>
+  ): void {
     try {
       const summary = this.summaries.get(this.getMetricName(name));
       if (summary) {

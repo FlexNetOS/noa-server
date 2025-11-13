@@ -1,18 +1,31 @@
 # GBNF Guide
 
-GBNF (GGML BNF) is a format for defining [formal grammars](https://en.wikipedia.org/wiki/Formal_grammar) to constrain model outputs in `llama.cpp`. For example, you can use it to force the model to generate valid JSON, or speak only in emojis. GBNF grammars are supported in various ways in `tools/main` and `tools/server`.
+GBNF (GGML BNF) is a format for defining
+[formal grammars](https://en.wikipedia.org/wiki/Formal_grammar) to constrain
+model outputs in `llama.cpp`. For example, you can use it to force the model to
+generate valid JSON, or speak only in emojis. GBNF grammars are supported in
+various ways in `tools/main` and `tools/server`.
 
 ## Background
 
-[Backus-Naur Form (BNF)](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form) is a notation for describing the syntax of formal languages like programming languages, file formats, and protocols. GBNF is an extension of BNF that primarily adds a few modern regex-like features.
+[Backus-Naur Form (BNF)](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form)
+is a notation for describing the syntax of formal languages like programming
+languages, file formats, and protocols. GBNF is an extension of BNF that
+primarily adds a few modern regex-like features.
 
 ## Basics
 
-In GBNF, we define *production rules* that specify how a *non-terminal* (rule name) can be replaced with sequences of *terminals* (characters, specifically Unicode [code points](https://en.wikipedia.org/wiki/Code_point)) and other non-terminals. The basic format of a production rule is `nonterminal ::= sequence...`.
+In GBNF, we define _production rules_ that specify how a _non-terminal_ (rule
+name) can be replaced with sequences of _terminals_ (characters, specifically
+Unicode [code points](https://en.wikipedia.org/wiki/Code_point)) and other
+non-terminals. The basic format of a production rule is
+`nonterminal ::= sequence...`.
 
 ## Example
 
-Before going deeper, let's look at some of the features demonstrated in `grammars/chess.gbnf`, a small chess notation grammar:
+Before going deeper, let's look at some of the features demonstrated in
+`grammars/chess.gbnf`, a small chess notation grammar:
+
 ```
 # `root` specifies the pattern for the overall output
 root ::= (
@@ -36,50 +49,69 @@ castle ::= ...
 
 ## Non-Terminals and Terminals
 
-Non-terminal symbols (rule names) stand for a pattern of terminals and other non-terminals. They are required to be a dashed lowercase word, like `move`, `castle`, or `check-mate`.
+Non-terminal symbols (rule names) stand for a pattern of terminals and other
+non-terminals. They are required to be a dashed lowercase word, like `move`,
+`castle`, or `check-mate`.
 
-Terminals are actual characters ([code points](https://en.wikipedia.org/wiki/Code_point)). They can be specified as a sequence like `"1"` or `"O-O"` or as ranges like `[1-9]` or `[NBKQR]`.
+Terminals are actual characters
+([code points](https://en.wikipedia.org/wiki/Code_point)). They can be specified
+as a sequence like `"1"` or `"O-O"` or as ranges like `[1-9]` or `[NBKQR]`.
 
 ## Characters and character ranges
 
-Terminals support the full range of Unicode. Unicode characters can be specified directly in the grammar, for example `hiragana ::= [ぁ-ゟ]`, or with escapes: 8-bit (`\xXX`), 16-bit (`\uXXXX`) or 32-bit (`\UXXXXXXXX`).
+Terminals support the full range of Unicode. Unicode characters can be specified
+directly in the grammar, for example `hiragana ::= [ぁ-ゟ]`, or with escapes:
+8-bit (`\xXX`), 16-bit (`\uXXXX`) or 32-bit (`\UXXXXXXXX`).
 
 Character ranges can be negated with `^`:
+
 ```
 single-line ::= [^\n]+ "\n"
 ```
 
 ## Sequences and Alternatives
 
-The order of symbols in a sequence matters. For example, in `"1. " move " " move "\n"`, the `"1. "` must come before the first `move`, etc.
+The order of symbols in a sequence matters. For example, in
+`"1. " move " " move "\n"`, the `"1. "` must come before the first `move`, etc.
 
-Alternatives, denoted by `|`, give different sequences that are acceptable. For example, in `move ::= pawn | nonpawn | castle`, `move` can be a `pawn` move, a `nonpawn` move, or a `castle`.
+Alternatives, denoted by `|`, give different sequences that are acceptable. For
+example, in `move ::= pawn | nonpawn | castle`, `move` can be a `pawn` move, a
+`nonpawn` move, or a `castle`.
 
-Parentheses `()` can be used to group sequences, which allows for embedding alternatives in a larger rule or applying repetition and optional symbols (below) to a sequence.
+Parentheses `()` can be used to group sequences, which allows for embedding
+alternatives in a larger rule or applying repetition and optional symbols
+(below) to a sequence.
 
 ## Repetition and Optional Symbols
 
-- `*` after a symbol or sequence means that it can be repeated zero or more times (equivalent to `{0,}`).
-- `+` denotes that the symbol or sequence should appear one or more times (equivalent to `{1,}`).
+- `*` after a symbol or sequence means that it can be repeated zero or more
+  times (equivalent to `{0,}`).
+- `+` denotes that the symbol or sequence should appear one or more times
+  (equivalent to `{1,}`).
 - `?` makes the preceding symbol or sequence optional (equivalent to `{0,1}`).
 - `{m}` repeats the precedent symbol or sequence exactly `m` times
 - `{m,}` repeats the precedent symbol or sequence at least `m` times
-- `{m,n}` repeats the precedent symbol or sequence at between `m` and `n` times (included)
+- `{m,n}` repeats the precedent symbol or sequence at between `m` and `n` times
+  (included)
 - `{0,n}` repeats the precedent symbol or sequence at most `n` times (included)
 
 ## Comments and newlines
 
 Comments can be specified with `#`:
+
 ```
 # defines optional whitespace
 ws ::= [ \t\n]+
 ```
 
-Newlines are allowed between rules and between symbols or sequences nested inside parentheses. Additionally, a newline after an alternate marker `|` will continue the current rule, even outside of parentheses.
+Newlines are allowed between rules and between symbols or sequences nested
+inside parentheses. Additionally, a newline after an alternate marker `|` will
+continue the current rule, even outside of parentheses.
 
 ## The root rule
 
-In a full grammar, the `root` rule always defines the starting point of the grammar. In other words, it specifies what the entire output must match.
+In a full grammar, the `root` rule always defines the starting point of the
+grammar. In other words, it specifies what the entire output must match.
 
 ```
 # a grammar for lists
@@ -89,44 +121,63 @@ item ::= [^\n]+ "\n"
 
 ## Next steps
 
-This guide provides a brief overview. Check out the GBNF files in this directory (`grammars/`) for examples of full grammars. You can try them out with:
+This guide provides a brief overview. Check out the GBNF files in this directory
+(`grammars/`) for examples of full grammars. You can try them out with:
+
 ```
 ./llama-cli -m <model> --grammar-file grammars/some-grammar.gbnf -p 'Some prompt'
 ```
 
-`llama.cpp` can also convert JSON schemas to grammars either ahead of time or at each request, see below.
+`llama.cpp` can also convert JSON schemas to grammars either ahead of time or at
+each request, see below.
 
 ## Troubleshooting
 
-Grammars currently have performance gotchas (see https://github.com/ggml-org/llama.cpp/issues/4218).
+Grammars currently have performance gotchas (see
+https://github.com/ggml-org/llama.cpp/issues/4218).
 
 ### Efficient optional repetitions
 
 A common pattern is to allow repetitions of a pattern `x` up to N times.
 
-While semantically correct, the syntax `x? x? x?.... x?` (with N repetitions) may result in extremely slow sampling. Instead, you can write `x{0,N}` (or `(x (x (x ... (x)?...)?)?)?` w/ N-deep nesting in earlier llama.cpp versions).
+While semantically correct, the syntax `x? x? x?.... x?` (with N repetitions)
+may result in extremely slow sampling. Instead, you can write `x{0,N}` (or
+`(x (x (x ... (x)?...)?)?)?` w/ N-deep nesting in earlier llama.cpp versions).
 
 ## Using GBNF grammars
 
 You can use GBNF grammars:
 
-- In [llama-server](../tools/server)'s completion endpoints, passed as the `grammar` body field
-- In [llama-cli](../tools/main), passed as the `--grammar` & `--grammar-file` flags
-- With [test-gbnf-validator](../tests/test-gbnf-validator.cpp), to test them against strings.
+- In [llama-server](../tools/server)'s completion endpoints, passed as the
+  `grammar` body field
+- In [llama-cli](../tools/main), passed as the `--grammar` & `--grammar-file`
+  flags
+- With [test-gbnf-validator](../tests/test-gbnf-validator.cpp), to test them
+  against strings.
 
 ## JSON Schemas → GBNF
 
-`llama.cpp` supports converting a subset of https://json-schema.org/ to GBNF grammars:
+`llama.cpp` supports converting a subset of https://json-schema.org/ to GBNF
+grammars:
 
 - In [llama-server](../tools/server):
-    - For any completion endpoints, passed as the `json_schema` body field
-    - For the `/chat/completions` endpoint, passed inside the `response_format` body field (e.g. `{"type", "json_object", "schema": {"items": {}}}` or `{ type: "json_schema", json_schema: {"schema": ...} }`)
+  - For any completion endpoints, passed as the `json_schema` body field
+  - For the `/chat/completions` endpoint, passed inside the `response_format`
+    body field (e.g. `{"type", "json_object", "schema": {"items": {}}}` or
+    `{ type: "json_schema", json_schema: {"schema": ...} }`)
 - In [llama-cli](../tools/main), passed as the `--json` / `-j` flag
 - To convert to a grammar ahead of time:
-    - in CLI, with [examples/json_schema_to_grammar.py](../examples/json_schema_to_grammar.py)
-    - in JavaScript with [json-schema-to-grammar.mjs](../tools/server/public_legacy/json-schema-to-grammar.mjs) (this is used by the [server](../tools/server)'s Web UI)
+  - in CLI, with
+    [examples/json_schema_to_grammar.py](../examples/json_schema_to_grammar.py)
+  - in JavaScript with
+    [json-schema-to-grammar.mjs](../tools/server/public_legacy/json-schema-to-grammar.mjs)
+    (this is used by the [server](../tools/server)'s Web UI)
 
-Take a look at [tests](../tests/test-json-schema-to-grammar.cpp) to see which features are likely supported (you'll also find usage examples in https://github.com/ggml-org/llama.cpp/pull/5978, https://github.com/ggml-org/llama.cpp/pull/6659 & https://github.com/ggml-org/llama.cpp/pull/6555).
+Take a look at [tests](../tests/test-json-schema-to-grammar.cpp) to see which
+features are likely supported (you'll also find usage examples in
+https://github.com/ggml-org/llama.cpp/pull/5978,
+https://github.com/ggml-org/llama.cpp/pull/6659 &
+https://github.com/ggml-org/llama.cpp/pull/6555).
 
 ```bash
 llama-cli \
@@ -182,34 +233,55 @@ space ::= | " " | "\n" [ \t]{0,20}
 
 Here is also a list of known limitations (contributions welcome):
 
-- `additionalProperties` defaults to `false` (produces faster grammars + reduces hallucinations).
-- `"additionalProperties": true` may produce keys that contain unescaped newlines.
-- Unsupported features are skipped silently. It is currently advised to use the command-line Python converter (see above) to see any warnings, and to inspect the resulting grammar / test it w/ [llama-gbnf-validator](../examples/gbnf-validator/gbnf-validator.cpp).
-- Can't mix `properties` w/ `anyOf` / `oneOf` in the same type (https://github.com/ggml-org/llama.cpp/issues/7703)
-- [prefixItems](https://json-schema.org/draft/2020-12/json-schema-core#name-prefixitems) is broken (but [items](https://json-schema.org/draft/2020-12/json-schema-core#name-items) works)
-- `minimum`, `exclusiveMinimum`, `maximum`, `exclusiveMaximum`: only supported for `"type": "integer"` for now, not `number`
+- `additionalProperties` defaults to `false` (produces faster grammars + reduces
+  hallucinations).
+- `"additionalProperties": true` may produce keys that contain unescaped
+  newlines.
+- Unsupported features are skipped silently. It is currently advised to use the
+  command-line Python converter (see above) to see any warnings, and to inspect
+  the resulting grammar / test it w/
+  [llama-gbnf-validator](../examples/gbnf-validator/gbnf-validator.cpp).
+- Can't mix `properties` w/ `anyOf` / `oneOf` in the same type
+  (https://github.com/ggml-org/llama.cpp/issues/7703)
+- [prefixItems](https://json-schema.org/draft/2020-12/json-schema-core#name-prefixitems)
+  is broken (but
+  [items](https://json-schema.org/draft/2020-12/json-schema-core#name-items)
+  works)
+- `minimum`, `exclusiveMinimum`, `maximum`, `exclusiveMaximum`: only supported
+  for `"type": "integer"` for now, not `number`
 - Nested `$ref`s are broken (https://github.com/ggml-org/llama.cpp/issues/8073)
-- [pattern](https://json-schema.org/draft/2020-12/json-schema-validation#name-pattern)s must start with `^` and end with `$`
-- Remote `$ref`s not supported in the C++ version (Python & JavaScript versions fetch https refs)
-- `string` [formats](https://json-schema.org/draft/2020-12/json-schema-validation#name-defined-formats) lack `uri`, `email`
-- No [`patternProperties`](https://json-schema.org/draft/2020-12/json-schema-core#name-patternproperties)
+- [pattern](https://json-schema.org/draft/2020-12/json-schema-validation#name-pattern)s
+  must start with `^` and end with `$`
+- Remote `$ref`s not supported in the C++ version (Python & JavaScript versions
+  fetch https refs)
+- `string`
+  [formats](https://json-schema.org/draft/2020-12/json-schema-validation#name-defined-formats)
+  lack `uri`, `email`
+- No
+  [`patternProperties`](https://json-schema.org/draft/2020-12/json-schema-core#name-patternproperties)
 
-And a non-exhaustive list of other unsupported features that are unlikely to be implemented (hard and/or too slow to support w/ stateless grammars):
+And a non-exhaustive list of other unsupported features that are unlikely to be
+implemented (hard and/or too slow to support w/ stateless grammars):
 
 - [`uniqueItems`](https://json-schema.org/draft/2020-12/json-schema-validation#name-uniqueitems)
-- [`contains`](https://json-schema.org/draft/2020-12/json-schema-core#name-contains) / `minContains`
-- `$anchor` (cf. [dereferencing](https://json-schema.org/draft/2020-12/json-schema-core#name-dereferencing))
+- [`contains`](https://json-schema.org/draft/2020-12/json-schema-core#name-contains)
+  / `minContains`
+- `$anchor` (cf.
+  [dereferencing](https://json-schema.org/draft/2020-12/json-schema-core#name-dereferencing))
 - [`not`](https://json-schema.org/draft/2020-12/json-schema-core#name-not)
-- [Conditionals](https://json-schema.org/draft/2020-12/json-schema-core#name-keywords-for-applying-subsche) `if` / `then` / `else` / `dependentSchemas`
+- [Conditionals](https://json-schema.org/draft/2020-12/json-schema-core#name-keywords-for-applying-subsche)
+  `if` / `then` / `else` / `dependentSchemas`
 
 ### A word about additionalProperties
 
-> [!WARNING]
-> The JSON schemas spec states `object`s accept [additional properties](https://json-schema.org/understanding-json-schema/reference/object#additionalproperties) by default.
-> Since this is slow and seems prone to hallucinations, we default to no additional properties.
-> You can set `"additionalProperties": true` in the the schema of any object to explicitly allow additional properties.
+> [!WARNING] The JSON schemas spec states `object`s accept
+> [additional properties](https://json-schema.org/understanding-json-schema/reference/object#additionalproperties)
+> by default. Since this is slow and seems prone to hallucinations, we default
+> to no additional properties. You can set `"additionalProperties": true` in the
+> the schema of any object to explicitly allow additional properties.
 
-If you're using [Pydantic](https://pydantic.dev/) to generate schemas, you can enable additional properties with the `extra` config on each model class:
+If you're using [Pydantic](https://pydantic.dev/) to generate schemas, you can
+enable additional properties with the `extra` config on each model class:
 
 ```python
 # pip install pydantic
@@ -254,11 +326,7 @@ print(json.dumps(Summary.model_json_schema(), indent=2))
           "type": "string"
         }
       },
-      "required": [
-        "question",
-        "concise_answer",
-        "justification"
-      ],
+      "required": ["question", "concise_answer", "justification"],
       "title": "QAPair",
       "type": "object"
     }
@@ -285,10 +353,7 @@ print(json.dumps(Summary.model_json_schema(), indent=2))
       "type": "array"
     }
   },
-  "required": [
-    "key_facts",
-    "question_answers"
-  ],
+  "required": ["key_facts", "question_answers"],
   "title": "Summary",
   "type": "object"
 }
@@ -328,16 +393,22 @@ value ::= object | array | string | number | boolean | null
 
 </details>
 
-If you're using [Zod](https://zod.dev/), you can make your objects to explicitly allow extra properties w/ `nonstrict()` / `passthrough()` (or explicitly no extra props w/ `z.object(...).strict()` or `z.strictObject(...)`) but note that [zod-to-json-schema](https://github.com/StefanTerdell/zod-to-json-schema) currently always sets `"additionalProperties": false` anyway.
+If you're using [Zod](https://zod.dev/), you can make your objects to explicitly
+allow extra properties w/ `nonstrict()` / `passthrough()` (or explicitly no
+extra props w/ `z.object(...).strict()` or `z.strictObject(...)`) but note that
+[zod-to-json-schema](https://github.com/StefanTerdell/zod-to-json-schema)
+currently always sets `"additionalProperties": false` anyway.
 
 ```js
 import { z } from 'zod';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 
-const Foo = z.object({
-  age: z.number().positive(),
-  email: z.string().email(),
-}).strict();
+const Foo = z
+  .object({
+    age: z.number().positive(),
+    email: z.string().email(),
+  })
+  .strict();
 
 console.log(zodToJsonSchema(Foo));
 ```
@@ -358,10 +429,7 @@ console.log(zodToJsonSchema(Foo));
       "format": "email"
     }
   },
-  "required": [
-    "age",
-    "email"
-  ],
+  "required": ["age", "email"],
   "additionalProperties": false,
   "$schema": "http://json-schema.org/draft-07/schema#"
 }

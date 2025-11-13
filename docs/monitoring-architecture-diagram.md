@@ -245,6 +245,7 @@
 ## Deployment Topology
 
 ### Local Development
+
 ```
 ┌─────────────────────────────────────────┐
 │  Developer Workstation                  │
@@ -263,6 +264,7 @@
 ```
 
 ### Production (Kubernetes)
+
 ```
 ┌───────────────────────────────────────────────────────────────┐
 │  Kubernetes Cluster (namespace: monitoring)                   │
@@ -403,6 +405,5 @@ noa-server/
 
 ---
 
-**Architecture Version**: 1.0.0
-**Last Updated**: 2025-10-22
-**Status**: Production Ready
+**Architecture Version**: 1.0.0 **Last Updated**: 2025-10-22 **Status**:
+Production Ready

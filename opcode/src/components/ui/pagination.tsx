@@ -1,7 +1,7 @@
-import * as React from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import * as React from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface PaginationProps {
   /**
@@ -24,7 +24,7 @@ interface PaginationProps {
 
 /**
  * Pagination component for navigating through paginated content
- * 
+ *
  * @example
  * <Pagination
  *   currentPage={1}
@@ -43,7 +43,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   }
 
   return (
-    <div className={cn("flex items-center justify-center space-x-2", className)}>
+    <div className={cn('flex items-center justify-center space-x-2', className)}>
       <Button
         variant="outline"
         size="icon"
@@ -53,11 +53,11 @@ export const Pagination: React.FC<PaginationProps> = ({
       >
         <ChevronLeft className="h-4 w-4" />
       </Button>
-      
-      <span className="text-sm text-muted-foreground">
+
+      <span className="text-muted-foreground text-sm">
         Page {currentPage} of {totalPages}
       </span>
-      
+
       <Button
         variant="outline"
         size="icon"
@@ -69,4 +69,4 @@ export const Pagination: React.FC<PaginationProps> = ({
       </Button>
     </div>
   );
-}; 
+};

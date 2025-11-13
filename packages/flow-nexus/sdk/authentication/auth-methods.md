@@ -1,6 +1,7 @@
 # Authentication Methods
 
-Flow Nexus SDK provides multiple authentication methods to integrate with your applications securely.
+Flow Nexus SDK provides multiple authentication methods to integrate with your
+applications securely.
 
 ## Quick Start
 
@@ -13,7 +14,8 @@ await client.auth.login('user@example.com', 'password');
 
 ## MCP Tool Integration
 
-Flow Nexus authentication uses MCP (Model Context Protocol) tools for secure communication:
+Flow Nexus authentication uses MCP (Model Context Protocol) tools for secure
+communication:
 
 - `mcp__flow-nexus__auth_status` - Check authentication status
 - `mcp__flow-nexus__auth_init` - Initialize authentication
@@ -32,7 +34,7 @@ Flow Nexus authentication uses MCP (Model Context Protocol) tools for secure com
 ```javascript
 // Initialize auth system
 const authResult = await client.auth.init({
-  mode: 'user' // or 'service'
+  mode: 'user', // or 'service'
 });
 
 console.log('Auth initialized:', authResult);
@@ -48,7 +50,7 @@ const result = await client.auth.register({
   email: 'user@example.com',
   password: 'securePassword123',
   full_name: 'John Doe',
-  username: 'johndoe'  // optional
+  username: 'johndoe', // optional
 });
 
 console.log('Registration result:', result);
@@ -56,10 +58,11 @@ console.log('Registration result:', result);
 ```
 
 **Real Response from MCP Tool:**
+
 ```json
 {
   "success": true,
-  "message": "User registered successfully", 
+  "message": "User registered successfully",
   "user_id": "user_123",
   "verification_required": true,
   "verification_email_sent": true
@@ -90,6 +93,7 @@ console.log('Login successful:', loginResult);
 ```
 
 **Real Login Response (Tested):**
+
 ```json
 {
   "success": true,
@@ -122,6 +126,7 @@ console.log('Auth status:', status);
 ```
 
 **Real Status Response (Tested):**
+
 ```json
 {
   "authenticated": true,
@@ -167,7 +172,7 @@ console.log('Reset request:', resetRequest);
 // Update password with reset token
 const passwordUpdate = await client.auth.updatePassword({
   token: 'reset_token_here',
-  new_password: 'newSecurePassword123'
+  new_password: 'newSecurePassword123',
 });
 
 console.log('Password updated:', passwordUpdate);
@@ -181,7 +186,7 @@ console.log('Password updated:', passwordUpdate);
 // Upgrade to pro or enterprise
 const upgrade = await client.auth.upgrade({
   user_id: 'user_123',
-  tier: 'pro' // or 'enterprise'
+  tier: 'pro', // or 'enterprise'
 });
 
 console.log('Tier upgraded:', upgrade);
@@ -207,26 +212,28 @@ try {
 
 ## Common Error Codes
 
-| Code | Description | Resolution |
-|------|-------------|------------|
-| `INVALID_CREDENTIALS` | Wrong email/password | Check credentials |
-| `EMAIL_NOT_VERIFIED` | Email not verified | Verify email first |
-| `ACCOUNT_LOCKED` | Too many failed attempts | Wait or contact support |
-| `TOKEN_EXPIRED` | Session expired | Login again |
-| `INVALID_TOKEN` | Malformed token | Clear session, login |
-| `TIER_UPGRADE_REQUIRED` | Feature requires higher tier | Upgrade account |
+| Code                    | Description                  | Resolution              |
+| ----------------------- | ---------------------------- | ----------------------- |
+| `INVALID_CREDENTIALS`   | Wrong email/password         | Check credentials       |
+| `EMAIL_NOT_VERIFIED`    | Email not verified           | Verify email first      |
+| `ACCOUNT_LOCKED`        | Too many failed attempts     | Wait or contact support |
+| `TOKEN_EXPIRED`         | Session expired              | Login again             |
+| `INVALID_TOKEN`         | Malformed token              | Clear session, login    |
+| `TIER_UPGRADE_REQUIRED` | Feature requires higher tier | Upgrade account         |
 
 ## Security Best Practices
 
 1. **Store Tokens Securely**
+
    ```javascript
    // Use secure storage for tokens
    import SecureStore from 'react-native-keychain';
-   
+
    await SecureStore.setItem('flow_nexus_token', session.access_token);
    ```
 
 2. **Handle Token Expiry**
+
    ```javascript
    client.on('tokenExpired', async () => {
      // Redirect to login or refresh token
@@ -256,12 +263,12 @@ FLOW_NEXUS_CLIENT_SECRET=your_client_secret
 const client = new FlowNexus({
   apiUrl: process.env.FLOW_NEXUS_API_URL,
   clientId: process.env.FLOW_NEXUS_CLIENT_ID,
-  clientSecret: process.env.FLOW_NEXUS_CLIENT_SECRET
+  clientSecret: process.env.FLOW_NEXUS_CLIENT_SECRET,
 });
 ```
 
 ## Next Steps
 
 - [Session Management](./sessions.md) - Advanced session handling
-- [User Management](./users.md) - User profile operations  
+- [User Management](./users.md) - User profile operations
 - [Permissions & Security](./security.md) - Role-based access control

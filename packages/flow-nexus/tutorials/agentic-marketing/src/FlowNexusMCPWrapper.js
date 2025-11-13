@@ -14,7 +14,7 @@ class FlowNexusMCPWrapper {
     this.config = {
       timeout: config.timeout || 30000,
       retries: config.retries || 2,
-      ...config
+      ...config,
     };
     this.authenticated = false;
     this.sessionData = null;
@@ -25,13 +25,13 @@ class FlowNexusMCPWrapper {
    */
   async executeCommand(command, args = [], options = {}) {
     const { timeout = this.config.timeout } = options;
-    
+
     return new Promise((resolve, reject) => {
       const fullCommand = `npx flow-nexus@latest ${command} ${args.join(' ')}`;
-      
+
       const child = exec(fullCommand, {
         timeout,
-        env: { ...process.env, ...options.env }
+        env: { ...process.env, ...options.env },
       });
 
       let stdout = '';
@@ -73,16 +73,19 @@ class FlowNexusMCPWrapper {
     try {
       const result = await this.executeCommand('auth', [
         'register',
-        '-e', `"${email}"`,
-        '-p', `"${password}"`,
-        '--name', `"${full_name}"`
+        '-e',
+        `"${email}"`,
+        '-p',
+        `"${password}"`,
+        '--name',
+        `"${full_name}"`,
       ]);
-      
+
       if (result.success) {
         this.authenticated = true;
         this.sessionData = result;
       }
-      
+
       return result;
     } catch (error) {
       return { success: false, error: error.message };
@@ -97,15 +100,17 @@ class FlowNexusMCPWrapper {
       // Use the correct Flow Nexus login command structure
       const result = await this.executeCommand('auth', [
         'login',
-        '-e', `"${email}"`,
-        '-p', `"${password}"`
+        '-e',
+        `"${email}"`,
+        '-p',
+        `"${password}"`,
       ]);
-      
+
       if (result.success) {
         this.authenticated = true;
         this.sessionData = result;
       }
-      
+
       return result;
     } catch (error) {
       return { success: false, error: error.message };
@@ -118,12 +123,12 @@ class FlowNexusMCPWrapper {
   async user_logout() {
     try {
       const result = await this.executeCommand('auth', ['logout']);
-      
+
       if (result.success) {
         this.authenticated = false;
         this.sessionData = null;
       }
-      
+
       return result;
     } catch (error) {
       return { success: false, error: error.message };
@@ -242,18 +247,18 @@ class FlowNexusMCPWrapper {
       return {
         authenticated: this.authenticated,
         session: this.sessionData,
-        ...result
+        ...result,
       };
     } catch (error) {
       return {
         authenticated: this.authenticated,
-        error: error.message
+        error: error.message,
       };
     }
   }
 
   // === NEURAL NETWORK FEATURES ===
-  
+
   /**
    * Train Neural Network
    */
@@ -309,7 +314,7 @@ class FlowNexusMCPWrapper {
   }
 
   // === ADVANCED SWARM FEATURES ===
-  
+
   /**
    * Scale Swarm
    */
@@ -369,7 +374,7 @@ class FlowNexusMCPWrapper {
   }
 
   // === SANDBOX EXECUTION ===
-  
+
   /**
    * Create Sandbox
    */
@@ -410,7 +415,7 @@ class FlowNexusMCPWrapper {
   }
 
   // === GITHUB INTEGRATION ===
-  
+
   /**
    * Analyze GitHub Repository
    */
@@ -429,7 +434,7 @@ class FlowNexusMCPWrapper {
   }
 
   // === REAL-TIME FEATURES ===
-  
+
   /**
    * Subscribe to Real-time Updates
    */
@@ -448,7 +453,7 @@ class FlowNexusMCPWrapper {
   }
 
   // === STORAGE MANAGEMENT ===
-  
+
   /**
    * Upload to Storage
    */
@@ -488,7 +493,7 @@ class FlowNexusMCPWrapper {
   }
 
   // === TEMPLATE SYSTEM ===
-  
+
   /**
    * List Templates
    */
@@ -526,7 +531,7 @@ class FlowNexusMCPWrapper {
   }
 
   // === CHAT WITH AI ASSISTANT ===
-  
+
   /**
    * Chat with Queen Seraphina AI Assistant
    */
@@ -547,7 +552,7 @@ class FlowNexusMCPWrapper {
   }
 
   // === CREDITS AND PAYMENTS ===
-  
+
   /**
    * Check Credit Balance
    */
@@ -598,7 +603,7 @@ class FlowNexusMCPWrapper {
    */
   async ensureInstalled() {
     const available = await this.isAvailable();
-    
+
     if (!available) {
       console.log(chalk.yellow('Installing Flow Nexus...'));
       try {
@@ -610,7 +615,7 @@ class FlowNexusMCPWrapper {
         return false;
       }
     }
-    
+
     return true;
   }
 }

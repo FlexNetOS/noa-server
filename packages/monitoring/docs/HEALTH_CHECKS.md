@@ -2,7 +2,10 @@
 
 ## Overview
 
-The health check system provides comprehensive monitoring for the Noa Server, including database, cache, memory, disk, and external service health checks. It's designed to be Kubernetes-compatible and supports liveness, readiness, and startup probes.
+The health check system provides comprehensive monitoring for the Noa Server,
+including database, cache, memory, disk, and external service health checks.
+It's designed to be Kubernetes-compatible and supports liveness, readiness, and
+startup probes.
 
 ## Features
 
@@ -22,7 +25,7 @@ import {
   DatabaseHealthCheck,
   CacheHealthCheck,
   MemoryHealthCheck,
-  HealthEndpoints
+  HealthEndpoints,
 } from '@noa-server/monitoring/health';
 import { Pool } from 'pg';
 import Redis from 'ioredis';
@@ -32,28 +35,38 @@ import express from 'express';
 const manager = new HealthCheckManager({
   enableAutoRefresh: true,
   refreshInterval: 30000, // 30 seconds
-  parallelExecution: true
+  parallelExecution: true,
 });
 
 // Register health checks
-const dbPool = new Pool({ /* config */ });
-manager.register(new DatabaseHealthCheck({
-  pool: dbPool,
-  warningLatency: 100,
-  criticalLatency: 500
-}));
+const dbPool = new Pool({
+  /* config */
+});
+manager.register(
+  new DatabaseHealthCheck({
+    pool: dbPool,
+    warningLatency: 100,
+    criticalLatency: 500,
+  })
+);
 
-const redis = new Redis({ /* config */ });
-manager.register(new CacheHealthCheck({
-  client: redis,
-  warningHitRate: 70,
-  criticalHitRate: 50
-}));
+const redis = new Redis({
+  /* config */
+});
+manager.register(
+  new CacheHealthCheck({
+    client: redis,
+    warningHitRate: 70,
+    criticalHitRate: 50,
+  })
+);
 
-manager.register(new MemoryHealthCheck({
-  warningThreshold: 80,
-  criticalThreshold: 90
-}));
+manager.register(
+  new MemoryHealthCheck({
+    warningThreshold: 80,
+    criticalThreshold: 90,
+  })
+);
 
 // Setup Express endpoints
 const app = express();
@@ -74,8 +87,8 @@ Monitors database connectivity, query performance, and connection pool:
 const dbCheck = new DatabaseHealthCheck({
   pool: dbPool,
   queryTimeout: 3000,
-  warningLatency: 100,    // ms
-  criticalLatency: 500    // ms
+  warningLatency: 100, // ms
+  criticalLatency: 500, // ms
 });
 
 manager.register(dbCheck);
@@ -85,6 +98,7 @@ const canWrite = await dbCheck.testWrite();
 ```
 
 **Metrics Collected**:
+
 - Connection count
 - Active queries
 - Query latency
@@ -97,9 +111,9 @@ Monitors cache connectivity, hit rates, and performance:
 ```typescript
 const cacheCheck = new CacheHealthCheck({
   client: redisClient,
-  warningHitRate: 70,     // percentage
-  criticalHitRate: 50,    // percentage
-  warningLatency: 50      // ms
+  warningHitRate: 70, // percentage
+  criticalHitRate: 50, // percentage
+  warningLatency: 50, // ms
 });
 
 manager.register(cacheCheck);
@@ -110,6 +124,7 @@ cacheCheck.recordMiss();
 ```
 
 **Metrics Collected**:
+
 - Hit rate / miss rate
 - Memory usage
 - Key count
@@ -121,19 +136,23 @@ cacheCheck.recordMiss();
 Monitors external API and service dependencies:
 
 ```typescript
-const serviceCheck = new ServiceHealthCheck({
-  url: 'https://api.example.com/health',
-  method: 'GET',
-  headers: { 'Authorization': 'Bearer token' },
-  expectedStatus: [200, 204],
-  warningResponseTime: 1000,
-  maxConsecutiveFailures: 3
-}, 'external-api');
+const serviceCheck = new ServiceHealthCheck(
+  {
+    url: 'https://api.example.com/health',
+    method: 'GET',
+    headers: { Authorization: 'Bearer token' },
+    expectedStatus: [200, 204],
+    warningResponseTime: 1000,
+    maxConsecutiveFailures: 3,
+  },
+  'external-api'
+);
 
 manager.register(serviceCheck);
 ```
 
 **Metrics Collected**:
+
 - Response time
 - Status code
 - Last success timestamp
@@ -145,9 +164,9 @@ Monitors system and process memory usage:
 
 ```typescript
 const memoryCheck = new MemoryHealthCheck({
-  warningThreshold: 80,   // percentage
-  criticalThreshold: 90,  // percentage
-  checkHeapMemory: true
+  warningThreshold: 80, // percentage
+  criticalThreshold: 90, // percentage
+  checkHeapMemory: true,
 });
 
 manager.register(memoryCheck);
@@ -160,6 +179,7 @@ const stats = memoryCheck.getDetailedStats();
 ```
 
 **Metrics Collected**:
+
 - System memory (total, used, free, percentage)
 - Process memory (RSS, heap total, heap used, external)
 
@@ -172,13 +192,14 @@ const diskCheck = new DiskHealthCheck({
   paths: ['/tmp', '/var/log'],
   warningThreshold: 80,
   criticalThreshold: 90,
-  testWrite: true
+  testWrite: true,
 });
 
 manager.register(diskCheck);
 ```
 
 **Metrics Collected**:
+
 - Disk usage per path
 - Write test results
 - I/O latency
@@ -199,6 +220,7 @@ GET /health/status   - Detailed status (all checks)
 ### Response Format
 
 **Success Response (200)**:
+
 ```json
 {
   "status": "healthy",
@@ -222,6 +244,7 @@ GET /health/status   - Detailed status (all checks)
 ```
 
 **Degraded Response (200)**:
+
 ```json
 {
   "status": "degraded",
@@ -245,6 +268,7 @@ GET /health/status   - Detailed status (all checks)
 ```
 
 **Unhealthy Response (503)**:
+
 ```json
 {
   "status": "unhealthy",
@@ -281,34 +305,34 @@ spec:
   template:
     spec:
       containers:
-      - name: app
-        image: noa-server:latest
-        ports:
-        - containerPort: 3000
-        livenessProbe:
-          httpGet:
-            path: /health/live
-            port: 3000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /health/ready
-            port: 3000
-          initialDelaySeconds: 10
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 2
-        startupProbe:
-          httpGet:
-            path: /health/startup
-            port: 3000
-          initialDelaySeconds: 0
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 30
+        - name: app
+          image: noa-server:latest
+          ports:
+            - containerPort: 3000
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 2
+          startupProbe:
+            httpGet:
+              path: /health/startup
+              port: 3000
+            initialDelaySeconds: 0
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 30
 ```
 
 ## Advanced Usage
@@ -318,7 +342,11 @@ spec:
 Create custom health checks by extending `BaseHealthCheck`:
 
 ```typescript
-import { BaseHealthCheck, HealthCheckResult, CheckType } from '@noa-server/monitoring/health';
+import {
+  BaseHealthCheck,
+  HealthCheckResult,
+  CheckType,
+} from '@noa-server/monitoring/health';
 
 class CustomHealthCheck extends BaseHealthCheck {
   constructor() {
@@ -328,7 +356,7 @@ class CustomHealthCheck extends BaseHealthCheck {
       enabled: true,
       critical: false,
       checkTypes: [CheckType.READINESS],
-      retries: 2
+      retries: 2,
     });
   }
 
@@ -340,10 +368,7 @@ class CustomHealthCheck extends BaseHealthCheck {
       const result = await this.yourCheckLogic();
 
       if (result.isHealthy) {
-        return this.createSuccessResult(
-          Date.now() - startTime,
-          'Check passed'
-        );
+        return this.createSuccessResult(Date.now() - startTime, 'Check passed');
       } else {
         return this.createDegradedResult(
           Date.now() - startTime,
@@ -356,7 +381,10 @@ class CustomHealthCheck extends BaseHealthCheck {
     }
   }
 
-  private async yourCheckLogic(): Promise<{ isHealthy: boolean; reason?: string }> {
+  private async yourCheckLogic(): Promise<{
+    isHealthy: boolean;
+    reason?: string;
+  }> {
     // Your implementation
     return { isHealthy: true };
   }
@@ -370,7 +398,7 @@ import { HealthAggregator } from '@noa-server/monitoring/health';
 
 const aggregator = new HealthAggregator({
   parallelExecution: true,
-  continueOnError: true
+  continueOnError: true,
 });
 
 aggregator.registerCheck(dbCheck);
@@ -461,7 +489,7 @@ health_checks_healthy ${metrics.checksHealthy}
 // Increase timeout for slow checks
 const dbCheck = new DatabaseHealthCheck({
   pool: dbPool,
-  queryTimeout: 5000  // Increase from default 3000ms
+  queryTimeout: 5000, // Increase from default 3000ms
 });
 ```
 
@@ -470,8 +498,8 @@ const dbCheck = new DatabaseHealthCheck({
 ```typescript
 // Adjust thresholds
 const memoryCheck = new MemoryHealthCheck({
-  warningThreshold: 85,   // Increase from 80
-  criticalThreshold: 95   // Increase from 90
+  warningThreshold: 85, // Increase from 80
+  criticalThreshold: 95, // Increase from 90
 });
 ```
 
@@ -479,11 +507,13 @@ const memoryCheck = new MemoryHealthCheck({
 
 ```typescript
 // Add retries and increase failure threshold
-manager.register(new ServiceHealthCheck({
-  url: 'https://flaky-service.com',
-  maxConsecutiveFailures: 5,  // Require 5 failures before unhealthy
-  timeout: 10000
-}));
+manager.register(
+  new ServiceHealthCheck({
+    url: 'https://flaky-service.com',
+    maxConsecutiveFailures: 5, // Require 5 failures before unhealthy
+    timeout: 10000,
+  })
+);
 ```
 
 ## API Reference

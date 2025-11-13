@@ -1,15 +1,6 @@
 # Channels
 
-::: langgraph.channels.base
-    options:
-      members:
-        - BaseChannel
+::: langgraph.channels.base options: members: - BaseChannel
 
-::: langgraph.channels
-    options:
-      members:
-        - Topic
-        - LastValue
-        - EphemeralValue
-        - BinaryOperatorAggregate
-        - AnyValue
+::: langgraph.channels options: members: - Topic - LastValue - EphemeralValue -
+BinaryOperatorAggregate - AnyValue

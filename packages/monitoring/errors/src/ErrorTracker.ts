@@ -11,7 +11,7 @@ import {
   ErrorBreadcrumb,
   ErrorSeverity,
   TrackedError,
-  ErrorCategory
+  ErrorCategory,
 } from './types';
 import { SentryIntegration } from './SentryIntegration';
 import { ErrorContextManager } from './ErrorContext';
@@ -51,7 +51,7 @@ export class ErrorTracker implements IErrorTracker {
     process.on('uncaughtException', (error: Error) => {
       console.error('Uncaught Exception:', error);
       this.captureError(error, {
-        tags: { handler: 'uncaughtException' }
+        tags: { handler: 'uncaughtException' },
       }).catch(console.error);
     });
 
@@ -60,7 +60,7 @@ export class ErrorTracker implements IErrorTracker {
       const error = reason instanceof Error ? reason : new Error(String(reason));
       console.error('Unhandled Rejection:', error);
       this.captureError(error, {
-        tags: { handler: 'unhandledRejection' }
+        tags: { handler: 'unhandledRejection' },
       }).catch(console.error);
     });
 
@@ -68,7 +68,7 @@ export class ErrorTracker implements IErrorTracker {
     process.on('warning', (warning: Error) => {
       this.captureMessage(warning.message, ErrorSeverity.WARNING, {
         tags: { handler: 'warning' },
-        extra: { stack: warning.stack }
+        extra: { stack: warning.stack },
       }).catch(console.error);
     });
   }
@@ -92,7 +92,7 @@ export class ErrorTracker implements IErrorTracker {
     fullContext.tags = {
       ...fullContext.tags,
       category,
-      fingerprint: this.grouping.generateHash(fingerprint)
+      fingerprint: this.grouping.generateHash(fingerprint),
     };
 
     // Track error
@@ -106,7 +106,7 @@ export class ErrorTracker implements IErrorTracker {
       context: fullContext,
       breadcrumbs: this.contextManager.getBreadcrumbs(),
       fingerprint,
-      handled: true
+      handled: true,
     };
 
     this.addToLastErrors(trackedError);
@@ -120,7 +120,11 @@ export class ErrorTracker implements IErrorTracker {
   /**
    * Capture message
    */
-  async captureMessage(message: string, severity: ErrorSeverity, context?: ErrorContext): Promise<string> {
+  async captureMessage(
+    message: string,
+    severity: ErrorSeverity,
+    context?: ErrorContext
+  ): Promise<string> {
     const fullContext = this.contextManager.mergeContext(context);
     const eventId = this.sentry.captureMessage(message, severity, fullContext);
 
@@ -135,7 +139,7 @@ export class ErrorTracker implements IErrorTracker {
       category: breadcrumb.category,
       message: breadcrumb.message,
       level: breadcrumb.level,
-      data: breadcrumb.data
+      data: breadcrumb.data,
     });
     this.sentry.addBreadcrumb(breadcrumb);
   }
@@ -219,15 +223,18 @@ export class ErrorTracker implements IErrorTracker {
     recentErrors: number;
     categories: Record<ErrorCategory, number>;
   } {
-    const categories = this.lastErrors.reduce((acc, error) => {
-      acc[error.category] = (acc[error.category] || 0) + 1;
-      return acc;
-    }, {} as Record<ErrorCategory, number>);
+    const categories = this.lastErrors.reduce(
+      (acc, error) => {
+        acc[error.category] = (acc[error.category] || 0) + 1;
+        return acc;
+      },
+      {} as Record<ErrorCategory, number>
+    );
 
     return {
       totalErrors: this.errorCount,
       recentErrors: this.lastErrors.length,
-      categories
+      categories,
     };
   }
 
@@ -293,7 +300,11 @@ export class ScopedErrorTracker {
   /**
    * Capture message in scope
    */
-  async captureMessage(message: string, severity: ErrorSeverity, context?: ErrorContext): Promise<string> {
+  async captureMessage(
+    message: string,
+    severity: ErrorSeverity,
+    context?: ErrorContext
+  ): Promise<string> {
     return this.tracker.captureMessage(message, severity, context);
   }
 }

@@ -59,7 +59,7 @@ export function AgentGrid({ agents }: AgentGridProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row">
         <Input
           placeholder="Search agents..."
           value={searchQuery}
@@ -103,7 +103,7 @@ export function AgentGrid({ agents }: AgentGridProps) {
         </TabsList>
 
         <TabsContent value="all" className="mt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {filteredAgents.map((agent) => (
               <AgentCard key={agent.id} agent={agent} />
             ))}
@@ -112,7 +112,7 @@ export function AgentGrid({ agents }: AgentGridProps) {
 
         {domains.slice(1).map((domain) => (
           <TabsContent key={domain} value={domain} className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {agentsByDomain[domain]?.map((agent) => (
                 <AgentCard key={agent.id} agent={agent} />
               ))}
@@ -122,7 +122,7 @@ export function AgentGrid({ agents }: AgentGridProps) {
       </Tabs>
 
       {filteredAgents.length === 0 && (
-        <div className="text-center py-12">
+        <div className="py-12 text-center">
           <p className="text-muted-foreground">No agents found matching your filters.</p>
         </div>
       )}

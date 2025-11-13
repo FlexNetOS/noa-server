@@ -51,9 +51,9 @@ export class ValidationRunner {
 
     const duration = Date.now() - startTime;
 
-    const errors = this.issues.filter(i => i.type === 'error');
-    const warnings = this.issues.filter(i => i.type === 'warning');
-    const info = this.issues.filter(i => i.type === 'info');
+    const errors = this.issues.filter((i) => i.type === 'error');
+    const warnings = this.issues.filter((i) => i.type === 'warning');
+    const info = this.issues.filter((i) => i.type === 'info');
 
     const result: ValidationResult = {
       passed: errors.length === 0,
@@ -61,7 +61,7 @@ export class ValidationRunner {
       errors,
       warnings,
       info,
-      duration
+      duration,
     };
 
     this.printValidationReport(result);
@@ -81,7 +81,7 @@ export class ValidationRunner {
         category: 'reference',
         message: `Agent file not found: ${agentInfo.path}`,
         file: agentInfo.path,
-        suggestion: 'Ensure the agent file was created successfully'
+        suggestion: 'Ensure the agent file was created successfully',
       });
       return;
     }
@@ -97,7 +97,7 @@ export class ValidationRunner {
         category: 'reference',
         message: `Agent file missing exported class: ${agentInfo.path}`,
         file: agentInfo.path,
-        suggestion: 'Add: export class YourAgent { ... }'
+        suggestion: 'Add: export class YourAgent { ... }',
       });
     }
 
@@ -108,7 +108,7 @@ export class ValidationRunner {
         type: 'warning',
         category: 'reference',
         message: `Agent file is not TypeScript: ${agentInfo.path}`,
-        file: agentInfo.path
+        file: agentInfo.path,
       });
     }
 
@@ -127,7 +127,7 @@ export class ValidationRunner {
         type: 'error',
         category: 'registry',
         message: 'Registry not found in context',
-        suggestion: 'Ensure register-agent step ran successfully'
+        suggestion: 'Ensure register-agent step ran successfully',
       });
       return;
     }
@@ -138,7 +138,7 @@ export class ValidationRunner {
         type: 'error',
         category: 'registry',
         message: `Agent not found in registry: ${agentInfo.name}`,
-        suggestion: 'Check register-agent step execution'
+        suggestion: 'Check register-agent step execution',
       });
       return;
     }
@@ -152,7 +152,7 @@ export class ValidationRunner {
         type: 'error',
         category: 'registry',
         message: `Incomplete registry entry for: ${agentInfo.name}`,
-        suggestion: 'Registry entry must have: name, type, path'
+        suggestion: 'Registry entry must have: name, type, path',
       });
     }
 
@@ -164,7 +164,7 @@ export class ValidationRunner {
         category: 'registry',
         message: `Path mismatch in registry for: ${agentInfo.name}`,
         file: '.claude/agents.json',
-        suggestion: `Expected: ${agentInfo.path}, Got: ${entry.path}`
+        suggestion: `Expected: ${agentInfo.path}, Got: ${entry.path}`,
       });
     }
 
@@ -183,7 +183,7 @@ export class ValidationRunner {
         type: 'info',
         category: 'config',
         message: 'package.json not found (optional)',
-        file: packagePath
+        file: packagePath,
       });
       return;
     }
@@ -199,7 +199,7 @@ export class ValidationRunner {
         category: 'config',
         message: `Agent keyword missing from package.json: ${agentKeyword}`,
         file: packagePath,
-        suggestion: `Add "${agentKeyword}" to keywords array`
+        suggestion: `Add "${agentKeyword}" to keywords array`,
       });
     }
 
@@ -234,7 +234,7 @@ export class ValidationRunner {
           category: 'import',
           message: `Import not found: ${importPath}`,
           file: agentInfo.path,
-          suggestion: `Check that ${resolvedPath} exists`
+          suggestion: `Check that ${resolvedPath} exists`,
         });
       }
     }
@@ -246,12 +246,7 @@ export class ValidationRunner {
    * Validate documentation references
    */
   private async validateDocumentation(agentInfo: AgentInfo): Promise<void> {
-    const docPaths = [
-      'README.md',
-      'docs/README.md',
-      'CLAUDE.md',
-      'docs/agents.md'
-    ];
+    const docPaths = ['README.md', 'docs/README.md', 'CLAUDE.md', 'docs/agents.md'];
 
     let foundReference = false;
 
@@ -277,7 +272,7 @@ export class ValidationRunner {
         type: 'warning',
         category: 'documentation',
         message: `Agent not documented: ${agentInfo.name}`,
-        suggestion: 'Add agent to README.md or docs/agents.md'
+        suggestion: 'Add agent to README.md or docs/agents.md',
       });
     } else {
       console.log('   ✓ Documentation validated');
@@ -292,7 +287,7 @@ export class ValidationRunner {
       '.claude/agents.json',
       '.claude/config.json',
       'src/index.ts',
-      'src/agents/index.ts'
+      'src/agents/index.ts',
     ];
 
     for (const refPath of referencePaths) {
@@ -321,7 +316,7 @@ export class ValidationRunner {
           category: 'reference',
           message: `Invalid file format: ${refPath}`,
           file: fullPath,
-          suggestion: error instanceof Error ? error.message : 'Check file syntax'
+          suggestion: error instanceof Error ? error.message : 'Check file syntax',
         });
       }
     }
@@ -334,7 +329,7 @@ export class ValidationRunner {
     const configPaths = [
       '.claude/config.json',
       'tsconfig.json',
-      'src/agent-swarm/triggers/trigger-config.json'
+      'src/agent-swarm/triggers/trigger-config.json',
     ];
 
     for (const configPath of configPaths) {
@@ -355,7 +350,7 @@ export class ValidationRunner {
           category: 'config',
           message: `Invalid JSON in: ${configPath}`,
           file: fullPath,
-          suggestion: error instanceof Error ? error.message : 'Fix JSON syntax'
+          suggestion: error instanceof Error ? error.message : 'Fix JSON syntax',
         });
       }
     }
@@ -368,7 +363,7 @@ export class ValidationRunner {
     const testPaths = [
       `tests/${agentInfo.name}.test.ts`,
       `tests/${agentInfo.name}/${agentInfo.name}.test.ts`,
-      `src/${agentInfo.name}/${agentInfo.name}.test.ts`
+      `src/${agentInfo.name}/${agentInfo.name}.test.ts`,
     ];
 
     let foundTest = false;
@@ -389,7 +384,7 @@ export class ValidationRunner {
         type: 'warning',
         category: 'reference',
         message: `No test file found for: ${agentInfo.name}`,
-        suggestion: `Create test at: tests/${agentInfo.name}.test.ts`
+        suggestion: `Create test at: tests/${agentInfo.name}.test.ts`,
       });
     }
   }
@@ -494,20 +489,20 @@ export class ValidationRunner {
     byCategory: Record<string, number>;
   } {
     const byType: Record<string, number> = {
-      error: this.issues.filter(i => i.type === 'error').length,
-      warning: this.issues.filter(i => i.type === 'warning').length,
-      info: this.issues.filter(i => i.type === 'info').length
+      error: this.issues.filter((i) => i.type === 'error').length,
+      warning: this.issues.filter((i) => i.type === 'warning').length,
+      info: this.issues.filter((i) => i.type === 'info').length,
     };
 
     const byCategory: Record<string, number> = {};
-    this.issues.forEach(issue => {
+    this.issues.forEach((issue) => {
       byCategory[issue.category] = (byCategory[issue.category] || 0) + 1;
     });
 
     return {
       totalIssues: this.issues.length,
       byType,
-      byCategory
+      byCategory,
     };
   }
 }

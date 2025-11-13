@@ -1,9 +1,8 @@
-
 <a name="readmemd"></a>
 
 **[@langchain/langgraph-sdk](https://github.com/langchain-ai/langgraph/tree/main/libs/sdk-js)**
 
-***
+---
 
 ## [@langchain/langgraph-sdk](https://github.com/langchain-ai/langgraph/tree/main/libs/sdk-js)
 
@@ -24,12 +23,11 @@
 
 - [getApiKey](#functionsgetapikeymd)
 
-
 <a name="authreadmemd"></a>
 
 **@langchain/langgraph-sdk**
 
-***
+---
 
 ## @langchain/langgraph-sdk/auth
 
@@ -46,32 +44,33 @@
 
 - [AuthFilters](#authtype-aliasesauthfiltersmd)
 
-
 <a name="authclassesauthmd"></a>
 
 [**@langchain/langgraph-sdk**](#authreadmemd)
 
-***
+---
 
 [@langchain/langgraph-sdk](#authreadmemd) / Auth
 
 ## Class: Auth\<TExtra, TAuthReturn, TUser\>
 
-Defined in: [src/auth/index.ts:11](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/index.ts#L11)
+Defined in:
+[src/auth/index.ts:11](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/index.ts#L11)
 
 ### Type Parameters
 
 • **TExtra** = \{\}
 
-• **TAuthReturn** *extends* `BaseAuthReturn` = `BaseAuthReturn`
+• **TAuthReturn** _extends_ `BaseAuthReturn` = `BaseAuthReturn`
 
-• **TUser** *extends* `BaseUser` = `ToUserLike`\<`TAuthReturn`\>
+• **TUser** _extends_ `BaseUser` = `ToUserLike`\<`TAuthReturn`\>
 
 ### Constructors
 
 #### new Auth()
 
-> **new Auth**\<`TExtra`, `TAuthReturn`, `TUser`\>(): [`Auth`](#authclassesauthmd)\<`TExtra`, `TAuthReturn`, `TUser`\>
+> **new Auth**\<`TExtra`, `TAuthReturn`, `TUser`\>():
+> [`Auth`](#authclassesauthmd)\<`TExtra`, `TAuthReturn`, `TUser`\>
 
 ##### Returns
 
@@ -83,11 +82,12 @@ Defined in: [src/auth/index.ts:11](https://github.com/langchain-ai/langgraph/blo
 
 > **authenticate**\<`T`\>(`cb`): [`Auth`](#authclassesauthmd)\<`TExtra`, `T`\>
 
-Defined in: [src/auth/index.ts:25](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/index.ts#L25)
+Defined in:
+[src/auth/index.ts:25](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/index.ts#L25)
 
 ##### Type Parameters
 
-• **T** *extends* `BaseAuthReturn`
+• **T** _extends_ `BaseAuthReturn`
 
 ##### Parameters
 
@@ -99,17 +99,18 @@ Defined in: [src/auth/index.ts:25](https://github.com/langchain-ai/langgraph/blo
 
 [`Auth`](#authclassesauthmd)\<`TExtra`, `T`\>
 
-***
+---
 
 #### on()
 
 > **on**\<`T`\>(`event`, `callback`): `this`
 
-Defined in: [src/auth/index.ts:32](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/index.ts#L32)
+Defined in:
+[src/auth/index.ts:32](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/index.ts#L32)
 
 ##### Type Parameters
 
-• **T** *extends* `CallbackEvent`
+• **T** _extends_ `CallbackEvent`
 
 ##### Parameters
 
@@ -125,18 +126,18 @@ Defined in: [src/auth/index.ts:32](https://github.com/langchain-ai/langgraph/blo
 
 `this`
 
-
 <a name="authclasseshttpexceptionmd"></a>
 
 [**@langchain/langgraph-sdk**](#authreadmemd)
 
-***
+---
 
 [@langchain/langgraph-sdk](#authreadmemd) / HTTPException
 
 ## Class: HTTPException
 
-Defined in: [src/auth/error.ts:66](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/error.ts#L66)
+Defined in:
+[src/auth/error.ts:66](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/error.ts#L66)
 
 ### Extends
 
@@ -146,9 +147,11 @@ Defined in: [src/auth/error.ts:66](https://github.com/langchain-ai/langgraph/blo
 
 #### new HTTPException()
 
-> **new HTTPException**(`status`, `options`?): [`HTTPException`](#authclasseshttpexceptionmd)
+> **new HTTPException**(`status`, `options`?):
+> [`HTTPException`](#authclasseshttpexceptionmd)
 
-Defined in: [src/auth/error.ts:70](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/error.ts#L70)
+Defined in:
+[src/auth/error.ts:70](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/error.ts#L70)
 
 ##### Parameters
 
@@ -184,71 +187,73 @@ Defined in: [src/auth/error.ts:70](https://github.com/langchain-ai/langgraph/blo
 
 > `optional` **cause**: `unknown`
 
-Defined in: node\_modules/typescript/lib/lib.es2022.error.d.ts:24
+Defined in: node_modules/typescript/lib/lib.es2022.error.d.ts:24
 
 ##### Inherited from
 
 `Error.cause`
 
-***
+---
 
 #### headers
 
 > **headers**: `HeadersInit`
 
-Defined in: [src/auth/error.ts:68](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/error.ts#L68)
+Defined in:
+[src/auth/error.ts:68](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/error.ts#L68)
 
-***
+---
 
 #### message
 
 > **message**: `string`
 
-Defined in: node\_modules/typescript/lib/lib.es5.d.ts:1077
+Defined in: node_modules/typescript/lib/lib.es5.d.ts:1077
 
 ##### Inherited from
 
 `Error.message`
 
-***
+---
 
 #### name
 
 > **name**: `string`
 
-Defined in: node\_modules/typescript/lib/lib.es5.d.ts:1076
+Defined in: node_modules/typescript/lib/lib.es5.d.ts:1076
 
 ##### Inherited from
 
 `Error.name`
 
-***
+---
 
 #### stack?
 
 > `optional` **stack**: `string`
 
-Defined in: node\_modules/typescript/lib/lib.es5.d.ts:1078
+Defined in: node_modules/typescript/lib/lib.es5.d.ts:1078
 
 ##### Inherited from
 
 `Error.stack`
 
-***
+---
 
 #### status
 
 > **status**: `number`
 
-Defined in: [src/auth/error.ts:67](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/error.ts#L67)
+Defined in:
+[src/auth/error.ts:67](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/error.ts#L67)
 
-***
+---
 
 #### prepareStackTrace()?
 
 > `static` `optional` **prepareStackTrace**: (`err`, `stackTraces`) => `any`
 
-Defined in: node\_modules/@types/node/globals.d.ts:28
+Defined in: node_modules/@types/node/globals.d.ts:28
 
 Optional override for formatting stack traces
 
@@ -274,13 +279,13 @@ https://v8.dev/docs/stack-trace-api#customizing-stack-traces
 
 `Error.prepareStackTrace`
 
-***
+---
 
 #### stackTraceLimit
 
 > `static` **stackTraceLimit**: `number`
 
-Defined in: node\_modules/@types/node/globals.d.ts:30
+Defined in: node_modules/@types/node/globals.d.ts:30
 
 ##### Inherited from
 
@@ -292,7 +297,7 @@ Defined in: node\_modules/@types/node/globals.d.ts:30
 
 > `static` **captureStackTrace**(`targetObject`, `constructorOpt`?): `void`
 
-Defined in: node\_modules/@types/node/globals.d.ts:21
+Defined in: node_modules/@types/node/globals.d.ts:21
 
 Create .stack property on a target object
 
@@ -314,18 +319,18 @@ Create .stack property on a target object
 
 `Error.captureStackTrace`
 
-
 <a name="authinterfacesautheventvaluemapmd"></a>
 
 [**@langchain/langgraph-sdk**](#authreadmemd)
 
-***
+---
 
 [@langchain/langgraph-sdk](#authreadmemd) / AuthEventValueMap
 
 ## Interface: AuthEventValueMap
 
-Defined in: [src/auth/types.ts:218](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L218)
+Defined in:
+[src/auth/types.ts:218](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L218)
 
 ### Properties
 
@@ -333,23 +338,24 @@ Defined in: [src/auth/types.ts:218](https://github.com/langchain-ai/langgraph/bl
 
 > **assistants:create**: `object`
 
-Defined in: [src/auth/types.ts:226](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L226)
+Defined in:
+[src/auth/types.ts:226](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L226)
 
-##### assistant\_id?
+##### assistant_id?
 
-> `optional` **assistant\_id**: `Maybe`\<`string`\>
+> `optional` **assistant_id**: `Maybe`\<`string`\>
 
 ##### config?
 
 > `optional` **config**: `Maybe`\<`AssistantConfig`\>
 
-##### graph\_id
+##### graph_id
 
-> **graph\_id**: `string`
+> **graph_id**: `string`
 
-##### if\_exists?
+##### if_exists?
 
-> `optional` **if\_exists**: `Maybe`\<`"raise"` \| `"do_nothing"`\>
+> `optional` **if_exists**: `Maybe`\<`"raise"` \| `"do_nothing"`\>
 
 ##### metadata?
 
@@ -359,45 +365,48 @@ Defined in: [src/auth/types.ts:226](https://github.com/langchain-ai/langgraph/bl
 
 > `optional` **name**: `Maybe`\<`string`\>
 
-***
+---
 
 #### assistants:delete
 
 > **assistants:delete**: `object`
 
-Defined in: [src/auth/types.ts:229](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L229)
+Defined in:
+[src/auth/types.ts:229](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L229)
 
-##### assistant\_id
+##### assistant_id
 
-> **assistant\_id**: `string`
+> **assistant_id**: `string`
 
-***
+---
 
 #### assistants:read
 
 > **assistants:read**: `object`
 
-Defined in: [src/auth/types.ts:227](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L227)
+Defined in:
+[src/auth/types.ts:227](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L227)
 
-##### assistant\_id
+##### assistant_id
 
-> **assistant\_id**: `string`
+> **assistant_id**: `string`
 
 ##### metadata?
 
 > `optional` **metadata**: `Maybe`\<`Record`\<`string`, `unknown`\>\>
 
-***
+---
 
 #### assistants:search
 
 > **assistants:search**: `object`
 
-Defined in: [src/auth/types.ts:230](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L230)
+Defined in:
+[src/auth/types.ts:230](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L230)
 
-##### graph\_id?
+##### graph_id?
 
-> `optional` **graph\_id**: `Maybe`\<`string`\>
+> `optional` **graph_id**: `Maybe`\<`string`\>
 
 ##### limit?
 
@@ -411,25 +420,26 @@ Defined in: [src/auth/types.ts:230](https://github.com/langchain-ai/langgraph/bl
 
 > `optional` **offset**: `Maybe`\<`number`\>
 
-***
+---
 
 #### assistants:update
 
 > **assistants:update**: `object`
 
-Defined in: [src/auth/types.ts:228](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L228)
+Defined in:
+[src/auth/types.ts:228](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L228)
 
-##### assistant\_id
+##### assistant_id
 
-> **assistant\_id**: `string`
+> **assistant_id**: `string`
 
 ##### config?
 
 > `optional` **config**: `Maybe`\<`AssistantConfig`\>
 
-##### graph\_id?
+##### graph_id?
 
-> `optional` **graph\_id**: `Maybe`\<`string`\>
+> `optional` **graph_id**: `Maybe`\<`string`\>
 
 ##### metadata?
 
@@ -443,21 +453,22 @@ Defined in: [src/auth/types.ts:228](https://github.com/langchain-ai/langgraph/bl
 
 > `optional` **version**: `Maybe`\<`number`\>
 
-***
+---
 
 #### crons:create
 
 > **crons:create**: `object`
 
-Defined in: [src/auth/types.ts:232](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L232)
+Defined in:
+[src/auth/types.ts:232](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L232)
 
-##### cron\_id?
+##### cron_id?
 
-> `optional` **cron\_id**: `Maybe`\<`string`\>
+> `optional` **cron_id**: `Maybe`\<`string`\>
 
-##### end\_time?
+##### end_time?
 
-> `optional` **end\_time**: `Maybe`\<`string`\>
+> `optional` **end_time**: `Maybe`\<`string`\>
 
 ##### payload?
 
@@ -467,49 +478,52 @@ Defined in: [src/auth/types.ts:232](https://github.com/langchain-ai/langgraph/bl
 
 > **schedule**: `string`
 
-##### thread\_id?
+##### thread_id?
 
-> `optional` **thread\_id**: `Maybe`\<`string`\>
+> `optional` **thread_id**: `Maybe`\<`string`\>
 
-##### user\_id?
+##### user_id?
 
-> `optional` **user\_id**: `Maybe`\<`string`\>
+> `optional` **user_id**: `Maybe`\<`string`\>
 
-***
+---
 
 #### crons:delete
 
 > **crons:delete**: `object`
 
-Defined in: [src/auth/types.ts:235](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L235)
+Defined in:
+[src/auth/types.ts:235](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L235)
 
-##### cron\_id
+##### cron_id
 
-> **cron\_id**: `string`
+> **cron_id**: `string`
 
-***
+---
 
 #### crons:read
 
 > **crons:read**: `object`
 
-Defined in: [src/auth/types.ts:233](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L233)
+Defined in:
+[src/auth/types.ts:233](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L233)
 
-##### cron\_id
+##### cron_id
 
-> **cron\_id**: `string`
+> **cron_id**: `string`
 
-***
+---
 
 #### crons:search
 
 > **crons:search**: `object`
 
-Defined in: [src/auth/types.ts:236](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L236)
+Defined in:
+[src/auth/types.ts:236](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L236)
 
-##### assistant\_id?
+##### assistant_id?
 
-> `optional` **assistant\_id**: `Maybe`\<`string`\>
+> `optional` **assistant_id**: `Maybe`\<`string`\>
 
 ##### limit?
 
@@ -519,21 +533,22 @@ Defined in: [src/auth/types.ts:236](https://github.com/langchain-ai/langgraph/bl
 
 > `optional` **offset**: `Maybe`\<`number`\>
 
-##### thread\_id?
+##### thread_id?
 
-> `optional` **thread\_id**: `Maybe`\<`string`\>
+> `optional` **thread_id**: `Maybe`\<`string`\>
 
-***
+---
 
 #### crons:update
 
 > **crons:update**: `object`
 
-Defined in: [src/auth/types.ts:234](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L234)
+Defined in:
+[src/auth/types.ts:234](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L234)
 
-##### cron\_id
+##### cron_id
 
-> **cron\_id**: `string`
+> **cron_id**: `string`
 
 ##### payload?
 
@@ -543,13 +558,14 @@ Defined in: [src/auth/types.ts:234](https://github.com/langchain-ai/langgraph/bl
 
 > `optional` **schedule**: `Maybe`\<`string`\>
 
-***
+---
 
 #### store:delete
 
 > **store:delete**: `object`
 
-Defined in: [src/auth/types.ts:242](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L242)
+Defined in:
+[src/auth/types.ts:242](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L242)
 
 ##### key
 
@@ -559,13 +575,14 @@ Defined in: [src/auth/types.ts:242](https://github.com/langchain-ai/langgraph/bl
 
 > `optional` **namespace**: `Maybe`\<`string`[]\>
 
-***
+---
 
 #### store:get
 
 > **store:get**: `object`
 
-Defined in: [src/auth/types.ts:239](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L239)
+Defined in:
+[src/auth/types.ts:239](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L239)
 
 ##### key
 
@@ -575,21 +592,22 @@ Defined in: [src/auth/types.ts:239](https://github.com/langchain-ai/langgraph/bl
 
 > **namespace**: `Maybe`\<`string`[]\>
 
-***
+---
 
-#### store:list\_namespaces
+#### store:list_namespaces
 
-> **store:list\_namespaces**: `object`
+> **store:list_namespaces**: `object`
 
-Defined in: [src/auth/types.ts:241](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L241)
+Defined in:
+[src/auth/types.ts:241](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L241)
 
 ##### limit?
 
 > `optional` **limit**: `Maybe`\<`number`\>
 
-##### max\_depth?
+##### max_depth?
 
-> `optional` **max\_depth**: `Maybe`\<`number`\>
+> `optional` **max_depth**: `Maybe`\<`number`\>
 
 ##### namespace?
 
@@ -603,13 +621,14 @@ Defined in: [src/auth/types.ts:241](https://github.com/langchain-ai/langgraph/bl
 
 > `optional` **suffix**: `Maybe`\<`string`[]\>
 
-***
+---
 
 #### store:put
 
 > **store:put**: `object`
 
-Defined in: [src/auth/types.ts:238](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L238)
+Defined in:
+[src/auth/types.ts:238](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L238)
 
 ##### key
 
@@ -623,13 +642,14 @@ Defined in: [src/auth/types.ts:238](https://github.com/langchain-ai/langgraph/bl
 
 > **value**: `Record`\<`string`, `unknown`\>
 
-***
+---
 
 #### store:search
 
 > **store:search**: `object`
 
-Defined in: [src/auth/types.ts:240](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L240)
+Defined in:
+[src/auth/types.ts:240](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L240)
 
 ##### filter?
 
@@ -651,45 +671,47 @@ Defined in: [src/auth/types.ts:240](https://github.com/langchain-ai/langgraph/bl
 
 > `optional` **query**: `Maybe`\<`string`\>
 
-***
+---
 
 #### threads:create
 
 > **threads:create**: `object`
 
-Defined in: [src/auth/types.ts:219](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L219)
+Defined in:
+[src/auth/types.ts:219](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L219)
 
-##### if\_exists?
+##### if_exists?
 
-> `optional` **if\_exists**: `Maybe`\<`"raise"` \| `"do_nothing"`\>
+> `optional` **if_exists**: `Maybe`\<`"raise"` \| `"do_nothing"`\>
 
 ##### metadata?
 
 > `optional` **metadata**: `Maybe`\<`Record`\<`string`, `unknown`\>\>
 
-##### thread\_id?
+##### thread_id?
 
-> `optional` **thread\_id**: `Maybe`\<`string`\>
+> `optional` **thread_id**: `Maybe`\<`string`\>
 
-***
+---
 
-#### threads:create\_run
+#### threads:create_run
 
-> **threads:create\_run**: `object`
+> **threads:create_run**: `object`
 
-Defined in: [src/auth/types.ts:224](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L224)
+Defined in:
+[src/auth/types.ts:224](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L224)
 
-##### after\_seconds?
+##### after_seconds?
 
-> `optional` **after\_seconds**: `Maybe`\<`number`\>
+> `optional` **after_seconds**: `Maybe`\<`number`\>
 
-##### assistant\_id
+##### assistant_id
 
-> **assistant\_id**: `string`
+> **assistant_id**: `string`
 
-##### if\_not\_exists?
+##### if_not_exists?
 
-> `optional` **if\_not\_exists**: `Maybe`\<`"reject"` \| `"create"`\>
+> `optional` **if_not_exists**: `Maybe`\<`"reject"` \| `"create"`\>
 
 ##### kwargs
 
@@ -699,61 +721,66 @@ Defined in: [src/auth/types.ts:224](https://github.com/langchain-ai/langgraph/bl
 
 > `optional` **metadata**: `Maybe`\<`Record`\<`string`, `unknown`\>\>
 
-##### multitask\_strategy?
+##### multitask_strategy?
 
-> `optional` **multitask\_strategy**: `Maybe`\<`"reject"` \| `"interrupt"` \| `"rollback"` \| `"enqueue"`\>
+> `optional` **multitask_strategy**: `Maybe`\<`"reject"` \| `"interrupt"` \|
+> `"rollback"` \| `"enqueue"`\>
 
-##### prevent\_insert\_if\_inflight?
+##### prevent_insert_if_inflight?
 
-> `optional` **prevent\_insert\_if\_inflight**: `Maybe`\<`boolean`\>
+> `optional` **prevent_insert_if_inflight**: `Maybe`\<`boolean`\>
 
-##### run\_id
+##### run_id
 
-> **run\_id**: `string`
+> **run_id**: `string`
 
 ##### status
 
-> **status**: `Maybe`\<`"pending"` \| `"running"` \| `"error"` \| `"success"` \| `"timeout"` \| `"interrupted"`\>
+> **status**: `Maybe`\<`"pending"` \| `"running"` \| `"error"` \| `"success"` \|
+> `"timeout"` \| `"interrupted"`\>
 
-##### thread\_id?
+##### thread_id?
 
-> `optional` **thread\_id**: `Maybe`\<`string`\>
+> `optional` **thread_id**: `Maybe`\<`string`\>
 
-***
+---
 
 #### threads:delete
 
 > **threads:delete**: `object`
 
-Defined in: [src/auth/types.ts:222](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L222)
+Defined in:
+[src/auth/types.ts:222](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L222)
 
-##### run\_id?
+##### run_id?
 
-> `optional` **run\_id**: `Maybe`\<`string`\>
+> `optional` **run_id**: `Maybe`\<`string`\>
 
-##### thread\_id?
+##### thread_id?
 
-> `optional` **thread\_id**: `Maybe`\<`string`\>
+> `optional` **thread_id**: `Maybe`\<`string`\>
 
-***
+---
 
 #### threads:read
 
 > **threads:read**: `object`
 
-Defined in: [src/auth/types.ts:220](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L220)
+Defined in:
+[src/auth/types.ts:220](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L220)
 
-##### thread\_id?
+##### thread_id?
 
-> `optional` **thread\_id**: `Maybe`\<`string`\>
+> `optional` **thread_id**: `Maybe`\<`string`\>
 
-***
+---
 
 #### threads:search
 
 > **threads:search**: `object`
 
-Defined in: [src/auth/types.ts:223](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L223)
+Defined in:
+[src/auth/types.ts:223](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L223)
 
 ##### limit?
 
@@ -769,23 +796,25 @@ Defined in: [src/auth/types.ts:223](https://github.com/langchain-ai/langgraph/bl
 
 ##### status?
 
-> `optional` **status**: `Maybe`\<`"error"` \| `"interrupted"` \| `"idle"` \| `"busy"` \| `string` & `object`\>
+> `optional` **status**: `Maybe`\<`"error"` \| `"interrupted"` \| `"idle"` \|
+> `"busy"` \| `string` & `object`\>
 
-##### thread\_id?
+##### thread_id?
 
-> `optional` **thread\_id**: `Maybe`\<`string`\>
+> `optional` **thread_id**: `Maybe`\<`string`\>
 
 ##### values?
 
 > `optional` **values**: `Maybe`\<`Record`\<`string`, `unknown`\>\>
 
-***
+---
 
 #### threads:update
 
 > **threads:update**: `object`
 
-Defined in: [src/auth/types.ts:221](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L221)
+Defined in:
+[src/auth/types.ts:221](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L221)
 
 ##### action?
 
@@ -795,41 +824,42 @@ Defined in: [src/auth/types.ts:221](https://github.com/langchain-ai/langgraph/bl
 
 > `optional` **metadata**: `Maybe`\<`Record`\<`string`, `unknown`\>\>
 
-##### thread\_id?
+##### thread_id?
 
-> `optional` **thread\_id**: `Maybe`\<`string`\>
-
+> `optional` **thread_id**: `Maybe`\<`string`\>
 
 <a name="authtype-aliasesauthfiltersmd"></a>
 
 [**@langchain/langgraph-sdk**](#authreadmemd)
 
-***
+---
 
 [@langchain/langgraph-sdk](#authreadmemd) / AuthFilters
 
 ## Type Alias: AuthFilters\<TKey\>
 
-> **AuthFilters**\<`TKey`\>: \{ \[key in TKey\]: string \| \{ \[op in "$contains" \| "$eq"\]?: string \} \}
+> **AuthFilters**\<`TKey`\>: \{ \[key in TKey\]: string \| \{ \[op in
+> "$contains" \| "$eq"\]?: string \} \}
 
-Defined in: [src/auth/types.ts:367](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L367)
+Defined in:
+[src/auth/types.ts:367](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/auth/types.ts#L367)
 
 ### Type Parameters
 
-• **TKey** *extends* `string` \| `number` \| `symbol`
-
+• **TKey** _extends_ `string` \| `number` \| `symbol`
 
 <a name="classesassistantsclientmd"></a>
 
 [**@langchain/langgraph-sdk**](#readmemd)
 
-***
+---
 
 [@langchain/langgraph-sdk](#readmemd) / AssistantsClient
 
 ## Class: AssistantsClient
 
-Defined in: [client.ts:294](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L294)
+Defined in:
+[client.ts:294](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L294)
 
 ### Extends
 
@@ -839,9 +869,11 @@ Defined in: [client.ts:294](https://github.com/langchain-ai/langgraph/blob/d4f64
 
 #### new AssistantsClient()
 
-> **new AssistantsClient**(`config`?): [`AssistantsClient`](#classesassistantsclientmd)
+> **new AssistantsClient**(`config`?):
+> [`AssistantsClient`](#classesassistantsclientmd)
 
-Defined in: [client.ts:88](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L88)
+Defined in:
+[client.ts:88](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L88)
 
 ##### Parameters
 
@@ -863,7 +895,8 @@ Defined in: [client.ts:88](https://github.com/langchain-ai/langgraph/blob/d4f644
 
 > **create**(`payload`): `Promise`\<`Assistant`\>
 
-Defined in: [client.ts:359](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L359)
+Defined in:
+[client.ts:359](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L359)
 
 Create a new assistant.
 
@@ -907,13 +940,14 @@ Payload for creating an assistant.
 
 The created assistant.
 
-***
+---
 
 #### delete()
 
 > **delete**(`assistantId`): `Promise`\<`void`\>
 
-Defined in: [client.ts:415](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L415)
+Defined in:
+[client.ts:415](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L415)
 
 Delete an assistant.
 
@@ -929,13 +963,14 @@ ID of the assistant.
 
 `Promise`\<`void`\>
 
-***
+---
 
 #### get()
 
 > **get**(`assistantId`): `Promise`\<`Assistant`\>
 
-Defined in: [client.ts:301](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L301)
+Defined in:
+[client.ts:301](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L301)
 
 Get an assistant by ID.
 
@@ -953,13 +988,14 @@ The ID of the assistant.
 
 Assistant
 
-***
+---
 
 #### getGraph()
 
 > **getGraph**(`assistantId`, `options`?): `Promise`\<`AssistantGraph`\>
 
-Defined in: [client.ts:311](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L311)
+Defined in:
+[client.ts:311](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L311)
 
 Get the JSON representation of the graph assigned to a runnable
 
@@ -977,7 +1013,9 @@ The ID of the assistant.
 
 `number` \| `boolean`
 
-Whether to include subgraphs in the serialized graph representation. If an integer value is provided, only subgraphs with a depth less than or equal to the value will be included.
+Whether to include subgraphs in the serialized graph representation. If an
+integer value is provided, only subgraphs with a depth less than or equal to the
+value will be included.
 
 ##### Returns
 
@@ -985,13 +1023,14 @@ Whether to include subgraphs in the serialized graph representation. If an integ
 
 Serialized graph
 
-***
+---
 
 #### getSchemas()
 
 > **getSchemas**(`assistantId`): `Promise`\<`GraphSchema`\>
 
-Defined in: [client.ts:325](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L325)
+Defined in:
+[client.ts:325](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L325)
 
 Get the state and config schema of the graph assigned to a runnable
 
@@ -1009,13 +1048,14 @@ The ID of the assistant.
 
 Graph schema
 
-***
+---
 
 #### getSubgraphs()
 
 > **getSubgraphs**(`assistantId`, `options`?): `Promise`\<`Subgraphs`\>
 
-Defined in: [client.ts:336](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L336)
+Defined in:
+[client.ts:336](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L336)
 
 Get the schemas of an assistant by ID.
 
@@ -1029,7 +1069,8 @@ The ID of the assistant to get the schema of.
 
 ###### options?
 
-Additional options for getting subgraphs, such as namespace or recursion extraction.
+Additional options for getting subgraphs, such as namespace or recursion
+extraction.
 
 ####### namespace?
 
@@ -1045,13 +1086,14 @@ Additional options for getting subgraphs, such as namespace or recursion extract
 
 The subgraphs of the assistant.
 
-***
+---
 
 #### getVersions()
 
 > **getVersions**(`assistantId`, `payload`?): `Promise`\<`AssistantVersion`[]\>
 
-Defined in: [client.ts:453](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L453)
+Defined in:
+[client.ts:453](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L453)
 
 List all versions of an assistant.
 
@@ -1083,13 +1125,14 @@ ID of the assistant.
 
 List of assistant versions.
 
-***
+---
 
 #### search()
 
 > **search**(`query`?): `Promise`\<`Assistant`[]\>
 
-Defined in: [client.ts:426](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L426)
+Defined in:
+[client.ts:426](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L426)
 
 List assistants.
 
@@ -1129,13 +1172,14 @@ Query options.
 
 List of assistants.
 
-***
+---
 
 #### setLatest()
 
 > **setLatest**(`assistantId`, `version`): `Promise`\<`Assistant`\>
 
-Defined in: [client.ts:481](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L481)
+Defined in:
+[client.ts:481](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L481)
 
 Change the version of an assistant.
 
@@ -1159,13 +1203,14 @@ The version to change to.
 
 The updated assistant.
 
-***
+---
 
 #### update()
 
 > **update**(`assistantId`, `payload`): `Promise`\<`Assistant`\>
 
-Defined in: [client.ts:388](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L388)
+Defined in:
+[client.ts:388](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L388)
 
 Update an assistant.
 
@@ -1207,18 +1252,18 @@ Payload for updating the assistant.
 
 The updated assistant.
 
-
 <a name="classesclientmd"></a>
 
 [**@langchain/langgraph-sdk**](#readmemd)
 
-***
+---
 
 [@langchain/langgraph-sdk](#readmemd) / Client
 
 ## Class: Client\<TStateType, TUpdateType, TCustomEventType\>
 
-Defined in: [client.ts:1448](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1448)
+Defined in:
+[client.ts:1448](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1448)
 
 ### Type Parameters
 
@@ -1232,9 +1277,12 @@ Defined in: [client.ts:1448](https://github.com/langchain-ai/langgraph/blob/d4f6
 
 #### new Client()
 
-> **new Client**\<`TStateType`, `TUpdateType`, `TCustomEventType`\>(`config`?): [`Client`](#classesclientmd)\<`TStateType`, `TUpdateType`, `TCustomEventType`\>
+> **new Client**\<`TStateType`, `TUpdateType`, `TCustomEventType`\>(`config`?):
+> [`Client`](#classesclientmd)\<`TStateType`, `TUpdateType`,
+> `TCustomEventType`\>
 
-Defined in: [client.ts:1484](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1484)
+Defined in:
+[client.ts:1484](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1484)
 
 ##### Parameters
 
@@ -1252,75 +1300,83 @@ Defined in: [client.ts:1484](https://github.com/langchain-ai/langgraph/blob/d4f6
 
 > **~ui**: `UiClient`
 
-Defined in: [client.ts:1482](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1482)
+Defined in:
+[client.ts:1482](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1482)
 
 **`Internal`**
 
-The client for interacting with the UI.
- Used by LoadExternalComponent and the API might change in the future.
+The client for interacting with the UI. Used by LoadExternalComponent and the
+API might change in the future.
 
-***
+---
 
 #### assistants
 
 > **assistants**: [`AssistantsClient`](#classesassistantsclientmd)
 
-Defined in: [client.ts:1456](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1456)
+Defined in:
+[client.ts:1456](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1456)
 
 The client for interacting with assistants.
 
-***
+---
 
 #### crons
 
 > **crons**: [`CronsClient`](#classescronsclientmd)
 
-Defined in: [client.ts:1471](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1471)
+Defined in:
+[client.ts:1471](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1471)
 
 The client for interacting with cron runs.
 
-***
+---
 
 #### runs
 
-> **runs**: [`RunsClient`](#classesrunsclientmd)\<`TStateType`, `TUpdateType`, `TCustomEventType`\>
+> **runs**: [`RunsClient`](#classesrunsclientmd)\<`TStateType`, `TUpdateType`,
+> `TCustomEventType`\>
 
-Defined in: [client.ts:1466](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1466)
+Defined in:
+[client.ts:1466](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1466)
 
 The client for interacting with runs.
 
-***
+---
 
 #### store
 
 > **store**: [`StoreClient`](#classesstoreclientmd)
 
-Defined in: [client.ts:1476](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1476)
+Defined in:
+[client.ts:1476](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1476)
 
 The client for interacting with the KV store.
 
-***
+---
 
 #### threads
 
-> **threads**: [`ThreadsClient`](#classesthreadsclientmd)\<`TStateType`, `TUpdateType`\>
+> **threads**: [`ThreadsClient`](#classesthreadsclientmd)\<`TStateType`,
+> `TUpdateType`\>
 
-Defined in: [client.ts:1461](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1461)
+Defined in:
+[client.ts:1461](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1461)
 
 The client for interacting with threads.
-
 
 <a name="classescronsclientmd"></a>
 
 [**@langchain/langgraph-sdk**](#readmemd)
 
-***
+---
 
 [@langchain/langgraph-sdk](#readmemd) / CronsClient
 
 ## Class: CronsClient
 
-Defined in: [client.ts:197](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L197)
+Defined in:
+[client.ts:197](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L197)
 
 ### Extends
 
@@ -1332,7 +1388,8 @@ Defined in: [client.ts:197](https://github.com/langchain-ai/langgraph/blob/d4f64
 
 > **new CronsClient**(`config`?): [`CronsClient`](#classescronsclientmd)
 
-Defined in: [client.ts:88](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L88)
+Defined in:
+[client.ts:88](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L88)
 
 ##### Parameters
 
@@ -1354,7 +1411,8 @@ Defined in: [client.ts:88](https://github.com/langchain-ai/langgraph/blob/d4f644
 
 > **create**(`assistantId`, `payload`?): `Promise`\<`CronCreateResponse`\>
 
-Defined in: [client.ts:238](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L238)
+Defined in:
+[client.ts:238](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L238)
 
 ##### Parameters
 
@@ -1374,13 +1432,15 @@ Payload for creating a cron job.
 
 `Promise`\<`CronCreateResponse`\>
 
-***
+---
 
 #### createForThread()
 
-> **createForThread**(`threadId`, `assistantId`, `payload`?): `Promise`\<`CronCreateForThreadResponse`\>
+> **createForThread**(`threadId`, `assistantId`, `payload`?):
+> `Promise`\<`CronCreateForThreadResponse`\>
 
-Defined in: [client.ts:205](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L205)
+Defined in:
+[client.ts:205](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L205)
 
 ##### Parameters
 
@@ -1408,13 +1468,14 @@ Payload for creating a cron job.
 
 The created background run.
 
-***
+---
 
 #### delete()
 
 > **delete**(`cronId`): `Promise`\<`void`\>
 
-Defined in: [client.ts:265](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L265)
+Defined in:
+[client.ts:265](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L265)
 
 ##### Parameters
 
@@ -1428,13 +1489,14 @@ Cron ID of Cron job to delete.
 
 `Promise`\<`void`\>
 
-***
+---
 
 #### search()
 
 > **search**(`query`?): `Promise`\<`Cron`[]\>
 
-Defined in: [client.ts:276](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L276)
+Defined in:
+[client.ts:276](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L276)
 
 ##### Parameters
 
@@ -1464,18 +1526,18 @@ Query options.
 
 List of crons.
 
-
 <a name="classesrunsclientmd"></a>
 
 [**@langchain/langgraph-sdk**](#readmemd)
 
-***
+---
 
 [@langchain/langgraph-sdk](#readmemd) / RunsClient
 
 ## Class: RunsClient\<TStateType, TUpdateType, TCustomEventType\>
 
-Defined in: [client.ts:776](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L776)
+Defined in:
+[client.ts:776](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L776)
 
 ### Extends
 
@@ -1493,9 +1555,13 @@ Defined in: [client.ts:776](https://github.com/langchain-ai/langgraph/blob/d4f64
 
 #### new RunsClient()
 
-> **new RunsClient**\<`TStateType`, `TUpdateType`, `TCustomEventType`\>(`config`?): [`RunsClient`](#classesrunsclientmd)\<`TStateType`, `TUpdateType`, `TCustomEventType`\>
+> **new RunsClient**\<`TStateType`, `TUpdateType`,
+> `TCustomEventType`\>(`config`?):
+> [`RunsClient`](#classesrunsclientmd)\<`TStateType`, `TUpdateType`,
+> `TCustomEventType`\>
 
-Defined in: [client.ts:88](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L88)
+Defined in:
+[client.ts:88](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L88)
 
 ##### Parameters
 
@@ -1505,7 +1571,8 @@ Defined in: [client.ts:88](https://github.com/langchain-ai/langgraph/blob/d4f644
 
 ##### Returns
 
-[`RunsClient`](#classesrunsclientmd)\<`TStateType`, `TUpdateType`, `TCustomEventType`\>
+[`RunsClient`](#classesrunsclientmd)\<`TStateType`, `TUpdateType`,
+`TCustomEventType`\>
 
 ##### Inherited from
 
@@ -1517,7 +1584,8 @@ Defined in: [client.ts:88](https://github.com/langchain-ai/langgraph/blob/d4f644
 
 > **cancel**(`threadId`, `runId`, `wait`, `action`): `Promise`\<`void`\>
 
-Defined in: [client.ts:1063](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1063)
+Defined in:
+[client.ts:1063](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1063)
 
 Cancel a run.
 
@@ -1545,19 +1613,21 @@ Whether to block when canceling
 
 `CancelAction` = `"interrupt"`
 
-Action to take when cancelling the run. Possible values are `interrupt` or `rollback`. Default is `interrupt`.
+Action to take when cancelling the run. Possible values are `interrupt` or
+`rollback`. Default is `interrupt`.
 
 ##### Returns
 
 `Promise`\<`void`\>
 
-***
+---
 
 #### create()
 
 > **create**(`threadId`, `assistantId`, `payload`?): `Promise`\<`Run`\>
 
-Defined in: [client.ts:885](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L885)
+Defined in:
+[client.ts:885](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L885)
 
 Create a run.
 
@@ -1587,13 +1657,14 @@ Payload for creating a run.
 
 The created run.
 
-***
+---
 
 #### createBatch()
 
 > **createBatch**(`payloads`): `Promise`\<`Run`[]\>
 
-Defined in: [client.ts:921](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L921)
+Defined in:
+[client.ts:921](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L921)
 
 Create a batch of stateless background runs.
 
@@ -1611,13 +1682,14 @@ An array of payloads for creating runs.
 
 An array of created runs.
 
-***
+---
 
 #### delete()
 
 > **delete**(`threadId`, `runId`): `Promise`\<`void`\>
 
-Defined in: [client.ts:1157](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1157)
+Defined in:
+[client.ts:1157](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1157)
 
 Delete a run.
 
@@ -1639,13 +1711,14 @@ The ID of the run.
 
 `Promise`\<`void`\>
 
-***
+---
 
 #### get()
 
 > **get**(`threadId`, `runId`): `Promise`\<`Run`\>
 
-Defined in: [client.ts:1050](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1050)
+Defined in:
+[client.ts:1050](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1050)
 
 Get a run by ID.
 
@@ -1669,13 +1742,14 @@ The ID of the run.
 
 The run.
 
-***
+---
 
 #### join()
 
 > **join**(`threadId`, `runId`, `options`?): `Promise`\<`void`\>
 
-Defined in: [client.ts:1085](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1085)
+Defined in:
+[client.ts:1085](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1085)
 
 Block until a run is done.
 
@@ -1703,17 +1777,18 @@ The ID of the run.
 
 `Promise`\<`void`\>
 
-***
+---
 
 #### joinStream()
 
-> **joinStream**(`threadId`, `runId`, `options`?): `AsyncGenerator`\<\{ `data`: `any`; `event`: `StreamEvent`; \}\>
+> **joinStream**(`threadId`, `runId`, `options`?): `AsyncGenerator`\<\{ `data`:
+> `any`; `event`: `StreamEvent`; \}\>
 
-Defined in: [client.ts:1111](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1111)
+Defined in:
+[client.ts:1111](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1111)
 
-Stream output from a run in real-time, until the run is done.
-Output is not buffered, so any output produced before this call will
-not be received here.
+Stream output from a run in real-time, until the run is done. Output is not
+buffered, so any output produced before this call will not be received here.
 
 ##### Parameters
 
@@ -1732,13 +1807,17 @@ The ID of the run.
 ###### options?
 
 Additional options for controlling the stream behavior:
-  - signal: An AbortSignal that can be used to cancel the stream request
-  - cancelOnDisconnect: When true, automatically cancels the run if the client disconnects from the stream
-  - streamMode: Controls what types of events to receive from the stream (can be a single mode or array of modes)
-       Must be a subset of the stream modes passed when creating the run. Background runs default to having the union of all
-       stream modes enabled.
 
-`AbortSignal` | \{ `cancelOnDisconnect`: `boolean`; `signal`: `AbortSignal`; `streamMode`: `StreamMode` \| `StreamMode`[]; \}
+- signal: An AbortSignal that can be used to cancel the stream request
+- cancelOnDisconnect: When true, automatically cancels the run if the client
+  disconnects from the stream
+- streamMode: Controls what types of events to receive from the stream (can be a
+  single mode or array of modes) Must be a subset of the stream modes passed
+  when creating the run. Background runs default to having the union of all
+  stream modes enabled.
+
+`AbortSignal` | \{ `cancelOnDisconnect`: `boolean`; `signal`: `AbortSignal`;
+`streamMode`: `StreamMode` \| `StreamMode`[]; \}
 
 ##### Returns
 
@@ -1746,13 +1825,14 @@ Additional options for controlling the stream behavior:
 
 An async generator yielding stream parts.
 
-***
+---
 
 #### list()
 
 > **list**(`threadId`, `options`?): `Promise`\<`Run`[]\>
 
-Defined in: [client.ts:1013](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1013)
+Defined in:
+[client.ts:1013](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1013)
 
 List all runs for a thread.
 
@@ -1772,15 +1852,13 @@ Filtering and pagination options.
 
 `number`
 
-Maximum number of runs to return.
-Defaults to 10
+Maximum number of runs to return. Defaults to 10
 
 ####### offset?
 
 `number`
 
-Offset to start from.
-Defaults to 0.
+Offset to start from. Defaults to 0.
 
 ####### status?
 
@@ -1794,7 +1872,7 @@ Status of the run to filter by.
 
 List of runs.
 
-***
+---
 
 #### stream()
 
@@ -1814,15 +1892,18 @@ Payload for creating a run.
 
 ##### Call Signature
 
-> **stream**\<`TStreamMode`, `TSubgraphs`\>(`threadId`, `assistantId`, `payload`?): `TypedAsyncGenerator`\<`TStreamMode`, `TSubgraphs`, `TStateType`, `TUpdateType`, `TCustomEventType`\>
+> **stream**\<`TStreamMode`, `TSubgraphs`\>(`threadId`, `assistantId`,
+> `payload`?): `TypedAsyncGenerator`\<`TStreamMode`, `TSubgraphs`, `TStateType`,
+> `TUpdateType`, `TCustomEventType`\>
 
-Defined in: [client.ts:781](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L781)
+Defined in:
+[client.ts:781](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L781)
 
 ###### Type Parameters
 
-• **TStreamMode** *extends* `StreamMode` \| `StreamMode`[] = `StreamMode`
+• **TStreamMode** _extends_ `StreamMode` \| `StreamMode`[] = `StreamMode`
 
-• **TSubgraphs** *extends* `boolean` = `false`
+• **TSubgraphs** _extends_ `boolean` = `false`
 
 ###### Parameters
 
@@ -1836,23 +1917,28 @@ Defined in: [client.ts:781](https://github.com/langchain-ai/langgraph/blob/d4f64
 
 ####### payload?
 
-`Omit`\<`RunsStreamPayload`\<`TStreamMode`, `TSubgraphs`\>, `"multitaskStrategy"` \| `"onCompletion"`\>
+`Omit`\<`RunsStreamPayload`\<`TStreamMode`, `TSubgraphs`\>,
+`"multitaskStrategy"` \| `"onCompletion"`\>
 
 ###### Returns
 
-`TypedAsyncGenerator`\<`TStreamMode`, `TSubgraphs`, `TStateType`, `TUpdateType`, `TCustomEventType`\>
+`TypedAsyncGenerator`\<`TStreamMode`, `TSubgraphs`, `TStateType`, `TUpdateType`,
+`TCustomEventType`\>
 
 ##### Call Signature
 
-> **stream**\<`TStreamMode`, `TSubgraphs`\>(`threadId`, `assistantId`, `payload`?): `TypedAsyncGenerator`\<`TStreamMode`, `TSubgraphs`, `TStateType`, `TUpdateType`, `TCustomEventType`\>
+> **stream**\<`TStreamMode`, `TSubgraphs`\>(`threadId`, `assistantId`,
+> `payload`?): `TypedAsyncGenerator`\<`TStreamMode`, `TSubgraphs`, `TStateType`,
+> `TUpdateType`, `TCustomEventType`\>
 
-Defined in: [client.ts:799](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L799)
+Defined in:
+[client.ts:799](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L799)
 
 ###### Type Parameters
 
-• **TStreamMode** *extends* `StreamMode` \| `StreamMode`[] = `StreamMode`
+• **TStreamMode** _extends_ `StreamMode` \| `StreamMode`[] = `StreamMode`
 
-• **TSubgraphs** *extends* `boolean` = `false`
+• **TSubgraphs** _extends_ `boolean` = `false`
 
 ###### Parameters
 
@@ -1870,9 +1956,10 @@ Defined in: [client.ts:799](https://github.com/langchain-ai/langgraph/blob/d4f64
 
 ###### Returns
 
-`TypedAsyncGenerator`\<`TStreamMode`, `TSubgraphs`, `TStateType`, `TUpdateType`, `TCustomEventType`\>
+`TypedAsyncGenerator`\<`TStreamMode`, `TSubgraphs`, `TStateType`, `TUpdateType`,
+`TCustomEventType`\>
 
-***
+---
 
 #### wait()
 
@@ -1894,7 +1981,8 @@ Payload for creating a run.
 
 > **wait**(`threadId`, `assistantId`, `payload`?): `Promise`\<`DefaultValues`\>
 
-Defined in: [client.ts:938](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L938)
+Defined in:
+[client.ts:938](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L938)
 
 ###### Parameters
 
@@ -1918,7 +2006,8 @@ Defined in: [client.ts:938](https://github.com/langchain-ai/langgraph/blob/d4f64
 
 > **wait**(`threadId`, `assistantId`, `payload`?): `Promise`\<`DefaultValues`\>
 
-Defined in: [client.ts:944](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L944)
+Defined in:
+[client.ts:944](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L944)
 
 ###### Parameters
 
@@ -1938,18 +2027,18 @@ Defined in: [client.ts:944](https://github.com/langchain-ai/langgraph/blob/d4f64
 
 `Promise`\<`DefaultValues`\>
 
-
 <a name="classesstoreclientmd"></a>
 
 [**@langchain/langgraph-sdk**](#readmemd)
 
-***
+---
 
 [@langchain/langgraph-sdk](#readmemd) / StoreClient
 
 ## Class: StoreClient
 
-Defined in: [client.ts:1175](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1175)
+Defined in:
+[client.ts:1175](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1175)
 
 ### Extends
 
@@ -1961,7 +2050,8 @@ Defined in: [client.ts:1175](https://github.com/langchain-ai/langgraph/blob/d4f6
 
 > **new StoreClient**(`config`?): [`StoreClient`](#classesstoreclientmd)
 
-Defined in: [client.ts:88](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L88)
+Defined in:
+[client.ts:88](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L88)
 
 ##### Parameters
 
@@ -1983,7 +2073,8 @@ Defined in: [client.ts:88](https://github.com/langchain-ai/langgraph/blob/d4f644
 
 > **deleteItem**(`namespace`, `key`): `Promise`\<`void`\>
 
-Defined in: [client.ts:1296](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1296)
+Defined in:
+[client.ts:1296](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1296)
 
 Delete an item.
 
@@ -2007,13 +2098,14 @@ The unique identifier for the item.
 
 Promise<void>
 
-***
+---
 
 #### getItem()
 
 > **getItem**(`namespace`, `key`, `options`?): `Promise`\<`null` \| `Item`\>
 
-Defined in: [client.ts:1252](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1252)
+Defined in:
+[client.ts:1252](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1252)
 
 Retrieve a single item.
 
@@ -2037,7 +2129,8 @@ The unique identifier for the item.
 
 `null` \| `boolean`
 
-Whether to refresh the TTL on this read operation. If null, uses the store's default behavior.
+Whether to refresh the TTL on this read operation. If null, uses the store's
+default behavior.
 
 ##### Returns
 
@@ -2048,11 +2141,9 @@ Promise<Item>
 ##### Example
 
 ```typescript
-const item = await client.store.getItem(
-  ["documents", "user123"],
-  "item456",
-  { refreshTtl: true }
-);
+const item = await client.store.getItem(['documents', 'user123'], 'item456', {
+  refreshTtl: true,
+});
 console.log(item);
 // {
 //   namespace: ["documents", "user123"],
@@ -2063,13 +2154,14 @@ console.log(item);
 // }
 ```
 
-***
+---
 
 #### listNamespaces()
 
 > **listNamespaces**(`options`?): `Promise`\<`ListNamespaceResponse`\>
 
-Defined in: [client.ts:1392](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1392)
+Defined in:
+[client.ts:1392](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1392)
 
 List namespaces with optional match conditions.
 
@@ -2113,13 +2205,14 @@ Optional list of strings representing the suffix to filter namespaces.
 
 Promise<ListNamespaceResponse>
 
-***
+---
 
 #### putItem()
 
 > **putItem**(`namespace`, `key`, `value`, `options`?): `Promise`\<`void`\>
 
-Defined in: [client.ts:1196](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1196)
+Defined in:
+[client.ts:1196](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1196)
 
 Store or update an item.
 
@@ -2149,7 +2242,8 @@ A dictionary containing the item's data.
 
 `null` \| `false` \| `string`[]
 
-Controls search indexing - null (use defaults), false (disable), or list of field paths to index.
+Controls search indexing - null (use defaults), false (disable), or list of
+field paths to index.
 
 ####### ttl?
 
@@ -2167,20 +2261,22 @@ Promise<void>
 
 ```typescript
 await client.store.putItem(
-  ["documents", "user123"],
-  "item456",
-  { title: "My Document", content: "Hello World" },
+  ['documents', 'user123'],
+  'item456',
+  { title: 'My Document', content: 'Hello World' },
   { ttl: 60 } // expires in 60 minutes
 );
 ```
 
-***
+---
 
 #### searchItems()
 
-> **searchItems**(`namespacePrefix`, `options`?): `Promise`\<`SearchItemsResponse`\>
+> **searchItems**(`namespacePrefix`, `options`?):
+> `Promise`\<`SearchItemsResponse`\>
 
-Defined in: [client.ts:1347](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1347)
+Defined in:
+[client.ts:1347](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L1347)
 
 Search for items within a namespace prefix.
 
@@ -2222,7 +2318,8 @@ Optional search query.
 
 `null` \| `boolean`
 
-Whether to refresh the TTL on items returned by this search. If null, uses the store's default behavior.
+Whether to refresh the TTL on items returned by this search. If null, uses the
+store's default behavior.
 
 ##### Returns
 
@@ -2233,14 +2330,11 @@ Promise<SearchItemsResponse>
 ##### Example
 
 ```typescript
-const results = await client.store.searchItems(
-  ["documents"],
-  {
-    filter: { author: "John Doe" },
-    limit: 5,
-    refreshTtl: true
-  }
-);
+const results = await client.store.searchItems(['documents'], {
+  filter: { author: 'John Doe' },
+  limit: 5,
+  refreshTtl: true,
+});
 console.log(results);
 // {
 //   items: [
@@ -2256,18 +2350,18 @@ console.log(results);
 // }
 ```
 
-
 <a name="classesthreadsclientmd"></a>
 
 [**@langchain/langgraph-sdk**](#readmemd)
 
-***
+---
 
 [@langchain/langgraph-sdk](#readmemd) / ThreadsClient
 
 ## Class: ThreadsClient\<TStateType, TUpdateType\>
 
-Defined in: [client.ts:489](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L489)
+Defined in:
+[client.ts:489](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L489)
 
 ### Extends
 
@@ -2283,9 +2377,11 @@ Defined in: [client.ts:489](https://github.com/langchain-ai/langgraph/blob/d4f64
 
 #### new ThreadsClient()
 
-> **new ThreadsClient**\<`TStateType`, `TUpdateType`\>(`config`?): [`ThreadsClient`](#classesthreadsclientmd)\<`TStateType`, `TUpdateType`\>
+> **new ThreadsClient**\<`TStateType`, `TUpdateType`\>(`config`?):
+> [`ThreadsClient`](#classesthreadsclientmd)\<`TStateType`, `TUpdateType`\>
 
-Defined in: [client.ts:88](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L88)
+Defined in:
+[client.ts:88](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L88)
 
 ##### Parameters
 
@@ -2307,7 +2403,8 @@ Defined in: [client.ts:88](https://github.com/langchain-ai/langgraph/blob/d4f644
 
 > **copy**(`threadId`): `Promise`\<`Thread`\<`TStateType`\>\>
 
-Defined in: [client.ts:566](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L566)
+Defined in:
+[client.ts:566](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L566)
 
 Copy an existing thread
 
@@ -2325,13 +2422,14 @@ ID of the thread to be copied
 
 Newly copied thread
 
-***
+---
 
 #### create()
 
 > **create**(`payload`?): `Promise`\<`Thread`\<`TStateType`\>\>
 
-Defined in: [client.ts:511](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L511)
+Defined in:
+[client.ts:511](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L511)
 
 Create a new thread.
 
@@ -2356,7 +2454,7 @@ How to handle duplicate creation.
 **Default**
 
 ```ts
-"raise"
+'raise';
 ```
 
 ####### metadata?
@@ -2369,7 +2467,8 @@ Metadata for the thread.
 
 `object`[]
 
-Apply a list of supersteps when creating a thread, each containing a sequence of updates.
+Apply a list of supersteps when creating a thread, each containing a sequence of
+updates.
 
 Used for copying a thread between deployments.
 
@@ -2387,13 +2486,14 @@ If not provided, a random UUID will be generated.
 
 The created thread.
 
-***
+---
 
 #### delete()
 
 > **delete**(`threadId`): `Promise`\<`void`\>
 
-Defined in: [client.ts:599](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L599)
+Defined in:
+[client.ts:599](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L599)
 
 Delete a thread.
 
@@ -2409,13 +2509,14 @@ ID of the thread.
 
 `Promise`\<`void`\>
 
-***
+---
 
 #### get()
 
 > **get**\<`ValuesType`\>(`threadId`): `Promise`\<`Thread`\<`ValuesType`\>\>
 
-Defined in: [client.ts:499](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L499)
+Defined in:
+[client.ts:499](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L499)
 
 Get a thread by ID.
 
@@ -2437,13 +2538,15 @@ ID of the thread.
 
 The thread.
 
-***
+---
 
 #### getHistory()
 
-> **getHistory**\<`ValuesType`\>(`threadId`, `options`?): `Promise`\<`ThreadState`\<`ValuesType`\>[]\>
+> **getHistory**\<`ValuesType`\>(`threadId`, `options`?):
+> `Promise`\<`ThreadState`\<`ValuesType`\>[]\>
 
-Defined in: [client.ts:752](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L752)
+Defined in:
+[client.ts:752](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L752)
 
 Get all past states for a thread.
 
@@ -2485,13 +2588,15 @@ Additional options.
 
 List of thread states.
 
-***
+---
 
 #### getState()
 
-> **getState**\<`ValuesType`\>(`threadId`, `checkpoint`?, `options`?): `Promise`\<`ThreadState`\<`ValuesType`\>\>
+> **getState**\<`ValuesType`\>(`threadId`, `checkpoint`?, `options`?):
+> `Promise`\<`ThreadState`\<`ValuesType`\>\>
 
-Defined in: [client.ts:659](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L659)
+Defined in:
+[client.ts:659](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L659)
 
 Get state for a thread.
 
@@ -2523,13 +2628,14 @@ ID of the thread.
 
 Thread state.
 
-***
+---
 
 #### patchState()
 
 > **patchState**(`threadIdOrConfig`, `metadata`): `Promise`\<`void`\>
 
-Defined in: [client.ts:722](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L722)
+Defined in:
+[client.ts:722](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L722)
 
 Patch the metadata of a thread.
 
@@ -2551,13 +2657,14 @@ Metadata to patch the state with.
 
 `Promise`\<`void`\>
 
-***
+---
 
 #### search()
 
 > **search**\<`ValuesType`\>(`query`?): `Promise`\<`Thread`\<`ValuesType`\>[]\>
 
-Defined in: [client.ts:611](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L611)
+Defined in:
+[client.ts:611](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L611)
 
 List threads
 
@@ -2575,8 +2682,7 @@ Query options
 
 `number`
 
-Maximum number of threads to return.
-Defaults to 10
+Maximum number of threads to return. Defaults to 10
 
 ####### metadata?
 
@@ -2600,15 +2706,14 @@ Sort by.
 
 `SortOrder`
 
-Sort order.
-Must be one of 'asc' or 'desc'.
+Sort order. Must be one of 'asc' or 'desc'.
 
 ####### status?
 
 `ThreadStatus`
 
-Thread status to filter on.
-Must be one of 'idle', 'busy', 'interrupted' or 'error'.
+Thread status to filter on. Must be one of 'idle', 'busy', 'interrupted' or
+'error'.
 
 ##### Returns
 
@@ -2616,13 +2721,14 @@ Must be one of 'idle', 'busy', 'interrupted' or 'error'.
 
 List of threads
 
-***
+---
 
 #### update()
 
 > **update**(`threadId`, `payload`?): `Promise`\<`Thread`\<`DefaultValues`\>\>
 
-Defined in: [client.ts:579](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L579)
+Defined in:
+[client.ts:579](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L579)
 
 Update a thread.
 
@@ -2650,13 +2756,15 @@ Metadata for the thread.
 
 The updated thread.
 
-***
+---
 
 #### updateState()
 
-> **updateState**\<`ValuesType`\>(`threadId`, `options`): `Promise`\<`Pick`\<`Config`, `"configurable"`\>\>
+> **updateState**\<`ValuesType`\>(`threadId`, `options`):
+> `Promise`\<`Pick`\<`Config`, `"configurable"`\>\>
 
-Defined in: [client.ts:693](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L693)
+Defined in:
+[client.ts:693](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L693)
 
 Add state to a thread.
 
@@ -2694,12 +2802,11 @@ The ID of the thread.
 
 `Promise`\<`Pick`\<`Config`, `"configurable"`\>\>
 
-
 <a name="functionsgetapikeymd"></a>
 
 [**@langchain/langgraph-sdk**](#readmemd)
 
-***
+---
 
 [@langchain/langgraph-sdk](#readmemd) / getApiKey
 
@@ -2707,14 +2814,15 @@ The ID of the thread.
 
 > **getApiKey**(`apiKey`?): `undefined` \| `string`
 
-Defined in: [client.ts:53](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L53)
+Defined in:
+[client.ts:53](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L53)
 
-Get the API key from the environment.
-Precedence:
-  1. explicit argument
-  2. LANGGRAPH_API_KEY
-  3. LANGSMITH_API_KEY
-  4. LANGCHAIN_API_KEY
+Get the API key from the environment. Precedence:
+
+1. explicit argument
+2. LANGGRAPH_API_KEY
+3. LANGSMITH_API_KEY
+4. LANGCHAIN_API_KEY
 
 ### Parameters
 
@@ -2730,18 +2838,18 @@ Optional API key provided as an argument
 
 The API key if found, otherwise undefined
 
-
 <a name="interfacesclientconfigmd"></a>
 
 [**@langchain/langgraph-sdk**](#readmemd)
 
-***
+---
 
 [@langchain/langgraph-sdk](#readmemd) / ClientConfig
 
 ## Interface: ClientConfig
 
-Defined in: [client.ts:71](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L71)
+Defined in:
+[client.ts:71](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L71)
 
 ### Properties
 
@@ -2749,46 +2857,51 @@ Defined in: [client.ts:71](https://github.com/langchain-ai/langgraph/blob/d4f644
 
 > `optional` **apiKey**: `string`
 
-Defined in: [client.ts:73](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L73)
+Defined in:
+[client.ts:73](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L73)
 
-***
+---
 
 #### apiUrl?
 
 > `optional` **apiUrl**: `string`
 
-Defined in: [client.ts:72](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L72)
+Defined in:
+[client.ts:72](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L72)
 
-***
+---
 
 #### callerOptions?
 
 > `optional` **callerOptions**: `AsyncCallerParams`
 
-Defined in: [client.ts:74](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L74)
+Defined in:
+[client.ts:74](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L74)
 
-***
+---
 
 #### defaultHeaders?
 
-> `optional` **defaultHeaders**: `Record`\<`string`, `undefined` \| `null` \| `string`\>
+> `optional` **defaultHeaders**: `Record`\<`string`, `undefined` \| `null` \|
+> `string`\>
 
-Defined in: [client.ts:76](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L76)
+Defined in:
+[client.ts:76](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L76)
 
-***
+---
 
 #### timeoutMs?
 
 > `optional` **timeoutMs**: `number`
 
-Defined in: [client.ts:75](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L75)
-
+Defined in:
+[client.ts:75](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/client.ts#L75)
 
 <a name="reactreadmemd"></a>
 
 **@langchain/langgraph-sdk**
 
-***
+---
 
 ## @langchain/langgraph-sdk/react
 
@@ -2805,26 +2918,28 @@ Defined in: [client.ts:75](https://github.com/langchain-ai/langgraph/blob/d4f644
 
 - [useStream](#reactfunctionsusestreammd)
 
-
 <a name="reactfunctionsusestreammd"></a>
 
 [**@langchain/langgraph-sdk**](#reactreadmemd)
 
-***
+---
 
 [@langchain/langgraph-sdk](#reactreadmemd) / useStream
 
 ## Function: useStream()
 
-> **useStream**\<`StateType`, `Bag`\>(`options`): [`UseStream`](#reactinterfacesusestreammd)\<`StateType`, `Bag`\>
+> **useStream**\<`StateType`, `Bag`\>(`options`):
+> [`UseStream`](#reactinterfacesusestreammd)\<`StateType`, `Bag`\>
 
-Defined in: [react/stream.tsx:618](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L618)
+Defined in:
+[react/stream.tsx:618](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L618)
 
 ### Type Parameters
 
-• **StateType** *extends* `Record`\<`string`, `unknown`\> = `Record`\<`string`, `unknown`\>
+• **StateType** _extends_ `Record`\<`string`, `unknown`\> = `Record`\<`string`,
+`unknown`\>
 
-• **Bag** *extends* `object` = `BagTemplate`
+• **Bag** _extends_ `object` = `BagTemplate`
 
 ### Parameters
 
@@ -2836,24 +2951,25 @@ Defined in: [react/stream.tsx:618](https://github.com/langchain-ai/langgraph/blo
 
 [`UseStream`](#reactinterfacesusestreammd)\<`StateType`, `Bag`\>
 
-
 <a name="reactinterfacesusestreammd"></a>
 
 [**@langchain/langgraph-sdk**](#reactreadmemd)
 
-***
+---
 
 [@langchain/langgraph-sdk](#reactreadmemd) / UseStream
 
 ## Interface: UseStream\<StateType, Bag\>
 
-Defined in: [react/stream.tsx:507](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L507)
+Defined in:
+[react/stream.tsx:507](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L507)
 
 ### Type Parameters
 
-• **StateType** *extends* `Record`\<`string`, `unknown`\> = `Record`\<`string`, `unknown`\>
+• **StateType** _extends_ `Record`\<`string`, `unknown`\> = `Record`\<`string`,
+`unknown`\>
 
-• **Bag** *extends* `BagTemplate` = `BagTemplate`
+• **Bag** _extends_ `BagTemplate` = `BagTemplate`
 
 ### Properties
 
@@ -2861,62 +2977,69 @@ Defined in: [react/stream.tsx:507](https://github.com/langchain-ai/langgraph/blo
 
 > **assistantId**: `string`
 
-Defined in: [react/stream.tsx:592](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L592)
+Defined in:
+[react/stream.tsx:592](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L592)
 
 The ID of the assistant to use.
 
-***
+---
 
 #### branch
 
 > **branch**: `string`
 
-Defined in: [react/stream.tsx:542](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L542)
+Defined in:
+[react/stream.tsx:542](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L542)
 
 The current branch of the thread.
 
-***
+---
 
 #### client
 
 > **client**: `Client`
 
-Defined in: [react/stream.tsx:587](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L587)
+Defined in:
+[react/stream.tsx:587](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L587)
 
 LangGraph SDK client used to send request and receive responses.
 
-***
+---
 
 #### error
 
 > **error**: `unknown`
 
-Defined in: [react/stream.tsx:519](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L519)
+Defined in:
+[react/stream.tsx:519](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L519)
 
 Last seen error from the thread or during streaming.
 
-***
+---
 
-#### experimental\_branchTree
+#### experimental_branchTree
 
-> **experimental\_branchTree**: `Sequence`\<`StateType`\>
+> **experimental_branchTree**: `Sequence`\<`StateType`\>
 
-Defined in: [react/stream.tsx:558](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L558)
+Defined in:
+[react/stream.tsx:558](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L558)
 
 **`Experimental`**
 
 Tree of all branches for the thread.
 
-***
+---
 
 #### getMessagesMetadata()
 
-> **getMessagesMetadata**: (`message`, `index`?) => `undefined` \| [`MessageMetadata`](#reacttype-aliasesmessagemetadatamd)\<`StateType`\>
+> **getMessagesMetadata**: (`message`, `index`?) => `undefined` \|
+> [`MessageMetadata`](#reacttype-aliasesmessagemetadatamd)\<`StateType`\>
 
-Defined in: [react/stream.tsx:579](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L579)
+Defined in:
+[react/stream.tsx:579](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L579)
 
-Get the metadata for a message, such as first thread state the message
-was seen in and branch information.
+Get the metadata for a message, such as first thread state the message was seen
+in and branch information.
 
 ##### Parameters
 
@@ -2934,58 +3057,64 @@ The index of the message in the thread.
 
 ##### Returns
 
-`undefined` \| [`MessageMetadata`](#reacttype-aliasesmessagemetadatamd)\<`StateType`\>
+`undefined` \|
+[`MessageMetadata`](#reacttype-aliasesmessagemetadatamd)\<`StateType`\>
 
 The metadata for the message.
 
-***
+---
 
 #### history
 
 > **history**: `ThreadState`\<`StateType`\>[]
 
-Defined in: [react/stream.tsx:552](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L552)
+Defined in:
+[react/stream.tsx:552](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L552)
 
 Flattened history of thread states of a thread.
 
-***
+---
 
 #### interrupt
 
 > **interrupt**: `undefined` \| `Interrupt`\<`GetInterruptType`\<`Bag`\>\>
 
-Defined in: [react/stream.tsx:563](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L563)
+Defined in:
+[react/stream.tsx:563](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L563)
 
 Get the interrupt value for the stream if interrupted.
 
-***
+---
 
 #### isLoading
 
 > **isLoading**: `boolean`
 
-Defined in: [react/stream.tsx:524](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L524)
+Defined in:
+[react/stream.tsx:524](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L524)
 
 Whether the stream is currently running.
 
-***
+---
 
 #### messages
 
 > **messages**: `Message`[]
 
-Defined in: [react/stream.tsx:569](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L569)
+Defined in:
+[react/stream.tsx:569](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L569)
 
-Messages inferred from the thread.
-Will automatically update with incoming message chunks.
+Messages inferred from the thread. Will automatically update with incoming
+message chunks.
 
-***
+---
 
 #### setBranch()
 
 > **setBranch**: (`branch`) => `void`
 
-Defined in: [react/stream.tsx:547](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L547)
+Defined in:
+[react/stream.tsx:547](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L547)
 
 Set the branch of the thread.
 
@@ -2999,13 +3128,14 @@ Set the branch of the thread.
 
 `void`
 
-***
+---
 
 #### stop()
 
 > **stop**: () => `void`
 
-Defined in: [react/stream.tsx:529](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L529)
+Defined in:
+[react/stream.tsx:529](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L529)
 
 Stops the stream.
 
@@ -3013,13 +3143,14 @@ Stops the stream.
 
 `void`
 
-***
+---
 
 #### submit()
 
 > **submit**: (`values`, `options`?) => `void`
 
-Defined in: [react/stream.tsx:534](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L534)
+Defined in:
+[react/stream.tsx:534](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L534)
 
 Create and stream a run to the thread.
 
@@ -3037,34 +3168,36 @@ Create and stream a run to the thread.
 
 `void`
 
-***
+---
 
 #### values
 
 > **values**: `StateType`
 
-Defined in: [react/stream.tsx:514](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L514)
+Defined in:
+[react/stream.tsx:514](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L514)
 
 The current values of the thread.
-
 
 <a name="reactinterfacesusestreamoptionsmd"></a>
 
 [**@langchain/langgraph-sdk**](#reactreadmemd)
 
-***
+---
 
 [@langchain/langgraph-sdk](#reactreadmemd) / UseStreamOptions
 
 ## Interface: UseStreamOptions\<StateType, Bag\>
 
-Defined in: [react/stream.tsx:408](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L408)
+Defined in:
+[react/stream.tsx:408](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L408)
 
 ### Type Parameters
 
-• **StateType** *extends* `Record`\<`string`, `unknown`\> = `Record`\<`string`, `unknown`\>
+• **StateType** _extends_ `Record`\<`string`, `unknown`\> = `Record`\<`string`,
+`unknown`\>
 
-• **Bag** *extends* `BagTemplate` = `BagTemplate`
+• **Bag** _extends_ `BagTemplate` = `BagTemplate`
 
 ### Properties
 
@@ -3072,84 +3205,92 @@ Defined in: [react/stream.tsx:408](https://github.com/langchain-ai/langgraph/blo
 
 > `optional` **apiKey**: `string`
 
-Defined in: [react/stream.tsx:430](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L430)
+Defined in:
+[react/stream.tsx:430](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L430)
 
 The API key to use.
 
-***
+---
 
 #### apiUrl?
 
 > `optional` **apiUrl**: `string`
 
-Defined in: [react/stream.tsx:425](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L425)
+Defined in:
+[react/stream.tsx:425](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L425)
 
 The URL of the API to use.
 
-***
+---
 
 #### assistantId
 
 > **assistantId**: `string`
 
-Defined in: [react/stream.tsx:415](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L415)
+Defined in:
+[react/stream.tsx:415](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L415)
 
 The ID of the assistant to use.
 
-***
+---
 
 #### callerOptions?
 
 > `optional` **callerOptions**: `AsyncCallerParams`
 
-Defined in: [react/stream.tsx:435](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L435)
+Defined in:
+[react/stream.tsx:435](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L435)
 
 Custom call options, such as custom fetch implementation.
 
-***
+---
 
 #### client?
 
 > `optional` **client**: `Client`\<`DefaultValues`, `DefaultValues`, `unknown`\>
 
-Defined in: [react/stream.tsx:420](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L420)
+Defined in:
+[react/stream.tsx:420](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L420)
 
 Client used to send requests.
 
-***
+---
 
 #### defaultHeaders?
 
-> `optional` **defaultHeaders**: `Record`\<`string`, `undefined` \| `null` \| `string`\>
+> `optional` **defaultHeaders**: `Record`\<`string`, `undefined` \| `null` \|
+> `string`\>
 
-Defined in: [react/stream.tsx:440](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L440)
+Defined in:
+[react/stream.tsx:440](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L440)
 
 Default headers to send with requests.
 
-***
+---
 
 #### messagesKey?
 
 > `optional` **messagesKey**: `string`
 
-Defined in: [react/stream.tsx:448](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L448)
+Defined in:
+[react/stream.tsx:448](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L448)
 
-Specify the key within the state that contains messages.
-Defaults to "messages".
+Specify the key within the state that contains messages. Defaults to "messages".
 
 ##### Default
 
 ```ts
-"messages"
+'messages';
 ```
 
-***
+---
 
 #### onCustomEvent()?
 
 > `optional` **onCustomEvent**: (`data`, `options`) => `void`
 
-Defined in: [react/stream.tsx:470](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L470)
+Defined in:
+[react/stream.tsx:470](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L470)
 
 Callback that is called when a custom event is received.
 
@@ -3169,18 +3310,19 @@ Callback that is called when a custom event is received.
 
 `void`
 
-***
+---
 
 #### onDebugEvent()?
 
 > `optional` **onDebugEvent**: (`data`) => `void`
 
-Defined in: [react/stream.tsx:494](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L494)
+Defined in:
+[react/stream.tsx:494](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L494)
 
 **`Internal`**
 
-Callback that is called when a debug event is received.
- This API is experimental and subject to change.
+Callback that is called when a debug event is received. This API is experimental
+and subject to change.
 
 ##### Parameters
 
@@ -3192,13 +3334,14 @@ Callback that is called when a debug event is received.
 
 `void`
 
-***
+---
 
 #### onError()?
 
 > `optional` **onError**: (`error`) => `void`
 
-Defined in: [react/stream.tsx:453](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L453)
+Defined in:
+[react/stream.tsx:453](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L453)
 
 Callback that is called when an error occurs.
 
@@ -3212,13 +3355,14 @@ Callback that is called when an error occurs.
 
 `void`
 
-***
+---
 
 #### onFinish()?
 
 > `optional` **onFinish**: (`state`) => `void`
 
-Defined in: [react/stream.tsx:458](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L458)
+Defined in:
+[react/stream.tsx:458](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L458)
 
 Callback that is called when the stream is finished.
 
@@ -3232,13 +3376,14 @@ Callback that is called when the stream is finished.
 
 `void`
 
-***
+---
 
 #### onLangChainEvent()?
 
 > `optional` **onLangChainEvent**: (`data`) => `void`
 
-Defined in: [react/stream.tsx:488](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L488)
+Defined in:
+[react/stream.tsx:488](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L488)
 
 Callback that is called when a LangChain event is received.
 
@@ -3252,7 +3397,12 @@ Callback that is called when a LangChain event is received.
 
 ####### event
 
-`string` & `object` \| `"on_tool_start"` \| `"on_tool_stream"` \| `"on_tool_end"` \| `"on_chat_model_start"` \| `"on_chat_model_stream"` \| `"on_chat_model_end"` \| `"on_llm_start"` \| `"on_llm_stream"` \| `"on_llm_end"` \| `"on_chain_start"` \| `"on_chain_stream"` \| `"on_chain_end"` \| `"on_retriever_start"` \| `"on_retriever_stream"` \| `"on_retriever_end"` \| `"on_prompt_start"` \| `"on_prompt_stream"` \| `"on_prompt_end"`
+`string` & `object` \| `"on_tool_start"` \| `"on_tool_stream"` \|
+`"on_tool_end"` \| `"on_chat_model_start"` \| `"on_chat_model_stream"` \|
+`"on_chat_model_end"` \| `"on_llm_start"` \| `"on_llm_stream"` \| `"on_llm_end"`
+\| `"on_chain_start"` \| `"on_chain_stream"` \| `"on_chain_end"` \|
+`"on_retriever_start"` \| `"on_retriever_stream"` \| `"on_retriever_end"` \|
+`"on_prompt_start"` \| `"on_prompt_stream"` \| `"on_prompt_end"`
 
 ####### metadata
 
@@ -3280,15 +3430,17 @@ Callback that is called when a LangChain event is received.
 
 ##### See
 
-https://langchain-ai.github.io/langgraph/cloud/how-tos/stream_events/#stream-graph-in-events-mode for more details.
+https://langchain-ai.github.io/langgraph/cloud/how-tos/stream_events/#stream-graph-in-events-mode
+for more details.
 
-***
+---
 
 #### onMetadataEvent()?
 
 > `optional` **onMetadataEvent**: (`data`) => `void`
 
-Defined in: [react/stream.tsx:482](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L482)
+Defined in:
+[react/stream.tsx:482](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L482)
 
 Callback that is called when a metadata event is received.
 
@@ -3308,15 +3460,17 @@ Callback that is called when a metadata event is received.
 
 `void`
 
-***
+---
 
 #### onThreadId()?
 
 > `optional` **onThreadId**: (`threadId`) => `void`
 
-Defined in: [react/stream.tsx:504](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L504)
+Defined in:
+[react/stream.tsx:504](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L504)
 
-Callback that is called when the thread ID is updated (ie when a new thread is created).
+Callback that is called when the thread ID is updated (ie when a new thread is
+created).
 
 ##### Parameters
 
@@ -3328,13 +3482,14 @@ Callback that is called when the thread ID is updated (ie when a new thread is c
 
 `void`
 
-***
+---
 
 #### onUpdateEvent()?
 
 > `optional` **onUpdateEvent**: (`data`) => `void`
 
-Defined in: [react/stream.tsx:463](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L463)
+Defined in:
+[react/stream.tsx:463](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L463)
 
 Callback that is called when an update event is received.
 
@@ -3346,22 +3501,22 @@ Callback that is called when an update event is received.
 
 `void`
 
-***
+---
 
 #### threadId?
 
 > `optional` **threadId**: `null` \| `string`
 
-Defined in: [react/stream.tsx:499](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L499)
+Defined in:
+[react/stream.tsx:499](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L499)
 
 The ID of the thread to fetch history and current values from.
-
 
 <a name="reacttype-aliasesmessagemetadatamd"></a>
 
 [**@langchain/langgraph-sdk**](#reactreadmemd)
 
-***
+---
 
 [@langchain/langgraph-sdk](#reactreadmemd) / MessageMetadata
 
@@ -3369,11 +3524,12 @@ The ID of the thread to fetch history and current values from.
 
 > **MessageMetadata**\<`StateType`\>: `object`
 
-Defined in: [react/stream.tsx:169](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L169)
+Defined in:
+[react/stream.tsx:169](https://github.com/langchain-ai/langgraph/blob/d4f644877db6264bd46d0b00fc4c37f174e502d5/libs/sdk-js/src/react/stream.tsx#L169)
 
 ### Type Parameters
 
-• **StateType** *extends* `Record`\<`string`, `unknown`\>
+• **StateType** _extends_ `Record`\<`string`, `unknown`\>
 
 ### Type declaration
 
@@ -3387,8 +3543,8 @@ The branch of the message.
 
 > **branchOptions**: `string`[] \| `undefined`
 
-The list of branches this message is part of.
-This is useful for displaying branching controls.
+The list of branches this message is part of. This is useful for displaying
+branching controls.
 
 #### firstSeenState
 

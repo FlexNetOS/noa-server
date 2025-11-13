@@ -11,7 +11,10 @@ import { QueueMessage } from '../types';
 export class PubSub extends EventEmitter {
   private queueManager: QueueManager;
   private topicName: string;
-  private subscribers: Map<string, { callback: (message: QueueMessage) => Promise<void>; active: boolean }> = new Map();
+  private subscribers: Map<
+    string,
+    { callback: (message: QueueMessage) => Promise<void>; active: boolean }
+  > = new Map();
   private isRunning = false;
   private processingPromises: Set<Promise<void>> = new Set();
 
@@ -60,7 +63,7 @@ export class PubSub extends EventEmitter {
       this.emit('subscription-error', {
         topicName: this.topicName,
         subscriberId,
-        error: 'Subscriber already exists'
+        error: 'Subscriber already exists',
       });
       return;
     }
@@ -99,7 +102,7 @@ export class PubSub extends EventEmitter {
    */
   getSubscriberStats() {
     let activeCount = 0;
-    this.subscribers.forEach(subscriber => {
+    this.subscribers.forEach((subscriber) => {
       if (subscriber.active) activeCount++;
     });
 
@@ -107,7 +110,7 @@ export class PubSub extends EventEmitter {
       topicName: this.topicName,
       totalSubscribers: this.subscribers.size,
       activeSubscribers: activeCount,
-      inactiveSubscribers: this.subscribers.size - activeCount
+      inactiveSubscribers: this.subscribers.size - activeCount,
     };
   }
 
@@ -131,16 +134,15 @@ export class PubSub extends EventEmitter {
         }
 
         // Small delay to prevent tight loop
-        await new Promise(resolve => setTimeout(resolve, 50));
-
+        await new Promise((resolve) => setTimeout(resolve, 50));
       } catch (error) {
         this.emit('processing-error', {
           topicName: this.topicName,
-          error: (error as Error).message
+          error: (error as Error).message,
         });
 
         // Wait longer on error
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     }
   }
@@ -156,7 +158,11 @@ export class PubSub extends EventEmitter {
     this.subscribers.forEach((subscriber, subscriberId) => {
       if (subscriber.active) {
         subscriberIds.push(subscriberId);
-        const deliveryPromise = this.deliverMessageToSubscriber(message, subscriberId, subscriber.callback);
+        const deliveryPromise = this.deliverMessageToSubscriber(
+          message,
+          subscriberId,
+          subscriber.callback
+        );
         deliveryPromises.push(deliveryPromise);
       }
     });
@@ -167,7 +173,7 @@ export class PubSub extends EventEmitter {
       this.emit('message-acknowledged', {
         topicName: this.topicName,
         messageId: message.id,
-        reason: 'no-active-subscribers'
+        reason: 'no-active-subscribers',
       });
       return;
     }
@@ -186,7 +192,7 @@ export class PubSub extends EventEmitter {
         this.emit('message-delivered', {
           topicName: this.topicName,
           messageId: message.id,
-          subscriberId
+          subscriberId,
         });
       } else {
         failureCount++;
@@ -194,7 +200,7 @@ export class PubSub extends EventEmitter {
           topicName: this.topicName,
           messageId: message.id,
           subscriberId,
-          error: result.reason?.message || 'Unknown error'
+          error: result.reason?.message || 'Unknown error',
         });
       }
     });
@@ -207,7 +213,7 @@ export class PubSub extends EventEmitter {
       messageId: message.id,
       totalSubscribers: subscriberIds.length,
       successfulDeliveries: successCount,
-      failedDeliveries: failureCount
+      failedDeliveries: failureCount,
     });
   }
 
@@ -229,7 +235,7 @@ export class PubSub extends EventEmitter {
         this.emit('subscriber-deactivated', {
           topicName: this.topicName,
           subscriberId,
-          error: (error as Error).message
+          error: (error as Error).message,
         });
       }
       throw error;

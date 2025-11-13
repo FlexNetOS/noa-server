@@ -1,0 +1,30 @@
+name: "TypeScript Lint Action"
+description: "Custom TypeScript linting action for monorepo packages"
+author: "DEFLEX Automation"
+inputs:
+  working-directory:
+    description: "Working directory for linting"
+    required: false
+    default: "."
+  eslint-config:
+    description: "Path to ESLint configuration file"
+    required: false
+    default: ".eslintrc.json"
+  tsconfig:
+    description: "Path to TypeScript configuration file"
+    required: false
+    default: "tsconfig.json"
+  files:
+    description: "File patterns to lint"
+    required: false
+    default: "packages/**/*.{ts,tsx} src/**/*.{ts,tsx} scripts/**/*.{ts,tsx}"
+  max-warnings:
+    description: "Maximum number of warnings allowed"
+    required: false
+    default: "0"
+runs:
+  using: "node20"
+  main: "dist/index.js"
+branding:
+  icon: "check-circle"
+  color: "green"

@@ -1,8 +1,12 @@
 # MCP Simple StreamableHttp Stateless Server Example
 
-> Adapted from the [official Python MCP SDK example](https://github.com/modelcontextprotocol/python-sdk/tree/main/examples/servers/simple-streamablehttp-stateless)
+> Adapted from the
+> [official Python MCP SDK example](https://github.com/modelcontextprotocol/python-sdk/tree/main/examples/servers/simple-streamablehttp-stateless)
 
-A stateless MCP server example demonstrating the StreamableHttp transport without maintaining session state. This example is ideal for understanding how to deploy MCP servers in multi-node environments where requests can be routed to any instance.
+A stateless MCP server example demonstrating the StreamableHttp transport
+without maintaining session state. This example is ideal for understanding how
+to deploy MCP servers in multi-node environments where requests can be routed to
+any instance.
 
 ## Features
 
@@ -11,7 +15,6 @@ A stateless MCP server example demonstrating the StreamableHttp transport withou
 - No session state maintained between requests
 - Task lifecycle scoped to individual requests
 - Suitable for deployment in multi-node environments
-
 
 ## Usage
 
@@ -31,13 +34,15 @@ uv run mcp-simple-streamablehttp-stateless --log-level DEBUG
 uv run mcp-simple-streamablehttp-stateless --json-response
 ```
 
-The server exposes a tool named "start-notification-stream" that accepts three arguments:
+The server exposes a tool named "start-notification-stream" that accepts three
+arguments:
 
 - `interval`: Time between notifications in seconds (e.g., 1.0)
 - `count`: Number of notifications to send (e.g., 5)
 - `caller`: Identifier string for the caller
 
-
 ## Client
 
-You can connect to this server using an HTTP client. For now, only the TypeScript SDK has streamable HTTP client examples, or you can use [Inspector](https://github.com/modelcontextprotocol/inspector) for testing.
+You can connect to this server using an HTTP client. For now, only the
+TypeScript SDK has streamable HTTP client examples, or you can use
+[Inspector](https://github.com/modelcontextprotocol/inspector) for testing.

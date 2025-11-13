@@ -5,6 +5,7 @@ Run targeted audit on a specific file or directory.
 ## What This Command Does
 
 Performs deep analysis on specified path:
+
 - **File System Scanner**: Counts files, LOC, directory structure
 - **Code Analyzer**: AST parsing, complexity metrics, quality analysis
 - **Hash & Index Agent**: SHA-256 hashing, integrity verification
@@ -42,6 +43,7 @@ node hooks/run-audit.js \
 ## What Gets Analyzed
 
 ### For Directories:
+
 - Total file count (recursive)
 - Lines of code (total, code, comments, blank)
 - Directory structure tree
@@ -50,6 +52,7 @@ node hooks/run-audit.js \
 - Test coverage indicators
 
 ### For Files:
+
 - File metadata (size, modified date, permissions)
 - Content hash (SHA-256)
 - Code analysis (if source code)
@@ -60,6 +63,7 @@ node hooks/run-audit.js \
 ## Output
 
 Results include:
+
 - **File Count**: Actual vs claimed
 - **LOC Breakdown**: Code, comments, blank lines
 - **Complexity**: Cyclomatic complexity, nesting depth
@@ -73,6 +77,7 @@ Results include:
 ```
 
 Expected output:
+
 ```
 ✅ File System Scan: 10 files found (claimed: 89) ⚠️  DISCREPANCY
 📊 Lines of Code: 856 (claimed: 10,750) ⚠️  DISCREPANCY

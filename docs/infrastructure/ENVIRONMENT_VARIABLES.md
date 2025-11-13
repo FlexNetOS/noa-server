@@ -2,122 +2,123 @@
 
 ## Overview
 
-This document provides a comprehensive reference for all environment variables used across Noa Server services.
+This document provides a comprehensive reference for all environment variables
+used across Noa Server services.
 
 ## Environment Variable Categories
 
 ### Core Configuration
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `NODE_ENV` | Yes | `production` | Application environment (development, staging, production) |
-| `LOG_LEVEL` | No | `info` | Logging level (debug, info, warn, error) |
-| `TZ` | No | `UTC` | Timezone for timestamps |
+| Variable    | Required | Default      | Description                                                |
+| ----------- | -------- | ------------ | ---------------------------------------------------------- |
+| `NODE_ENV`  | Yes      | `production` | Application environment (development, staging, production) |
+| `LOG_LEVEL` | No       | `info`       | Logging level (debug, info, warn, error)                   |
+| `TZ`        | No       | `UTC`        | Timezone for timestamps                                    |
 
 ### Service Ports
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `MCP_PORT` | No | `8001` | MCP service port |
-| `CLAUDE_FLOW_PORT` | No | `9100` | Claude Flow service port |
-| `UI_PORT` | No | `9200` | UI Dashboard port |
-| `LLAMA_PORT` | No | `9300` | Llama.cpp service port |
-| `AGENTICOS_PORT` | No | `9400` | AgenticOS service port |
-| `REDIS_PORT` | No | `6379` | Redis cache port |
-| `POSTGRES_PORT` | No | `5432` | PostgreSQL database port |
+| Variable           | Required | Default | Description              |
+| ------------------ | -------- | ------- | ------------------------ |
+| `MCP_PORT`         | No       | `8001`  | MCP service port         |
+| `CLAUDE_FLOW_PORT` | No       | `9100`  | Claude Flow service port |
+| `UI_PORT`          | No       | `9200`  | UI Dashboard port        |
+| `LLAMA_PORT`       | No       | `9300`  | Llama.cpp service port   |
+| `AGENTICOS_PORT`   | No       | `9400`  | AgenticOS service port   |
+| `REDIS_PORT`       | No       | `6379`  | Redis cache port         |
+| `POSTGRES_PORT`    | No       | `5432`  | PostgreSQL database port |
 
 ### Service URLs (Internal)
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `MCP_URL` | No | `http://localhost:8001` | MCP service URL |
-| `CLAUDE_FLOW_URL` | No | `http://localhost:9100` | Claude Flow service URL |
-| `LLAMA_URL` | No | `http://localhost:9300` | Llama.cpp service URL |
-| `AGENTICOS_URL` | No | `http://localhost:9400` | AgenticOS service URL |
-| `REDIS_URL` | No | `redis://localhost:6379` | Redis connection URL |
-| `POSTGRES_URL` | Yes | - | PostgreSQL connection URL |
+| Variable          | Required | Default                  | Description               |
+| ----------------- | -------- | ------------------------ | ------------------------- |
+| `MCP_URL`         | No       | `http://localhost:8001`  | MCP service URL           |
+| `CLAUDE_FLOW_URL` | No       | `http://localhost:9100`  | Claude Flow service URL   |
+| `LLAMA_URL`       | No       | `http://localhost:9300`  | Llama.cpp service URL     |
+| `AGENTICOS_URL`   | No       | `http://localhost:9400`  | AgenticOS service URL     |
+| `REDIS_URL`       | No       | `redis://localhost:6379` | Redis connection URL      |
+| `POSTGRES_URL`    | Yes      | -                        | PostgreSQL connection URL |
 
 ### Database Configuration
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `POSTGRES_USER` | Yes | `noa` | PostgreSQL username |
-| `POSTGRES_PASSWORD` | Yes | - | PostgreSQL password |
-| `POSTGRES_DB` | Yes | `noa` | PostgreSQL database name |
-| `POSTGRES_HOST` | No | `localhost` | PostgreSQL host |
-| `POSTGRES_SSL_MODE` | No | `prefer` | PostgreSQL SSL mode |
-| `DB_POOL_MIN` | No | `2` | Minimum database connections |
-| `DB_POOL_MAX` | No | `10` | Maximum database connections |
+| Variable            | Required | Default     | Description                  |
+| ------------------- | -------- | ----------- | ---------------------------- |
+| `POSTGRES_USER`     | Yes      | `noa`       | PostgreSQL username          |
+| `POSTGRES_PASSWORD` | Yes      | -           | PostgreSQL password          |
+| `POSTGRES_DB`       | Yes      | `noa`       | PostgreSQL database name     |
+| `POSTGRES_HOST`     | No       | `localhost` | PostgreSQL host              |
+| `POSTGRES_SSL_MODE` | No       | `prefer`    | PostgreSQL SSL mode          |
+| `DB_POOL_MIN`       | No       | `2`         | Minimum database connections |
+| `DB_POOL_MAX`       | No       | `10`        | Maximum database connections |
 
 ### Redis Configuration
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `REDIS_PASSWORD` | Yes | - | Redis password |
-| `REDIS_HOST` | No | `localhost` | Redis host |
-| `REDIS_DB` | No | `0` | Redis database number |
-| `REDIS_TLS` | No | `false` | Enable Redis TLS |
+| Variable         | Required | Default     | Description           |
+| ---------------- | -------- | ----------- | --------------------- |
+| `REDIS_PASSWORD` | Yes      | -           | Redis password        |
+| `REDIS_HOST`     | No       | `localhost` | Redis host            |
+| `REDIS_DB`       | No       | `0`         | Redis database number |
+| `REDIS_TLS`      | No       | `false`     | Enable Redis TLS      |
 
 ### Neural Processing (Llama.cpp)
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `MODEL_PATH` | Yes | - | Path to GGUF model file |
-| `LLM_MODEL_PATH` | No | - | Alias for MODEL_PATH |
-| `CUDA_VISIBLE_DEVICES` | No | `0` | GPU device IDs |
-| `GGML_CUDA_ENABLE` | No | `1` | Enable CUDA acceleration |
-| `LLAMA_THREADS` | No | `4` | Number of processing threads |
-| `LLAMA_CONTEXT_SIZE` | No | `2048` | Model context window size |
-| `LLAMA_BATCH_SIZE` | No | `512` | Batch processing size |
+| Variable               | Required | Default | Description                  |
+| ---------------------- | -------- | ------- | ---------------------------- |
+| `MODEL_PATH`           | Yes      | -       | Path to GGUF model file      |
+| `LLM_MODEL_PATH`       | No       | -       | Alias for MODEL_PATH         |
+| `CUDA_VISIBLE_DEVICES` | No       | `0`     | GPU device IDs               |
+| `GGML_CUDA_ENABLE`     | No       | `1`     | Enable CUDA acceleration     |
+| `LLAMA_THREADS`        | No       | `4`     | Number of processing threads |
+| `LLAMA_CONTEXT_SIZE`   | No       | `2048`  | Model context window size    |
+| `LLAMA_BATCH_SIZE`     | No       | `512`   | Batch processing size        |
 
 ### Authentication & Security
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `JWT_SECRET` | Yes | - | Secret for JWT token signing |
-| `JWT_EXPIRY` | No | `24h` | JWT token expiry time |
-| `SESSION_SECRET` | Yes | - | Session cookie secret |
-| `ENCRYPTION_KEY` | Yes | - | Data encryption key (32 bytes) |
-| `CORS_ORIGIN` | No | `*` | CORS allowed origins |
-| `RATE_LIMIT_WINDOW` | No | `15m` | Rate limit time window |
-| `RATE_LIMIT_MAX` | No | `100` | Max requests per window |
+| Variable            | Required | Default | Description                    |
+| ------------------- | -------- | ------- | ------------------------------ |
+| `JWT_SECRET`        | Yes      | -       | Secret for JWT token signing   |
+| `JWT_EXPIRY`        | No       | `24h`   | JWT token expiry time          |
+| `SESSION_SECRET`    | Yes      | -       | Session cookie secret          |
+| `ENCRYPTION_KEY`    | Yes      | -       | Data encryption key (32 bytes) |
+| `CORS_ORIGIN`       | No       | `*`     | CORS allowed origins           |
+| `RATE_LIMIT_WINDOW` | No       | `15m`   | Rate limit time window         |
+| `RATE_LIMIT_MAX`    | No       | `100`   | Max requests per window        |
 
 ### API Keys (External Services)
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `OPENAI_API_KEY` | No | - | OpenAI API key |
-| `ANTHROPIC_API_KEY` | No | - | Anthropic Claude API key |
-| `HUGGINGFACE_TOKEN` | No | - | HuggingFace API token |
+| Variable            | Required | Default | Description              |
+| ------------------- | -------- | ------- | ------------------------ |
+| `OPENAI_API_KEY`    | No       | -       | OpenAI API key           |
+| `ANTHROPIC_API_KEY` | No       | -       | Anthropic Claude API key |
+| `HUGGINGFACE_TOKEN` | No       | -       | HuggingFace API token    |
 
 ### Monitoring & Observability
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `METRICS_ENABLED` | No | `true` | Enable Prometheus metrics |
-| `METRICS_PORT` | No | Service port | Metrics endpoint port |
-| `TRACING_ENABLED` | No | `false` | Enable distributed tracing |
-| `JAEGER_ENDPOINT` | No | - | Jaeger collector endpoint |
-| `SENTRY_DSN` | No | - | Sentry error tracking DSN |
+| Variable          | Required | Default      | Description                |
+| ----------------- | -------- | ------------ | -------------------------- |
+| `METRICS_ENABLED` | No       | `true`       | Enable Prometheus metrics  |
+| `METRICS_PORT`    | No       | Service port | Metrics endpoint port      |
+| `TRACING_ENABLED` | No       | `false`      | Enable distributed tracing |
+| `JAEGER_ENDPOINT` | No       | -            | Jaeger collector endpoint  |
+| `SENTRY_DSN`      | No       | -            | Sentry error tracking DSN  |
 
 ### Performance Tuning
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `MEMORY_LIMIT` | No | - | Memory limit (e.g., 512m, 1g) |
-| `MAX_OLD_SPACE_SIZE` | No | - | Node.js max heap size (MB) |
-| `UV_THREADPOOL_SIZE` | No | `4` | Node.js thread pool size |
-| `WORKERS` | No | `1` | Number of worker processes |
-| `WORKER_CONCURRENCY` | No | `10` | Concurrent tasks per worker |
+| Variable             | Required | Default | Description                   |
+| -------------------- | -------- | ------- | ----------------------------- |
+| `MEMORY_LIMIT`       | No       | -       | Memory limit (e.g., 512m, 1g) |
+| `MAX_OLD_SPACE_SIZE` | No       | -       | Node.js max heap size (MB)    |
+| `UV_THREADPOOL_SIZE` | No       | `4`     | Node.js thread pool size      |
+| `WORKERS`            | No       | `1`     | Number of worker processes    |
+| `WORKER_CONCURRENCY` | No       | `10`    | Concurrent tasks per worker   |
 
 ### Feature Flags
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `FEATURE_NEURAL_PROCESSING` | No | `true` | Enable neural processing |
-| `FEATURE_AGENT_SWARM` | No | `true` | Enable agent swarm features |
-| `FEATURE_REALTIME_UPDATES` | No | `true` | Enable WebSocket updates |
-| `FEATURE_EXPERIMENTAL` | No | `false` | Enable experimental features |
+| Variable                    | Required | Default | Description                  |
+| --------------------------- | -------- | ------- | ---------------------------- |
+| `FEATURE_NEURAL_PROCESSING` | No       | `true`  | Enable neural processing     |
+| `FEATURE_AGENT_SWARM`       | No       | `true`  | Enable agent swarm features  |
+| `FEATURE_REALTIME_UPDATES`  | No       | `true`  | Enable WebSocket updates     |
+| `FEATURE_EXPERIMENTAL`      | No       | `false` | Enable experimental features |
 
 ## Service-Specific Variables
 

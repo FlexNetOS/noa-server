@@ -1,19 +1,27 @@
 # Noa Server Final Folder Structure Design
 
 **Version:** 1.0 | **Date:** October 22, 2025 | **Status:** Design Complete
-**Purpose:** Integrate srv/agenticos into home-lab-server/agentic-homelab hierarchy
+**Purpose:** Integrate srv/agenticos into home-lab-server/agentic-homelab
+hierarchy
 
 ## Executive Summary
 
-This document defines the final folder structure that integrates the srv/agenticos components into the home-lab-server/agentic-homelab deployment planes while maintaining logical service separation and alignment with the infrastructure architecture.
+This document defines the final folder structure that integrates the
+srv/agenticos components into the home-lab-server/agentic-homelab deployment
+planes while maintaining logical service separation and alignment with the
+infrastructure architecture.
 
 ## Design Principles
 
-1. **Three-Plane Architecture**: Sandbox (work/data-heavy) → Deployed (production/blue-green) → Coordinator (lightweight/failover)
-2. **Failover Hierarchy**: Deployed (primary) → Coordinator (backup) → Sandbox (emergency)
+1. **Three-Plane Architecture**: Sandbox (work/data-heavy) → Deployed
+   (production/blue-green) → Coordinator (lightweight/failover)
+2. **Failover Hierarchy**: Deployed (primary) → Coordinator (backup) → Sandbox
+   (emergency)
 3. **Zero-Downtime Deployment**: Blue/green capability in deployed plane
-4. **Resource Optimization**: Sandbox (heavy) → Coordinator (light) → Deployed (balanced)
-5. **Shared Resources**: Common artifacts, configs, and state in shared/ directory
+4. **Resource Optimization**: Sandbox (heavy) → Coordinator (light) → Deployed
+   (balanced)
+5. **Shared Resources**: Common artifacts, configs, and state in shared/
+   directory
 
 ## Final Folder Structure
 
@@ -120,24 +128,25 @@ home-lab-server/agentic-homelab/
 
 ## Service Mapping to Infrastructure
 
-| Service | Port | Plane | Purpose | Source |
-|---------|------|-------|---------|--------|
-| MCP Service | 8001 | coordinator-plane | Model Context Protocol coordination | packages/mcp-agent/ |
-| Claude Flow | 9100 | coordinator-plane | AI workflow orchestration | packages/claude-flow-alpha/ |
-| Agentic OS | 9400 | coordinator-plane | Agent system management | srv/agenticos/ |
-| UI Dashboard | 9200 | deployed-plane-green | Web interface | packages/ui-dashboard/ |
-| Llama.cpp | 9300 | deployed-plane-green | Neural processing | packages/llama.cpp/ |
-| PostgreSQL | 5432 | deployed-plane-green | Primary database | infrastructure |
-| Redis | 6379 | deployed-plane-green | Cache layer | infrastructure |
+| Service      | Port | Plane                | Purpose                             | Source                      |
+| ------------ | ---- | -------------------- | ----------------------------------- | --------------------------- |
+| MCP Service  | 8001 | coordinator-plane    | Model Context Protocol coordination | packages/mcp-agent/         |
+| Claude Flow  | 9100 | coordinator-plane    | AI workflow orchestration           | packages/claude-flow-alpha/ |
+| Agentic OS   | 9400 | coordinator-plane    | Agent system management             | srv/agenticos/              |
+| UI Dashboard | 9200 | deployed-plane-green | Web interface                       | packages/ui-dashboard/      |
+| Llama.cpp    | 9300 | deployed-plane-green | Neural processing                   | packages/llama.cpp/         |
+| PostgreSQL   | 5432 | deployed-plane-green | Primary database                    | infrastructure              |
+| Redis        | 6379 | deployed-plane-green | Cache layer                         | infrastructure              |
 
 ## Integration Points
 
 ### srv/agenticos Integration
 
-**Source:** `srv/agenticos/`
-**Destination:** `home-lab-server/agentic-homelab/coordinator-plane/agents/`
+**Source:** `srv/agenticos/` **Destination:**
+`home-lab-server/agentic-homelab/coordinator-plane/agents/`
 
 **Mapping:**
+
 - `srv/agenticos/agents/` → `coordinator-plane/agents/core/`
 - `srv/agenticos/artifacts/` → `shared/artifacts/`
 - `srv/agenticos/bin/` → `coordinator-plane/bin/`
@@ -148,10 +157,11 @@ home-lab-server/agentic-homelab/
 
 ### packages/ Integration
 
-**Source:** `packages/*/`
-**Destination:** `home-lab-server/agentic-homelab/{plane}/services/{service}/`
+**Source:** `packages/*/` **Destination:**
+`home-lab-server/agentic-homelab/{plane}/services/{service}/`
 
 **Mapping:**
+
 - `packages/mcp-agent/` → `coordinator-plane/services/mcp-service/`
 - `packages/claude-flow-alpha/` → `coordinator-plane/services/claude-flow/`
 - `packages/ui-dashboard/` → `deployed-plane-green/services/ui-dashboard/`
@@ -160,6 +170,7 @@ home-lab-server/agentic-homelab/
 ## Symlink Strategy
 
 ### Log Symlinks
+
 ```bash
 # Coordinator plane logs
 ln -s ../../../shared/logs/coordinator-plane coordinator-plane/logs
@@ -172,6 +183,7 @@ ln -s ../../../shared/logs/sandbox-plane sandbox-plane-blue/logs
 ```
 
 ### Shared State Symlinks
+
 ```bash
 # Hive mind database
 ln -s ../../shared/state/hive.db coordinator-plane/config/hive.db
@@ -183,29 +195,35 @@ ln -s ../../shared/state/memory.db coordinator-plane/config/memory.db
 ## Migration Strategy
 
 ### Phase 1: Structure Creation
+
 1. Create new directory structure
 2. Set up symlinks for shared resources
 3. Copy configuration files to appropriate locations
 
 ### Phase 2: Content Migration
+
 1. Move srv/agenticos content to coordinator-plane/agents/
-2. Move packages/*/ content to appropriate service directories
+2. Move packages/\*/ content to appropriate service directories
 3. Update all configuration files with new paths
 
 ### Phase 3: Validation
+
 1. Verify all services can find their configurations
 2. Test symlinks and shared resource access
 3. Validate infrastructure alignment
 
 ## Benefits
 
-1. **Failover Hierarchy**: Deployed (primary) → Coordinator (backup) → Sandbox (emergency)
-2. **Resource Optimization**: Sandbox (data-heavy) → Coordinator (lightweight) → Deployed (balanced)
+1. **Failover Hierarchy**: Deployed (primary) → Coordinator (backup) → Sandbox
+   (emergency)
+2. **Resource Optimization**: Sandbox (data-heavy) → Coordinator (lightweight) →
+   Deployed (balanced)
 3. **Zero-Downtime Deployment**: Blue/green capability in deployed plane
 4. **Clear Separation**: Services organized by deployment plane and function
 5. **Shared Resources**: Common artifacts and state accessible across planes
 6. **Infrastructure Alignment**: Direct mapping to INFRASTRUCTURE_OVERVIEW.md
-7. **Automation Ready**: Structure supports Phase 0 hive mind and swarm integration
+7. **Automation Ready**: Structure supports Phase 0 hive mind and swarm
+   integration
 8. **Scalability**: Easy to add new services and planes
 9. **Maintainability**: Logical organization reduces cognitive load
 
@@ -217,7 +235,7 @@ ln -s ../../shared/state/memory.db coordinator-plane/config/memory.db
 - [ ] Set up service directories with proper structure
 - [ ] Create symlinks for logs and shared state
 - [ ] Migrate srv/agenticos content
-- [ ] Migrate packages/*/ content
+- [ ] Migrate packages/\*/ content
 - [ ] Update configuration files
 - [ ] Test service discovery and configuration loading
 - [ ] Validate infrastructure alignment
@@ -227,8 +245,10 @@ ln -s ../../shared/state/memory.db coordinator-plane/config/memory.db
 
 1. **Structural Integrity**: All directories created with correct permissions
 2. **Symlink Functionality**: All symlinks resolve correctly
-3. **Service Accessibility**: All services can find their configurations and dependencies
+3. **Service Accessibility**: All services can find their configurations and
+   dependencies
 4. **Infrastructure Alignment**: Structure matches INFRASTRUCTURE_OVERVIEW.md
 5. **Automation Support**: Structure enables Phase 0 automation requirements
-6. **No Broken References**: All internal references updated to new paths</content>
-<parameter name="filePath">/home/deflex/noa-server/docs/upgrade/FINAL_FOLDER_STRUCTURE.md
+6. **No Broken References**: All internal references updated to new
+   paths</content>
+   <parameter name="filePath">/home/deflex/noa-server/docs/upgrade/FINAL_FOLDER_STRUCTURE.md

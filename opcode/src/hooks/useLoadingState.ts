@@ -12,9 +12,7 @@ interface LoadingState<T> {
  * Custom hook for managing loading states with error handling
  * Reduces boilerplate code for async operations
  */
-export function useLoadingState<T>(
-  asyncFunction: (...args: any[]) => Promise<T>
-): LoadingState<T> {
+export function useLoadingState<T>(asyncFunction: (...args: any[]) => Promise<T>): LoadingState<T> {
   const [data, setData] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);

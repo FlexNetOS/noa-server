@@ -15,57 +15,57 @@ metadata:
     app.kubernetes.io/part-of: ingress-nginx
 data:
   # Performance tuning
-  worker-processes: "auto"
-  worker-connections: "10240"
-  worker-shutdown-timeout: "240s"
+  worker-processes: 'auto'
+  worker-connections: '10240'
+  worker-shutdown-timeout: '240s'
 
   # Keepalive settings
-  keep-alive: "75"
-  keep-alive-requests: "1000"
-  upstream-keepalive-connections: "100"
-  upstream-keepalive-timeout: "60"
-  upstream-keepalive-requests: "100"
+  keep-alive: '75'
+  keep-alive-requests: '1000'
+  upstream-keepalive-connections: '100'
+  upstream-keepalive-timeout: '60'
+  upstream-keepalive-requests: '100'
 
   # Buffer settings
-  client-body-buffer-size: "128k"
-  client-header-buffer-size: "4k"
-  large-client-header-buffers: "4 16k"
-  proxy-buffer-size: "8k"
-  proxy-buffers-number: "4"
+  client-body-buffer-size: '128k'
+  client-header-buffer-size: '4k'
+  large-client-header-buffers: '4 16k'
+  proxy-buffer-size: '8k'
+  proxy-buffers-number: '4'
 
   # Timeout settings
-  client-body-timeout: "60"
-  client-header-timeout: "60"
-  proxy-connect-timeout: "60"
-  proxy-send-timeout: "60"
-  proxy-read-timeout: "60"
+  client-body-timeout: '60'
+  client-header-timeout: '60'
+  proxy-connect-timeout: '60'
+  proxy-send-timeout: '60'
+  proxy-read-timeout: '60'
 
   # Rate limiting
-  limit-req-status-code: "429"
-  limit-conn-status-code: "429"
+  limit-req-status-code: '429'
+  limit-conn-status-code: '429'
 
   # Compression
-  use-gzip: "true"
-  gzip-level: "5"
-  gzip-types: "application/json application/javascript text/css text/plain text/xml application/xml"
+  use-gzip: 'true'
+  gzip-level: '5'
+  gzip-types: 'application/json application/javascript text/css text/plain text/xml application/xml'
 
   # SSL settings
-  ssl-protocols: "TLSv1.2 TLSv1.3"
-  ssl-ciphers: "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384"
-  ssl-prefer-server-ciphers: "true"
-  ssl-session-cache: "true"
-  ssl-session-cache-size: "10m"
-  ssl-session-timeout: "10m"
+  ssl-protocols: 'TLSv1.2 TLSv1.3'
+  ssl-ciphers: 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384'
+  ssl-prefer-server-ciphers: 'true'
+  ssl-session-cache: 'true'
+  ssl-session-cache-size: '10m'
+  ssl-session-timeout: '10m'
 
   # HTTP/2 settings
-  use-http2: "true"
-  http2-max-field-size: "16k"
-  http2-max-header-size: "128k"
+  use-http2: 'true'
+  http2-max-field-size: '16k'
+  http2-max-header-size: '128k'
 
   # Logging
   log-format-upstream: '$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" $request_length $request_time [$proxy_upstream_name] [$proxy_alternative_upstream_name] $upstream_addr $upstream_response_length $upstream_response_time $upstream_status $req_id'
-  access-log-path: "/var/log/nginx/access.log"
-  error-log-path: "/var/log/nginx/error.log"
+  access-log-path: '/var/log/nginx/access.log'
+  error-log-path: '/var/log/nginx/error.log'
 
 ---
 # Main Ingress Resource for Noa Server
@@ -79,42 +79,42 @@ metadata:
     kubernetes.io/ingress.class: nginx
 
     # SSL configuration
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: 'letsencrypt-prod'
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+    nginx.ingress.kubernetes.io/force-ssl-redirect: 'true'
 
     # Session affinity (sticky sessions)
-    nginx.ingress.kubernetes.io/affinity: "cookie"
-    nginx.ingress.kubernetes.io/affinity-mode: "persistent"
-    nginx.ingress.kubernetes.io/session-cookie-name: "noa-session"
-    nginx.ingress.kubernetes.io/session-cookie-expires: "86400"
-    nginx.ingress.kubernetes.io/session-cookie-max-age: "86400"
-    nginx.ingress.kubernetes.io/session-cookie-path: "/"
-    nginx.ingress.kubernetes.io/session-cookie-samesite: "Strict"
+    nginx.ingress.kubernetes.io/affinity: 'cookie'
+    nginx.ingress.kubernetes.io/affinity-mode: 'persistent'
+    nginx.ingress.kubernetes.io/session-cookie-name: 'noa-session'
+    nginx.ingress.kubernetes.io/session-cookie-expires: '86400'
+    nginx.ingress.kubernetes.io/session-cookie-max-age: '86400'
+    nginx.ingress.kubernetes.io/session-cookie-path: '/'
+    nginx.ingress.kubernetes.io/session-cookie-samesite: 'Strict'
 
     # Load balancing algorithm
-    nginx.ingress.kubernetes.io/upstream-hash-by: "$binary_remote_addr"
+    nginx.ingress.kubernetes.io/upstream-hash-by: '$binary_remote_addr'
 
     # Rate limiting
-    nginx.ingress.kubernetes.io/limit-rps: "100"
-    nginx.ingress.kubernetes.io/limit-connections: "20"
-    nginx.ingress.kubernetes.io/limit-burst-multiplier: "5"
+    nginx.ingress.kubernetes.io/limit-rps: '100'
+    nginx.ingress.kubernetes.io/limit-connections: '20'
+    nginx.ingress.kubernetes.io/limit-burst-multiplier: '5'
 
     # Request size limits
-    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
-    nginx.ingress.kubernetes.io/client-body-buffer-size: "128k"
+    nginx.ingress.kubernetes.io/proxy-body-size: '50m'
+    nginx.ingress.kubernetes.io/client-body-buffer-size: '128k'
 
     # Timeouts
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: '60'
+    nginx.ingress.kubernetes.io/proxy-send-timeout: '60'
+    nginx.ingress.kubernetes.io/proxy-read-timeout: '60'
 
     # CORS configuration
-    nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://noa-server.io"
-    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
-    nginx.ingress.kubernetes.io/cors-allow-headers: "Authorization, Content-Type, X-Request-ID"
-    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+    nginx.ingress.kubernetes.io/enable-cors: 'true'
+    nginx.ingress.kubernetes.io/cors-allow-origin: 'https://noa-server.io'
+    nginx.ingress.kubernetes.io/cors-allow-methods: 'GET, POST, PUT, DELETE, OPTIONS'
+    nginx.ingress.kubernetes.io/cors-allow-headers: 'Authorization, Content-Type, X-Request-ID'
+    nginx.ingress.kubernetes.io/cors-allow-credentials: 'true'
 
     # Security headers
     nginx.ingress.kubernetes.io/configuration-snippet: |
@@ -125,66 +125,66 @@ metadata:
       more_set_headers "Permissions-Policy: geolocation=(), microphone=(), camera=()";
 
     # WebSocket support
-    nginx.ingress.kubernetes.io/websocket-services: "noa-server"
+    nginx.ingress.kubernetes.io/websocket-services: 'noa-server'
 
     # Health checks
-    nginx.ingress.kubernetes.io/health-check-path: "/health"
-    nginx.ingress.kubernetes.io/health-check-interval: "10s"
-    nginx.ingress.kubernetes.io/health-check-timeout: "5s"
+    nginx.ingress.kubernetes.io/health-check-path: '/health'
+    nginx.ingress.kubernetes.io/health-check-interval: '10s'
+    nginx.ingress.kubernetes.io/health-check-timeout: '5s'
 
     # Monitoring
-    nginx.ingress.kubernetes.io/enable-opentelemetry: "true"
+    nginx.ingress.kubernetes.io/enable-opentelemetry: 'true'
 
 spec:
   ingressClassName: nginx
   tls:
-  - hosts:
-    - noa-server.io
-    - www.noa-server.io
-    - api.noa-server.io
-    secretName: noa-server-tls
+    - hosts:
+        - noa-server.io
+        - www.noa-server.io
+        - api.noa-server.io
+      secretName: noa-server-tls
 
   rules:
-  # Main domain
-  - host: noa-server.io
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: noa-server
-            port:
-              number: 3000
+    # Main domain
+    - host: noa-server.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: noa-server
+                port:
+                  number: 3000
 
-  # API subdomain
-  - host: api.noa-server.io
-    http:
-      paths:
-      - path: /v1
-        pathType: Prefix
-        backend:
-          service:
-            name: noa-server
-            port:
-              number: 3000
+    # API subdomain
+    - host: api.noa-server.io
+      http:
+        paths:
+          - path: /v1
+            pathType: Prefix
+            backend:
+              service:
+                name: noa-server
+                port:
+                  number: 3000
 
-      - path: /v2
-        pathType: Prefix
-        backend:
-          service:
-            name: noa-server-v2
-            port:
-              number: 3000
+          - path: /v2
+            pathType: Prefix
+            backend:
+              service:
+                name: noa-server-v2
+                port:
+                  number: 3000
 
-      # WebSocket endpoint
-      - path: /ws
-        pathType: Prefix
-        backend:
-          service:
-            name: noa-server-websocket
-            port:
-              number: 8080
+          # WebSocket endpoint
+          - path: /ws
+            pathType: Prefix
+            backend:
+              service:
+                name: noa-server-websocket
+                port:
+                  number: 8080
 
 ---
 # Ingress for MCP services
@@ -195,29 +195,29 @@ metadata:
   namespace: noa-system
   annotations:
     kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/limit-rps: "50"
+    cert-manager.io/cluster-issuer: 'letsencrypt-prod'
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+    nginx.ingress.kubernetes.io/limit-rps: '50'
     nginx.ingress.kubernetes.io/auth-type: basic
     nginx.ingress.kubernetes.io/auth-secret: mcp-auth
 spec:
   ingressClassName: nginx
   tls:
-  - hosts:
-    - mcp.noa-server.io
-    secretName: mcp-server-tls
+    - hosts:
+        - mcp.noa-server.io
+      secretName: mcp-server-tls
 
   rules:
-  - host: mcp.noa-server.io
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: mcp-server
-            port:
-              number: 8080
+    - host: mcp.noa-server.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mcp-server
+                port:
+                  number: 8080
 
 ---
 # Rate limiting ConfigMap
@@ -243,24 +243,24 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
   annotations:
-    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
-    service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+    service.beta.kubernetes.io/aws-load-balancer-type: 'nlb'
+    service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: 'true'
 spec:
   type: LoadBalancer
   externalTrafficPolicy: Local
   ports:
-  - name: http
-    port: 80
-    targetPort: http
-    protocol: TCP
-  - name: https
-    port: 443
-    targetPort: https
-    protocol: TCP
-  - name: metrics
-    port: 10254
-    targetPort: metrics
-    protocol: TCP
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP
+    - name: https
+      port: 443
+      targetPort: https
+      protocol: TCP
+    - name: metrics
+      port: 10254
+      targetPort: metrics
+      protocol: TCP
   selector:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
@@ -289,52 +289,52 @@ spec:
     spec:
       serviceAccountName: ingress-nginx
       containers:
-      - name: controller
-        image: registry.k8s.io/ingress-nginx/controller:v1.9.4
-        args:
-        - /nginx-ingress-controller
-        - --configmap=$(POD_NAMESPACE)/nginx-configuration
-        - --tcp-services-configmap=$(POD_NAMESPACE)/tcp-services
-        - --udp-services-configmap=$(POD_NAMESPACE)/udp-services
-        - --publish-service=$(POD_NAMESPACE)/ingress-nginx-controller
-        - --annotations-prefix=nginx.ingress.kubernetes.io
-        - --enable-ssl-passthrough
-        - --default-ssl-certificate=$(POD_NAMESPACE)/default-ssl-certificate
-        env:
-        - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        ports:
-        - name: http
-          containerPort: 80
-          protocol: TCP
-        - name: https
-          containerPort: 443
-          protocol: TCP
-        - name: metrics
-          containerPort: 10254
-          protocol: TCP
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 10254
-          initialDelaySeconds: 10
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /healthz
-            port: 10254
-          initialDelaySeconds: 10
-          periodSeconds: 10
-        resources:
-          requests:
-            cpu: 500m
-            memory: 512Mi
-          limits:
-            cpu: 2000m
-            memory: 2Gi
+        - name: controller
+          image: registry.k8s.io/ingress-nginx/controller:v1.9.4
+          args:
+            - /nginx-ingress-controller
+            - --configmap=$(POD_NAMESPACE)/nginx-configuration
+            - --tcp-services-configmap=$(POD_NAMESPACE)/tcp-services
+            - --udp-services-configmap=$(POD_NAMESPACE)/udp-services
+            - --publish-service=$(POD_NAMESPACE)/ingress-nginx-controller
+            - --annotations-prefix=nginx.ingress.kubernetes.io
+            - --enable-ssl-passthrough
+            - --default-ssl-certificate=$(POD_NAMESPACE)/default-ssl-certificate
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: https
+              containerPort: 443
+              protocol: TCP
+            - name: metrics
+              containerPort: 10254
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 10254
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 10254
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              cpu: 2000m
+              memory: 2Gi

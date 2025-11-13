@@ -1,0 +1,162 @@
+name: Autonomous Monitoring
+
+on:
+  schedule:
+    # Run every 15 minutes
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+    inputs:
+      check_type:
+        description: "Type of check to perform"
+        required: true
+        default: "health"
+        type: choice
+        options:
+          - health
+          - performance
+          - security
+          - dependencies
+          - all
+
+jobs:
+  health-check:
+    name: Health Check
+    runs-on: ubuntu-latest
+    if: github.event.inputs.check_type == 'health' || github.event.inputs.check_type == 'all' || github.event.schedule
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Setup Node.js
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Health check
+        run: npm run monitor:health
+
+      - name: Check service status
+        run: |
+          if curl -f http://localhost:3000/health > /dev/null 2>&1; then
+            echo "✅ Service is healthy"
+          else
+            echo "❌ Service is unhealthy"
+            exit 1
+          fi
+
+  performance-monitoring:
+    name: Performance Monitoring
+    runs-on: ubuntu-latest
+    if: github.event.inputs.check_type == 'performance' || github.event.inputs.check_type == 'all' || github.event.schedule
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Setup Node.js
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Performance monitoring
+        run: npm run perf:monitor:quick
+
+      - name: Check performance thresholds
+        run: |
+          # Check if performance metrics are within acceptable ranges
+          if [ -f "docs/performance/metrics.json" ]; then
+            # Parse metrics and check thresholds
+            echo "Performance metrics collected"
+          fi
+
+  security-monitoring:
+    name: Security Monitoring
+    runs-on: ubuntu-latest
+    if: github.event.inputs.check_type == 'security' || github.event.inputs.check_type == 'all' || github.event.schedule
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Setup Node.js
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Security audit
+        run: npm run security:audit
+
+      - name: Check for vulnerabilities
+        run: |
+          if npm audit --audit-level=high; then
+            echo "✅ No high-severity vulnerabilities"
+          else
+            echo "❌ High-severity vulnerabilities found"
+            # Could trigger alert/notification here
+          fi
+
+  dependency-monitoring:
+    name: Dependency Monitoring
+    runs-on: ubuntu-latest
+    if: github.event.inputs.check_type == 'dependencies' || github.event.inputs.check_type == 'all' || github.event.schedule
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Setup Node.js
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for outdated dependencies
+        run: npm outdated || true
+
+      - name: Dependency license check
+        run: npm run license:check
+
+  alert-on-issues:
+    name: Alert on Issues
+    runs-on: ubuntu-latest
+    needs:
+      [
+        health-check,
+        performance-monitoring,
+        security-monitoring,
+        dependency-monitoring,
+      ]
+    if: failure()
+    steps:
+      - name: Create issue on failure
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
+        with:
+          script: |
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['automated-monitoring', 'alert'],
+              state: 'open'
+            });
+
+            if (issues.length === 0) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '🚨 Automated Monitoring Alert',
+                body: `Automated monitoring detected issues in the following areas:\n\n- Health Check: ${{ needs.health-check.result }}\n- Performance: ${{ needs.performance-monitoring.result }}\n- Security: ${{ needs.security-monitoring.result }}\n- Dependencies: ${{ needs.dependency-monitoring.result }}\n\nPlease investigate and resolve.`,
+                labels: ['automated-monitoring', 'alert', 'urgent']
+              });
+            }

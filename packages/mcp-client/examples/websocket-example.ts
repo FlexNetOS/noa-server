@@ -16,7 +16,7 @@ async function main() {
       type: 'websocket' as MCPTransportType,
       endpoint: 'ws://localhost:3000/mcp',
       headers: {
-        'Authorization': 'Bearer your-api-key-here',
+        Authorization: 'Bearer your-api-key-here',
       },
     },
     timeout: 30000,
@@ -50,7 +50,7 @@ async function main() {
   client.on('toolsChanged', async () => {
     console.log('\n🔄 Tools list changed, refreshing...');
     const tools = await client.tools.listTools();
-    console.log(`  Updated tools: ${tools.map(t => t.name).join(', ')}`);
+    console.log(`  Updated tools: ${tools.map((t) => t.name).join(', ')}`);
   });
 
   // Handle resource changes
@@ -92,7 +92,6 @@ async function main() {
 
     // Keep process running
     await new Promise(() => {}); // Wait forever
-
   } catch (error) {
     console.error('Error:', error);
     await client.disconnect();

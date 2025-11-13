@@ -1,32 +1,32 @@
 # LangGraph CLI
 
-The LangGraph command line interface includes commands to build and run a LangGraph Platform API server locally in [Docker](https://www.docker.com/). For development and testing, you can use the CLI to deploy a local API server.
+The LangGraph command line interface includes commands to build and run a
+LangGraph Platform API server locally in [Docker](https://www.docker.com/). For
+development and testing, you can use the CLI to deploy a local API server.
 
 ## Installation
 
 1.  Ensure that Docker is installed (e.g. `docker --version`).
 2.  Install the CLI package:
 
-    === "Python"
-        ```bash
-        pip install langgraph-cli
-        ```
+    === "Python" `bash     pip install langgraph-cli     `
 
-    === "JS"
-        ```bash
-        npx @langchain/langgraph-cli
+    === "JS" ```bash npx @langchain/langgraph-cli
 
         # Install globally, will be available as `langgraphjs`
         npm install -g @langchain/langgraph-cli
         ```
 
-3.  Run the command `langgraph --help` or `npx @langchain/langgraph-cli --help` to confirm that the CLI is working correctly.
+3.  Run the command `langgraph --help` or `npx @langchain/langgraph-cli --help`
+    to confirm that the CLI is working correctly.
 
 [](){#langgraph.json}
 
 ## Configuration File {#configuration-file}
 
-The LangGraph CLI requires a JSON configuration file that follows this [schema](https://raw.githubusercontent.com/langchain-ai/langgraph/refs/heads/main/libs/cli/schemas/schema.json). It contains the following properties:
+The LangGraph CLI requires a JSON configuration file that follows this
+[schema](https://raw.githubusercontent.com/langchain-ai/langgraph/refs/heads/main/libs/cli/schemas/schema.json).
+It contains the following properties:
 
 <div class="admonition tip">
     <p class="admonition-title">Note</p>
@@ -70,7 +70,7 @@ The LangGraph CLI requires a JSON configuration file that follows this [schema](
 ### Examples
 
 === "Python"
-    
+
     #### Basic Configuration
 
     ```json
@@ -123,14 +123,14 @@ The LangGraph CLI requires a JSON configuration file that follows this [schema](
     }
     ```
 
-    !!! note "Common model dimensions" 
-        - `openai:text-embedding-3-large`: 3072 
-        - `openai:text-embedding-3-small`: 1536 
-        - `openai:text-embedding-ada-002`: 1536 
-        - `cohere:embed-english-v3.0`: 1024 
-        - `cohere:embed-english-light-v3.0`: 384 
-        - `cohere:embed-multilingual-v3.0`: 1024 
-        - `cohere:embed-multilingual-light-v3.0`: 384 
+    !!! note "Common model dimensions"
+        - `openai:text-embedding-3-large`: 3072
+        - `openai:text-embedding-3-small`: 1536
+        - `openai:text-embedding-ada-002`: 1536
+        - `cohere:embed-english-v3.0`: 1024
+        - `cohere:embed-english-light-v3.0`: 384
+        - `cohere:embed-multilingual-v3.0`: 1024
+        - `cohere:embed-multilingual-light-v3.0`: 384
 
     #### Semantic search with a custom embedding function
 
@@ -192,7 +192,7 @@ The LangGraph CLI requires a JSON configuration file that follows this [schema](
     #### Configuring Store Item Time-to-Live (TTL)
 
     You can configure default data expiration for items/memories in the BaseStore using the `store.ttl` key. This determines how long items are retained after they are last accessed (with reads potentially refreshing the timer based on `refresh_on_read`). Note that these defaults can be overwritten on a per-call basis by modifying the corresponding arguments in `get`, `search`, etc.
-    
+
     The `ttl` configuration is an object containing optional fields:
 
     - `refresh_on_read`: If `true` (the default), accessing an item via `get` or `search` resets its expiration timer. Set to `false` to only refresh TTL on writes (`put`).
@@ -211,7 +211,7 @@ The LangGraph CLI requires a JSON configuration file that follows this [schema](
         "ttl": {
           "refresh_on_read": true,
           "sweep_interval_minutes": 60,
-          "default_ttl": 10080 
+          "default_ttl": 10080
         }
       }
     }
@@ -245,9 +245,8 @@ The LangGraph CLI requires a JSON configuration file that follows this [schema](
 
     In this example, checkpoints older than 30 days will be deleted, and the check runs every 10 minutes.
 
-
 === "JS"
-    
+
     #### Basic Configuration
 
     ```json
@@ -257,7 +256,6 @@ The LangGraph CLI requires a JSON configuration file that follows this [schema](
       }
     }
     ```
-
 
 ## Commands
 
@@ -270,9 +268,10 @@ The LangGraph CLI requires a JSON configuration file that follows this [schema](
     ```
     langgraph [OPTIONS] COMMAND [ARGS]
     ```
+
 === "JS"
 
-    The base command for the LangGraph.js CLI is `langgraphjs`. 
+    The base command for the LangGraph.js CLI is `langgraphjs`.
 
     ```
     npx @langchain/langgraph-cli [OPTIONS] COMMAND [ARGS]
@@ -320,7 +319,6 @@ The LangGraph CLI requires a JSON configuration file that follows this [schema](
     | `--allow-blocking`            | `False`          | Do not raise errors for synchronous I/O blocking operations in your code (added in `0.2.6`)           |
     | `--tunnel`                    | `False`          | Expose the local server via a public tunnel (Cloudflare) for remote frontend access. This avoids issues with browsers like Safari or networks blocking localhost connections        |
     | `--help`                      |                  | Display command documentation                                                       |
-
 
 === "JS"
 
@@ -390,7 +388,6 @@ The LangGraph CLI requires a JSON configuration file that follows this [schema](
     | `--no-pull`          |                  | Use locally built images. Defaults to `false` to build with latest remote Docker image.                                      |
     | `-c, --config FILE`  | `langgraph.json` | Path to configuration file declaring dependencies, graphs and environment variables.                                         |
     | `--help`             |                  | Display command documentation.                                                                                               |
-
 
 ### `up`
 
@@ -528,15 +525,15 @@ The LangGraph CLI requires a JSON configuration file that follows this [schema](
 
     ```dockerfile
     FROM langchain/langgraphjs-api:20
-    
+
     ADD . /deps/agent
-    
+
     RUN cd /deps/agent && yarn install
-    
+
     ENV LANGSERVE_GRAPHS='{"agent":"./src/react_agent/graph.ts:graph"}'
-    
+
     WORKDIR /deps/agent
-    
+
     RUN (test ! -f /api/langgraph_api/js/build.mts && echo "Prebuild script not found, skipping") || tsx /api/langgraph_api/js/build.mts
     ```
 

@@ -12,13 +12,7 @@
     "lint": "eslint src --ext .ts",
     "typecheck": "tsc --noEmit"
   },
-  "keywords": [
-    "audit",
-    "logging",
-    "siem",
-    "compliance",
-    "security"
-  ],
+  "keywords": ["audit", "logging", "siem", "compliance", "security"],
   "author": "Noa Server Team",
   "license": "MIT",
   "dependencies": {

@@ -2,7 +2,9 @@
 
 ## Overview
 
-The Master-Level AI Prompt Optimization Specialist is an advanced system that transforms any user input into precision-crafted prompts using the systematic **4-D Methodology** (Deconstruct, Diagnose, Develop, Deliver).
+The Master-Level AI Prompt Optimization Specialist is an advanced system that
+transforms any user input into precision-crafted prompts using the systematic
+**4-D Methodology** (Deconstruct, Diagnose, Develop, Deliver).
 
 ## Features
 
@@ -18,12 +20,14 @@ The Master-Level AI Prompt Optimization Specialist is an advanced system that tr
 ### 1️⃣ DECONSTRUCT (Analysis Phase)
 
 **Extracts:**
+
 - Core intent and objectives
 - Key entities and domain
 - Requirements (format, length, tone, audience)
 - Gap analysis (missing elements)
 
 **Example:**
+
 ```
 Input: "Write some code"
 Extracted Intent: Create code artifact
@@ -34,12 +38,14 @@ Gaps: No language specified, no functionality defined
 ### 2️⃣ DIAGNOSE (Evaluation Phase)
 
 **Evaluates:**
+
 - Clarity score (1-10)
 - Specificity score (1-10)
 - Completeness percentage
 - Complexity level (simple/moderate/complex/expert)
 
 **Example:**
+
 ```
 Clarity: 4/10 (ambiguous terms detected)
 Specificity: 3/10 (missing details)
@@ -50,12 +56,14 @@ Complexity: Simple
 ### 3️⃣ DEVELOP (Enhancement Phase)
 
 **Selects Strategy:**
+
 - **Creative**: Multi-perspective + tone emphasis
 - **Technical**: Constraint-based + precision focus
 - **Educational**: Few-shot examples + clear structure
 - **Complex**: Chain-of-thought + systematic framework
 
 **Applies Techniques:**
+
 - Context enrichment
 - Structure enhancement
 - Clarity amplification
@@ -66,6 +74,7 @@ Complexity: Simple
 ### 4️⃣ DELIVER (Finalization Phase)
 
 **Finalizes:**
+
 - Role assignment (AI persona and expertise)
 - Context implementation
 - Structure formatting (markdown/JSON/code)
@@ -113,7 +122,7 @@ const agent = new PromptOptimizationAgent({
   enableTemplateLibrary: true,
   qualityThreshold: 8.0,
   maxIterations: 5,
-  verboseOutput: true
+  verboseOutput: true,
 });
 
 const result = await agent.optimize(input);
@@ -125,7 +134,9 @@ const result = await agent.optimize(input);
 // Get optimization statistics
 const stats = promptOptimizer.getStats();
 console.log(`Total optimizations: ${stats.optimizationCount}`);
-console.log(`Success rate: ${stats.successfulOptimizations / stats.optimizationCount * 100}%`);
+console.log(
+  `Success rate: ${(stats.successfulOptimizations / stats.optimizationCount) * 100}%`
+);
 console.log(`Avg improvement: ${stats.averageQualityImprovement.toFixed(1)}%`);
 ```
 
@@ -143,11 +154,13 @@ promptOptimizer.reset();
 **Best for:** Stories, marketing copy, creative content
 
 **Techniques Applied:**
+
 - Multiple creative perspectives
 - Tone and style emphasis
 - Rich contextual details
 
 **Example:**
+
 ```typescript
 const input = 'Write a story about AI';
 const result = await promptOptimizer.optimize(input);
@@ -159,11 +172,13 @@ const result = await promptOptimizer.optimize(input);
 **Best for:** Code, algorithms, system design
 
 **Techniques Applied:**
+
 - Clear constraints and requirements
 - Precision terminology
 - Logical step-by-step structure
 
 **Example:**
+
 ```typescript
 const input = 'Build a REST API';
 const result = await promptOptimizer.optimize(input);
@@ -175,11 +190,13 @@ const result = await promptOptimizer.optimize(input);
 **Best for:** Explanations, tutorials, learning content
 
 **Techniques Applied:**
+
 - Concrete examples
 - Clear learning scaffolding
 - Background context
 
 **Example:**
+
 ```typescript
 const input = 'Explain machine learning';
 const result = await promptOptimizer.optimize(input);
@@ -191,11 +208,13 @@ const result = await promptOptimizer.optimize(input);
 **Best for:** Multi-faceted tasks, systems, research
 
 **Techniques Applied:**
+
 - Chain-of-thought reasoning
 - Systematic frameworks
 - Task decomposition
 
 **Example:**
+
 ```typescript
 const input = 'Design a distributed recommendation system';
 const result = await promptOptimizer.optimize(input);
@@ -253,23 +272,27 @@ const result = await promptOptimizer.optimize(input);
 - **Clarity Improvement**: Percentage increase in clarity
 - **Specificity Improvement**: Percentage increase in specificity
 - **Completeness Improvement**: Percentage increase in completeness
-- **Quality Enhancement**: Overall expected improvement (Excellent/Good/Moderate)
+- **Quality Enhancement**: Overall expected improvement
+  (Excellent/Good/Moderate)
 
 ## Best Practices
 
 ### 1. Provide Context
 
 **❌ Bad:**
+
 ```
 "Write code"
 ```
 
 **✅ Better:**
+
 ```
 "Write code for user authentication"
 ```
 
 **✅✅ Best:**
+
 ```
 "Write Python code for user authentication with JWT tokens and bcrypt password hashing"
 ```
@@ -277,16 +300,19 @@ const result = await promptOptimizer.optimize(input);
 ### 2. Specify Requirements
 
 **❌ Bad:**
+
 ```
 "Analyze this"
 ```
 
 **✅ Better:**
+
 ```
 "Analyze user behavior data"
 ```
 
 **✅✅ Best:**
+
 ```
 "Analyze user behavior data to identify purchase patterns, output as JSON with key metrics and insights"
 ```
@@ -294,16 +320,19 @@ const result = await promptOptimizer.optimize(input);
 ### 3. Define Success Criteria
 
 **❌ Bad:**
+
 ```
 "Make it good"
 ```
 
 **✅ Better:**
+
 ```
 "Create a high-quality solution"
 ```
 
 **✅✅ Best:**
+
 ```
 "Create a solution with 90% accuracy, sub-100ms response time, and comprehensive error handling"
 ```
@@ -312,50 +341,58 @@ const result = await promptOptimizer.optimize(input);
 
 ### Low Quality Scores
 
-**Problem:** Clarity score < 5
-**Solution:** Remove ambiguous terms (it, this, that), use specific nouns
+**Problem:** Clarity score < 5 **Solution:** Remove ambiguous terms (it, this,
+that), use specific nouns
 
-**Problem:** Specificity score < 5
-**Solution:** Add format requirements, constraints, examples
+**Problem:** Specificity score < 5 **Solution:** Add format requirements,
+constraints, examples
 
-**Problem:** Completeness < 60%
-**Solution:** Define objective, format, audience, success criteria
+**Problem:** Completeness < 60% **Solution:** Define objective, format,
+audience, success criteria
 
 ### Strategy Misidentification
 
-**Problem:** Wrong request type selected
-**Solution:** Use domain-specific keywords, explicit action verbs
+**Problem:** Wrong request type selected **Solution:** Use domain-specific
+keywords, explicit action verbs
 
-**Problem:** Low confidence in strategy
-**Solution:** Provide more context about desired output type
+**Problem:** Low confidence in strategy **Solution:** Provide more context about
+desired output type
 
 ## Examples
 
 ### Example 1: Simple to Professional
 
 **Input:**
+
 ```
 Write some code for a login system
 ```
 
 **Output:**
+
 ```markdown
 # ROLE & EXPERTISE
-You are a Senior Software Engineer and System Architect with expert-level expertise.
+
+You are a Senior Software Engineer and System Architect with expert-level
+expertise.
 
 # OBJECTIVE
-Implement a secure user authentication system with login functionality
-Desired outcome: Generate new content or artifact
+
+Implement a secure user authentication system with login functionality Desired
+outcome: Generate new content or artifact
 
 # REQUIREMENTS
+
 - Format: code
 - Quality: Security, Maintainability
 
 # CONSTRAINTS
+
 - Use industry-standard security practices
 - Implement proper input validation
 
 # VERIFICATION
+
 - [ ] Code is secure and follows best practices
 - [ ] Input validation is comprehensive
 - [ ] Error handling is robust
@@ -364,31 +401,38 @@ Desired outcome: Generate new content or artifact
 ### Example 2: Vague to Specific
 
 **Input:**
+
 ```
 Explain AI to me
 ```
 
 **Output:**
+
 ```markdown
 # ROLE & EXPERTISE
+
 You are an Expert Educator and Learning Specialist with advanced expertise.
 
 # OBJECTIVE
-Provide a comprehensive explanation of artificial intelligence concepts
-Desired outcome: Clarify understanding
+
+Provide a comprehensive explanation of artificial intelligence concepts Desired
+outcome: Clarify understanding
 
 # REQUIREMENTS
+
 - Format: step-by-step
 - Tone: educational
 - Audience: general
 
 # INSTRUCTIONS
+
 1. Define AI and its core concepts
 2. Explain different types of AI
 3. Provide real-world examples
 4. Discuss current capabilities and limitations
 
 # VERIFICATION
+
 - [ ] Explanation is clear and accessible
 - [ ] Examples are concrete and relatable
 - [ ] Concepts build logically
@@ -396,7 +440,8 @@ Desired outcome: Clarify understanding
 
 ## API Reference
 
-See TypeScript interfaces in `src/prompt-optimizer/types/interfaces.ts` for complete API documentation.
+See TypeScript interfaces in `src/prompt-optimizer/types/interfaces.ts` for
+complete API documentation.
 
 ## Performance
 
@@ -413,6 +458,7 @@ See TypeScript interfaces in `src/prompt-optimizer/types/interfaces.ts` for comp
 ## Support
 
 For issues or questions:
+
 - Check troubleshooting section
 - Review examples
 - Examine test cases in `tests/`

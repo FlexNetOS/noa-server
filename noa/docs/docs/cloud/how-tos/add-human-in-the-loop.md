@@ -1,6 +1,7 @@
 # Human-in-the-loop using Server API
 
-To review, edit, and approve tool calls in an agent or workflow, use LangGraph's [human-in-the-loop](../../concepts/human_in_the_loop.md) features.
+To review, edit, and approve tool calls in an agent or workflow, use LangGraph's
+[human-in-the-loop](../../concepts/human_in_the_loop.md) features.
 
 ## Dynamic interrupts
 
@@ -303,13 +304,15 @@ To review, edit, and approve tool calls in an agent or workflow, use LangGraph's
 
 ## Static interrupts
 
-Static interrupts (also known as static breakpoints) are triggered either before or after a node executes. 
+Static interrupts (also known as static breakpoints) are triggered either before
+or after a node executes.
 
 !!! warning
 
     Static interrupts are **not** recommended for human-in-the-loop workflows. They are best used for debugging and testing.
 
-You can set static interrupts by specifying `interrupt_before` and `interrupt_after` at compile time:
+You can set static interrupts by specifying `interrupt_before` and
+`interrupt_after` at compile time:
 
 ```python
 # highlight-next-line
@@ -322,8 +325,10 @@ graph = graph_builder.compile( # (1)!
 ```
 
 1. The breakpoints are set during `compile` time.
-2. `interrupt_before` specifies the nodes where execution should pause before the node is executed.
-3. `interrupt_after` specifies the nodes where execution should pause after the node is executed.
+2. `interrupt_before` specifies the nodes where execution should pause before
+   the node is executed.
+3. `interrupt_after` specifies the nodes where execution should pause after the
+   node is executed.
 
 Alternatively, you can set static interrupts at run time:
 
@@ -479,8 +484,10 @@ The following example shows how to add static interrupts:
     }"
     ```
 
-
 ## Learn more
 
-- [Human-in-the-loop conceptual guide](../../concepts/human_in_the_loop.md): learn more about LangGraph human-in-the-loop features. 
-- [Common patterns](../../how-tos/human_in_the_loop/add-human-in-the-loop.md#common-patterns): learn how to implement patterns like approving/rejecting actions, requesting user input, tool call review, and validating human input.
+- [Human-in-the-loop conceptual guide](../../concepts/human_in_the_loop.md):
+  learn more about LangGraph human-in-the-loop features.
+- [Common patterns](../../how-tos/human_in_the_loop/add-human-in-the-loop.md#common-patterns):
+  learn how to implement patterns like approving/rejecting actions, requesting
+  user input, tool call review, and validating human input.

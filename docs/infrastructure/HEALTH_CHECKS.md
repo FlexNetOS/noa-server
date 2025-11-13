@@ -2,7 +2,9 @@
 
 ## Overview
 
-Health checks are critical for maintaining service reliability in production environments. This guide covers the implementation and monitoring of health checks across all Noa Server services.
+Health checks are critical for maintaining service reliability in production
+environments. This guide covers the implementation and monitoring of health
+checks across all Noa Server services.
 
 ## Health Check Endpoints
 
@@ -10,11 +12,11 @@ Health checks are critical for maintaining service reliability in production env
 
 All services implement three health check endpoints:
 
-| Endpoint | Purpose | Usage |
-|----------|---------|-------|
-| `/health` | Basic liveness probe | Docker/K8s liveness checks |
-| `/health/ready` | Service readiness | K8s readiness checks |
-| `/health/startup` | Startup verification | K8s startup probes |
+| Endpoint          | Purpose              | Usage                      |
+| ----------------- | -------------------- | -------------------------- |
+| `/health`         | Basic liveness probe | Docker/K8s liveness checks |
+| `/health/ready`   | Service readiness    | K8s readiness checks       |
+| `/health/startup` | Startup verification | K8s startup probes         |
 
 ## Implementation by Service
 
@@ -33,7 +35,7 @@ router.get('/health', (req, res) => {
     service: 'mcp',
     version: process.env.VERSION || '0.0.1',
     timestamp: new Date().toISOString(),
-    uptime: process.uptime()
+    uptime: process.uptime(),
   });
 });
 
@@ -55,26 +57,28 @@ router.get('/health/ready', async (req, res) => {
     const dependencies = {
       database: await checkDatabase(),
       redis: await checkRedis(),
-      memoryUsage: process.memoryUsage().heapUsed / process.memoryUsage().heapTotal
+      memoryUsage:
+        process.memoryUsage().heapUsed / process.memoryUsage().heapTotal,
     };
 
-    const isReady = dependencies.database &&
-                    dependencies.redis &&
-                    dependencies.memoryUsage < 0.9;
+    const isReady =
+      dependencies.database &&
+      dependencies.redis &&
+      dependencies.memoryUsage < 0.9;
 
     if (isReady) {
       res.status(200).json({
         status: 'ready',
         service: 'mcp',
         dependencies,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } else {
       res.status(503).json({
         status: 'not_ready',
         service: 'mcp',
         dependencies,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
   } catch (error) {
@@ -82,7 +86,7 @@ router.get('/health/ready', async (req, res) => {
       status: 'error',
       service: 'mcp',
       error: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   }
 });
@@ -114,13 +118,13 @@ router.get('/health/startup', (req, res) => {
     res.status(200).json({
       status: 'started',
       service: 'mcp',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } else {
     res.status(503).json({
       status: 'starting',
       service: 'mcp',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   }
 });
@@ -137,7 +141,7 @@ router.get('/health', (req, res) => {
     status: 'healthy',
     service: 'claude-flow',
     version: '2.7.0',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -145,7 +149,7 @@ router.get('/health/ready', async (req, res) => {
   try {
     // Check MCP connectivity
     const mcpHealth = await axios.get(`${process.env.MCP_URL}/health`, {
-      timeout: 5000
+      timeout: 5000,
     });
 
     // Check workflow engine
@@ -155,9 +159,8 @@ router.get('/health/ready', async (req, res) => {
     const memUsage = process.memoryUsage();
     const memoryHealthy = memUsage.heapUsed / memUsage.heapTotal < 0.85;
 
-    const isReady = mcpHealth.status === 200 &&
-                    workflowEngineStatus &&
-                    memoryHealthy;
+    const isReady =
+      mcpHealth.status === 200 && workflowEngineStatus && memoryHealthy;
 
     res.status(isReady ? 200 : 503).json({
       status: isReady ? 'ready' : 'not_ready',
@@ -165,16 +168,16 @@ router.get('/health/ready', async (req, res) => {
       dependencies: {
         mcp: mcpHealth.status === 200,
         workflowEngine: workflowEngineStatus,
-        memory: memoryHealthy
+        memory: memoryHealthy,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } catch (error) {
     res.status(503).json({
       status: 'error',
       service: 'claude-flow',
       error: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   }
 });
@@ -199,7 +202,7 @@ export default async function handler(
   res.status(200).json({
     status: 'healthy',
     service: 'ui-dashboard',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 }
 ```
@@ -322,7 +325,7 @@ async def ready():
 
 ```yaml
 healthcheck:
-  test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+  test: ['CMD', 'curl', '-f', 'http://localhost:8001/health']
   interval: 30s
   timeout: 10s
   retries: 3
@@ -387,7 +390,7 @@ startupProbe:
     port: 8001
   initialDelaySeconds: 10
   periodSeconds: 5
-  failureThreshold: 30  # 150 seconds total
+  failureThreshold: 30 # 150 seconds total
   successThreshold: 1
 ```
 
@@ -402,17 +405,20 @@ const promClient = require('prom-client');
 const healthCheckCounter = new promClient.Counter({
   name: 'health_check_total',
   help: 'Total number of health checks',
-  labelNames: ['service', 'status']
+  labelNames: ['service', 'status'],
 });
 
 const healthCheckDuration = new promClient.Histogram({
   name: 'health_check_duration_seconds',
   help: 'Duration of health checks',
-  labelNames: ['service', 'endpoint']
+  labelNames: ['service', 'endpoint'],
 });
 
 router.get('/health', async (req, res) => {
-  const end = healthCheckDuration.startTimer({ service: 'mcp', endpoint: 'health' });
+  const end = healthCheckDuration.startTimer({
+    service: 'mcp',
+    endpoint: 'health',
+  });
 
   try {
     // Health check logic
@@ -463,35 +469,38 @@ router.get('/health', async (req, res) => {
 
 ```yaml
 groups:
-- name: health_checks
-  interval: 30s
-  rules:
-  - alert: ServiceUnhealthy
-    expr: up{job="noa-server"} == 0
-    for: 5m
-    labels:
-      severity: critical
-    annotations:
-      summary: "Service {{ $labels.instance }} is down"
-      description: "{{ $labels.instance }} has been down for more than 5 minutes"
+  - name: health_checks
+    interval: 30s
+    rules:
+      - alert: ServiceUnhealthy
+        expr: up{job="noa-server"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: 'Service {{ $labels.instance }} is down'
+          description:
+            '{{ $labels.instance }} has been down for more than 5 minutes'
 
-  - alert: HighHealthCheckFailureRate
-    expr: rate(health_check_total{status="failure"}[5m]) > 0.1
-    for: 5m
-    labels:
-      severity: warning
-    annotations:
-      summary: "High health check failure rate for {{ $labels.service }}"
-      description: "{{ $labels.service }} has >10% health check failures"
+      - alert: HighHealthCheckFailureRate
+        expr: rate(health_check_total{status="failure"}[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'High health check failure rate for {{ $labels.service }}'
+          description: '{{ $labels.service }} has >10% health check failures'
 
-  - alert: SlowHealthChecks
-    expr: histogram_quantile(0.95, rate(health_check_duration_seconds_bucket[5m])) > 2
-    for: 10m
-    labels:
-      severity: warning
-    annotations:
-      summary: "Slow health checks for {{ $labels.service }}"
-      description: "95th percentile health check duration is >2s"
+      - alert: SlowHealthChecks
+        expr:
+          histogram_quantile(0.95,
+          rate(health_check_duration_seconds_bucket[5m])) > 2
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'Slow health checks for {{ $labels.service }}'
+          description: '95th percentile health check duration is >2s'
 ```
 
 ## Testing Health Checks
@@ -571,12 +580,14 @@ redis-cli ping       # Redis
 ### Readiness Check Flapping
 
 Common causes:
+
 - Database connection pool exhausted
 - Memory pressure
 - Slow dependency responses
 - Network issues
 
 Solutions:
+
 ```yaml
 # Increase timeout
 readinessProbe:

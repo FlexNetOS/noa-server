@@ -1,6 +1,10 @@
 # Stateless Runs
 
-Most of the time, you provide a `thread_id` to your client when you run your graph in order to keep track of prior runs through the persistent state implemented in LangGraph Platform. However, if you don't need to persist the runs you don't need to use the built in persistent state and can create stateless runs.
+Most of the time, you provide a `thread_id` to your client when you run your
+graph in order to keep track of prior runs through the persistent state
+implemented in LangGraph Platform. However, if you don't need to persist the
+runs you don't need to use the built in persistent state and can create
+stateless runs.
 
 ## Setup
 
@@ -48,7 +52,9 @@ First, let's setup our client:
 
 ## Stateless streaming
 
-We can stream the results of a stateless run in an almost identical fashion to how we stream from a run with the state attribute, but instead of passing a value to the `thread_id` parameter, we pass `None`:
+We can stream the results of a stateless run in an almost identical fashion to
+how we stream from a run with the state attribute, but instead of passing a
+value to the `thread_id` parameter, we pass `None`:
 
 === "Python"
 
@@ -116,7 +122,8 @@ Output:
 
 ## Waiting for stateless results
 
-In addition to streaming, you can also wait for a stateless result by using the `.wait` function like follows:
+In addition to streaming, you can also wait for a stateless result by using the
+`.wait` function like follows:
 
 === "Python"
 

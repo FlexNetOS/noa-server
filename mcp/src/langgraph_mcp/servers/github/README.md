@@ -17,11 +17,13 @@ GitHub API operations exposed through the Model Context Protocol (MCP).
 List repositories for a GitHub user.
 
 **Parameters:**
+
 - `username` (string, optional): GitHub username (default: authenticated user)
 - `sort` (string, optional): Sort order (created, updated, pushed, full_name)
 - `limit` (integer, optional): Maximum number of repositories (default: 30)
 
 **Example:**
+
 ```json
 {
   "username": "octocat",
@@ -35,10 +37,12 @@ List repositories for a GitHub user.
 Get detailed information about a repository.
 
 **Parameters:**
+
 - `owner` (string, required): Repository owner
 - `repo_name` (string, required): Repository name
 
 **Example:**
+
 ```json
 {
   "owner": "octocat",
@@ -51,12 +55,14 @@ Get detailed information about a repository.
 List issues for a repository.
 
 **Parameters:**
+
 - `owner` (string, required): Repository owner
 - `repo_name` (string, required): Repository name
 - `state` (string, optional): Issue state (open, closed, all)
 - `limit` (integer, optional): Maximum number of issues (default: 30)
 
 **Example:**
+
 ```json
 {
   "owner": "octocat",
@@ -71,6 +77,7 @@ List issues for a repository.
 Create a new issue in a repository.
 
 **Parameters:**
+
 - `owner` (string, required): Repository owner
 - `repo_name` (string, required): Repository name
 - `title` (string, required): Issue title
@@ -78,6 +85,7 @@ Create a new issue in a repository.
 - `labels` (array, optional): Issue labels
 
 **Example:**
+
 ```json
 {
   "owner": "octocat",
@@ -93,12 +101,14 @@ Create a new issue in a repository.
 List pull requests for a repository.
 
 **Parameters:**
+
 - `owner` (string, required): Repository owner
 - `repo_name` (string, required): Repository name
 - `state` (string, optional): PR state (open, closed, all)
 - `limit` (integer, optional): Maximum number of PRs (default: 30)
 
 **Example:**
+
 ```json
 {
   "owner": "octocat",
@@ -112,12 +122,14 @@ List pull requests for a repository.
 Get the contents of a file from a repository.
 
 **Parameters:**
+
 - `owner` (string, required): Repository owner
 - `repo_name` (string, required): Repository name
 - `file_path` (string, required): Path to file
 - `branch` (string, optional): Branch name (default: default branch)
 
 **Example:**
+
 ```json
 {
   "owner": "octocat",
@@ -129,7 +141,8 @@ Get the contents of a file from a repository.
 
 ## Configuration
 
-Set your GitHub personal access token using the `GITHUB_TOKEN` environment variable:
+Set your GitHub personal access token using the `GITHUB_TOKEN` environment
+variable:
 
 ```bash
 export GITHUB_TOKEN=ghp_your_token_here

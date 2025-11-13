@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 import type {
   ChatCompletionContentPart,
-  ChatCompletionMessageParam
+  ChatCompletionMessageParam,
 } from 'openai/resources/chat/completions';
 import {
   ProviderType,
@@ -18,7 +18,7 @@ import {
   ConfigurationError,
   AuthenticationError,
   CreateChatCompletionRequest,
-  CreateEmbeddingRequest
+  CreateEmbeddingRequest,
 } from '../types';
 import { BaseProvider } from './base';
 
@@ -40,7 +40,7 @@ export class OpenAIProvider extends BaseProvider {
         project: config.project,
         baseURL: config.baseURL,
         timeout: config.timeout || 30000,
-        maxRetries: config.maxRetries || 3
+        maxRetries: config.maxRetries || 3,
       });
     } catch (error) {
       throw new ConfigurationError(
@@ -64,7 +64,7 @@ export class OpenAIProvider extends BaseProvider {
     try {
       const response = await this.client.models.list();
 
-      this.models = response.data.map(model => ({
+      this.models = response.data.map((model) => ({
         id: model.id,
         name: model.id,
         provider: ProviderType.OPENAI,
@@ -73,8 +73,8 @@ export class OpenAIProvider extends BaseProvider {
         capabilities: this.getModelCapabilities(model.id),
         metadata: {
           owned_by: model.owned_by,
-          created: model.created
-        }
+          created: model.created,
+        },
       }));
 
       return this.models;
@@ -86,33 +86,39 @@ export class OpenAIProvider extends BaseProvider {
   async createChatCompletion(request: CreateChatCompletionRequest): Promise<GenerationResponse> {
     const requestId = this.generateRequestId();
 
-    return this.withRetry(async () => {
-      this.validateMessages(request.messages);
-      this.logRequest(requestId, 'createChatCompletion', request);
+    return this.withRetry(
+      async () => {
+        this.validateMessages(request.messages);
+        this.logRequest(requestId, 'createChatCompletion', request);
 
-      const modelInfo = await this.getModelInfo(request.model);
+        const modelInfo = await this.getModelInfo(request.model);
 
-      // Convert our messages to OpenAI format
-      const messages = this.convertToOpenAIMessages(request.messages);
+        // Convert our messages to OpenAI format
+        const messages = this.convertToOpenAIMessages(request.messages);
 
-      // Convert our config to OpenAI config
-      const openaiConfig = this.convertToOpenAIConfig(request.config);
+        // Convert our config to OpenAI config
+        const openaiConfig = this.convertToOpenAIConfig(request.config);
 
-      const response = await this.client.chat.completions.create({
-        model: request.model,
-        messages,
-        ...openaiConfig,
-        stream: false
-      });
+        const response = await this.client.chat.completions.create({
+          model: request.model,
+          messages,
+          ...openaiConfig,
+          stream: false,
+        });
 
-      const result = this.convertFromOpenAIResponse(response, modelInfo);
-      this.logResponse(requestId, result);
+        const result = this.convertFromOpenAIResponse(response, modelInfo);
+        this.logResponse(requestId, result);
 
-      return result;
-    }, 'createChatCompletion', requestId);
+        return result;
+      },
+      'createChatCompletion',
+      requestId
+    );
   }
 
-  async *createChatCompletionStream(request: CreateChatCompletionRequest): AsyncIterable<StreamingChunk> {
+  async *createChatCompletionStream(
+    request: CreateChatCompletionRequest
+  ): AsyncIterable<StreamingChunk> {
     const requestId = this.generateRequestId();
 
     try {
@@ -127,7 +133,7 @@ export class OpenAIProvider extends BaseProvider {
         model: request.model,
         messages,
         ...openaiConfig,
-        stream: true
+        stream: true,
       });
 
       for await (const chunk of stream) {
@@ -142,40 +148,45 @@ export class OpenAIProvider extends BaseProvider {
   async createEmbedding(request: CreateEmbeddingRequest): Promise<EmbeddingResponse> {
     const requestId = this.generateRequestId();
 
-    return this.withRetry(async () => {
-      this.logRequest(requestId, 'createEmbedding', request);
+    return this.withRetry(
+      async () => {
+        this.logRequest(requestId, 'createEmbedding', request);
 
-      const modelInfo = await this.getModelInfo(request.model);
+        const modelInfo = await this.getModelInfo(request.model);
 
-      const response = await this.client.embeddings.create({
-        model: request.model,
-        input: request.input,
-        encoding_format: request.encoding_format || 'float',
-        dimensions: request.dimensions,
-        user: request.user
-      });
+        const response = await this.client.embeddings.create({
+          model: request.model,
+          input: request.input,
+          encoding_format: request.encoding_format || 'float',
+          dimensions: request.dimensions,
+          user: request.user,
+        });
 
-      const result: EmbeddingResponse = {
-        object: 'list',
-        data: response.data.map((item, index) => ({
-          object: 'embedding',
-          embedding: request.encoding_format === 'base64'
-            ? Buffer.from(new Float32Array(item.embedding).buffer).toString('base64')
-            : item.embedding,
-          index
-        })),
-        model: response.model,
-        usage: {
-          prompt_tokens: response.usage.prompt_tokens,
-          completion_tokens: 0,
-          total_tokens: response.usage.total_tokens
-        },
-        provider: ProviderType.OPENAI
-      };
+        const result: EmbeddingResponse = {
+          object: 'list',
+          data: response.data.map((item, index) => ({
+            object: 'embedding',
+            embedding:
+              request.encoding_format === 'base64'
+                ? Buffer.from(new Float32Array(item.embedding).buffer).toString('base64')
+                : item.embedding,
+            index,
+          })),
+          model: response.model,
+          usage: {
+            prompt_tokens: response.usage.prompt_tokens,
+            completion_tokens: 0,
+            total_tokens: response.usage.total_tokens,
+          },
+          provider: ProviderType.OPENAI,
+        };
 
-      this.logResponse(requestId, result);
-      return result;
-    }, 'createEmbedding', requestId);
+        this.logResponse(requestId, result);
+        return result;
+      },
+      'createEmbedding',
+      requestId
+    );
   }
 
   supportsCapability(capability: ModelCapability): boolean {
@@ -186,7 +197,7 @@ export class OpenAIProvider extends BaseProvider {
       ModelCapability.FUNCTION_CALLING,
       ModelCapability.STREAMING,
       ModelCapability.JSON_MODE,
-      ModelCapability.VISION
+      ModelCapability.VISION,
     ];
 
     return supportedCapabilities.includes(capability);
@@ -211,7 +222,7 @@ export class OpenAIProvider extends BaseProvider {
       'gpt-4-vision-preview': 128000,
       'gpt-3.5-turbo': 4096,
       'gpt-3.5-turbo-16k': 16384,
-      'text-embedding-ada-002': 8191
+      'text-embedding-ada-002': 8191,
     };
 
     return contextWindows[modelId] || 4096;
@@ -235,7 +246,11 @@ export class OpenAIProvider extends BaseProvider {
     }
 
     if (modelId.startsWith('gpt-4') || modelId.startsWith('gpt-3.5')) {
-      capabilities.push(ModelCapability.FUNCTION_CALLING, ModelCapability.STREAMING, ModelCapability.JSON_MODE);
+      capabilities.push(
+        ModelCapability.FUNCTION_CALLING,
+        ModelCapability.STREAMING,
+        ModelCapability.JSON_MODE
+      );
     }
 
     return capabilities;
@@ -245,13 +260,11 @@ export class OpenAIProvider extends BaseProvider {
     return messages.map((message) => {
       if (message.role === 'function') {
         const content =
-          typeof message.content === 'string'
-            ? message.content
-            : JSON.stringify(message.content);
+          typeof message.content === 'string' ? message.content : JSON.stringify(message.content);
         return {
           role: 'function',
           name: message.name ?? 'function',
-          content
+          content,
         };
       }
 
@@ -273,14 +286,14 @@ export class OpenAIProvider extends BaseProvider {
             type: 'image_url',
             image_url: {
               url: item.image_url!.url,
-              detail: item.image_url?.detail ?? 'auto'
-            }
+              detail: item.image_url?.detail ?? 'auto',
+            },
           };
         }
 
         return {
           type: 'text',
-          text: item.text ?? ''
+          text: item.text ?? '',
         };
       });
 
@@ -289,7 +302,7 @@ export class OpenAIProvider extends BaseProvider {
           role: 'system',
           content: contentParts
             .map((part) => (part.type === 'text' ? part.text : '[image]'))
-            .join('\n')
+            .join('\n'),
         };
       }
 
@@ -299,13 +312,13 @@ export class OpenAIProvider extends BaseProvider {
           .join('\n');
         return {
           role: 'assistant',
-          content: assistantText
+          content: assistantText,
         };
       }
 
       return {
         role: 'user',
-        content: contentParts
+        content: contentParts,
       };
     });
   }
@@ -321,7 +334,9 @@ export class OpenAIProvider extends BaseProvider {
     }
   }
 
-  private convertToOpenAIConfig(config?: GenerationConfig): Partial<OpenAI.Chat.Completions.ChatCompletionCreateParams> {
+  private convertToOpenAIConfig(
+    config?: GenerationConfig
+  ): Partial<OpenAI.Chat.Completions.ChatCompletionCreateParams> {
     if (!config) return {};
 
     return {
@@ -333,13 +348,13 @@ export class OpenAIProvider extends BaseProvider {
       stop: config.stop,
       logit_bias: config.logit_bias,
       user: config.user,
-      functions: config.functions?.map(fn => ({
+      functions: config.functions?.map((fn) => ({
         name: fn.name,
         description: fn.description,
-        parameters: fn.parameters
+        parameters: fn.parameters,
       })),
       function_call: config.function_call,
-      response_format: config.response_format
+      response_format: config.response_format,
     };
   }
 
@@ -352,29 +367,35 @@ export class OpenAIProvider extends BaseProvider {
       object: 'chat.completion',
       created: response.created,
       model: response.model,
-      choices: response.choices.map(choice => ({
+      choices: response.choices.map((choice) => ({
         index: choice.index,
-        message: choice.message ? {
-          role: choice.message.role || 'assistant',
-          content: choice.message.content || '',
-          function_call: choice.message.function_call ? {
-            name: choice.message.function_call.name || '',
-            arguments: choice.message.function_call.arguments || ''
-          } : undefined
-        } : undefined,
+        message: choice.message
+          ? {
+              role: choice.message.role || 'assistant',
+              content: choice.message.content || '',
+              function_call: choice.message.function_call
+                ? {
+                    name: choice.message.function_call.name || '',
+                    arguments: choice.message.function_call.arguments || '',
+                  }
+                : undefined,
+            }
+          : undefined,
         text: choice.message?.content || undefined,
-        finish_reason: choice.finish_reason as any
+        finish_reason: choice.finish_reason as any,
       })),
-      usage: response.usage ? {
-        prompt_tokens: response.usage.prompt_tokens,
-        completion_tokens: response.usage.completion_tokens,
-        total_tokens: response.usage.total_tokens
-      } : undefined,
+      usage: response.usage
+        ? {
+            prompt_tokens: response.usage.prompt_tokens,
+            completion_tokens: response.usage.completion_tokens,
+            total_tokens: response.usage.total_tokens,
+          }
+        : undefined,
       provider: ProviderType.OPENAI,
       metadata: {
         system_fingerprint: response.system_fingerprint,
-        model_info: modelInfo
-      }
+        model_info: modelInfo,
+      },
     };
   }
 
@@ -387,24 +408,28 @@ export class OpenAIProvider extends BaseProvider {
       object: 'chat.completion.chunk',
       created: chunk.created,
       model: chunk.model,
-      choices: chunk.choices.map(choice => ({
+      choices: chunk.choices.map((choice) => ({
         index: choice.index,
         delta: {
           role: this.normalizeDeltaRole(choice.delta?.role),
           content: choice.delta?.content || undefined,
-          function_call: choice.delta?.function_call ? {
-            name: choice.delta.function_call.name || '',
-            arguments: choice.delta.function_call.arguments || ''
-          } : undefined
+          function_call: choice.delta?.function_call
+            ? {
+                name: choice.delta.function_call.name || '',
+                arguments: choice.delta.function_call.arguments || '',
+              }
+            : undefined,
         },
-        finish_reason: choice.finish_reason as any
+        finish_reason: choice.finish_reason as any,
       })),
-      usage: chunk.usage ? {
-        prompt_tokens: chunk.usage.prompt_tokens || 0,
-        completion_tokens: chunk.usage.completion_tokens || 0,
-        total_tokens: chunk.usage.total_tokens || 0
-      } : undefined,
-      provider: ProviderType.OPENAI
+      usage: chunk.usage
+        ? {
+            prompt_tokens: chunk.usage.prompt_tokens || 0,
+            completion_tokens: chunk.usage.completion_tokens || 0,
+            total_tokens: chunk.usage.total_tokens || 0,
+          }
+        : undefined,
+      provider: ProviderType.OPENAI,
     };
   }
 

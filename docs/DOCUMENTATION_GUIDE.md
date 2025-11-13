@@ -1,6 +1,7 @@
 # Documentation Guide
 
-This guide explains how to write, maintain, and contribute to the Noa Server documentation.
+This guide explains how to write, maintain, and contribute to the Noa Server
+documentation.
 
 ## 📋 Table of Contents
 
@@ -16,26 +17,31 @@ This guide explains how to write, maintain, and contribute to the Noa Server doc
 ## Documentation Principles
 
 ### 1. User-Centric
+
 - Write for your audience (user, developer, architect)
 - Focus on tasks users want to accomplish
 - Provide context and explain the "why"
 
 ### 2. Clear and Concise
+
 - Use simple, direct language
 - Break complex topics into digestible sections
 - Avoid jargon unless necessary (define when used)
 
 ### 3. Accurate and Current
+
 - Keep documentation synchronized with code
 - Update docs as part of feature development
 - Review and refresh periodically
 
 ### 4. Example-Driven
+
 - Include practical, working examples
 - Show real-world use cases
 - Provide code snippets that can be copied
 
 ### 5. Searchable
+
 - Use descriptive headings
 - Include relevant keywords
 - Maintain consistent terminology
@@ -43,6 +49,7 @@ This guide explains how to write, maintain, and contribute to the Noa Server doc
 ## File Organization
 
 ### Directory Structure
+
 ```
 docs/
 ├── user/              # User-facing documentation
@@ -56,6 +63,7 @@ docs/
 ```
 
 ### Naming Conventions
+
 - Use UPPERCASE for main documents: `GETTING_STARTED.md`
 - Use lowercase with hyphens for subdocuments: `first-workflow.md`
 - Use descriptive names that reflect content
@@ -64,12 +72,14 @@ docs/
 ## Writing Style
 
 ### Voice and Tone
+
 - Use second person ("you") for user docs
 - Use active voice: "Run the command" not "The command should be run"
 - Be friendly but professional
 - Use present tense
 
 ### Structure
+
 Every document should have:
 
 1. **Title** - Clear, descriptive H1
@@ -80,17 +90,23 @@ Every document should have:
 6. **See Also** - Related documentation links
 
 ### Headings
+
 ```markdown
 # H1 - Document Title (one per document)
+
 ## H2 - Major Sections
+
 ### H3 - Subsections
+
 #### H4 - Minor Subsections (use sparingly)
 ```
 
 ## Formatting Guidelines
 
 ### Lists
+
 Use bulleted lists for unordered items:
+
 ```markdown
 - First item
 - Second item
@@ -98,6 +114,7 @@ Use bulleted lists for unordered items:
 ```
 
 Use numbered lists for sequential steps:
+
 ```markdown
 1. First step
 2. Second step
@@ -105,11 +122,13 @@ Use numbered lists for sequential steps:
 ```
 
 ### Emphasis
+
 - **Bold** for UI elements, important concepts: `**important**`
-- *Italic* for emphasis, first use of terms: `*emphasis*`
+- _Italic_ for emphasis, first use of terms: `*emphasis*`
 - `Code` for inline code, commands, filenames: `` `code` ``
 
 ### Callouts
+
 Use blockquotes for important notes:
 
 ```markdown
@@ -121,22 +140,27 @@ Use blockquotes for important notes:
 ```
 
 ### Tables
+
 Use tables for structured data:
+
 ```markdown
 | Column 1 | Column 2 | Column 3 |
-|----------|----------|----------|
+| -------- | -------- | -------- |
 | Value 1  | Value 2  | Value 3  |
 ```
 
 ## Code Examples
 
 ### Inline Code
+
 Use backticks for inline code:
+
 ```markdown
 Use the `npm install` command to install dependencies.
 ```
 
 ### Code Blocks
+
 Use fenced code blocks with language identifiers:
 
 ````markdown
@@ -159,9 +183,10 @@ interface Example {
 ````
 
 ### Complete Examples
+
 Provide complete, working examples that users can copy:
 
-```markdown
+````markdown
 ## Example: Creating a Custom Agent
 
 ```typescript
@@ -176,7 +201,9 @@ class CustomAgent extends Agent {
 
 export default CustomAgent;
 ```
-```
+````
+
+`````
 
 ### Best Practices for Examples
 - Make examples self-contained
@@ -198,7 +225,8 @@ graph TD
     B --> D[Service 2]
     C --> E[Database]
     D --> E
-```
+`````
+
 ````
 
 ### Common Diagram Types
@@ -337,3 +365,4 @@ Questions about documentation?
 ---
 
 **Remember**: Good documentation is an essential part of good software. Take pride in creating clear, helpful documentation!
+````

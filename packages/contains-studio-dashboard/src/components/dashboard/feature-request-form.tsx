@@ -234,14 +234,14 @@ export function FeatureRequestForm() {
                       }
                     />
                     <Button type="button" size="icon" onClick={addRequirement}>
-                      <Plus className="w-4 h-4" />
+                      <Plus className="h-4 w-4" />
                     </Button>
                   </div>
-                  <div className="space-y-2 mt-2">
+                  <div className="mt-2 space-y-2">
                     {field.value.map((req, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between p-2 bg-muted rounded-md"
+                        className="flex items-center justify-between rounded-md bg-muted p-2"
                       >
                         <span className="text-sm">{req}</span>
                         <Button
@@ -251,7 +251,7 @@ export function FeatureRequestForm() {
                           className="h-6 w-6"
                           onClick={() => removeRequirement(index)}
                         >
-                          <X className="w-3 h-3" />
+                          <X className="h-3 w-3" />
                         </Button>
                       </div>
                     ))}
@@ -275,14 +275,14 @@ export function FeatureRequestForm() {
                       onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addConstraint())}
                     />
                     <Button type="button" size="icon" onClick={addConstraint}>
-                      <Plus className="w-4 h-4" />
+                      <Plus className="h-4 w-4" />
                     </Button>
                   </div>
-                  <div className="space-y-2 mt-2">
+                  <div className="mt-2 space-y-2">
                     {field.value.map((constraint, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between p-2 bg-muted rounded-md"
+                        className="flex items-center justify-between rounded-md bg-muted p-2"
                       >
                         <span className="text-sm">{constraint}</span>
                         <Button
@@ -292,7 +292,7 @@ export function FeatureRequestForm() {
                           className="h-6 w-6"
                           onClick={() => removeConstraint(index)}
                         >
-                          <X className="w-3 h-3" />
+                          <X className="h-3 w-3" />
                         </Button>
                       </div>
                     ))}

@@ -5,21 +5,31 @@ search:
 
 # Workflows and Agents
 
-This guide reviews common patterns for agentic systems. In describing these systems, it can be useful to make a distinction between "workflows" and "agents". One way to think about this difference is nicely explained in Anthropic's `Building Effective Agents` blog post:
+This guide reviews common patterns for agentic systems. In describing these
+systems, it can be useful to make a distinction between "workflows" and
+"agents". One way to think about this difference is nicely explained in
+Anthropic's `Building Effective Agents` blog post:
 
-> Workflows are systems where LLMs and tools are orchestrated through predefined code paths.
-> Agents, on the other hand, are systems where LLMs dynamically direct their own processes and tool usage, maintaining control over how they accomplish tasks.
+> Workflows are systems where LLMs and tools are orchestrated through predefined
+> code paths. Agents, on the other hand, are systems where LLMs dynamically
+> direct their own processes and tool usage, maintaining control over how they
+> accomplish tasks.
 
 Here is a simple way to visualize these differences:
 
 ![Agent Workflow](../concepts/img/agent_workflow.png)
 
-When building agents and workflows, LangGraph offers a number of benefits including persistence, streaming, and support for debugging as well as deployment.
+When building agents and workflows, LangGraph offers a number of benefits
+including persistence, streaming, and support for debugging as well as
+deployment.
 
 ## Set up
 
-:::python
-You can use [any chat model](https://python.langchain.com/docs/integrations/chat/) that supports structured outputs and tool calling. Below, we show the process of installing the packages, setting API keys, and testing structured outputs / tool calling for Anthropic.
+:::python You can use
+[any chat model](https://python.langchain.com/docs/integrations/chat/) that
+supports structured outputs and tool calling. Below, we show the process of
+installing the packages, setting API keys, and testing structured outputs / tool
+calling for Anthropic.
 
 ??? "Install dependencies"
 
@@ -47,8 +57,11 @@ llm = ChatAnthropic(model="claude-3-5-sonnet-latest")
 
 :::
 
-:::js
-You can use [any chat model](https://js.langchain.com/docs/integrations/chat/) that supports structured outputs and tool calling. Below, we show the process of installing the packages, setting API keys, and testing structured outputs / tool calling for Anthropic.
+:::js You can use
+[any chat model](https://js.langchain.com/docs/integrations/chat/) that supports
+structured outputs and tool calling. Below, we show the process of installing
+the packages, setting API keys, and testing structured outputs / tool calling
+for Anthropic.
 
 ??? "Install dependencies"
 
@@ -59,18 +72,20 @@ You can use [any chat model](https://js.langchain.com/docs/integrations/chat/) t
 Initialize an LLM
 
 ```typescript
-import { ChatAnthropic } from "@langchain/anthropic";
+import { ChatAnthropic } from '@langchain/anthropic';
 
-process.env.ANTHROPIC_API_KEY = "YOUR_API_KEY";
+process.env.ANTHROPIC_API_KEY = 'YOUR_API_KEY';
 
-const llm = new ChatAnthropic({ model: "claude-3-5-sonnet-latest" });
+const llm = new ChatAnthropic({ model: 'claude-3-5-sonnet-latest' });
 ```
 
 :::
 
 ## Building Blocks: The Augmented LLM
 
-LLM have augmentations that support building workflows and agents. These include structured outputs and tool calling, as shown in this image from the Anthropic blog on `Building Effective Agents`:
+LLM have augmentations that support building workflows and agents. These include
+structured outputs and tool calling, as shown in this image from the Anthropic
+blog on `Building Effective Agents`:
 
 ![augmented_llm.png](./workflows/img/augmented_llm.png)
 
@@ -112,12 +127,12 @@ msg.tool_calls
 :::js
 
 ```typescript
-import { z } from "zod";
-import { tool } from "@langchain/core/tools";
+import { z } from 'zod';
+import { tool } from '@langchain/core/tools';
 
 // Schema for structured output
 const SearchQuery = z.object({
-  search_query: z.string().describe("Query that is optimized web search."),
+  search_query: z.string().describe('Query that is optimized web search.'),
   justification: z
     .string()
     .describe("Why this query is relevant to the user's request."),
@@ -128,7 +143,7 @@ const structuredLlm = llm.withStructuredOutput(SearchQuery);
 
 // Invoke the augmented LLM
 const output = await structuredLlm.invoke(
-  "How does Calcium CT score relate to high cholesterol?"
+  'How does Calcium CT score relate to high cholesterol?'
 );
 
 // Define a tool
@@ -137,8 +152,8 @@ const multiply = tool(
     return a * b;
   },
   {
-    name: "multiply",
-    description: "Multiply two numbers",
+    name: 'multiply',
+    description: 'Multiply two numbers',
     schema: z.object({
       a: z.number(),
       b: z.number(),
@@ -150,7 +165,7 @@ const multiply = tool(
 const llmWithTools = llm.bindTools([multiply]);
 
 // Invoke the LLM with input that triggers the tool call
-const msg = await llmWithTools.invoke("What is 2 times 3?");
+const msg = await llmWithTools.invoke('What is 2 times 3?');
 
 // Get the tool call
 console.log(msg.tool_calls);
@@ -164,9 +179,15 @@ In prompt chaining, each LLM call processes the output of the previous one.
 
 As noted in the Anthropic blog on `Building Effective Agents`:
 
-> Prompt chaining decomposes a task into a sequence of steps, where each LLM call processes the output of the previous one. You can add programmatic checks (see "gate" in the diagram below) on any intermediate steps to ensure that the process is still on track.
+> Prompt chaining decomposes a task into a sequence of steps, where each LLM
+> call processes the output of the previous one. You can add programmatic checks
+> (see "gate" in the diagram below) on any intermediate steps to ensure that the
+> process is still on track.
 
-> When to use this workflow: This workflow is ideal for situations where the task can be easily and cleanly decomposed into fixed subtasks. The main goal is to trade off latency for higher accuracy, by making each LLM call an easier task.
+> When to use this workflow: This workflow is ideal for situations where the
+> task can be easily and cleanly decomposed into fixed subtasks. The main goal
+> is to trade off latency for higher accuracy, by making each LLM call an easier
+> task.
 
 ![prompt_chain.png](./workflows/img/prompt_chain.png)
 
@@ -463,9 +484,17 @@ As noted in the Anthropic blog on `Building Effective Agents`:
 
 With parallelization, LLMs work simultaneously on a task:
 
-> LLMs can sometimes work simultaneously on a task and have their outputs aggregated programmatically. This workflow, parallelization, manifests in two key variations: Sectioning: Breaking a task into independent subtasks run in parallel. Voting: Running the same task multiple times to get diverse outputs.
+> LLMs can sometimes work simultaneously on a task and have their outputs
+> aggregated programmatically. This workflow, parallelization, manifests in two
+> key variations: Sectioning: Breaking a task into independent subtasks run in
+> parallel. Voting: Running the same task multiple times to get diverse outputs.
 
-> When to use this workflow: Parallelization is effective when the divided subtasks can be parallelized for speed, or when multiple perspectives or attempts are needed for higher confidence results. For complex tasks with multiple considerations, LLMs generally perform better when each consideration is handled by a separate LLM call, allowing focused attention on each specific aspect.
+> When to use this workflow: Parallelization is effective when the divided
+> subtasks can be parallelized for speed, or when multiple perspectives or
+> attempts are needed for higher confidence results. For complex tasks with
+> multiple considerations, LLMs generally perform better when each consideration
+> is handled by a separate LLM call, allowing focused attention on each specific
+> aspect.
 
 ![parallelization.png](./workflows/img/parallelization.png)
 
@@ -728,11 +757,18 @@ With parallelization, LLMs work simultaneously on a task:
 
 ## Routing
 
-Routing classifies an input and directs it to a followup task. As noted in the Anthropic blog on `Building Effective Agents`:
+Routing classifies an input and directs it to a followup task. As noted in the
+Anthropic blog on `Building Effective Agents`:
 
-> Routing classifies an input and directs it to a specialized followup task. This workflow allows for separation of concerns, and building more specialized prompts. Without this workflow, optimizing for one kind of input can hurt performance on other inputs.
+> Routing classifies an input and directs it to a specialized followup task.
+> This workflow allows for separation of concerns, and building more specialized
+> prompts. Without this workflow, optimizing for one kind of input can hurt
+> performance on other inputs.
 
-> When to use this workflow: Routing works well for complex tasks where there are distinct categories that are better handled separately, and where classification can be handled accurately, either by an LLM or a more traditional classification model/algorithm.
+> When to use this workflow: Routing works well for complex tasks where there
+> are distinct categories that are better handled separately, and where
+> classification can be handled accurately, either by an LLM or a more
+> traditional classification model/algorithm.
 
 ![routing.png](./workflows/img/routing.png)
 
@@ -1096,11 +1132,19 @@ Routing classifies an input and directs it to a followup task. As noted in the A
 
 ## Orchestrator-Worker
 
-With orchestrator-worker, an orchestrator breaks down a task and delegates each sub-task to workers. As noted in the Anthropic blog on `Building Effective Agents`:
+With orchestrator-worker, an orchestrator breaks down a task and delegates each
+sub-task to workers. As noted in the Anthropic blog on
+`Building Effective Agents`:
 
-> In the orchestrator-workers workflow, a central LLM dynamically breaks down tasks, delegates them to worker LLMs, and synthesizes their results.
+> In the orchestrator-workers workflow, a central LLM dynamically breaks down
+> tasks, delegates them to worker LLMs, and synthesizes their results.
 
-> When to use this workflow: This workflow is well-suited for complex tasks where you can't predict the subtasks needed (in coding, for example, the number of files that need to be changed and the nature of the change in each file likely depend on the task). Whereas it's topographically similar, the key difference from parallelization is its flexibility—subtasks aren't pre-defined, but determined by the orchestrator based on the specific input.
+> When to use this workflow: This workflow is well-suited for complex tasks
+> where you can't predict the subtasks needed (in coding, for example, the
+> number of files that need to be changed and the nature of the change in each
+> file likely depend on the task). Whereas it's topographically similar, the key
+> difference from parallelization is its flexibility—subtasks aren't
+> pre-defined, but determined by the orchestrator based on the specific input.
 
 ![worker.png](./workflows/img/worker.png)
 
@@ -1507,9 +1551,16 @@ With orchestrator-worker, an orchestrator breaks down a task and delegates each 
 
 ## Evaluator-optimizer
 
-In the evaluator-optimizer workflow, one LLM call generates a response while another provides evaluation and feedback in a loop:
+In the evaluator-optimizer workflow, one LLM call generates a response while
+another provides evaluation and feedback in a loop:
 
-> When to use this workflow: This workflow is particularly effective when we have clear evaluation criteria, and when iterative refinement provides measurable value. The two signs of good fit are, first, that LLM responses can be demonstrably improved when a human articulates their feedback; and second, that the LLM can provide such feedback. This is analogous to the iterative writing process a human writer might go through when producing a polished document.
+> When to use this workflow: This workflow is particularly effective when we
+> have clear evaluation criteria, and when iterative refinement provides
+> measurable value. The two signs of good fit are, first, that LLM responses can
+> be demonstrably improved when a human articulates their feedback; and second,
+> that the LLM can provide such feedback. This is analogous to the iterative
+> writing process a human writer might go through when producing a polished
+> document.
 
 ![evaluator_optimizer.png](./workflows/img/evaluator_optimizer.png)
 
@@ -1798,11 +1849,20 @@ In the evaluator-optimizer workflow, one LLM call generates a response while ano
 
 ## Agent
 
-Agents are typically implemented as an LLM performing actions (via tool-calling) based on environmental feedback in a loop. As noted in the Anthropic blog on `Building Effective Agents`:
+Agents are typically implemented as an LLM performing actions (via tool-calling)
+based on environmental feedback in a loop. As noted in the Anthropic blog on
+`Building Effective Agents`:
 
-> Agents can handle sophisticated tasks, but their implementation is often straightforward. They are typically just LLMs using tools based on environmental feedback in a loop. It is therefore crucial to design toolsets and their documentation clearly and thoughtfully.
+> Agents can handle sophisticated tasks, but their implementation is often
+> straightforward. They are typically just LLMs using tools based on
+> environmental feedback in a loop. It is therefore crucial to design toolsets
+> and their documentation clearly and thoughtfully.
 
-> When to use agents: Agents can be used for open-ended problems where it's difficult or impossible to predict the required number of steps, and where you can't hardcode a fixed path. The LLM will potentially operate for many turns, and you must have some level of trust in its decision-making. Agents' autonomy makes them ideal for scaling tasks in trusted environments.
+> When to use agents: Agents can be used for open-ended problems where it's
+> difficult or impossible to predict the required number of steps, and where you
+> can't hardcode a fixed path. The LLM will potentially operate for many turns,
+> and you must have some level of trust in its decision-making. Agents' autonomy
+> makes them ideal for scaling tasks in trusted environments.
 
 ![agent.png](./workflows/img/agent.png)
 
@@ -1857,7 +1917,7 @@ llm_with_tools = llm.bind_tools(tools)
 :::js
 
 ```typescript
-import { tool } from "@langchain/core/tools";
+import { tool } from '@langchain/core/tools';
 
 // Define tools
 const multiply = tool(
@@ -1865,11 +1925,11 @@ const multiply = tool(
     return a * b;
   },
   {
-    name: "multiply",
-    description: "Multiply a and b.",
+    name: 'multiply',
+    description: 'Multiply a and b.',
     schema: z.object({
-      a: z.number().describe("first int"),
-      b: z.number().describe("second int"),
+      a: z.number().describe('first int'),
+      b: z.number().describe('second int'),
     }),
   }
 );
@@ -1879,11 +1939,11 @@ const add = tool(
     return a + b;
   },
   {
-    name: "add",
-    description: "Adds a and b.",
+    name: 'add',
+    description: 'Adds a and b.',
     schema: z.object({
-      a: z.number().describe("first int"),
-      b: z.number().describe("second int"),
+      a: z.number().describe('first int'),
+      b: z.number().describe('second int'),
     }),
   }
 );
@@ -1893,11 +1953,11 @@ const divide = tool(
     return a / b;
   },
   {
-    name: "divide",
-    description: "Divide a and b.",
+    name: 'divide',
+    description: 'Divide a and b.',
     schema: z.object({
-      a: z.number().describe("first int"),
-      b: z.number().describe("second int"),
+      a: z.number().describe('first int'),
+      b: z.number().describe('second int'),
     }),
   }
 );
@@ -2196,8 +2256,9 @@ const llmWithTools = llm.bindTools(tools);
 
 #### Pre-built
 
-:::python
-LangGraph also provides a **pre-built method** for creating an agent as defined above (using the @[`create_react_agent`][create_react_agent] function):
+:::python LangGraph also provides a **pre-built method** for creating an agent
+as defined above (using the @[`create_react_agent`][create_react_agent]
+function):
 
 https://langchain-ai.github.io/langgraph/how-tos/create-react-agent/
 
@@ -2221,14 +2282,13 @@ for m in messages["messages"]:
 
 **LangSmith Trace**
 
-https://smith.langchain.com/public/abab6a44-29f6-4b97-8164-af77413e494d/r
-:::
+https://smith.langchain.com/public/abab6a44-29f6-4b97-8164-af77413e494d/r :::
 
-:::js
-LangGraph also provides a **pre-built method** for creating an agent as defined above (using the @[`createReactAgent`][create_react_agent] function):
+:::js LangGraph also provides a **pre-built method** for creating an agent as
+defined above (using the @[`createReactAgent`][create_react_agent] function):
 
 ```typescript
-import { createReactAgent } from "@langchain/langgraph/prebuilt";
+import { createReactAgent } from '@langchain/langgraph/prebuilt';
 
 // Pass in:
 // (1) the augmented LLM with tools
@@ -2236,7 +2296,7 @@ import { createReactAgent } from "@langchain/langgraph/prebuilt";
 const preBuiltAgent = createReactAgent({ llm, tools });
 
 // Invoke
-const messages = [new HumanMessage("Add 3 and 4.")];
+const messages = [new HumanMessage('Add 3 and 4.')];
 const result = await preBuiltAgent.invoke({ messages });
 for (const m of result.messages) {
   console.log(`${m.getType()}: ${m.content}`);
@@ -2251,16 +2311,27 @@ By constructing each of the above in LangGraph, we get a few things:
 
 ### Persistence: Human-in-the-Loop
 
-LangGraph persistence layer supports interruption and approval of actions (e.g., Human In The Loop). See [Module 3 of LangChain Academy](https://github.com/langchain-ai/langchain-academy/tree/main/module-3).
+LangGraph persistence layer supports interruption and approval of actions (e.g.,
+Human In The Loop). See
+[Module 3 of LangChain Academy](https://github.com/langchain-ai/langchain-academy/tree/main/module-3).
 
 ### Persistence: Memory
 
-LangGraph persistence layer supports conversational (short-term) memory and long-term memory. See [Modules 2](https://github.com/langchain-ai/langchain-academy/tree/main/module-2) [and 5](https://github.com/langchain-ai/langchain-academy/tree/main/module-5) of LangChain Academy:
+LangGraph persistence layer supports conversational (short-term) memory and
+long-term memory. See
+[Modules 2](https://github.com/langchain-ai/langchain-academy/tree/main/module-2)
+[and 5](https://github.com/langchain-ai/langchain-academy/tree/main/module-5) of
+LangChain Academy:
 
 ### Streaming
 
-LangGraph provides several ways to stream workflow / agent outputs or intermediate state. See [Module 3 of LangChain Academy](https://github.com/langchain-ai/langchain-academy/blob/main/module-3/streaming-interruption.ipynb).
+LangGraph provides several ways to stream workflow / agent outputs or
+intermediate state. See
+[Module 3 of LangChain Academy](https://github.com/langchain-ai/langchain-academy/blob/main/module-3/streaming-interruption.ipynb).
 
 ### Deployment
 
-LangGraph provides an easy on-ramp for deployment, observability, and evaluation. See [module 6](https://github.com/langchain-ai/langchain-academy/tree/main/module-6) of LangChain Academy.
+LangGraph provides an easy on-ramp for deployment, observability, and
+evaluation. See
+[module 6](https://github.com/langchain-ai/langchain-academy/tree/main/module-6)
+of LangChain Academy.

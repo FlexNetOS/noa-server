@@ -44,7 +44,7 @@ export class AutomationMonitor {
       averageProcessingTime: 0,
       averageQualityImprovement: 0,
       strategyDistribution: {},
-      lastOptimization: null
+      lastOptimization: null,
     };
   }
 

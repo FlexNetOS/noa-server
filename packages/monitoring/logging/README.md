@@ -6,7 +6,8 @@ Structured logging with ELK stack integration for Noa Server.
 
 - **Structured Logging**: JSON-formatted logs with metadata
 - **Multiple Transports**: Console, file rotation, and Elasticsearch
-- **ELK Stack Integration**: Direct integration with Elasticsearch, Logstash, Kibana
+- **ELK Stack Integration**: Direct integration with Elasticsearch, Logstash,
+  Kibana
 - **Correlation IDs**: Track requests across services
 - **Log Levels**: Error, warn, info, http, verbose, debug, silly
 - **Flexible Formatters**: JSON and Logstash formatters
@@ -53,13 +54,13 @@ logger.debug('Cache hit', { key: 'user:123', duration: 5 });
 ## Log Levels
 
 ```typescript
-logger.error('Critical error occurred');   // 0
-logger.warn('Warning message');            // 1
-logger.info('Informational message');      // 2
-logger.http('HTTP request logged');        // 3
-logger.verbose('Verbose details');         // 4
-logger.debug('Debug information');         // 5
-logger.silly('Very detailed trace');       // 6
+logger.error('Critical error occurred'); // 0
+logger.warn('Warning message'); // 1
+logger.info('Informational message'); // 2
+logger.http('HTTP request logged'); // 3
+logger.verbose('Verbose details'); // 4
+logger.debug('Debug information'); // 5
+logger.silly('Very detailed trace'); // 6
 ```
 
 ## Structured Logger
@@ -193,14 +194,15 @@ const logger = new LogAggregator({
     directory: './logs',
     filename: 'app-%DATE%.log',
     datePattern: 'YYYY-MM-DD',
-    maxSize: '20m',      // Rotate when file reaches 20MB
-    maxFiles: '14d',     // Keep logs for 14 days
-    compress: true,      // Gzip old logs
+    maxSize: '20m', // Rotate when file reaches 20MB
+    maxFiles: '14d', // Keep logs for 14 days
+    compress: true, // Gzip old logs
   },
 });
 ```
 
 Log files:
+
 - `logs/app-2024-01-15.log`
 - `logs/app-2024-01-16.log`
 - `logs/app-2024-01-17.log.gz` (compressed)
@@ -232,8 +234,8 @@ const logger = new LogAggregator({
 import { JSONFormatter } from '@noa/logging';
 
 const formatter = new JSONFormatter({
-  space: 2,              // Pretty print with 2 spaces
-  includeStack: true,    // Include error stacks
+  space: 2, // Pretty print with 2 spaces
+  includeStack: true, // Include error stacks
   maxFieldLength: 10000, // Truncate long fields
 });
 
@@ -294,12 +296,16 @@ try {
 Log structured events:
 
 ```typescript
-logger.logEvent('user.registered', {
-  userId: 'user-123',
-  email: 'user@example.com',
-  provider: 'google',
-  timestamp: Date.now(),
-}, 'info');
+logger.logEvent(
+  'user.registered',
+  {
+    userId: 'user-123',
+    email: 'user@example.com',
+    provider: 'google',
+    timestamp: Date.now(),
+  },
+  'info'
+);
 ```
 
 ## Timer Utility

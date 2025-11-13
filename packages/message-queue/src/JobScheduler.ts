@@ -23,18 +23,14 @@ export class JobScheduler extends EventEmitter {
       retryDelay: 1000,
       exponentialBackoff: true,
       maxRetryDelay: 30000,
-      ...retryPolicy
+      ...retryPolicy,
     };
   }
 
   /**
    * Create a new job
    */
-  createJob(
-    type: string,
-    data: any,
-    options: JobOptions = {}
-  ): QueueJob {
+  createJob(type: string, data: any, options: JobOptions = {}): QueueJob {
     const job: QueueJob = {
       id: uuidv4(),
       type,
@@ -48,7 +44,7 @@ export class JobScheduler extends EventEmitter {
       retryDelay: options.retryDelay || this.retryPolicy.retryDelay,
       timeout: options.timeout,
       scheduledFor: options.scheduledFor,
-      tags: options.tags || []
+      tags: options.tags || [],
     };
 
     this.jobs.set(job.id, job);
@@ -117,7 +113,7 @@ export class JobScheduler extends EventEmitter {
     job.lastError = {
       message: error.message,
       stack: error.stack,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
     job.updatedAt = new Date();
 
@@ -172,24 +168,18 @@ export class JobScheduler extends EventEmitter {
   /**
    * Get all jobs with optional filtering
    */
-  getJobs(filter?: {
-    status?: JobStatus;
-    type?: string;
-    tags?: string[];
-  }): QueueJob[] {
+  getJobs(filter?: { status?: JobStatus; type?: string; tags?: string[] }): QueueJob[] {
     let jobs = Array.from(this.jobs.values());
 
     if (filter) {
       if (filter.status) {
-        jobs = jobs.filter(job => job.status === filter.status);
+        jobs = jobs.filter((job) => job.status === filter.status);
       }
       if (filter.type) {
-        jobs = jobs.filter(job => job.type === filter.type);
+        jobs = jobs.filter((job) => job.type === filter.type);
       }
       if (filter.tags && filter.tags.length > 0) {
-        jobs = jobs.filter(job =>
-          filter.tags!.some(tag => job.tags?.includes(tag))
-        );
+        jobs = jobs.filter((job) => filter.tags!.some((tag) => job.tags?.includes(tag)));
       }
     }
 
@@ -201,8 +191,8 @@ export class JobScheduler extends EventEmitter {
    */
   getRunningJobs(): QueueJob[] {
     return Array.from(this.runningJobs)
-      .map(jobId => this.jobs.get(jobId))
-      .filter(job => job !== undefined) as QueueJob[];
+      .map((jobId) => this.jobs.get(jobId))
+      .filter((job) => job !== undefined) as QueueJob[];
   }
 
   /**
@@ -224,7 +214,7 @@ export class JobScheduler extends EventEmitter {
       completed: 0,
       failed: 0,
       cancelled: 0,
-      retry: 0
+      retry: 0,
     };
 
     for (const job of this.jobs.values()) {

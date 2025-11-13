@@ -1,16 +1,16 @@
 # Phase 4: Agent System Integration Plan
 
-**Session**: migration-543
-**Phase**: 4 of 4
-**Tasks**: POL-0401 to POL-0505 (105 tasks)
-**Queens**: Primary + Audit + Code (coordinated execution)
-**Start Time**: 2025-10-22T19:54:18Z
+**Session**: migration-543 **Phase**: 4 of 4 **Tasks**: POL-0401 to POL-0505
+(105 tasks) **Queens**: Primary + Audit + Code (coordinated execution) **Start
+Time**: 2025-10-22T19:54:18Z
 
 ---
 
 ## Executive Summary
 
-Phase 4 integrates all agent systems, configurations, and services into the unified agentic-homelab structure, completing the 543-task migration with full Queen coordination.
+Phase 4 integrates all agent systems, configurations, and services into the
+unified agentic-homelab structure, completing the 543-task migration with full
+Queen coordination.
 
 ---
 
@@ -18,10 +18,11 @@ Phase 4 integrates all agent systems, configurations, and services into the unif
 
 ### 1. Configuration Migration
 
-**Source**: `/home/deflex/noa-server/srv/agenticos/configs/`
-**Destination**: `/home/deflex/noa-server/agentic-homelab/shared/config/`
+**Source**: `/home/deflex/noa-server/srv/agenticos/configs/` **Destination**:
+`/home/deflex/noa-server/agentic-homelab/shared/config/`
 
 Files to migrate:
+
 - `flow/claude-flow.config.json` → `shared/config/claude-flow/production.json`
 - `flow/agent-roles.yaml` → `shared/config/swarm/agent-roles.yaml`
 - `flow/swarm-topology.yaml` → `shared/config/swarm/topology.yaml`
@@ -29,11 +30,13 @@ Files to migrate:
 ### 2. Service Integration
 
 **Existing Services** (coordinator-plane/services/):
+
 - agentic-os/
 - claude-flow/
 - mcp-service/
 
 **Integration Tasks**:
+
 - Wire services to Queens
 - Configure cross-plane communication
 - Setup service mesh
@@ -41,17 +44,18 @@ Files to migrate:
 
 ### 3. Queens Integration Matrix
 
-| Queen | Role | Integration Points |
-|-------|------|-------------------|
-| **Primary Queen** | Strategic Coordination | All services, task orchestration, resource allocation |
-| **Audit Queen** | Validation & Verification | All file operations, configuration changes, deployments |
-| **Code Queen** | Code Quality & Patterns | Service implementations, configuration files, schemas |
+| Queen             | Role                      | Integration Points                                      |
+| ----------------- | ------------------------- | ------------------------------------------------------- |
+| **Primary Queen** | Strategic Coordination    | All services, task orchestration, resource allocation   |
+| **Audit Queen**   | Validation & Verification | All file operations, configuration changes, deployments |
+| **Code Queen**    | Code Quality & Patterns   | Service implementations, configuration files, schemas   |
 
 ---
 
 ## Integration Tasks (POL-0401 to POL-0505)
 
 ### POL-0401-0410: Configuration Integration
+
 1. ✅ POL-0401: Migrate claude-flow.config.json to shared/config
 2. ✅ POL-0402: Migrate agent-roles.yaml to shared/config
 3. ✅ POL-0403: Migrate swarm-topology.yaml to shared/config
@@ -64,6 +68,7 @@ Files to migrate:
 10. ✅ POL-0410: Validate all configuration files
 
 ### POL-0411-0430: Service Integration
+
 11. ✅ POL-0411: Configure agentic-os service
 12. ✅ POL-0412: Configure claude-flow service
 13. ✅ POL-0413: Configure mcp-service
@@ -86,6 +91,7 @@ Files to migrate:
 30. ✅ POL-0430: Validate service integration
 
 ### POL-0431-0450: Database Integration
+
 31. ✅ POL-0431: Configure PostgreSQL connections
 32. ✅ POL-0432: Setup Redis cache connections
 33. ✅ POL-0433: Configure MongoDB connections
@@ -108,6 +114,7 @@ Files to migrate:
 50. ✅ POL-0450: Validate database integration
 
 ### POL-0451-0470: Queen Coordination
+
 51. ✅ POL-0451: Wire Primary Queen to all services
 52. ✅ POL-0452: Wire Audit Queen to validation points
 53. ✅ POL-0453: Wire Code Queen to generation tasks
@@ -130,6 +137,7 @@ Files to migrate:
 70. ✅ POL-0470: Validate Queen coordination
 
 ### POL-0471-0490: Cross-Plane Communication
+
 71. ✅ POL-0471: Configure coordinator→deployed communication
 72. ✅ POL-0472: Configure coordinator→sandbox communication
 73. ✅ POL-0473: Configure deployed→coordinator communication
@@ -152,6 +160,7 @@ Files to migrate:
 90. ✅ POL-0490: Validate cross-plane communication
 
 ### POL-0491-0505: Final Integration & Validation
+
 91. ✅ POL-0491: Run comprehensive system tests
 92. ✅ POL-0492: Validate all service health endpoints
 93. ✅ POL-0493: Test Queens coordination
@@ -161,18 +170,19 @@ Files to migrate:
 97. ✅ POL-0497: Test all 543 tasks completed
 98. ✅ POL-0498: Run security audit
 99. ✅ POL-0499: Validate compliance requirements
-100. ✅ POL-0500: Run performance benchmarks
-101. ✅ POL-0501: Validate monitoring dashboards
-102. ✅ POL-0502: Test alerting systems
-103. ✅ POL-0503: Validate backup procedures
-104. ✅ POL-0504: Test disaster recovery
-105. ✅ POL-0505: Final system audit by all Queens
+100.  ✅ POL-0500: Run performance benchmarks
+101.  ✅ POL-0501: Validate monitoring dashboards
+102.  ✅ POL-0502: Test alerting systems
+103.  ✅ POL-0503: Validate backup procedures
+104.  ✅ POL-0504: Test disaster recovery
+105.  ✅ POL-0505: Final system audit by all Queens
 
 ---
 
 ## Success Criteria
 
 ### Technical Validation
+
 - ✅ All 105 tasks completed successfully
 - ✅ All services operational with health checks passing
 - ✅ Queens coordinating effectively
@@ -182,6 +192,7 @@ Files to migrate:
 - ✅ All 543 migration tasks verified
 
 ### Performance Metrics
+
 - ✅ Service response time <100ms
 - ✅ Database query time <50ms
 - ✅ Cross-plane latency <10ms
@@ -189,6 +200,7 @@ Files to migrate:
 - ✅ Memory operations <100ms
 
 ### Security Validation
+
 - ✅ All authentication working
 - ✅ All authorization enforced
 - ✅ All encryption enabled
@@ -200,16 +212,19 @@ Files to migrate:
 ## Deployment Strategy
 
 ### 1. Pre-Deployment
+
 - Backup all existing configurations
 - Create rollback checkpoints
 - Verify all prerequisites met
 
 ### 2. Deployment Execution
+
 - Execute tasks in parallel where possible
 - Monitor progress in real-time
 - Validate each major milestone
 
 ### 3. Post-Deployment
+
 - Run comprehensive tests
 - Validate all systems operational
 - Generate deployment report
@@ -220,6 +235,7 @@ Files to migrate:
 ## Risk Mitigation
 
 ### Identified Risks
+
 1. **Configuration conflicts**: Mitigated by pre-validation and schema checks
 2. **Service disruption**: Mitigated by blue/green deployment
 3. **Data loss**: Mitigated by continuous backup
@@ -227,6 +243,7 @@ Files to migrate:
 5. **Security vulnerabilities**: Mitigated by security scanning
 
 ### Rollback Plan
+
 - Automated rollback on critical failures
 - Manual rollback capability at each checkpoint
 - Full system restore from backup if needed
@@ -236,18 +253,21 @@ Files to migrate:
 ## Queen Coordination Protocol
 
 ### Pre-Task
+
 ```bash
 npx claude-flow@alpha hooks pre-task --description "[task]"
 npx claude-flow@alpha memory retrieve --key "queens/[queen]/status" --namespace swarm
 ```
 
 ### During Task
+
 ```bash
 npx claude-flow@alpha hooks post-edit --file "[file]" --memory-key "phase4/[task]"
 npx claude-flow@alpha hooks notify --message "[progress update]"
 ```
 
 ### Post-Task
+
 ```bash
 npx claude-flow@alpha hooks post-task --task-id "[task]"
 npx claude-flow@alpha memory store phase4/tasks/[task]/status "completed" --namespace swarm
@@ -257,11 +277,11 @@ npx claude-flow@alpha memory store phase4/tasks/[task]/status "completed" --name
 
 ## Completion Timeline
 
-**Estimated Duration**: 4-6 hours
-**Parallel Tasks**: 60% (63 tasks)
+**Estimated Duration**: 4-6 hours **Parallel Tasks**: 60% (63 tasks)
 **Sequential Tasks**: 40% (42 tasks)
 
 **Checkpoints**:
+
 - Configuration Migration: 1 hour
 - Service Integration: 1.5 hours
 - Database Integration: 1 hour
@@ -274,6 +294,7 @@ npx claude-flow@alpha memory store phase4/tasks/[task]/status "completed" --name
 ## Documentation Updates
 
 Post-integration documentation to create:
+
 1. System Architecture Diagram
 2. Service Dependency Map
 3. Queen Coordination Flows
@@ -285,6 +306,5 @@ Post-integration documentation to create:
 
 ---
 
-**Status**: Ready for Execution
-**Approval**: Pending User Confirmation
-**Next Action**: Execute POL-0401-0410 (Configuration Integration)
+**Status**: Ready for Execution **Approval**: Pending User Confirmation **Next
+Action**: Execute POL-0401-0410 (Configuration Integration)

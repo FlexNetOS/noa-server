@@ -52,44 +52,44 @@ spec:
         component: monitoring
     spec:
       containers:
-      - name: health-check
-        image: node:20-alpine
-        command:
-          - node
-          - /app/scripts/monitoring/health-check.js
-          - continuous
-        volumeMounts:
-          - name: config
-            mountPath: /app/config/monitoring
-            readOnly: true
-          - name: scripts
-            mountPath: /app/scripts/monitoring
-            readOnly: true
-          - name: logs
-            mountPath: /app/logs
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "100m"
-          limits:
-            memory: "256Mi"
-            cpu: "200m"
-        livenessProbe:
-          exec:
-            command:
-              - node
-              - -e
-              - "process.exit(0)"
-          initialDelaySeconds: 30
-          periodSeconds: 60
-        readinessProbe:
-          exec:
-            command:
-              - node
-              - -e
-              - "process.exit(0)"
-          initialDelaySeconds: 10
-          periodSeconds: 30
+        - name: health-check
+          image: node:20-alpine
+          command:
+            - node
+            - /app/scripts/monitoring/health-check.js
+            - continuous
+          volumeMounts:
+            - name: config
+              mountPath: /app/config/monitoring
+              readOnly: true
+            - name: scripts
+              mountPath: /app/scripts/monitoring
+              readOnly: true
+            - name: logs
+              mountPath: /app/logs
+          resources:
+            requests:
+              memory: '128Mi'
+              cpu: '100m'
+            limits:
+              memory: '256Mi'
+              cpu: '200m'
+          livenessProbe:
+            exec:
+              command:
+                - node
+                - -e
+                - 'process.exit(0)'
+            initialDelaySeconds: 30
+            periodSeconds: 60
+          readinessProbe:
+            exec:
+              command:
+                - node
+                - -e
+                - 'process.exit(0)'
+            initialDelaySeconds: 10
+            periodSeconds: 30
       volumes:
         - name: config
           configMap:
@@ -122,31 +122,31 @@ spec:
         component: monitoring
     spec:
       containers:
-      - name: collector
-        image: node:20-alpine
-        command:
-          - node
-          - /app/scripts/monitoring/metrics-collector.js
-          - continuous
-        volumeMounts:
-          - name: config
-            mountPath: /app/config/monitoring
-            readOnly: true
-          - name: scripts
-            mountPath: /app/scripts/monitoring
-            readOnly: true
-          - name: data
-            mountPath: /app/data
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "200m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-        env:
-          - name: NODE_ENV
-            value: "production"
+        - name: collector
+          image: node:20-alpine
+          command:
+            - node
+            - /app/scripts/monitoring/metrics-collector.js
+            - continuous
+          volumeMounts:
+            - name: config
+              mountPath: /app/config/monitoring
+              readOnly: true
+            - name: scripts
+              mountPath: /app/scripts/monitoring
+              readOnly: true
+            - name: data
+              mountPath: /app/data
+          resources:
+            requests:
+              memory: '256Mi'
+              cpu: '200m'
+            limits:
+              memory: '512Mi'
+              cpu: '500m'
+          env:
+            - name: NODE_ENV
+              value: 'production'
       volumes:
         - name: config
           configMap:
@@ -181,24 +181,24 @@ spec:
     spec:
       serviceAccountName: self-healing-sa
       containers:
-      - name: controller
-        image: node:20-alpine
-        volumeMounts:
-          - name: config
-            mountPath: /app/config/monitoring
-            readOnly: true
-          - name: scripts
-            mountPath: /app/scripts/monitoring
-            readOnly: true
-          - name: logs
-            mountPath: /app/logs
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "100m"
-          limits:
-            memory: "256Mi"
-            cpu: "200m"
+        - name: controller
+          image: node:20-alpine
+          volumeMounts:
+            - name: config
+              mountPath: /app/config/monitoring
+              readOnly: true
+            - name: scripts
+              mountPath: /app/scripts/monitoring
+              readOnly: true
+            - name: logs
+              mountPath: /app/logs
+          resources:
+            requests:
+              memory: '128Mi'
+              cpu: '100m'
+            limits:
+              memory: '256Mi'
+              cpu: '200m'
       volumes:
         - name: config
           configMap:
@@ -224,15 +224,15 @@ kind: ClusterRole
 metadata:
   name: self-healing-role
 rules:
-  - apiGroups: ["apps"]
-    resources: ["deployments", "replicasets"]
-    verbs: ["get", "list", "watch", "update", "patch"]
-  - apiGroups: [""]
-    resources: ["pods"]
-    verbs: ["get", "list", "watch", "delete"]
-  - apiGroups: [""]
-    resources: ["events"]
-    verbs: ["create", "patch"]
+  - apiGroups: ['apps']
+    resources: ['deployments', 'replicasets']
+    verbs: ['get', 'list', 'watch', 'update', 'patch']
+  - apiGroups: ['']
+    resources: ['pods']
+    verbs: ['get', 'list', 'watch', 'delete']
+  - apiGroups: ['']
+    resources: ['events']
+    verbs: ['create', 'patch']
 
 ---
 # ClusterRoleBinding for Self-Healing

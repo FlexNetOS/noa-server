@@ -1,6 +1,7 @@
 # Sandbox Execution
 
-Secure code execution environments with E2B integration for isolated development and testing.
+Secure code execution environments with E2B integration for isolated development
+and testing.
 
 ## MCP Tools for Sandbox Management
 
@@ -31,14 +32,15 @@ const sandbox = await client.sandboxes.create({
   env_vars: {
     API_KEY: 'your_api_key',
     DEBUG: 'true',
-    DATABASE_URL: 'postgresql://...'
-  }
+    DATABASE_URL: 'postgresql://...',
+  },
 });
 
 console.log('Sandbox created:', sandbox);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -69,14 +71,14 @@ const devSandbox = await client.sandboxes.create({
   env_vars: {
     NODE_ENV: 'development',
     API_BASE_URL: 'https://api.example.com',
-    ANTHROPIC_API_KEY: 'your_anthropic_key'
+    ANTHROPIC_API_KEY: 'your_anthropic_key',
   },
   install_packages: [
     'express',
     'react',
     '@anthropic-ai/claude-code',
     'jest',
-    'typescript'
+    'typescript',
   ],
   startup_script: `
     npm install
@@ -86,8 +88,8 @@ const devSandbox = await client.sandboxes.create({
   metadata: {
     project: 'web-app',
     team: 'frontend',
-    environment: 'development'
-  }
+    environment: 'development',
+  },
 });
 ```
 
@@ -108,13 +110,13 @@ Flow Nexus supports multiple sandbox templates:
 const reactSandbox = await client.sandboxes.create({
   template: 'react',
   name: 'ui-components',
-  install_packages: ['styled-components', 'storybook']
+  install_packages: ['styled-components', 'storybook'],
 });
 
 const dataScienceSandbox = await client.sandboxes.create({
   template: 'python',
   name: 'ml-experiments',
-  install_packages: ['pandas', 'scikit-learn', 'matplotlib']
+  install_packages: ['pandas', 'scikit-learn', 'matplotlib'],
 });
 ```
 
@@ -149,13 +151,14 @@ print(correlations)
   `,
   language: 'python',
   timeout: 60,
-  capture_output: true
+  capture_output: true,
 });
 
 console.log('Execution result:', result);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -236,7 +239,7 @@ app.listen(PORT, () => {
   `,
   language: 'javascript',
   timeout: 120,
-  working_dir: '/app'
+  working_dir: '/app',
 });
 ```
 
@@ -249,22 +252,22 @@ const multiLangResults = await Promise.all([
   client.sandboxes.execute({
     sandbox_id: 'multi_sandbox',
     code: 'print("Hello from Python")',
-    language: 'python'
+    language: 'python',
   }),
-  
+
   // Shell commands
   client.sandboxes.execute({
     sandbox_id: 'multi_sandbox',
     code: 'echo "Hello from Bash" && ls -la',
-    language: 'bash'
+    language: 'bash',
   }),
-  
+
   // Node.js
   client.sandboxes.execute({
     sandbox_id: 'multi_sandbox',
     code: 'console.log("Hello from Node.js")',
-    language: 'javascript'
-  })
+    language: 'javascript',
+  }),
 ]);
 ```
 
@@ -279,23 +282,28 @@ Transfer files to sandbox environments:
 const uploadResult = await client.sandboxes.upload({
   sandbox_id: 'sandbox_abc123',
   file_path: '/app/config.json',
-  content: JSON.stringify({
-    database: {
-      host: 'localhost',
-      port: 5432,
-      name: 'appdb'
+  content: JSON.stringify(
+    {
+      database: {
+        host: 'localhost',
+        port: 5432,
+        name: 'appdb',
+      },
+      api: {
+        version: 'v1',
+        timeout: 30000,
+      },
     },
-    api: {
-      version: 'v1',
-      timeout: 30000
-    }
-  }, null, 2)
+    null,
+    2
+  ),
 });
 
 console.log('File uploaded:', uploadResult);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -320,9 +328,9 @@ const projectFiles = [
       name: 'my-app',
       version: '1.0.0',
       dependencies: {
-        express: '^4.18.0'
-      }
-    })
+        express: '^4.18.0',
+      },
+    }),
   },
   {
     path: '/app/server.js',
@@ -337,16 +345,16 @@ app.get('/', (req, res) => {
 app.listen(3000, () => {
   console.log('Server running on port 3000');
 });
-    `
-  }
+    `,
+  },
 ];
 
 const uploadResults = await Promise.all(
-  projectFiles.map(file => 
+  projectFiles.map((file) =>
     client.sandboxes.upload({
       sandbox_id: 'sandbox_abc123',
       file_path: file.path,
-      content: file.content
+      content: file.content,
     })
   )
 );
@@ -366,24 +374,21 @@ const configResult = await client.sandboxes.configure({
     API_URL: 'https://api.production.com',
     LOG_LEVEL: 'info',
     CACHE_TTL: '3600',
-    ANTHROPIC_API_KEY: 'your_api_key'
+    ANTHROPIC_API_KEY: 'your_api_key',
   },
-  install_packages: [
-    'redis',
-    'postgresql',
-    'nginx'
-  ],
+  install_packages: ['redis', 'postgresql', 'nginx'],
   run_commands: [
     'pip install --upgrade pip',
     'npm install -g pm2',
-    'mkdir -p /app/logs'
-  ]
+    'mkdir -p /app/logs',
+  ],
 });
 
 console.log('Configuration applied:', configResult);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -410,13 +415,13 @@ const packageInstall = await client.sandboxes.configure({
     'uvicorn',
     'sqlalchemy',
     'alembic',
-    
-    // Node.js packages  
+
+    // Node.js packages
     'typescript',
     '@types/node',
     'eslint',
-    'prettier'
-  ]
+    'prettier',
+  ],
 });
 ```
 
@@ -432,13 +437,14 @@ const logs = await client.sandboxes.getLogs({
   sandbox_id: 'sandbox_abc123',
   lines: 100, // Last 100 lines
   include_timestamps: true,
-  log_level: 'all' // 'error', 'warn', 'info', 'debug', 'all'
+  log_level: 'all', // 'error', 'warn', 'info', 'debug', 'all'
 });
 
 console.log('Sandbox logs:', logs);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -451,21 +457,21 @@ console.log('Sandbox logs:', logs);
       message: 'Sandbox started successfully'
     },
     {
-      timestamp: '2024-12-10T15:10:45.789Z', 
+      timestamp: '2024-12-10T15:10:45.789Z',
       level: 'info',
       source: 'execution',
       message: 'Python script execution started'
     },
     {
       timestamp: '2024-12-10T15:10:48.123Z',
-      level: 'info', 
+      level: 'info',
       source: 'stdout',
       message: 'Dataset shape: (1000, 3)'
     },
     {
       timestamp: '2024-12-10T15:10:48.456Z',
       level: 'error',
-      source: 'stderr', 
+      source: 'stderr',
       message: 'Warning: deprecated function usage'
     }
   ],
@@ -483,13 +489,15 @@ const logStream = await client.sandboxes.streamLogs({
   sandbox_id: 'sandbox_abc123',
   follow: true,
   callback: (logEntry) => {
-    console.log(`[${logEntry.timestamp}] ${logEntry.level}: ${logEntry.message}`);
-    
+    console.log(
+      `[${logEntry.timestamp}] ${logEntry.level}: ${logEntry.message}`
+    );
+
     if (logEntry.level === 'error') {
       // Handle errors immediately
       handleError(logEntry);
     }
-  }
+  },
 });
 
 // Stop streaming after 5 minutes
@@ -512,6 +520,7 @@ console.log('Sandbox status:', status);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -559,13 +568,14 @@ const sandboxes = await client.sandboxes.list({
   template: 'python',
   limit: 20,
   sort_by: 'created_at',
-  order: 'desc'
+  order: 'desc',
 });
 
 console.log('Available sandboxes:', sandboxes);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -587,7 +597,7 @@ console.log('Available sandboxes:', sandboxes);
       id: 'sandbox_def456',
       name: 'web-dev-env',
       template: 'nodejs',
-      status: 'running', 
+      status: 'running',
       uptime: 3245,
       created_at: '2024-12-10T14:15:00Z',
       last_activity: '2024-12-10T15:09:12Z',
@@ -617,6 +627,7 @@ console.log('Sandbox stopped:', stopResult);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -646,6 +657,7 @@ console.log('Sandbox deleted:', deleteResult);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -667,7 +679,7 @@ console.log('Sandbox deleted:', deleteResult);
 try {
   await client.sandboxes.execute({
     sandbox_id: 'invalid_id',
-    code: 'print("hello")'
+    code: 'print("hello")',
   });
 } catch (error) {
   switch (error.code) {
@@ -706,12 +718,12 @@ try {
 // Monitor resource usage
 async function monitorSandboxResources(sandboxId) {
   const status = await client.sandboxes.getStatus(sandboxId);
-  
+
   if (status.sandbox.resource_usage.memory_percent > 90) {
     console.warn('High memory usage detected');
     // Consider restarting or upgrading sandbox
   }
-  
+
   if (status.sandbox.resource_usage.cpu_percent > 80) {
     console.warn('High CPU usage detected');
     // Optimize code or scale resources
@@ -727,23 +739,23 @@ class SandboxManager {
   constructor() {
     this.activeSandboxes = new Map();
   }
-  
+
   async createSandbox(config) {
     const sandbox = await client.sandboxes.create(config);
-    
+
     // Set automatic cleanup
     setTimeout(() => {
       this.cleanupSandbox(sandbox.sandbox_id);
     }, config.timeout * 1000);
-    
+
     this.activeSandboxes.set(sandbox.sandbox_id, {
       ...sandbox,
-      created_at: new Date()
+      created_at: new Date(),
     });
-    
+
     return sandbox;
   }
-  
+
   async cleanupSandbox(sandboxId) {
     try {
       await client.sandboxes.stop(sandboxId);
@@ -753,11 +765,12 @@ class SandboxManager {
       console.error('Cleanup failed:', error);
     }
   }
-  
+
   async cleanupAll() {
-    const cleanupPromises = Array.from(this.activeSandboxes.keys())
-      .map(id => this.cleanupSandbox(id));
-    
+    const cleanupPromises = Array.from(this.activeSandboxes.keys()).map((id) =>
+      this.cleanupSandbox(id)
+    );
+
     await Promise.all(cleanupPromises);
   }
 }
@@ -773,23 +786,23 @@ async function executeWithRetry(sandboxId, code, maxRetries = 3) {
       return await client.sandboxes.execute({
         sandbox_id: sandboxId,
         code: code,
-        timeout: 60
+        timeout: 60,
       });
     } catch (error) {
       if (error.code === 'EXECUTION_TIMEOUT' && attempt < maxRetries) {
         console.log(`Attempt ${attempt} timed out, retrying...`);
         continue;
       }
-      
+
       if (error.code === 'SANDBOX_NOT_RUNNING') {
         // Try to restart sandbox
         await client.sandboxes.configure({
           sandbox_id: sandboxId,
-          restart: true
+          restart: true,
         });
         continue;
       }
-      
+
       throw error;
     }
   }
@@ -804,14 +817,9 @@ async function optimizeSandbox(sandboxId) {
   // Pre-install common packages
   await client.sandboxes.configure({
     sandbox_id: sandboxId,
-    install_packages: [
-      'numpy',
-      'pandas', 
-      'requests',
-      'matplotlib'
-    ]
+    install_packages: ['numpy', 'pandas', 'requests', 'matplotlib'],
   });
-  
+
   // Warm up Python environment
   await client.sandboxes.execute({
     sandbox_id: sandboxId,
@@ -821,7 +829,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 print("Environment warmed up")
     `,
-    language: 'python'
+    language: 'python',
   });
 }
 ```
@@ -836,39 +844,39 @@ async function orchestrateDataPipeline() {
   // Create specialized sandboxes
   const extractorSandbox = await client.sandboxes.create({
     template: 'python',
-    name: 'data-extractor'
+    name: 'data-extractor',
   });
-  
+
   const processorSandbox = await client.sandboxes.create({
-    template: 'python', 
-    name: 'data-processor'
+    template: 'python',
+    name: 'data-processor',
   });
-  
+
   const analyzerSandbox = await client.sandboxes.create({
     template: 'python',
-    name: 'data-analyzer'
+    name: 'data-analyzer',
   });
-  
+
   // Execute pipeline stages
   const extractionResult = await client.sandboxes.execute({
     sandbox_id: extractorSandbox.sandbox_id,
-    code: 'print("Data extracted")'
+    code: 'print("Data extracted")',
   });
-  
+
   const processingResult = await client.sandboxes.execute({
     sandbox_id: processorSandbox.sandbox_id,
-    code: 'print("Data processed")'
+    code: 'print("Data processed")',
   });
-  
+
   const analysisResult = await client.sandboxes.execute({
     sandbox_id: analyzerSandbox.sandbox_id,
-    code: 'print("Analysis complete")'
+    code: 'print("Analysis complete")',
   });
-  
+
   return {
     extraction: extractionResult,
     processing: processingResult,
-    analysis: analysisResult
+    analysis: analysisResult,
   };
 }
 ```
@@ -880,27 +888,23 @@ async function orchestrateDataPipeline() {
 const customTemplate = {
   name: 'ml-research-env',
   base_template: 'python',
-  packages: [
-    'tensorflow',
-    'pytorch', 
-    'scikit-learn',
-    'jupyter',
-    'wandb'
-  ],
+  packages: ['tensorflow', 'pytorch', 'scikit-learn', 'jupyter', 'wandb'],
   env_vars: {
     CUDA_VISIBLE_DEVICES: '0',
-    WANDB_PROJECT: 'research'
+    WANDB_PROJECT: 'research',
   },
   startup_script: `
 pip install --upgrade pip
 jupyter notebook --generate-config
 echo "ML research environment ready"
-  `
+  `,
 };
 ```
 
 ## Next Steps
 
 - [Neural Networks](../neural/neural-training.md) - Train models in sandboxes
-- [Workflows](../workflows/workflow-orchestration.md) - Automate sandbox workflows
-- [Templates](../templates/template-deployment.md) - Deploy pre-configured environments
+- [Workflows](../workflows/workflow-orchestration.md) - Automate sandbox
+  workflows
+- [Templates](../templates/template-deployment.md) - Deploy pre-configured
+  environments

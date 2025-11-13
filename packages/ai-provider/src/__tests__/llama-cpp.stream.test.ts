@@ -5,7 +5,11 @@ import { LlamaCppProvider } from '../providers/llama-cpp';
 import { ProviderType } from '../types';
 
 function makeReadable(lines: string[]): Readable {
-  const r = new Readable({ read() {/* no-op */} });
+  const r = new Readable({
+    read() {
+      /* no-op */
+    },
+  });
   // Push all lines separated by newlines, then end
   for (const l of lines) r.push(l + '\n');
   r.push(null);
@@ -23,8 +27,8 @@ function makeFakeClient(stream: Readable) {
     }),
     interceptors: {
       request: { use: (_f: any, _e?: any) => {} },
-      response: { use: (_s: any, _e?: any) => {} }
-    }
+      response: { use: (_s: any, _e?: any) => {} },
+    },
   } as any;
 }
 
@@ -41,14 +45,22 @@ describe('LlamaCppProvider streaming', () => {
     const stream = makeReadable([
       'data: {"content":"Hel","stop": false}',
       'data: {"content":"lo","stop": false}',
-      'data: {"stop": true}'
+      'data: {"stop": true}',
     ]);
     const fake = makeFakeClient(stream);
     (axios.create as any) = vi.fn(() => fake);
 
-    const provider = new LlamaCppProvider({ baseURL: 'http://localhost:8080', timeout: 1000, type: ProviderType.LLAMA_CPP });
+    const provider = new LlamaCppProvider({
+      baseURL: 'http://localhost:8080',
+      timeout: 1000,
+      type: ProviderType.LLAMA_CPP,
+    });
 
-  const req = { model: 'llama-2-7b', messages: [{ role: 'user' as const, content: 'Say hi' }], stream: true };
+    const req = {
+      model: 'llama-2-7b',
+      messages: [{ role: 'user' as const, content: 'Say hi' }],
+      stream: true,
+    };
     let text = '';
     let gotStop = false;
     for await (const chunk of provider.createChatCompletionStream(req)) {
@@ -65,14 +77,22 @@ describe('LlamaCppProvider streaming', () => {
     const stream = makeReadable([
       '{"content":"Hel","stop": false}',
       '{"content":"lo","stop": false}',
-      '{"stop": true}'
+      '{"stop": true}',
     ]);
     const fake = makeFakeClient(stream);
     (axios.create as any) = vi.fn(() => fake);
 
-    const provider = new LlamaCppProvider({ baseURL: 'http://localhost:8080', timeout: 1000, type: ProviderType.LLAMA_CPP });
+    const provider = new LlamaCppProvider({
+      baseURL: 'http://localhost:8080',
+      timeout: 1000,
+      type: ProviderType.LLAMA_CPP,
+    });
 
-  const req = { model: 'llama-2-7b', messages: [{ role: 'user' as const, content: 'Say hi' }], stream: true };
+    const req = {
+      model: 'llama-2-7b',
+      messages: [{ role: 'user' as const, content: 'Say hi' }],
+      stream: true,
+    };
     let text = '';
     let gotStop = false;
     for await (const chunk of provider.createChatCompletionStream(req)) {

@@ -1,6 +1,7 @@
 # DevOps Operations Guide - Noa Server
 
 ## Table of Contents
+
 1. [CI/CD Pipeline Overview](#cicd-pipeline-overview)
 2. [Deployment Procedures](#deployment-procedures)
 3. [Monitoring & Alerting](#monitoring--alerting)
@@ -14,7 +15,8 @@
 
 ### Pipeline Architecture
 
-The Noa Server CI/CD pipeline is designed for rapid, safe deployments with comprehensive quality gates:
+The Noa Server CI/CD pipeline is designed for rapid, safe deployments with
+comprehensive quality gates:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -69,6 +71,7 @@ The Noa Server CI/CD pipeline is designed for rapid, safe deployments with compr
 ### GitHub Actions Workflows
 
 #### 1. Comprehensive CI/CD (`ci-comprehensive.yml`)
+
 - **Triggers**: Push to main/develop, Pull Requests
 - **Duration**: 15-30 minutes
 - **Jobs**:
@@ -82,6 +85,7 @@ The Noa Server CI/CD pipeline is designed for rapid, safe deployments with compr
   - Post-deployment validation
 
 #### 2. Security Scanning (`security-scan.yml`)
+
 - **Triggers**: Daily schedule, push to main/develop
 - **Duration**: 20-30 minutes
 - **Scans**:
@@ -92,6 +96,7 @@ The Noa Server CI/CD pipeline is designed for rapid, safe deployments with compr
   - License compliance
 
 #### 3. Monitoring & Alerts (`monitoring-alerts.yml`)
+
 - **Triggers**: Every 6 hours, manual dispatch
 - **Duration**: 10-15 minutes
 - **Checks**:
@@ -102,13 +107,13 @@ The Noa Server CI/CD pipeline is designed for rapid, safe deployments with compr
 
 ### Pipeline Metrics & SLA
 
-| Metric | Target | Current |
-|--------|--------|---------|
-| Build Time | < 10 min | 8-12 min |
-| Test Coverage | > 80% | TBD |
-| Deployment Frequency | Multiple/day | On-demand |
-| MTTR (Mean Time To Recovery) | < 1 hour | TBD |
-| Change Failure Rate | < 15% | TBD |
+| Metric                       | Target       | Current   |
+| ---------------------------- | ------------ | --------- |
+| Build Time                   | < 10 min     | 8-12 min  |
+| Test Coverage                | > 80%        | TBD       |
+| Deployment Frequency         | Multiple/day | On-demand |
+| MTTR (Mean Time To Recovery) | < 1 hour     | TBD       |
+| Change Failure Rate          | < 15%        | TBD       |
 
 ---
 
@@ -117,6 +122,7 @@ The Noa Server CI/CD pipeline is designed for rapid, safe deployments with compr
 ### Deployment Strategies
 
 #### 1. Blue-Green Deployment
+
 ```bash
 # Switch traffic to new version
 kubectl apply -f k8s/production/blue-green/green.yml
@@ -130,6 +136,7 @@ kubectl scale deployment noa-api-blue --replicas=0
 ```
 
 #### 2. Canary Deployment (Default for Production)
+
 ```bash
 # Deploy canary with 10% traffic
 kubectl apply -f k8s/production/canary/deployment.yml
@@ -142,6 +149,7 @@ kubectl apply -f k8s/production/deployment.yml
 ```
 
 #### 3. Rolling Update
+
 ```bash
 # Standard rolling update
 kubectl set image deployment/noa-api api=noa-api:${VERSION}
@@ -152,12 +160,15 @@ kubectl rollout status deployment/noa-api
 ### Rollback Procedures
 
 #### Automated Rollback
+
 The pipeline automatically rolls back if:
+
 - Error rate increases > 2x baseline
 - Health checks fail
 - Response time degrades > 50%
 
 #### Manual Rollback
+
 ```bash
 # Rollback to previous version
 kubectl rollout undo deployment/noa-api
@@ -172,6 +183,7 @@ kubectl rollout status deployment/noa-api
 ### Environment Configuration
 
 #### Staging Environment
+
 - **URL**: https://staging.noa-server.example.com
 - **Purpose**: Pre-production testing
 - **Auto-deploy**: On push to `develop` branch
@@ -179,6 +191,7 @@ kubectl rollout status deployment/noa-api
 - **Resources**: 50% of production capacity
 
 #### Production Environment
+
 - **URL**: https://noa-server.example.com
 - **Purpose**: Live customer traffic
 - **Auto-deploy**: On push to `main` branch (with approvals)
@@ -193,6 +206,7 @@ kubectl rollout status deployment/noa-api
 ### Monitoring Stack
 
 #### Components
+
 - **Prometheus**: Metrics collection and storage
 - **Grafana**: Visualization and dashboards
 - **Alertmanager**: Alert routing and notification
@@ -220,6 +234,7 @@ docker-compose -f Docker/docker-compose.monitoring.yml ps
 ### Key Metrics
 
 #### Golden Signals
+
 1. **Latency**: Response time for requests
    - Target: < 100ms (95th percentile)
    - Alert: > 100ms for 5 minutes
@@ -237,6 +252,7 @@ docker-compose -f Docker/docker-compose.monitoring.yml ps
    - Alert: > 95% for 5 minutes
 
 #### Business Metrics
+
 - User registrations/hour
 - API calls by endpoint
 - Authentication success rate
@@ -246,28 +262,30 @@ docker-compose -f Docker/docker-compose.monitoring.yml ps
 
 #### Alert Severity Levels
 
-| Severity | Response Time | Notification Channels | Example |
-|----------|---------------|----------------------|---------|
-| Critical | Immediate | PagerDuty, Slack, Email | Service down, data loss |
-| High | < 15 minutes | Slack, Email | Error rate spike, latency degradation |
-| Warning | < 1 hour | Slack | Resource utilization high |
-| Info | Best effort | Slack | Deployment notifications |
+| Severity | Response Time | Notification Channels   | Example                               |
+| -------- | ------------- | ----------------------- | ------------------------------------- |
+| Critical | Immediate     | PagerDuty, Slack, Email | Service down, data loss               |
+| High     | < 15 minutes  | Slack, Email            | Error rate spike, latency degradation |
+| Warning  | < 1 hour      | Slack                   | Resource utilization high             |
+| Info     | Best effort   | Slack                   | Deployment notifications              |
 
 #### Alert Routes
 
 ```yaml
 Critical Alerts → PagerDuty + Slack (#critical-alerts) + Email (oncall@)
-Security Alerts → Slack (#security-alerts) + Email (security@)
-Performance → Slack (#engineering) + Email (team@)
-Infrastructure → Slack (#ops) + Email (ops@)
+Security Alerts → Slack (#security-alerts) + Email (security@) Performance →
+Slack (#engineering) + Email (team@) Infrastructure → Slack (#ops) + Email
+(ops@)
 ```
 
 ### Dashboards
 
 #### Main Dashboard (Grafana)
+
 Access: http://localhost:3001/d/noa-server-production
 
 **Panels**:
+
 1. API Response Time (95th/99th percentile)
 2. Service Uptime (target: 99.9%)
 3. Request Rate by Status Code
@@ -296,6 +314,7 @@ curl -X POST http://admin:admin@localhost:3001/api/dashboards/db \
 ### Incident Severity Classification
 
 #### SEV1 (Critical)
+
 - **Definition**: Complete service outage or data loss
 - **Response Time**: Immediate
 - **Actions**:
@@ -306,6 +325,7 @@ curl -X POST http://admin:admin@localhost:3001/api/dashboards/db \
   5. Start incident timeline
 
 #### SEV2 (High)
+
 - **Definition**: Major feature degradation affecting >50% users
 - **Response Time**: < 15 minutes
 - **Actions**:
@@ -315,6 +335,7 @@ curl -X POST http://admin:admin@localhost:3001/api/dashboards/db \
   4. Begin mitigation
 
 #### SEV3 (Medium)
+
 - **Definition**: Minor feature degradation or isolated issues
 - **Response Time**: < 1 hour
 - **Actions**:
@@ -421,14 +442,14 @@ After resolving a SEV1 or SEV2 incident:
 
 ### Performance Targets
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| API Response Time (p95) | < 100ms | Prometheus |
-| API Response Time (p99) | < 200ms | Prometheus |
-| Database Query Time (p95) | < 50ms | Prometheus |
-| Cache Hit Rate | > 90% | Redis metrics |
-| Time to First Byte (TTFB) | < 50ms | Lighthouse |
-| Page Load Time | < 2s | Lighthouse |
+| Metric                    | Target  | Measurement   |
+| ------------------------- | ------- | ------------- |
+| API Response Time (p95)   | < 100ms | Prometheus    |
+| API Response Time (p99)   | < 200ms | Prometheus    |
+| Database Query Time (p95) | < 50ms  | Prometheus    |
+| Cache Hit Rate            | > 90%   | Redis metrics |
+| Time to First Byte (TTFB) | < 50ms  | Lighthouse    |
+| Page Load Time            | < 2s    | Lighthouse    |
 
 ### Optimization Techniques
 
@@ -472,7 +493,7 @@ const cache = {
     }
 
     return null;
-  }
+  },
 };
 ```
 
@@ -482,7 +503,7 @@ const cache = {
 // Implement request batching
 app.post('/api/batch', async (req, res) => {
   const results = await Promise.all(
-    req.body.requests.map(r => processRequest(r))
+    req.body.requests.map((r) => processRequest(r))
   );
   res.json(results);
 });
@@ -500,7 +521,10 @@ app.get('/api/items', (req, res) => {
   const limit = parseInt(req.query.limit) || 50;
   const offset = (page - 1) * limit;
 
-  const items = db.query('SELECT * FROM items LIMIT ? OFFSET ?', [limit, offset]);
+  const items = db.query('SELECT * FROM items LIMIT ? OFFSET ?', [
+    limit,
+    offset,
+  ]);
   res.json({ items, page, total: totalCount });
 });
 ```
@@ -521,34 +545,34 @@ spec:
   minReplicas: 3
   maxReplicas: 50
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: 80
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
   behavior:
     scaleDown:
       stabilizationWindowSeconds: 300
       policies:
-      - type: Percent
-        value: 50
-        periodSeconds: 60
+        - type: Percent
+          value: 50
+          periodSeconds: 60
     scaleUp:
       stabilizationWindowSeconds: 0
       policies:
-      - type: Percent
-        value: 100
-        periodSeconds: 15
-      - type: Pods
-        value: 4
-        periodSeconds: 15
+        - type: Percent
+          value: 100
+          periodSeconds: 15
+        - type: Pods
+          value: 4
+          periodSeconds: 15
 ```
 
 ### Performance Testing
@@ -574,6 +598,7 @@ k6 run --vus 50 --duration 4h performance-tests/soak-test.js
 ### Security Scanning
 
 #### Automated Scans (Daily)
+
 - Dependency vulnerabilities (npm audit, Snyk)
 - Container vulnerabilities (Trivy, Grype)
 - Code security (CodeQL)
@@ -581,6 +606,7 @@ k6 run --vus 50 --duration 4h performance-tests/soak-test.js
 - License compliance
 
 #### Manual Security Review (Monthly)
+
 - Penetration testing
 - Security architecture review
 - Access control audit
@@ -622,24 +648,24 @@ spec:
     matchLabels:
       app: noa-api
   policyTypes:
-  - Ingress
-  - Egress
+    - Ingress
+    - Egress
   ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          role: frontend
-    ports:
-    - protocol: TCP
-      port: 3000
+    - from:
+        - podSelector:
+            matchLabels:
+              role: frontend
+      ports:
+        - protocol: TCP
+          port: 3000
   egress:
-  - to:
-    - podSelector:
-        matchLabels:
-          role: database
-    ports:
-    - protocol: TCP
-      port: 5432
+    - to:
+        - podSelector:
+            matchLabels:
+              role: database
+      ports:
+        - protocol: TCP
+          port: 5432
 ```
 
 #### 3. Authentication & Authorization
@@ -693,7 +719,7 @@ function auditLog(event, user, resource, action, result) {
     action,
     result,
     ip: req.ip,
-    userAgent: req.headers['user-agent']
+    userAgent: req.headers['user-agent'],
   });
 }
 
@@ -722,6 +748,7 @@ auditLog('data.modify', user, 'orders', 'delete', 'denied');
 **Symptoms**: CI/CD pipeline fails consistently
 
 **Diagnosis**:
+
 ```bash
 # Check workflow runs
 gh run list --workflow=ci-comprehensive.yml
@@ -734,6 +761,7 @@ gh run download <run-id>
 ```
 
 **Solutions**:
+
 - Check for test failures
 - Verify dependencies are up to date
 - Review security scan results
@@ -744,6 +772,7 @@ gh run download <run-id>
 **Symptoms**: Deployment takes > 30 minutes
 
 **Diagnosis**:
+
 ```bash
 # Check pipeline timing
 gh run view <run-id> --log
@@ -753,6 +782,7 @@ time kubectl apply -f k8s/production/
 ```
 
 **Solutions**:
+
 - Enable Docker layer caching
 - Parallelize test execution
 - Use incremental builds
@@ -763,6 +793,7 @@ time kubectl apply -f k8s/production/
 **Symptoms**: Missing metrics or alerts
 
 **Diagnosis**:
+
 ```bash
 # Check Prometheus targets
 curl http://localhost:9090/api/v1/targets
@@ -772,6 +803,7 @@ kubectl exec -it prometheus-0 -- promtool check config /etc/prometheus/prometheu
 ```
 
 **Solutions**:
+
 - Verify service discovery
 - Check network policies
 - Review metric endpoints
@@ -829,5 +861,4 @@ curl https://noa-server.example.com/health
 - **Incident Channel**: #incidents
 - **Team Email**: devops@noa-server.example.com
 
-**Last Updated**: 2025-10-22
-**Maintained By**: DevOps Team
+**Last Updated**: 2025-10-22 **Maintained By**: DevOps Team

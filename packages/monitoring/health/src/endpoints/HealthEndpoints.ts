@@ -23,7 +23,7 @@ export class HealthEndpoints {
     this.options = {
       basePath: options.basePath || '/health',
       enableDetailedErrors: options.enableDetailedErrors !== false,
-      enableMetrics: options.enableMetrics !== false
+      enableMetrics: options.enableMetrics !== false,
     };
 
     this.router = Router();
@@ -75,13 +75,13 @@ export class HealthEndpoints {
       res.status(statusCode).json({
         status: health.status,
         timestamp: health.timestamp,
-        checks: health.checks.map(check => ({
+        checks: health.checks.map((check) => ({
           name: check.name,
           status: check.status,
           duration: check.duration,
-          message: check.message
+          message: check.message,
         })),
-        metadata: health.metadata
+        metadata: health.metadata,
       });
     } catch (error) {
       next(error);
@@ -99,7 +99,7 @@ export class HealthEndpoints {
       res.status(statusCode).json({
         status: health.status,
         timestamp: health.timestamp,
-        checks: this.simplifyChecks(health.checks)
+        checks: this.simplifyChecks(health.checks),
       });
     } catch (error) {
       next(error);
@@ -117,7 +117,7 @@ export class HealthEndpoints {
       res.status(statusCode).json({
         status: health.status,
         timestamp: health.timestamp,
-        checks: this.simplifyChecks(health.checks)
+        checks: this.simplifyChecks(health.checks),
       });
     } catch (error) {
       next(error);
@@ -135,7 +135,7 @@ export class HealthEndpoints {
       res.status(statusCode).json({
         status: health.status,
         timestamp: health.timestamp,
-        checks: this.simplifyChecks(health.checks)
+        checks: this.simplifyChecks(health.checks),
       });
     } catch (error) {
       next(error);
@@ -151,7 +151,7 @@ export class HealthEndpoints {
 
       res.status(200).json({
         timestamp: new Date(),
-        metrics
+        metrics,
       });
     } catch (error) {
       next(error);
@@ -161,7 +161,11 @@ export class HealthEndpoints {
   /**
    * Handle detailed status endpoint
    */
-  private async handleDetailedStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
+  private async handleDetailedStatus(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const health = await this.manager.checkAll();
       const statusCode = this.getHttpStatusCode(health.status);
@@ -169,15 +173,15 @@ export class HealthEndpoints {
       res.status(statusCode).json({
         status: health.status,
         timestamp: health.timestamp,
-        checks: health.checks.map(check => ({
+        checks: health.checks.map((check) => ({
           name: check.name,
           status: check.status,
           duration: check.duration,
           message: check.message,
           metadata: check.metadata,
-          error: this.options.enableDetailedErrors ? check.error : undefined
+          error: this.options.enableDetailedErrors ? check.error : undefined,
         })),
-        metadata: health.metadata
+        metadata: health.metadata,
       });
     } catch (error) {
       next(error);
@@ -187,10 +191,12 @@ export class HealthEndpoints {
   /**
    * Simplify check results for probes
    */
-  private simplifyChecks(checks: Array<{ name: string; status: HealthStatus }>): Array<{ name: string; status: string }> {
-    return checks.map(check => ({
+  private simplifyChecks(
+    checks: Array<{ name: string; status: HealthStatus }>
+  ): Array<{ name: string; status: string }> {
+    return checks.map((check) => ({
       name: check.name,
-      status: check.status
+      status: check.status,
     }));
   }
 

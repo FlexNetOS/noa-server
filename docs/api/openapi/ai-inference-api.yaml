@@ -1,0 +1,868 @@
+openapi: 3.1.0
+info:
+  title: NOA Server AI Inference API
+  version: 1.0.0
+  description: |
+    Comprehensive AI inference API supporting multiple providers (OpenAI, Claude, llama.cpp).
+
+    Features:
+    - Chat completions with streaming support
+    - Text embeddings generation
+    - Multi-provider model switching
+    - Real-time provider health monitoring
+    - Async job processing
+
+  contact:
+    name: API Support
+    email: support@noa-server.io
+    url: https://noa-server.io/support
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.noa-server.io/api/v1
+    description: Production server
+  - url: https://staging-api.noa-server.io/api/v1
+    description: Staging server
+  - url: http://localhost:3000/api/v1
+    description: Development server
+
+tags:
+  - name: Inference
+    description: AI inference operations (chat, completions, embeddings)
+  - name: Models
+    description: Model management and provider switching
+  - name: Status
+    description: Service health and provider status
+  - name: Jobs
+    description: Asynchronous job management
+
+security:
+  - BearerAuth: []
+  - ApiKeyAuth: []
+
+paths:
+  /inference/chat:
+    post:
+      summary: Generate chat completion
+      description: |
+        Generate conversational AI responses using the active model.
+        Supports multi-turn conversations with system, user, and assistant roles.
+      operationId: createChatCompletion
+      tags:
+        - Inference
+      security:
+        - BearerAuth: []
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatCompletionRequest'
+            examples:
+              basic:
+                summary: Basic chat request
+                value:
+                  messages:
+                    - role: system
+                      content: You are a helpful AI assistant.
+                    - role: user
+                      content: What is the capital of France?
+                  model: claude-3-5-sonnet-20241022
+              advanced:
+                summary: Advanced with configuration
+                value:
+                  messages:
+                    - role: system
+                      content: You are a code review expert.
+                    - role: user
+                      content: Review this function for bugs.
+                  model: gpt-4
+                  config:
+                    temperature: 0.7
+                    max_tokens: 2048
+                    top_p: 0.9
+                    stream: false
+      responses:
+        '200':
+          description: Successful chat completion
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+              description: Unique request identifier
+            X-Provider:
+              schema:
+                type: string
+              description: AI provider used (openai, claude, llama.cpp)
+            X-Model:
+              schema:
+                type: string
+              description: Specific model used
+            X-Tokens-Used:
+              schema:
+                type: integer
+              description: Total tokens consumed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatCompletionResponse'
+              examples:
+                success:
+                  value:
+                    id: chatcmpl-abc123
+                    object: chat.completion
+                    created: 1677652288
+                    model: claude-3-5-sonnet-20241022
+                    choices:
+                      - index: 0
+                        message:
+                          role: assistant
+                          content: The capital of France is Paris.
+                        finish_reason: stop
+                    usage:
+                      prompt_tokens: 28
+                      completion_tokens: 9
+                      total_tokens: 37
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /inference/stream:
+    post:
+      summary: Streaming chat completion
+      description: |
+        Generate chat completion with server-sent events for real-time streaming.
+        Compatible with OpenAI streaming format.
+      operationId: streamChatCompletion
+      tags:
+        - Inference
+      security:
+        - BearerAuth: []
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ChatCompletionRequest'
+                - type: object
+                  properties:
+                    config:
+                      type: object
+                      properties:
+                        stream:
+                          type: boolean
+                          default: true
+            examples:
+              streaming:
+                value:
+                  messages:
+                    - role: user
+                      content: Tell me a story about AI.
+                  model: gpt-3.5-turbo
+                  config:
+                    stream: true
+                    temperature: 0.8
+      responses:
+        '200':
+          description: Streaming response (text/event-stream)
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                format: binary
+              examples:
+                stream:
+                  value: |
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-3.5-turbo","choices":[{"index":0,"delta":{"role":"assistant","content":"Once"},"finish_reason":null}]}
+
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-3.5-turbo","choices":[{"index":0,"delta":{"content":" upon"},"finish_reason":null}]}
+
+                    data: [DONE]
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /inference/embeddings:
+    post:
+      summary: Generate embeddings
+      description: |
+        Create vector embeddings for text input.
+        Supports single string or array of strings.
+      operationId: createEmbedding
+      tags:
+        - Inference
+      security:
+        - BearerAuth: []
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmbeddingRequest'
+            examples:
+              single:
+                summary: Single text embedding
+                value:
+                  input: The quick brown fox jumps over the lazy dog
+                  model: text-embedding-ada-002
+              batch:
+                summary: Batch embeddings
+                value:
+                  input:
+                    - First document to embed
+                    - Second document to embed
+                    - Third document to embed
+                  model: text-embedding-ada-002
+      responses:
+        '200':
+          description: Embeddings generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmbeddingResponse'
+              examples:
+                success:
+                  value:
+                    object: list
+                    data:
+                      - object: embedding
+                        index: 0
+                        embedding: [0.0023, -0.0019, 0.0043, ...]
+                    model: text-embedding-ada-002
+                    usage:
+                      prompt_tokens: 8
+                      total_tokens: 8
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /models:
+    get:
+      summary: List all available models
+      description: |
+        Retrieve list of all AI models across all providers.
+        Includes model metadata, capabilities, and pricing.
+      operationId: listModels
+      tags:
+        - Models
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of available models
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  models:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Model'
+              examples:
+                success:
+                  value:
+                    models:
+                      - id: gpt-4
+                        provider: openai
+                        name: GPT-4
+                        capabilities: [chat, completion]
+                        maxTokens: 8192
+                        pricing:
+                          input: 0.03
+                          output: 0.06
+                      - id: claude-3-5-sonnet-20241022
+                        provider: claude
+                        name: Claude 3.5 Sonnet
+                        capabilities: [chat, completion]
+                        maxTokens: 200000
+                        pricing:
+                          input: 0.003
+                          output: 0.015
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /models/{provider}:
+    get:
+      summary: List models for specific provider
+      description: Retrieve models from a single AI provider
+      operationId: listModelsByProvider
+      tags:
+        - Models
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [openai, claude, llama.cpp]
+          description: AI provider name
+      responses:
+        '200':
+          description: Provider-specific models
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  models:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Model'
+        '404':
+          description: Provider not found
+
+  /models/switch:
+    post:
+      summary: Switch active AI model
+      description: |
+        Change the default model for inference operations.
+        Affects subsequent requests until changed again.
+      operationId: switchModel
+      tags:
+        - Models
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - provider
+                - model
+              properties:
+                provider:
+                  type: string
+                  enum: [openai, claude, llama.cpp]
+                  description: AI provider
+                model:
+                  type: string
+                  description: Model identifier
+            examples:
+              switchToClaude:
+                value:
+                  provider: claude
+                  model: claude-3-5-sonnet-20241022
+              switchToGPT4:
+                value:
+                  provider: openai
+                  model: gpt-4
+      responses:
+        '200':
+          description: Model switched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  provider:
+                    type: string
+                  model:
+                    type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /status/health:
+    get:
+      summary: API health status
+      description: Overall health status of the AI inference service
+      operationId: getHealthStatus
+      tags:
+        - Status
+      security: []
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  health:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        enum: [healthy, degraded, unhealthy]
+                      timestamp:
+                        type: string
+                        format: date-time
+                      uptime:
+                        type: number
+                        description: Uptime in seconds
+        '503':
+          description: Service unhealthy
+
+  /status/providers:
+    get:
+      summary: Get provider status
+      description: Health and availability status for all AI providers
+      operationId: getProviderStatus
+      tags:
+        - Status
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Provider status information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  providers:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProviderStatus'
+
+  /jobs:
+    post:
+      summary: Submit async inference job
+      description: |
+        Create asynchronous inference job for long-running operations.
+        Returns job ID for status polling.
+      operationId: createJob
+      tags:
+        - Jobs
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobRequest'
+      responses:
+        '202':
+          description: Job accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobResponse'
+
+  /jobs/{jobId}:
+    get:
+      summary: Get job status
+      description: Retrieve status and results of async job
+      operationId: getJobStatus
+      tags:
+        - Jobs
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Job status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobStatus'
+        '404':
+          description: Job not found
+
+    delete:
+      summary: Cancel job
+      description: Cancel pending or running async job
+      operationId: cancelJob
+      tags:
+        - Jobs
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Job cancelled
+        '404':
+          description: Job not found
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from /auth/login
+
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for service authentication
+
+  schemas:
+    ChatCompletionRequest:
+      type: object
+      required:
+        - messages
+        - model
+      properties:
+        messages:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+              - role
+              - content
+            properties:
+              role:
+                type: string
+                enum: [system, user, assistant]
+              content:
+                type: string
+        model:
+          type: string
+          description: Model identifier
+          examples:
+            - gpt-4
+            - claude-3-5-sonnet-20241022
+            - llama-2-70b
+        config:
+          type: object
+          properties:
+            temperature:
+              type: number
+              minimum: 0
+              maximum: 2
+              default: 1
+              description: Sampling temperature
+            max_tokens:
+              type: integer
+              minimum: 1
+              maximum: 100000
+              description: Maximum tokens to generate
+            top_p:
+              type: number
+              minimum: 0
+              maximum: 1
+              default: 1
+              description: Nucleus sampling parameter
+            frequency_penalty:
+              type: number
+              minimum: -2
+              maximum: 2
+              default: 0
+            presence_penalty:
+              type: number
+              minimum: -2
+              maximum: 2
+              default: 0
+            stop:
+              oneOf:
+                - type: string
+                - type: array
+                  items:
+                    type: string
+              description: Stop sequences
+            stream:
+              type: boolean
+              default: false
+              description: Enable streaming response
+
+    ChatCompletionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+          enum: [chat.completion]
+        created:
+          type: integer
+          format: int64
+        model:
+          type: string
+        choices:
+          type: array
+          items:
+            type: object
+            properties:
+              index:
+                type: integer
+              message:
+                type: object
+                properties:
+                  role:
+                    type: string
+                    enum: [assistant]
+                  content:
+                    type: string
+              finish_reason:
+                type: string
+                enum: [stop, length, content_filter, null]
+        usage:
+          $ref: '#/components/schemas/Usage'
+
+    EmbeddingRequest:
+      type: object
+      required:
+        - input
+        - model
+      properties:
+        input:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+          description: Text to embed
+        model:
+          type: string
+          description: Embedding model
+          examples:
+            - text-embedding-ada-002
+            - text-embedding-3-small
+
+    EmbeddingResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum: [list]
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              object:
+                type: string
+                enum: [embedding]
+              index:
+                type: integer
+              embedding:
+                type: array
+                items:
+                  type: number
+        model:
+          type: string
+        usage:
+          $ref: '#/components/schemas/Usage'
+
+    Usage:
+      type: object
+      properties:
+        prompt_tokens:
+          type: integer
+        completion_tokens:
+          type: integer
+        total_tokens:
+          type: integer
+
+    Model:
+      type: object
+      properties:
+        id:
+          type: string
+        provider:
+          type: string
+        name:
+          type: string
+        capabilities:
+          type: array
+          items:
+            type: string
+        maxTokens:
+          type: integer
+        pricing:
+          type: object
+          properties:
+            input:
+              type: number
+              description: Price per 1K input tokens
+            output:
+              type: number
+              description: Price per 1K output tokens
+
+    ProviderStatus:
+      type: object
+      properties:
+        name:
+          type: string
+        status:
+          type: string
+          enum: [online, offline, degraded]
+        latency:
+          type: number
+          description: Average latency in ms
+        errorRate:
+          type: number
+          description: Error rate percentage
+        lastCheck:
+          type: string
+          format: date-time
+
+    JobRequest:
+      type: object
+      required:
+        - type
+        - payload
+      properties:
+        type:
+          type: string
+          enum: [chat, embedding, completion]
+        payload:
+          type: object
+        priority:
+          type: string
+          enum: [low, normal, high]
+          default: normal
+
+    JobResponse:
+      type: object
+      properties:
+        jobId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [pending, running, completed, failed]
+        createdAt:
+          type: string
+          format: date-time
+
+    JobStatus:
+      type: object
+      properties:
+        jobId:
+          type: string
+        status:
+          type: string
+          enum: [pending, running, completed, failed, cancelled]
+        progress:
+          type: number
+          minimum: 0
+          maximum: 100
+        result:
+          type: object
+          description: Job result (if completed)
+        error:
+          type: string
+          description: Error message (if failed)
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            type:
+              type: string
+            code:
+              type: string
+            param:
+              type: string
+
+  responses:
+    BadRequest:
+      description: Bad request - invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            validation:
+              value:
+                error:
+                  message: Invalid request parameters
+                  type: validation_error
+                  code: invalid_request_error
+
+    Unauthorized:
+      description: Unauthorized - missing or invalid authentication
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            unauthorized:
+              value:
+                error:
+                  message: Invalid authentication credentials
+                  type: authentication_error
+                  code: invalid_api_key
+
+    RateLimitExceeded:
+      description: Rate limit exceeded
+      headers:
+        X-RateLimit-Limit:
+          schema:
+            type: integer
+          description: Request limit per window
+        X-RateLimit-Remaining:
+          schema:
+            type: integer
+          description: Remaining requests
+        X-RateLimit-Reset:
+          schema:
+            type: integer
+          description: Unix timestamp when limit resets
+        Retry-After:
+          schema:
+            type: integer
+          description: Seconds until retry
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            rateLimit:
+              value:
+                error:
+                  message: Rate limit exceeded
+                  type: rate_limit_error
+                  code: rate_limit_exceeded
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            serverError:
+              value:
+                error:
+                  message: Internal server error
+                  type: server_error
+                  code: internal_error

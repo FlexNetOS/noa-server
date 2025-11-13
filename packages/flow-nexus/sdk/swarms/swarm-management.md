@@ -1,13 +1,14 @@
 # AI Swarm Management
 
-Comprehensive guide to creating, managing, and orchestrating AI swarms using Flow Nexus MCP tools.
+Comprehensive guide to creating, managing, and orchestrating AI swarms using
+Flow Nexus MCP tools.
 
 ## MCP Tools for Swarm Management
 
 Flow Nexus provides 14 specialized MCP tools for AI swarm management:
 
 - `mcp__flow-nexus__swarm_init` - Initialize new swarms
-- `mcp__flow-nexus__swarm_list` - List all swarms 
+- `mcp__flow-nexus__swarm_list` - List all swarms
 - `mcp__flow-nexus__swarm_status` - Get swarm details
 - `mcp__flow-nexus__swarm_scale` - Scale swarm agents
 - `mcp__flow-nexus__swarm_destroy` - Destroy swarms
@@ -27,13 +28,14 @@ Initialize a new AI swarm with specified topology:
 const swarm = await client.swarms.init({
   topology: 'hierarchical',
   maxAgents: 8,
-  strategy: 'balanced'
+  strategy: 'balanced',
 });
 
 console.log('Swarm created:', swarm);
 ```
 
 **Real Response (Tested):**
+
 ```json
 {
   "success": true,
@@ -45,7 +47,7 @@ console.log('Swarm created:', swarm);
   "agents_deployed": 5,
   "templates_used": [
     "base",
-    "python", 
+    "python",
     "wfnm99zasqzu8af66lt2",
     "react",
     "nextjs"
@@ -60,6 +62,7 @@ console.log('Swarm created:', swarm);
 Flow Nexus supports four swarm topologies:
 
 #### 1. Hierarchical Topology
+
 - **Structure**: Tree-like with leader-worker relationships
 - **Best for**: Complex tasks requiring coordination
 - **Agents**: Coordinator leads specialized workers
@@ -68,11 +71,12 @@ Flow Nexus supports four swarm topologies:
 const hierarchical = await client.swarms.init({
   topology: 'hierarchical',
   maxAgents: 8,
-  strategy: 'specialized'
+  strategy: 'specialized',
 });
 ```
 
-#### 2. Mesh Topology  
+#### 2. Mesh Topology
+
 - **Structure**: Peer-to-peer with full interconnection
 - **Best for**: Collaborative tasks and consensus building
 - **Agents**: All agents can communicate directly
@@ -81,11 +85,12 @@ const hierarchical = await client.swarms.init({
 const mesh = await client.swarms.init({
   topology: 'mesh',
   maxAgents: 5,
-  strategy: 'adaptive'
+  strategy: 'adaptive',
 });
 ```
 
 #### 3. Ring Topology
+
 - **Structure**: Circular connection pattern
 - **Best for**: Sequential processing pipelines
 - **Agents**: Each agent connects to next/previous
@@ -94,11 +99,12 @@ const mesh = await client.swarms.init({
 const ring = await client.swarms.init({
   topology: 'ring',
   maxAgents: 4,
-  strategy: 'balanced'
+  strategy: 'balanced',
 });
 ```
 
 #### 4. Star Topology
+
 - **Structure**: Central hub with spoke connections
 - **Best for**: Simple coordination and centralized control
 - **Agents**: One coordinator, multiple workers
@@ -107,7 +113,7 @@ const ring = await client.swarms.init({
 const star = await client.swarms.init({
   topology: 'star',
   maxAgents: 3,
-  strategy: 'balanced'
+  strategy: 'balanced',
 });
 ```
 
@@ -120,13 +126,14 @@ Get comprehensive list of all swarms:
 ```javascript
 // List active swarms
 const swarms = await client.swarms.list({
-  status: 'active'
+  status: 'active',
 });
 
 console.log('Active swarms:', swarms.swarms.length);
 ```
 
 **Real Response (Tested) - Shows 48 Active Swarms:**
+
 ```json
 {
   "success": true,
@@ -141,7 +148,7 @@ console.log('Active swarms:', swarms.swarms.length);
     },
     {
       "id": "3a767ff7-be69-408f-898a-a4a5636a1f46",
-      "topology": "hierarchical", 
+      "topology": "hierarchical",
       "max_agents": 5,
       "status": "active",
       "agents": 7,
@@ -151,7 +158,7 @@ console.log('Active swarms:', swarms.swarms.length);
       "id": "0c3111ed-a48d-4a7a-969d-611fcdba1a1b",
       "topology": "mesh",
       "max_agents": 5,
-      "status": "active", 
+      "status": "active",
       "agents": 6,
       "created_at": "2025-09-10T17:34:37.298+00:00"
     }
@@ -166,12 +173,15 @@ Retrieve detailed information about a specific swarm:
 
 ```javascript
 // Get detailed swarm status
-const status = await client.swarms.getStatus('eba303e4-4617-4524-a68c-8f512889cd61');
+const status = await client.swarms.getStatus(
+  'eba303e4-4617-4524-a68c-8f512889cd61'
+);
 
 console.log('Swarm details:', status);
 ```
 
 **Real Status Response (Tested):**
+
 ```json
 {
   "success": true,
@@ -184,7 +194,7 @@ console.log('Swarm details:', status);
     "agents": [
       {
         "id": "agent_0",
-        "type": "coordinator", 
+        "type": "coordinator",
         "status": "active",
         "template": "base",
         "sandboxId": "ijktr4dbkzukqsytu3n06",
@@ -193,7 +203,7 @@ console.log('Swarm details:', status);
       {
         "id": "agent_1",
         "type": "worker",
-        "status": "active", 
+        "status": "active",
         "template": "python",
         "sandboxId": "i1mtcpdzkfhoxq2lfduy4",
         "sandbox_running": false
@@ -202,7 +212,7 @@ console.log('Swarm details:', status);
         "id": "agent_2",
         "type": "analyzer",
         "status": "active",
-        "template": "wfnm99zasqzu8af66lt2", 
+        "template": "wfnm99zasqzu8af66lt2",
         "sandboxId": "ikvwnlxg7ewiealxn9irs",
         "sandbox_running": false
       },
@@ -215,7 +225,7 @@ console.log('Swarm details:', status);
         "sandbox_running": false
       },
       {
-        "id": "agent_4", 
+        "id": "agent_4",
         "type": "worker",
         "status": "active",
         "template": "nextjs",
@@ -240,13 +250,14 @@ Dynamically adjust the number of agents in a swarm:
 // Scale swarm to 6 agents
 const scaleResult = await client.swarms.scale({
   swarm_id: 'eba303e4-4617-4524-a68c-8f512889cd61',
-  target_agents: 6
+  target_agents: 6,
 });
 
 console.log('Scaling result:', scaleResult);
 ```
 
 **Real Scaling Response (Tested):**
+
 ```json
 {
   "success": true,
@@ -267,13 +278,13 @@ console.log('Scaling result:', scaleResult);
 // Scale down to reduce costs
 const scaleDown = await client.swarms.scale({
   swarm_id: 'swarm_123',
-  target_agents: 3
+  target_agents: 3,
 });
 
 // Scale up for heavy workload
 const scaleUp = await client.swarms.scale({
-  swarm_id: 'swarm_123', 
-  target_agents: 10
+  swarm_id: 'swarm_123',
+  target_agents: 10,
 });
 ```
 
@@ -288,13 +299,14 @@ Create specialized agents within existing swarms:
 const agent = await client.agents.spawn({
   type: 'researcher',
   name: 'research-agent-1',
-  capabilities: ['data_analysis', 'web_research', 'report_generation']
+  capabilities: ['data_analysis', 'web_research', 'report_generation'],
 });
 
 console.log('Agent created:', agent);
 ```
 
 **Real Agent Spawn Response (Tested):**
+
 ```json
 {
   "success": true,
@@ -302,11 +314,7 @@ console.log('Agent created:', agent);
   "swarm_id": "eba303e4-4617-4524-a68c-8f512889cd61",
   "type": "researcher",
   "name": "research-agent-1",
-  "capabilities": [
-    "data_analysis",
-    "web_research", 
-    "report_generation"
-  ],
+  "capabilities": ["data_analysis", "web_research", "report_generation"],
   "status": "active",
   "sandbox_id": "i8tts1k2oef0l5w47g56z"
 }
@@ -315,7 +323,7 @@ console.log('Agent created:', agent);
 ### Agent Types Available
 
 - **researcher** - Data analysis and research
-- **coder** - Code development and implementation  
+- **coder** - Code development and implementation
 - **analyst** - Performance and data analysis
 - **optimizer** - System optimization and tuning
 - **coordinator** - Task coordination and management
@@ -332,20 +340,21 @@ const task = await client.tasks.orchestrate({
   task: 'Analyze market trends for AI technologies and generate a comprehensive report',
   priority: 'high',
   strategy: 'adaptive',
-  maxAgents: 3
+  maxAgents: 3,
 });
 
 console.log('Task orchestrated:', task);
 ```
 
 **Real Task Orchestration Response (Tested):**
+
 ```json
 {
   "success": true,
   "task_id": "965f0bef-1cb9-43dd-8fd5-04865afad3db",
   "description": "Analyze market trends for AI technologies and generate a comprehensive report",
   "priority": "high",
-  "strategy": "adaptive", 
+  "strategy": "adaptive",
   "status": "pending"
 }
 ```
@@ -373,13 +382,14 @@ Browse pre-configured swarm templates:
 // List quickstart templates
 const templates = await client.swarms.listTemplates({
   category: 'quickstart',
-  includeStore: true
+  includeStore: true,
 });
 
 console.log('Available templates:', templates.templates.length);
 ```
 
 **Real Templates Response (Tested) - 5 Templates Available:**
+
 ```json
 {
   "success": true,
@@ -400,12 +410,18 @@ console.log('Available templates:', templates.templates.length);
       "source": "local"
     },
     {
-      "name": "📦 Standard Swarm", 
+      "name": "📦 Standard Swarm",
       "description": "Balanced swarm for most applications",
       "topology": "mesh",
       "maxAgents": 5,
       "strategy": "adaptive",
-      "agentTypes": ["coordinator", "worker", "analyzer", "optimizer", "monitor"],
+      "agentTypes": [
+        "coordinator",
+        "worker",
+        "analyzer",
+        "optimizer",
+        "monitor"
+      ],
       "templates": ["node", "python", "react", "nextjs", "vanilla"],
       "cost": 13,
       "icon": "🎯",
@@ -416,12 +432,30 @@ console.log('Available templates:', templates.templates.length);
     },
     {
       "name": "🔥 Advanced Swarm",
-      "description": "High-performance swarm for complex tasks", 
+      "description": "High-performance swarm for complex tasks",
       "topology": "hierarchical",
       "maxAgents": 8,
       "strategy": "specialized",
-      "agentTypes": ["coordinator", "worker", "worker", "analyzer", "optimizer", "monitor", "documenter", "tester"],
-      "templates": ["node", "python", "react", "nextjs", "vanilla", "node", "python", "node"],
+      "agentTypes": [
+        "coordinator",
+        "worker",
+        "worker",
+        "analyzer",
+        "optimizer",
+        "monitor",
+        "documenter",
+        "tester"
+      ],
+      "templates": [
+        "node",
+        "python",
+        "react",
+        "nextjs",
+        "vanilla",
+        "node",
+        "python",
+        "node"
+      ],
       "cost": 19,
       "icon": "🚀",
       "category": "quickstart",
@@ -436,12 +470,15 @@ console.log('Available templates:', templates.templates.length);
 ### Featured App Store Templates
 
 #### Claude Flow Swarm Template
+
 - **Description**: Dynamic AI agent swarm for autonomous task execution
-- **Features**: Automatic agent spawning, task decomposition, real-time monitoring
+- **Features**: Automatic agent spawning, task decomposition, real-time
+  monitoring
 - **Agent Types**: Researcher, Coder, Tester, Optimizer, Coordinator
 - **Cost**: Free (0 credits)
 
-#### Claude Flow Hive Mind Template  
+#### Claude Flow Hive Mind Template
+
 - **Description**: Hierarchical AI swarm with queen-led coordination
 - **Features**: Collective intelligence, shared memory, consensus building
 - **Use Cases**: Large-scale refactoring, system design, research analysis
@@ -455,8 +492,8 @@ const swarm = await client.swarms.createFromTemplate({
   template_id: '69895db8-9156-4014-b4e8-33b0d16b4a9a', // Claude Flow Swarm
   overrides: {
     maxAgents: 10,
-    strategy: 'specialized'
-  }
+    strategy: 'specialized',
+  },
 });
 ```
 
@@ -468,12 +505,15 @@ Clean up resources and terminate swarms:
 
 ```javascript
 // Destroy swarm and cleanup resources
-const result = await client.swarms.destroy('eba303e4-4617-4524-a68c-8f512889cd61');
+const result = await client.swarms.destroy(
+  'eba303e4-4617-4524-a68c-8f512889cd61'
+);
 
 console.log('Destruction result:', result);
 ```
 
 **Real Destruction Response (Tested):**
+
 ```json
 {
   "success": true,
@@ -501,7 +541,7 @@ console.log('Performance metrics:', {
   agent_utilization: metrics.agent_utilization,
   task_completion_rate: metrics.task_completion_rate,
   average_response_time: metrics.average_response_time,
-  error_rate: metrics.error_rate
+  error_rate: metrics.error_rate,
 });
 ```
 
@@ -515,7 +555,7 @@ console.log('Cost breakdown:', {
   agent_hours: costs.agent_hours,
   sandbox_usage: costs.sandbox_usage,
   total_credits: costs.total_credits,
-  estimated_monthly: costs.estimated_monthly
+  estimated_monthly: costs.estimated_monthly,
 });
 ```
 
@@ -552,19 +592,19 @@ try {
 // For simple tasks
 const simple = await client.swarms.init({
   topology: 'star',
-  maxAgents: 3
+  maxAgents: 3,
 });
 
 // For complex collaboration
 const complex = await client.swarms.init({
-  topology: 'mesh', 
-  maxAgents: 8
+  topology: 'mesh',
+  maxAgents: 8,
 });
 
 // For hierarchical control
 const structured = await client.swarms.init({
   topology: 'hierarchical',
-  maxAgents: 10
+  maxAgents: 10,
 });
 ```
 
@@ -589,10 +629,10 @@ async function autoScale(swarmId, taskQueue) {
     Math.ceil(taskQueue.length / 2),
     10 // max agents
   );
-  
+
   await client.swarms.scale({
     swarm_id: swarmId,
-    target_agents: optimalAgents
+    target_agents: optimalAgents,
   });
 }
 ```

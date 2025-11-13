@@ -1,11 +1,11 @@
 import {
-    Collection,
-    Db,
-    DeleteResult,
-    Document,
-    InsertOneResult,
-    MongoClient,
-    UpdateResult,
+  Collection,
+  Db,
+  DeleteResult,
+  Document,
+  InsertOneResult,
+  MongoClient,
+  UpdateResult,
 } from 'mongodb';
 import { Logger } from 'winston';
 import { MongoDBShardConfig } from '../types';

@@ -12,12 +12,7 @@
 
   "bypass": {
     "enabled": true,
-    "prefixes": [
-      "@raw:",
-      "@skip:",
-      "@direct:",
-      "@noopt:"
-    ],
+    "prefixes": ["@raw:", "@skip:", "@direct:", "@noopt:"],
     "allowAdminOverride": true
   },
 

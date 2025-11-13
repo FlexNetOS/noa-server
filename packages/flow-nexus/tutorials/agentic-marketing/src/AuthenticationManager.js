@@ -14,9 +14,9 @@ class AuthenticationManager extends EventEmitter {
       sessionFile: config.sessionFile || '.flow-nexus-session.json',
       credentialsFile: config.credentialsFile || '.flow-nexus-credentials.json',
       autoRestore: config.autoRestore !== false,
-      ...config
+      ...config,
     };
-    
+
     this.flowNexusSDK = null;
     this.sessionData = null;
   }
@@ -26,16 +26,16 @@ class AuthenticationManager extends EventEmitter {
    */
   initialize(flowNexusSDK) {
     this.flowNexusSDK = flowNexusSDK;
-    
+
     // Listen to SDK events
     this.flowNexusSDK.on('authenticated', this.handleAuthentication.bind(this));
     this.flowNexusSDK.on('logout', this.handleLogout.bind(this));
-    
+
     // Auto-restore session if enabled
     if (this.config.autoRestore) {
       this.restoreSession();
     }
-    
+
     return this;
   }
 
@@ -47,9 +47,9 @@ class AuthenticationManager extends EventEmitter {
       user: data.user,
       action: data.action,
       timestamp: new Date().toISOString(),
-      authenticated: true
+      authenticated: true,
     };
-    
+
     this.saveSession();
     this.emit('session:saved', this.sessionData);
   }
@@ -67,7 +67,7 @@ class AuthenticationManager extends EventEmitter {
    */
   saveSession() {
     if (!this.sessionData) return;
-    
+
     try {
       const sessionPath = path.resolve(this.config.sessionFile);
       fs.writeFileSync(sessionPath, JSON.stringify(this.sessionData, null, 2));
@@ -82,15 +82,15 @@ class AuthenticationManager extends EventEmitter {
   restoreSession() {
     try {
       const sessionPath = path.resolve(this.config.sessionFile);
-      
+
       if (fs.existsSync(sessionPath)) {
         const sessionContent = fs.readFileSync(sessionPath, 'utf8');
         this.sessionData = JSON.parse(sessionContent);
-        
+
         // Check if session is still valid (within 24 hours)
         const sessionAge = new Date() - new Date(this.sessionData.timestamp);
         const maxAge = 24 * 60 * 60 * 1000; // 24 hours
-        
+
         if (sessionAge < maxAge) {
           this.emit('session:restored', this.sessionData);
           return true;
@@ -104,7 +104,7 @@ class AuthenticationManager extends EventEmitter {
       console.warn('Failed to restore session:', error.message);
       this.clearSession();
     }
-    
+
     return false;
   }
 
@@ -113,7 +113,7 @@ class AuthenticationManager extends EventEmitter {
    */
   clearSession() {
     this.sessionData = null;
-    
+
     try {
       const sessionPath = path.resolve(this.config.sessionFile);
       if (fs.existsSync(sessionPath)) {
@@ -132,9 +132,9 @@ class AuthenticationManager extends EventEmitter {
       email,
       password,
       action,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
-    
+
     try {
       const credentialsPath = path.resolve(this.config.credentialsFile);
       fs.writeFileSync(credentialsPath, JSON.stringify(credentials, null, 2));
@@ -159,22 +159,22 @@ class AuthenticationManager extends EventEmitter {
    */
   async processCredentials() {
     const credentialsPath = path.resolve(this.config.credentialsFile);
-    
+
     if (!fs.existsSync(credentialsPath)) {
       return null;
     }
-    
+
     try {
       const credentialsContent = fs.readFileSync(credentialsPath, 'utf8');
       const credentials = JSON.parse(credentialsContent);
-      
+
       // Delete credentials file immediately for security
       fs.unlinkSync(credentialsPath);
-      
+
       if (!this.flowNexusSDK) {
         throw new Error('Flow Nexus SDK not initialized');
       }
-      
+
       // Authenticate using saved credentials
       if (credentials.action === 'register') {
         return await this.flowNexusSDK.register(
@@ -200,9 +200,9 @@ class AuthenticationManager extends EventEmitter {
     }
 
     const inquirer = require('inquirer');
-    
+
     console.log('\n🔐 Flow Nexus Authentication Required\n');
-    
+
     const { action } = await inquirer.prompt([
       {
         type: 'list',
@@ -211,15 +211,15 @@ class AuthenticationManager extends EventEmitter {
         choices: [
           { name: 'Yes, I want to login', value: 'login' },
           { name: 'No, I need to register', value: 'register' },
-          { name: 'Skip for now', value: 'skip' }
-        ]
-      }
+          { name: 'Skip for now', value: 'skip' },
+        ],
+      },
     ]);
-    
+
     if (action === 'skip') {
       return { success: false, skipped: true };
     }
-    
+
     const { email, password } = await inquirer.prompt([
       {
         type: 'input',
@@ -228,16 +228,16 @@ class AuthenticationManager extends EventEmitter {
         validate: (input) => {
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           return emailRegex.test(input) || 'Please enter a valid email';
-        }
+        },
       },
       {
         type: 'password',
         name: 'password',
         message: 'Enter your password:',
-        mask: '*'
-      }
+        mask: '*',
+      },
     ]);
-    
+
     try {
       if (action === 'register') {
         return await this.flowNexusSDK.register(email, password, 'Agentic Marketing User');
@@ -258,7 +258,7 @@ class AuthenticationManager extends EventEmitter {
       authenticated: this.flowNexusSDK ? this.flowNexusSDK.isAuthenticated() : false,
       hasSession: !!this.sessionData,
       hasCredentialsFile: this.hasCredentialsFile(),
-      user: this.sessionData ? this.sessionData.user : null
+      user: this.sessionData ? this.sessionData.user : null,
     };
   }
 

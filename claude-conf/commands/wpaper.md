@@ -1,6 +1,7 @@
 # Academic Paper Writing Assistant
 
-Assist with writing academic papers following rigorous academic standards and conventions.
+Assist with writing academic papers following rigorous academic standards and
+conventions.
 
 ## Usage
 
@@ -51,10 +52,12 @@ Assist with writing academic papers following rigorous academic standards and co
 
 When assisting with academic writing:
 
-1. **Analyze Content**: Review the provided text for academic standards compliance
+1. **Analyze Content**: Review the provided text for academic standards
+   compliance
 2. **Apply Rules**: Implement sentence and section-level writing requirements
 3. **Improve Clarity**: Enhance precision and eliminate redundancy
 4. **Maintain Objectivity**: Ensure academic tone and objectivity
 5. **Provide Feedback**: Explain key improvements and reasoning
 
-Focus on transforming content to meet rigorous academic publication standards while preserving the author's intended meaning and contributions.
+Focus on transforming content to meet rigorous academic publication standards
+while preserving the author's intended meaning and contributions.

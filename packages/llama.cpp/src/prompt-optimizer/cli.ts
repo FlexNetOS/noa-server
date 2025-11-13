@@ -35,7 +35,6 @@ async function main() {
     console.log(`   Successful: ${stats.successfulOptimizations}`);
     console.log(`   Average Improvement: ${stats.averageQualityImprovement.toFixed(1)}%`);
     console.log('═'.repeat(80));
-
   } catch (error) {
     console.error('❌ Error:', error instanceof Error ? error.message : error);
     process.exit(1);

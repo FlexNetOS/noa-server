@@ -1,7 +1,7 @@
-import React, { Component, ReactNode } from "react";
-import { AlertCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import React, { Component, ReactNode } from 'react';
+import { AlertCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -29,7 +29,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // Log the error to console
-    console.error("Error caught by boundary:", error, errorInfo);
+    console.error('Error caught by boundary:', error, errorInfo);
   }
 
   reset = () => {
@@ -45,31 +45,27 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
       // Default error UI
       return (
-        <div className="flex items-center justify-center min-h-[200px] p-4">
-          <Card className="max-w-md w-full">
+        <div className="flex min-h-[200px] items-center justify-center p-4">
+          <Card className="w-full max-w-md">
             <CardContent className="p-6">
               <div className="flex items-start gap-4">
-                <AlertCircle className="h-8 w-8 text-destructive flex-shrink-0 mt-0.5" />
+                <AlertCircle className="text-destructive mt-0.5 h-8 w-8 flex-shrink-0" />
                 <div className="flex-1 space-y-2">
                   <h3 className="text-lg font-semibold">Something went wrong</h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-muted-foreground text-sm">
                     An error occurred while rendering this component.
                   </p>
                   {this.state.error.message && (
                     <details className="mt-2">
-                      <summary className="text-sm cursor-pointer text-muted-foreground hover:text-foreground">
+                      <summary className="text-muted-foreground hover:text-foreground cursor-pointer text-sm">
                         Error details
                       </summary>
-                      <pre className="mt-2 text-xs bg-muted p-2 rounded overflow-auto">
+                      <pre className="bg-muted mt-2 overflow-auto rounded p-2 text-xs">
                         {this.state.error.message}
                       </pre>
                     </details>
                   )}
-                  <Button
-                    onClick={this.reset}
-                    size="sm"
-                    className="mt-4"
-                  >
+                  <Button onClick={this.reset} size="sm" className="mt-4">
                     Try again
                   </Button>
                 </div>
@@ -82,4 +78,4 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
     return this.props.children;
   }
-} 
+}

@@ -1,8 +1,12 @@
 # Manage assistants
 
-In this guide we will show how to create, configure, and manage an [assistant](../../concepts/assistants.md).
+In this guide we will show how to create, configure, and manage an
+[assistant](../../concepts/assistants.md).
 
-First, as a brief refresher on the concept of runtime context, consider the following simple `call_model` node and context schema. Observe that this node tries to read and use the `model_provider` as defined by the `Runtime` object's `context` property.
+First, as a brief refresher on the concept of runtime context, consider the
+following simple `call_model` node and context schema. Observe that this node
+tries to read and use the `model_provider` as defined by the `Runtime` object's
+`context` property.
 
 === "Python"
 
@@ -43,17 +47,22 @@ First, as a brief refresher on the concept of runtime context, consider the foll
     }
     ```
 
-:::python
-For more information on runtime context, [see here](../../concepts/low_level.md#runtime-context).
-:::
+:::python For more information on runtime context,
+[see here](../../concepts/low_level.md#runtime-context). :::
 
 ## Create an assistant
 
 ### LangGraph SDK
 
-To create an assistant, use the [LangGraph SDK](../../concepts/sdk.md) `create` method. See the [Python](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/python_sdk_ref/#langgraph_sdk.client.AssistantsClient.create) and [JS](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/js_ts_sdk_ref/#create) SDK reference docs for more information.
+To create an assistant, use the [LangGraph SDK](../../concepts/sdk.md) `create`
+method. See the
+[Python](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/python_sdk_ref/#langgraph_sdk.client.AssistantsClient.create)
+and
+[JS](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/js_ts_sdk_ref/#create)
+SDK reference docs for more information.
 
-This example uses the same configuration schema as above, and creates an assistant with `model_name` set to `openai`.
+This example uses the same configuration schema as above, and creates an
+assistant with `model_name` set to `openai`.
 
 === "Python"
 
@@ -113,17 +122,26 @@ Output:
 
 You can also create assistants from the LangGraph Platform UI.
 
-Inside your deployment, select the "Assistants" tab. This will load a table of all of the assistants in your deployment, across all graphs.
+Inside your deployment, select the "Assistants" tab. This will load a table of
+all of the assistants in your deployment, across all graphs.
 
-To create a new assistant, select the "+ New assistant" button. This will open a form where you can specify the graph this assistant is for, as well as provide a name, description, and the desired configuration for the assistant based on the configuration schema for that graph.
+To create a new assistant, select the "+ New assistant" button. This will open a
+form where you can specify the graph this assistant is for, as well as provide a
+name, description, and the desired configuration for the assistant based on the
+configuration schema for that graph.
 
-To confirm, click "Create assistant". This will take you to [LangGraph Studio](../../concepts/langgraph_studio.md) where you can test the assistant. If you go back to the "Assistants" tab in the deployment, you will see the newly created assistant in the table.
+To confirm, click "Create assistant". This will take you to
+[LangGraph Studio](../../concepts/langgraph_studio.md) where you can test the
+assistant. If you go back to the "Assistants" tab in the deployment, you will
+see the newly created assistant in the table.
 
 ## Use an assistant
 
 ### LangGraph SDK
 
-We have now created an assistant called "Open AI Assistant" that has `model_name` defined as `openai`. We can now use this assistant with this configuration:
+We have now created an assistant called "Open AI Assistant" that has
+`model_name` defined as `openai`. We can now use this assistant with this
+configuration:
 
 === "Python"
 
@@ -225,13 +243,21 @@ Output:
 
 ### LangGraph Platform UI
 
-Inside your deployment, select the "Assistants" tab. For the assistant you would like to use, click the "Studio" button. This will open LangGraph Studio with the selected assistant. When you submit an input (either in Graph or Chat mode), the selected assistant and its configuration will be used.
+Inside your deployment, select the "Assistants" tab. For the assistant you would
+like to use, click the "Studio" button. This will open LangGraph Studio with the
+selected assistant. When you submit an input (either in Graph or Chat mode), the
+selected assistant and its configuration will be used.
 
 ## Create a new version for your assistant
 
 ### LangGraph SDK
 
-To edit the assistant, use the `update` method. This will create a new version of the assistant with the provided edits. See the [Python](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/python_sdk_ref/#langgraph_sdk.client.AssistantsClient.update) and [JS](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/js_ts_sdk_ref/#update) SDK reference docs for more information.
+To edit the assistant, use the `update` method. This will create a new version
+of the assistant with the provided edits. See the
+[Python](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/python_sdk_ref/#langgraph_sdk.client.AssistantsClient.update)
+and
+[JS](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/js_ts_sdk_ref/#update)
+SDK reference docs for more information.
 
 !!! note "Note"
 
@@ -279,23 +305,30 @@ For example, to update your assistant's system prompt:
     }'
     ```
 
-This will create a new version of the assistant with the updated parameters and set this as the active version of your assistant. If you now run your graph and pass in this assistant id, it will use this latest version.
+This will create a new version of the assistant with the updated parameters and
+set this as the active version of your assistant. If you now run your graph and
+pass in this assistant id, it will use this latest version.
 
 ### LangGraph Platform UI
 
 You can also edit assistants from the LangGraph Platform UI.
 
-Inside your deployment, select the "Assistants" tab. This will load a table of all of the assistants in your deployment, across all graphs.
+Inside your deployment, select the "Assistants" tab. This will load a table of
+all of the assistants in your deployment, across all graphs.
 
-To edit an existing assistant, select the "Edit" button for the specified assistant. This will open a form where you can edit the assistant's name, description, and configuration.
+To edit an existing assistant, select the "Edit" button for the specified
+assistant. This will open a form where you can edit the assistant's name,
+description, and configuration.
 
-Additionally, if using LangGraph Studio, you can edit the assistants and create new versions via the "Manage Assistants" button.
+Additionally, if using LangGraph Studio, you can edit the assistants and create
+new versions via the "Manage Assistants" button.
 
 ## Use a previous assistant version
 
 ### LangGraph SDK
 
-You can also change the active version of your assistant. To do so, use the `setLatest` method.
+You can also change the active version of your assistant. To do so, use the
+`setLatest` method.
 
 In the example above, to rollback to the first version of the assistant:
 
@@ -322,11 +355,17 @@ In the example above, to rollback to the first version of the assistant:
     }'
     ```
 
-If you now run your graph and pass in this assistant id, it will use the first version of the assistant.
+If you now run your graph and pass in this assistant id, it will use the first
+version of the assistant.
 
 ### LangGraph Platform UI
 
-If using LangGraph Studio, to set the active version of your assistant, click the "Manage Assistants" button and locate the assistant you would like to use. Select the assistant and the version, and then click the "Active" toggle. This will update the assistant to make the selected version active.
+If using LangGraph Studio, to set the active version of your assistant, click
+the "Manage Assistants" button and locate the assistant you would like to use.
+Select the assistant and the version, and then click the "Active" toggle. This
+will update the assistant to make the selected version active.
 
-!!! warning "Deleting Assistants"
-Deleting as assistant will delete ALL of its versions. There is currently no way to delete a single version, but by pointing your assistant to the correct version you can skip any versions that you don't wish to use.
+!!! warning "Deleting Assistants" Deleting as assistant will delete ALL of its
+versions. There is currently no way to delete a single version, but by pointing
+your assistant to the correct version you can skip any versions that you don't
+wish to use.

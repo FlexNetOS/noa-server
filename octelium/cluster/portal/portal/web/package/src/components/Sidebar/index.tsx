@@ -1,24 +1,24 @@
-import { Button } from "@mantine/core";
-import { PanelTop, Boxes, LogOut } from "lucide-react";
+import { Button } from '@mantine/core';
+import { PanelTop, Boxes, LogOut } from 'lucide-react';
 
-import * as React from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { twMerge } from "tailwind-merge";
-import { Modal } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { useMutation } from "@tanstack/react-query";
-import { getClientAuth } from "@/utils/client";
-import { LogoutRequest } from "@/apis/userv1/userv1";
+import * as React from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { twMerge } from 'tailwind-merge';
+import { Modal } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { useMutation } from '@tanstack/react-query';
+import { getClientAuth } from '@/utils/client';
+import { LogoutRequest } from '@/apis/userv1/userv1';
 
 const items = [
   {
-    title: "Service",
-    url: "/services",
+    title: 'Service',
+    url: '/services',
     icon: PanelTop,
   },
   {
-    title: "Namespaces",
-    url: "/namespaces",
+    title: 'Namespaces',
+    url: '/namespaces',
     icon: Boxes,
   },
 ];
@@ -37,8 +37,8 @@ export default function () {
   });
 
   return (
-    <div className="h-full w-full mt-[60px]">
-      <div className="w-full h-full flex flex-col">
+    <div className="mt-[60px] h-full w-full">
+      <div className="flex h-full w-full flex-col">
         <div>
           {items.map((item) => (
             <div key={item.title}>
@@ -46,18 +46,18 @@ export default function () {
                 <Link
                   viewTransition
                   className={twMerge(
-                    "transition-all duration-500 hover:bg-slate-200 font-extrabold",
-                    "flex w-full items-center justify-center",
-                    "py-1 px-2 rounded-md my-1",
-                    "text-sm",
+                    'font-extrabold transition-all duration-500 hover:bg-slate-200',
+                    'flex w-full items-center justify-center',
+                    'my-1 rounded-md px-2 py-1',
+                    'text-sm',
                     loc.pathname.startsWith(item.url)
-                      ? `!text-white bg-zinc-800 hover:bg-black shadow-md`
+                      ? `bg-zinc-800 !text-white shadow-md hover:bg-black`
                       : `text-zinc-600 hover:text-zinc-800`
                   )}
                   to={item.url}
                 >
                   <item.icon />
-                  <span className="flex-1 ml-2">{item.title}</span>
+                  <span className="ml-2 flex-1">{item.title}</span>
                 </Link>
               </div>
             </div>
@@ -73,11 +73,9 @@ export default function () {
       </div>
 
       <Modal opened={opened} onClose={close} centered>
-        <div className="font-bold text-xl mb-4">
-          {`Are you sure that you want to logout?`}
-        </div>
+        <div className="mb-4 text-xl font-bold">{`Are you sure that you want to logout?`}</div>
 
-        <div className="mt-4 flex justify-end items-center">
+        <div className="mt-4 flex items-center justify-end">
           <Button variant="outline" onClick={close}>
             Cancel
           </Button>

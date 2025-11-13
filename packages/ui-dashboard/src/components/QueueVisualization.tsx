@@ -24,11 +24,11 @@ export function QueueVisualization({ queues }: QueueVisualizationProps) {
   };
 
   return (
-    <div className="bg-brand-card border border-brand-border rounded-lg p-6">
-      <h2 className="text-xl font-bold text-white mb-4">Queue Visualization</h2>
+    <div className="rounded-lg border border-brand-border bg-brand-card p-6">
+      <h2 className="mb-4 text-xl font-bold text-white">Queue Visualization</h2>
 
       {queues.length === 0 ? (
-        <p className="text-center text-brand-muted py-8">No queues available</p>
+        <p className="py-8 text-center text-brand-muted">No queues available</p>
       ) : (
         <div className="space-y-6">
           {queues.map((queue, queueIndex) => (
@@ -37,30 +37,26 @@ export function QueueVisualization({ queues }: QueueVisualizationProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: queueIndex * 0.1 }}
-              className="border border-brand-border rounded-lg p-4"
+              className="rounded-lg border border-brand-border p-4"
             >
-              <div className="flex items-center justify-between mb-3">
+              <div className="mb-3 flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-white">{queue.name}</h3>
-                <span className="text-sm text-brand-muted">
-                  {queue.jobs.length} jobs
-                </span>
+                <span className="text-sm text-brand-muted">{queue.jobs.length} jobs</span>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
                 {queue.jobs.map((job) => (
                   <motion.div
                     key={job.id}
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="bg-brand-bg/50 border border-brand-border rounded-lg p-3 hover:border-brand-accent/50 transition-colors"
+                    className="rounded-lg border border-brand-border bg-brand-bg/50 p-3 transition-colors hover:border-brand-accent/50"
                   >
-                    <div className="flex items-start justify-between mb-2">
+                    <div className="mb-2 flex items-start justify-between">
                       <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h4 className="font-medium text-white text-sm">{job.type}</h4>
-                          <span
-                            className={`text-xs font-semibold ${priorityColors[job.priority]}`}
-                          >
+                        <div className="mb-1 flex items-center gap-2">
+                          <h4 className="text-sm font-medium text-white">{job.type}</h4>
+                          <span className={`text-xs font-semibold ${priorityColors[job.priority]}`}>
                             {job.priority.toUpperCase()}
                           </span>
                         </div>
@@ -69,7 +65,7 @@ export function QueueVisualization({ queues }: QueueVisualizationProps) {
                         </p>
                       </div>
                       <span
-                        className={`px-2 py-1 rounded text-xs font-medium border ${getStatusBadgeClass(job.status)}`}
+                        className={`rounded border px-2 py-1 text-xs font-medium ${getStatusBadgeClass(job.status)}`}
                       >
                         {job.status}
                       </span>
@@ -77,13 +73,13 @@ export function QueueVisualization({ queues }: QueueVisualizationProps) {
 
                     {job.progress !== undefined && (
                       <div className="mb-2">
-                        <div className="w-full bg-brand-border rounded-full h-1.5">
+                        <div className="h-1.5 w-full rounded-full bg-brand-border">
                           <div
                             className={`h-1.5 rounded-full transition-all duration-300 ${statusColors[job.status]}`}
                             style={{ width: `${job.progress}%` }}
                           />
                         </div>
-                        <p className="text-xs text-brand-muted mt-1">{job.progress}% complete</p>
+                        <p className="mt-1 text-xs text-brand-muted">{job.progress}% complete</p>
                       </div>
                     )}
 
@@ -91,7 +87,7 @@ export function QueueVisualization({ queues }: QueueVisualizationProps) {
                       <span>Created {formatRelativeTime(job.createdAt)}</span>
                       {job.status === 'running' && (
                         <div className="flex items-center">
-                          <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse mr-1" />
+                          <div className="mr-1 h-2 w-2 animate-pulse rounded-full bg-blue-400" />
                           <span>Processing</span>
                         </div>
                       )}

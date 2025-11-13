@@ -6,53 +6,103 @@
 import { AgentRegistry } from './registry';
 import { SwarmInitializer } from '../../../agent-swarm/automation/swarm-initializer';
 import { AgentInfo } from '../../../agent-swarm/triggers/agent-added-trigger';
-import {
-  AgentType,
-  AgentCapability,
-  RegisterAgentRequest
-} from './types';
+import { AgentType, AgentCapability, RegisterAgentRequest } from './types';
 
 /**
  * Map agent names to types and capabilities
  */
 const AGENT_MAPPINGS: Record<string, { type: AgentType; capabilities: AgentCapability[] }> = {
   // Core development
-  'coder': { type: AgentType.CODER, capabilities: [AgentCapability.CODING] },
-  'reviewer': { type: AgentType.REVIEWER, capabilities: [AgentCapability.REVIEWING, AgentCapability.CODE_REVIEW] },
-  'tester': { type: AgentType.TESTER, capabilities: [AgentCapability.TESTING, AgentCapability.VALIDATION] },
-  'planner': { type: AgentType.PLANNER, capabilities: [AgentCapability.PLANNING] },
-  'researcher': { type: AgentType.RESEARCHER, capabilities: [AgentCapability.RESEARCH] },
+  coder: { type: AgentType.CODER, capabilities: [AgentCapability.CODING] },
+  reviewer: {
+    type: AgentType.REVIEWER,
+    capabilities: [AgentCapability.REVIEWING, AgentCapability.CODE_REVIEW],
+  },
+  tester: {
+    type: AgentType.TESTER,
+    capabilities: [AgentCapability.TESTING, AgentCapability.VALIDATION],
+  },
+  planner: { type: AgentType.PLANNER, capabilities: [AgentCapability.PLANNING] },
+  researcher: { type: AgentType.RESEARCHER, capabilities: [AgentCapability.RESEARCH] },
 
   // Swarm coordination
-  'hierarchical-coordinator': { type: AgentType.HIERARCHICAL_COORDINATOR, capabilities: [AgentCapability.COORDINATION] },
-  'mesh-coordinator': { type: AgentType.MESH_COORDINATOR, capabilities: [AgentCapability.COORDINATION] },
-  'adaptive-coordinator': { type: AgentType.ADAPTIVE_COORDINATOR, capabilities: [AgentCapability.COORDINATION] },
-  'collective-intelligence-coordinator': { type: AgentType.COLLECTIVE_INTELLIGENCE_COORDINATOR, capabilities: [AgentCapability.COORDINATION] },
-  'swarm-memory-manager': { type: AgentType.SWARM_MEMORY_MANAGER, capabilities: [AgentCapability.MEMORY_MANAGEMENT] },
+  'hierarchical-coordinator': {
+    type: AgentType.HIERARCHICAL_COORDINATOR,
+    capabilities: [AgentCapability.COORDINATION],
+  },
+  'mesh-coordinator': {
+    type: AgentType.MESH_COORDINATOR,
+    capabilities: [AgentCapability.COORDINATION],
+  },
+  'adaptive-coordinator': {
+    type: AgentType.ADAPTIVE_COORDINATOR,
+    capabilities: [AgentCapability.COORDINATION],
+  },
+  'collective-intelligence-coordinator': {
+    type: AgentType.COLLECTIVE_INTELLIGENCE_COORDINATOR,
+    capabilities: [AgentCapability.COORDINATION],
+  },
+  'swarm-memory-manager': {
+    type: AgentType.SWARM_MEMORY_MANAGER,
+    capabilities: [AgentCapability.MEMORY_MANAGEMENT],
+  },
 
   // Performance
-  'perf-analyzer': { type: AgentType.PERF_ANALYZER, capabilities: [AgentCapability.PERFORMANCE, AgentCapability.BENCHMARKING] },
-  'performance-benchmarker': { type: AgentType.PERFORMANCE_BENCHMARKER, capabilities: [AgentCapability.BENCHMARKING] },
+  'perf-analyzer': {
+    type: AgentType.PERF_ANALYZER,
+    capabilities: [AgentCapability.PERFORMANCE, AgentCapability.BENCHMARKING],
+  },
+  'performance-benchmarker': {
+    type: AgentType.PERFORMANCE_BENCHMARKER,
+    capabilities: [AgentCapability.BENCHMARKING],
+  },
 
   // GitHub
-  'pr-manager': { type: AgentType.PR_MANAGER, capabilities: [AgentCapability.GITHUB_OPS, AgentCapability.PR_MANAGEMENT] },
-  'code-review-swarm': { type: AgentType.CODE_REVIEW_SWARM, capabilities: [AgentCapability.CODE_REVIEW, AgentCapability.REVIEWING] },
-  'issue-tracker': { type: AgentType.ISSUE_TRACKER, capabilities: [AgentCapability.ISSUE_TRACKING] },
+  'pr-manager': {
+    type: AgentType.PR_MANAGER,
+    capabilities: [AgentCapability.GITHUB_OPS, AgentCapability.PR_MANAGEMENT],
+  },
+  'code-review-swarm': {
+    type: AgentType.CODE_REVIEW_SWARM,
+    capabilities: [AgentCapability.CODE_REVIEW, AgentCapability.REVIEWING],
+  },
+  'issue-tracker': {
+    type: AgentType.ISSUE_TRACKER,
+    capabilities: [AgentCapability.ISSUE_TRACKING],
+  },
 
   // SPARC
-  'sparc-coord': { type: AgentType.SPARC_COORD, capabilities: [AgentCapability.COORDINATION, AgentCapability.PLANNING] },
+  'sparc-coord': {
+    type: AgentType.SPARC_COORD,
+    capabilities: [AgentCapability.COORDINATION, AgentCapability.PLANNING],
+  },
   'sparc-coder': { type: AgentType.SPARC_CODER, capabilities: [AgentCapability.CODING] },
-  'specification': { type: AgentType.SPECIFICATION, capabilities: [AgentCapability.SPECIFICATION] },
-  'architecture': { type: AgentType.ARCHITECTURE, capabilities: [AgentCapability.ARCHITECTURE] },
-  'refinement': { type: AgentType.REFINEMENT, capabilities: [AgentCapability.REFINEMENT] },
+  specification: { type: AgentType.SPECIFICATION, capabilities: [AgentCapability.SPECIFICATION] },
+  architecture: { type: AgentType.ARCHITECTURE, capabilities: [AgentCapability.ARCHITECTURE] },
+  refinement: { type: AgentType.REFINEMENT, capabilities: [AgentCapability.REFINEMENT] },
 
   // Specialized
-  'backend-dev': { type: AgentType.BACKEND_DEV, capabilities: [AgentCapability.BACKEND_DEV, AgentCapability.CODING] },
-  'mobile-dev': { type: AgentType.MOBILE_DEV, capabilities: [AgentCapability.MOBILE_DEV, AgentCapability.CODING] },
-  'ml-developer': { type: AgentType.ML_DEVELOPER, capabilities: [AgentCapability.ML_DEV, AgentCapability.CODING] },
+  'backend-dev': {
+    type: AgentType.BACKEND_DEV,
+    capabilities: [AgentCapability.BACKEND_DEV, AgentCapability.CODING],
+  },
+  'mobile-dev': {
+    type: AgentType.MOBILE_DEV,
+    capabilities: [AgentCapability.MOBILE_DEV, AgentCapability.CODING],
+  },
+  'ml-developer': {
+    type: AgentType.ML_DEVELOPER,
+    capabilities: [AgentCapability.ML_DEV, AgentCapability.CODING],
+  },
   'cicd-engineer': { type: AgentType.CICD_ENGINEER, capabilities: [AgentCapability.DEVOPS] },
-  'system-architect': { type: AgentType.SYSTEM_ARCHITECT, capabilities: [AgentCapability.ARCHITECTURE, AgentCapability.PLANNING] },
-  'code-analyzer': { type: AgentType.CODE_ANALYZER, capabilities: [AgentCapability.REVIEWING, AgentCapability.CODING] }
+  'system-architect': {
+    type: AgentType.SYSTEM_ARCHITECT,
+    capabilities: [AgentCapability.ARCHITECTURE, AgentCapability.PLANNING],
+  },
+  'code-analyzer': {
+    type: AgentType.CODE_ANALYZER,
+    capabilities: [AgentCapability.REVIEWING, AgentCapability.CODING],
+  },
 };
 
 /**
@@ -91,7 +141,7 @@ export class AgentRegistryIntegration {
       // Map agent info to registration request
       const mapping = AGENT_MAPPINGS[agentInfo.type] || {
         type: AgentType.CODER, // default
-        capabilities: [AgentCapability.CODING]
+        capabilities: [AgentCapability.CODING],
       };
 
       const request: RegisterAgentRequest = {
@@ -103,13 +153,15 @@ export class AgentRegistryIntegration {
         tags: ['swarm', 'auto-registered'],
         priority: 5,
         maxConcurrentTasks: 5,
-        configuration: agentInfo.config
+        configuration: agentInfo.config,
       };
 
       const result = await this.registry.registerAgent(request);
 
       if (result.success && result.data) {
-        console.log(`[AgentRegistryIntegration] Registered agent: ${result.data.metadata.id} (${agentInfo.type})`);
+        console.log(
+          `[AgentRegistryIntegration] Registered agent: ${result.data.metadata.id} (${agentInfo.type})`
+        );
       } else {
         console.error(`[AgentRegistryIntegration] Failed to register agent: ${result.error}`);
       }

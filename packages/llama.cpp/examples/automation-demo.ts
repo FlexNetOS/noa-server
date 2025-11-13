@@ -12,7 +12,9 @@ async function runAutomationDemo() {
   console.log('║                                                                               ║');
   console.log('║           🤖 MANDATORY AUTOMATION SYSTEM - LIVE DEMONSTRATION 🤖              ║');
   console.log('║                                                                               ║');
-  console.log('╚═══════════════════════════════════════════════════════════════════════════════╝\n');
+  console.log(
+    '╚═══════════════════════════════════════════════════════════════════════════════╝\n'
+  );
 
   // Demo 1: Automatic Optimization
   console.log('═'.repeat(80));
@@ -66,7 +68,9 @@ async function runAutomationDemo() {
   const result3b = await mandatoryOptimizer.intercept(prompt3);
   console.log(`   Cached: ${result3b.cached} ✓`);
   console.log(`   Processing Time: ${result3b.processingTime}ms`);
-  console.log(`   Speed Improvement: ${(result3a.processingTime / result3b.processingTime).toFixed(1)}x faster\n`);
+  console.log(
+    `   Speed Improvement: ${(result3a.processingTime / result3b.processingTime).toFixed(1)}x faster\n`
+  );
 
   // Demo 4: Emergency Override
   console.log('\n' + '═'.repeat(80));
@@ -106,7 +110,9 @@ async function runAutomationDemo() {
 
   const config = automationConfig.getConfig();
   console.log(`\n   Quality Threshold: ${config.quality.threshold}/10`);
-  console.log(`   Status: ${result5.qualityScore! >= config.quality.threshold ? '✓ PASSED' : '✗ BELOW THRESHOLD'}\n`);
+  console.log(
+    `   Status: ${result5.qualityScore! >= config.quality.threshold ? '✓ PASSED' : '✗ BELOW THRESHOLD'}\n`
+  );
 
   // Demo 6: Statistics Dashboard
   console.log('\n' + '═'.repeat(80));
@@ -121,9 +127,12 @@ async function runAutomationDemo() {
   console.log(`   Failed: ${stats.monitor.failedOptimizations}`);
   console.log(`   Bypassed: ${stats.monitor.bypassedOptimizations}`);
 
-  const successRate = stats.monitor.totalOptimizations > 0
-    ? (stats.monitor.successfulOptimizations / stats.monitor.totalOptimizations * 100).toFixed(1)
-    : 0;
+  const successRate =
+    stats.monitor.totalOptimizations > 0
+      ? ((stats.monitor.successfulOptimizations / stats.monitor.totalOptimizations) * 100).toFixed(
+          1
+        )
+      : 0;
   console.log(`   Success Rate: ${successRate}%`);
 
   console.log('\n💾 CACHE PERFORMANCE:');
@@ -138,7 +147,7 @@ async function runAutomationDemo() {
   if (Object.keys(stats.monitor.strategyDistribution).length > 0) {
     console.log('\n🎯 STRATEGY DISTRIBUTION:');
     for (const [strategy, count] of Object.entries(stats.monitor.strategyDistribution)) {
-      const percentage = (count / stats.monitor.successfulOptimizations * 100).toFixed(1);
+      const percentage = ((count / stats.monitor.successfulOptimizations) * 100).toFixed(1);
       console.log(`   ${strategy}: ${count} (${percentage}%)`);
     }
   }
@@ -156,7 +165,9 @@ async function runAutomationDemo() {
   console.log('   6. Quality enforcement with configurable thresholds');
 
   console.log('\n📚 Next Steps:');
-  console.log('   - Review automation configuration: src/prompt-optimizer/config/automation-rules.json');
+  console.log(
+    '   - Review automation configuration: src/prompt-optimizer/config/automation-rules.json'
+  );
   console.log('   - Read the full guide: docs/AUTOMATION_GUIDE.md');
   console.log('   - Integrate with your systems: API, CLI, or Claude Code');
   console.log('   - Monitor performance with stats dashboard\n');
@@ -164,7 +175,7 @@ async function runAutomationDemo() {
 
 // Run demo if executed directly
 if (require.main === module) {
-  runAutomationDemo().catch(error => {
+  runAutomationDemo().catch((error) => {
     console.error('❌ Demo failed:', error);
     process.exit(1);
   });

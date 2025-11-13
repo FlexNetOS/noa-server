@@ -1,12 +1,17 @@
 # Set up custom authentication
 
-In this tutorial, we will build a chatbot that only lets specific users access it. We'll start with the LangGraph template and add token-based security step by step. By the end, you'll have a working chatbot that checks for valid tokens before allowing access.
+In this tutorial, we will build a chatbot that only lets specific users access
+it. We'll start with the LangGraph template and add token-based security step by
+step. By the end, you'll have a working chatbot that checks for valid tokens
+before allowing access.
 
 This is part 1 of our authentication series:
 
 1. Set up custom authentication (you are here) - Control who can access your bot
-2. [Make conversations private](resource_auth.md) - Let users have private conversations
-3. [Connect an authentication provider](add_auth_server.md) - Add real user accounts and validate using OAuth2 for production
+2. [Make conversations private](resource_auth.md) - Let users have private
+   conversations
+3. [Connect an authentication provider](add_auth_server.md) - Add real user
+   accounts and validate using OAuth2 for production
 
 This guide assumes basic familiarity with the following concepts:
 
@@ -40,7 +45,8 @@ cd custom-auth
 
 :::
 
-The template gives us a placeholder LangGraph app. Try it out by installing the local dependencies and running the development server:
+The template gives us a placeholder LangGraph app. Try it out by installing the
+local dependencies and running the development server:
 
 :::python
 
@@ -83,10 +89,14 @@ Now that you have a base LangGraph app, add authentication to it.
 
     In this tutorial, you will start with a hard-coded token for example purposes. You will get to a "production-ready" authentication scheme in the third tutorial.
 
-:::python
-The [`Auth`](../../cloud/reference/sdk/python_sdk_ref.md#langgraph_sdk.auth.Auth) object lets you register an authentication function that the LangGraph platform will run on every request. This function receives each request and decides whether to accept or reject.
+:::python The
+[`Auth`](../../cloud/reference/sdk/python_sdk_ref.md#langgraph_sdk.auth.Auth)
+object lets you register an authentication function that the LangGraph platform
+will run on every request. This function receives each request and decides
+whether to accept or reject.
 
-Create a new file `src/security/auth.py`. This is where your code will live to check if users are allowed to access your bot:
+Create a new file `src/security/auth.py`. This is where your code will live to
+check if users are allowed to access your bot:
 
 ```python hl_lines="10 15-16" title="src/security/auth.py"
 from langgraph_sdk import Auth
@@ -120,16 +130,23 @@ async def get_current_user(authorization: str | None) -> Auth.types.MinimalUserD
     }
 ```
 
-Notice that your [authentication](../../cloud/reference/sdk/python_sdk_ref.md#langgraph_sdk.auth.Auth.authenticate) handler does two important things:
+Notice that your
+[authentication](../../cloud/reference/sdk/python_sdk_ref.md#langgraph_sdk.auth.Auth.authenticate)
+handler does two important things:
 
-1. Checks if a valid token is provided in the request's [Authorization header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization)
-2. Returns the user's [identity](../../cloud/reference/sdk/python_sdk_ref.md#langgraph_sdk.auth.types.MinimalUserDict)
+1. Checks if a valid token is provided in the request's
+   [Authorization header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization)
+2. Returns the user's
+   [identity](../../cloud/reference/sdk/python_sdk_ref.md#langgraph_sdk.auth.types.MinimalUserDict)
    :::
 
-:::js
-The [`Auth`](../../cloud/reference/sdk/js_sdk_ref.md#Auth) object lets you register an authentication function that the LangGraph platform will run on every request. This function receives each request and decides whether to accept or reject.
+:::js The [`Auth`](../../cloud/reference/sdk/js_sdk_ref.md#Auth) object lets you
+register an authentication function that the LangGraph platform will run on
+every request. This function receives each request and decides whether to accept
+or reject.
 
-Create a new file `src/security/auth.ts`. This is where your code will live to check if users are allowed to access your bot:
+Create a new file `src/security/auth.ts`. This is where your code will live to
+check if users are allowed to access your bot:
 
 ```typescript title="src/security/auth.ts"
 import { Auth } from "@langchain/langgraph-sdk";
@@ -169,13 +186,18 @@ const auth = new Auth();
 export { auth };
 ```
 
-Notice that your [authentication](../../cloud/reference/sdk/js_sdk_ref.md#Auth) handler does two important things:
+Notice that your [authentication](../../cloud/reference/sdk/js_sdk_ref.md#Auth)
+handler does two important things:
 
-1. Checks if a valid token is provided in the request's [Authorization header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization)
-2. Returns the user's [identity](../../cloud/reference/sdk/js_sdk_ref.md#Auth.types.MinimalUserDict)
+1. Checks if a valid token is provided in the request's
+   [Authorization header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization)
+2. Returns the user's
+   [identity](../../cloud/reference/sdk/js_sdk_ref.md#Auth.types.MinimalUserDict)
    :::
 
-Now tell LangGraph to use authentication by adding the following to the [`langgraph.json`](../../cloud/reference/cli.md#configuration-file) configuration:
+Now tell LangGraph to use authentication by adding the following to the
+[`langgraph.json`](../../cloud/reference/cli.md#configuration-file)
+configuration:
 
 :::python
 
@@ -219,7 +241,12 @@ Start the server again to test everything out:
 langgraph dev --no-browser
 ```
 
-If you didn't add the `--no-browser`, the studio UI will open in the browser. You may wonder, how is the studio able to still connect to our server? By default, we also permit access from the LangGraph studio, even when using custom auth. This makes it easier to develop and test your bot in the studio. You can remove this alternative authentication option by setting `disable_studio_auth: "true"` in your auth configuration:
+If you didn't add the `--no-browser`, the studio UI will open in the browser.
+You may wonder, how is the studio able to still connect to our server? By
+default, we also permit access from the LangGraph studio, even when using custom
+auth. This makes it easier to develop and test your bot in the studio. You can
+remove this alternative authentication option by setting
+`disable_studio_auth: "true"` in your auth configuration:
 
 :::python
 
@@ -249,12 +276,15 @@ If you didn't add the `--no-browser`, the studio UI will open in the browser. Yo
 
 ## 4. Chat with your bot
 
-You should now only be able to access the bot if you provide a valid token in the request header. Users will still, however, be able to access each other's resources until you add [resource authorization handlers](../../concepts/auth.md#resource-specific-handlers) in the next section of the tutorial.
+You should now only be able to access the bot if you provide a valid token in
+the request header. Users will still, however, be able to access each other's
+resources until you add
+[resource authorization handlers](../../concepts/auth.md#resource-specific-handlers)
+in the next section of the tutorial.
 
 ![Authentication, no authorization handlers](./img/authentication.png)
 
-:::python
-Run the following code in a file or notebook:
+:::python Run the following code in a file or notebook:
 
 ```python
 from langgraph_sdk import get_client
@@ -287,36 +317,35 @@ print(response)
 
 :::
 
-:::js
-Run the following code in a TypeScript file:
+:::js Run the following code in a TypeScript file:
 
 ```typescript
-import { Client } from "@langchain/langgraph-sdk";
+import { Client } from '@langchain/langgraph-sdk';
 
 async function testAuth() {
   // Try without a token (should fail)
-  const clientWithoutToken = new Client({ apiUrl: "http://localhost:2024" });
+  const clientWithoutToken = new Client({ apiUrl: 'http://localhost:2024' });
   try {
     const thread = await clientWithoutToken.threads.create();
-    console.log("❌ Should have failed without token!");
+    console.log('❌ Should have failed without token!');
   } catch (e) {
-    console.log("✅ Correctly blocked access:", e);
+    console.log('✅ Correctly blocked access:', e);
   }
 
   // Try with a valid token
   const client = new Client({
-    apiUrl: "http://localhost:2024",
-    headers: { Authorization: "Bearer user1-token" },
+    apiUrl: 'http://localhost:2024',
+    headers: { Authorization: 'Bearer user1-token' },
   });
 
   // Create a thread and chat
   const thread = await client.threads.create();
   console.log(`✅ Created thread as Alice: ${thread.thread_id}`);
 
-  const response = await client.runs.create(thread.thread_id, "agent", {
-    input: { messages: [{ role: "user", content: "Hello!" }] },
+  const response = await client.runs.create(thread.thread_id, 'agent', {
+    input: { messages: [{ role: 'user', content: 'Hello!' }] },
   });
-  console.log("✅ Bot responded:");
+  console.log('✅ Bot responded:');
   console.log(response);
 }
 
@@ -330,19 +359,24 @@ You should see that:
 1. Without a valid token, we can't access the bot
 2. With a valid token, we can create threads and chat
 
-Congratulations! You've built a chatbot that only lets "authenticated" users access it. While this system doesn't (yet) implement a production-ready security scheme, we've learned the basic mechanics of how to control access to our bot. In the next tutorial, we'll learn how to give each user their own private conversations.
+Congratulations! You've built a chatbot that only lets "authenticated" users
+access it. While this system doesn't (yet) implement a production-ready security
+scheme, we've learned the basic mechanics of how to control access to our bot.
+In the next tutorial, we'll learn how to give each user their own private
+conversations.
 
 ## Next steps
 
 Now that you can control who accesses your bot, you might want to:
 
-1. Continue the tutorial by going to [Make conversations private](resource_auth.md) to learn about resource authorization.
+1. Continue the tutorial by going to
+   [Make conversations private](resource_auth.md) to learn about resource
+   authorization.
 2. Read more about [authentication concepts](../../concepts/auth.md).
 
-:::python
-3. Check out the [API reference](../../cloud/reference/sdk/python_sdk_ref.md) for more authentication details.
-:::
+:::python 3. Check out the
+[API reference](../../cloud/reference/sdk/python_sdk_ref.md) for more
+authentication details. :::
 
-:::js
-3. Check out the [API reference](../../cloud/reference/sdk/js_sdk_ref.md) for more authentication details.
-:::
+:::js 3. Check out the [API reference](../../cloud/reference/sdk/js_sdk_ref.md)
+for more authentication details. :::

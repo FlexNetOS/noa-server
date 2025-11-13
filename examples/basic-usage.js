@@ -14,7 +14,7 @@ async function helloWorld() {
   // Initialize a simple agent
   const agent = await ClaudeFlow.agent.create({
     type: 'coder',
-    name: 'HelloAgent'
+    name: 'HelloAgent',
   });
 
   console.log(`✓ Created agent: ${agent.name}`);
@@ -31,7 +31,7 @@ async function commonWorkflow() {
   await ClaudeFlow.swarm.init({
     topology: 'mesh',
     maxAgents: 3,
-    namespace: 'example-workflow'
+    namespace: 'example-workflow',
   });
   console.log('✓ Swarm initialized\n');
 
@@ -40,7 +40,7 @@ async function commonWorkflow() {
   const agents = await ClaudeFlow.agent.spawn([
     { type: 'coder', role: 'backend' },
     { type: 'tester', role: 'qa' },
-    { type: 'reviewer', role: 'code-review' }
+    { type: 'reviewer', role: 'code-review' },
   ]);
   console.log(`✓ Spawned ${agents.length} agents\n`);
 
@@ -48,8 +48,8 @@ async function commonWorkflow() {
   console.log('Step 3: Orchestrate task...');
   const result = await ClaudeFlow.task.orchestrate({
     task: 'Create a simple REST API endpoint',
-    agents: agents.map(a => a.id),
-    timeout: 30000
+    agents: agents.map((a) => a.id),
+    timeout: 30000,
   });
   console.log('✓ Task completed\n');
 
@@ -69,12 +69,12 @@ async function advancedExample() {
     name: 'example-service',
     version: '1.0.0',
     endpoints: {
-      http: 'http://localhost:3001'
+      http: 'http://localhost:3001',
     },
     health: '/health',
     metadata: {
-      description: 'Example service for demonstration'
-    }
+      description: 'Example service for demonstration',
+    },
   });
   console.log('✓ Service registered\n');
 
@@ -83,7 +83,7 @@ async function advancedExample() {
   const processor = new NeuralProcessor({
     modelPath: process.env.NEURAL_MODEL_PATH || './models/llama-2-7b-chat.gguf',
     contextSize: 2048,
-    gpuLayers: 0 // CPU-only for example
+    gpuLayers: 0, // CPU-only for example
   });
   console.log('✓ Neural processor ready\n');
 
@@ -92,10 +92,10 @@ async function advancedExample() {
   const response = await processor.chatCompletion({
     messages: [
       { role: 'system', content: 'You are a helpful coding assistant.' },
-      { role: 'user', content: 'Explain what a REST API is in one sentence.' }
+      { role: 'user', content: 'Explain what a REST API is in one sentence.' },
     ],
     maxTokens: 100,
-    temperature: 0.7
+    temperature: 0.7,
   });
 
   console.log('AI Response:', response.choices[0].message.content);
@@ -167,7 +167,6 @@ async function main() {
 
     console.log('✅ Example completed successfully!');
     process.exit(0);
-
   } catch (error) {
     console.error('❌ Error running example:', error.message);
     console.error(error.stack);
@@ -184,5 +183,5 @@ module.exports = {
   helloWorld,
   commonWorkflow,
   advancedExample,
-  integrationExample
+  integrationExample,
 };

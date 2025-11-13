@@ -9,28 +9,36 @@ export const ReportGenerationJobDataSchema = z.object({
   reportType: z.enum(['user-activity', 'system-metrics', 'financial', 'custom']),
   parameters: z.record(z.any()),
   format: z.enum(['pdf', 'excel', 'csv', 'json', 'html']),
-  filters: z.object({
-    dateRange: z.object({
-      start: z.date(),
-      end: z.date()
-    }).optional(),
-    userIds: z.array(z.string()).optional(),
-    categories: z.array(z.string()).optional(),
-    status: z.array(z.string()).optional()
-  }).optional(),
+  filters: z
+    .object({
+      dateRange: z
+        .object({
+          start: z.date(),
+          end: z.date(),
+        })
+        .optional(),
+      userIds: z.array(z.string()).optional(),
+      categories: z.array(z.string()).optional(),
+      status: z.array(z.string()).optional(),
+    })
+    .optional(),
   output: z.object({
     filename: z.string(),
     path: z.string().optional(),
-    email: z.object({
-      to: z.union([z.string(), z.array(z.string())]),
-      subject: z.string().optional(),
-      template: z.string().optional()
-    }).optional()
+    email: z
+      .object({
+        to: z.union([z.string(), z.array(z.string())]),
+        subject: z.string().optional(),
+        template: z.string().optional(),
+      })
+      .optional(),
   }),
-  template: z.object({
-    name: z.string(),
-    data: z.record(z.any())
-  }).optional()
+  template: z
+    .object({
+      name: z.string(),
+      data: z.record(z.any()),
+    })
+    .optional(),
 });
 
 export type ReportGenerationJobData = z.infer<typeof ReportGenerationJobDataSchema>;
@@ -83,7 +91,7 @@ export class ReportGenerationJob {
         jobId: job.id,
         reportType: reportData.reportType,
         format: reportData.format,
-        filename: reportData.output.filename
+        filename: reportData.output.filename,
       });
 
       // Get the appropriate generator
@@ -94,7 +102,9 @@ export class ReportGenerationJob {
 
       // Check if format is supported
       if (!generator.getSupportedFormats().includes(reportData.format)) {
-        throw new Error(`Format ${reportData.format} not supported for report type ${reportData.reportType}`);
+        throw new Error(
+          `Format ${reportData.format} not supported for report type ${reportData.reportType}`
+        );
       }
 
       // Generate the report
@@ -106,7 +116,7 @@ export class ReportGenerationJob {
       this.logger.info('Report generated successfully', {
         jobId: job.id,
         outputPath,
-        size: reportBuffer.length
+        size: reportBuffer.length,
       });
 
       // Send email if requested
@@ -119,14 +129,13 @@ export class ReportGenerationJob {
         size: reportBuffer.length,
         format: reportData.format,
         reportType: reportData.reportType,
-        emailSent: !!reportData.output.email
+        emailSent: !!reportData.output.email,
       };
-
     } catch (error) {
       this.logger.error('Report generation failed', {
         jobId: job.id,
         error: (error as Error).message,
-        reportType: reportData.reportType
+        reportType: reportData.reportType,
       });
 
       throw new Error(`Report generation failed: ${(error as Error).message}`);
@@ -160,7 +169,7 @@ export class ReportGenerationJob {
         const reportData = await this.generateUserActivityReport(data);
         return this.formatReport(reportData, data.format);
       },
-      getSupportedFormats: () => ['json', 'csv', 'html']
+      getSupportedFormats: () => ['json', 'csv', 'html'],
     });
 
     // System Metrics Report Generator
@@ -170,7 +179,7 @@ export class ReportGenerationJob {
         const reportData = await this.generateSystemMetricsReport(data);
         return this.formatReport(reportData, data.format);
       },
-      getSupportedFormats: () => ['json', 'csv', 'html', 'pdf']
+      getSupportedFormats: () => ['json', 'csv', 'html', 'pdf'],
     });
 
     // Financial Report Generator
@@ -180,7 +189,7 @@ export class ReportGenerationJob {
         const reportData = await this.generateFinancialReport(data);
         return this.formatReport(reportData, data.format);
       },
-      getSupportedFormats: () => ['excel', 'pdf', 'csv']
+      getSupportedFormats: () => ['excel', 'pdf', 'csv'],
     });
 
     // Custom Report Generator
@@ -190,7 +199,7 @@ export class ReportGenerationJob {
         const reportData = await this.generateCustomReport(data);
         return this.formatReport(reportData, data.format);
       },
-      getSupportedFormats: () => ['json', 'csv', 'html', 'pdf', 'excel']
+      getSupportedFormats: () => ['json', 'csv', 'html', 'pdf', 'excel'],
     });
   }
 
@@ -208,14 +217,15 @@ export class ReportGenerationJob {
     // Apply filters
     let filteredActivities = activities;
     if (data.filters?.dateRange) {
-      filteredActivities = activities.filter(activity =>
-        activity.timestamp >= data.filters!.dateRange!.start &&
-        activity.timestamp <= data.filters!.dateRange!.end
+      filteredActivities = activities.filter(
+        (activity) =>
+          activity.timestamp >= data.filters!.dateRange!.start &&
+          activity.timestamp <= data.filters!.dateRange!.end
       );
     }
 
     if (data.filters?.userIds) {
-      filteredActivities = filteredActivities.filter(activity =>
+      filteredActivities = filteredActivities.filter((activity) =>
         data.filters!.userIds!.includes(activity.userId)
       );
     }
@@ -227,9 +237,9 @@ export class ReportGenerationJob {
       totalActivities: filteredActivities.length,
       activities: filteredActivities,
       summary: {
-        uniqueUsers: new Set(filteredActivities.map(a => a.userId)).size,
-        actionsByType: this.groupBy(filteredActivities, 'action')
-      }
+        uniqueUsers: new Set(filteredActivities.map((a) => a.userId)).size,
+        actionsByType: this.groupBy(filteredActivities, 'action'),
+      },
     };
   }
 
@@ -244,7 +254,7 @@ export class ReportGenerationJob {
       disk: { used: 256, total: 512, percentage: 50.0 },
       network: { bytesIn: 1024000, bytesOut: 2048000 },
       uptime: 86400, // seconds
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     return {
@@ -252,7 +262,7 @@ export class ReportGenerationJob {
       generatedAt: new Date(),
       metrics,
       alerts: [], // Any system alerts
-      recommendations: [] // System optimization recommendations
+      recommendations: [], // System optimization recommendations
     };
   }
 
@@ -262,18 +272,18 @@ export class ReportGenerationJob {
   private async generateFinancialReport(data: ReportGenerationJobData): Promise<any> {
     // Mock financial data - in real implementation, this would query financial databases
     const transactions = [
-      { id: 'txn1', amount: 100.50, type: 'credit', date: new Date(), category: 'sales' },
+      { id: 'txn1', amount: 100.5, type: 'credit', date: new Date(), category: 'sales' },
       { id: 'txn2', amount: -50.25, type: 'debit', date: new Date(), category: 'expenses' },
       // ... more transactions
     ];
 
     const totalRevenue = transactions
-      .filter(t => t.type === 'credit')
+      .filter((t) => t.type === 'credit')
       .reduce((sum, t) => sum + t.amount, 0);
 
-    const totalExpenses = Math.abs(transactions
-      .filter(t => t.type === 'debit')
-      .reduce((sum, t) => sum + t.amount, 0));
+    const totalExpenses = Math.abs(
+      transactions.filter((t) => t.type === 'debit').reduce((sum, t) => sum + t.amount, 0)
+    );
 
     return {
       title: 'Financial Report',
@@ -283,10 +293,10 @@ export class ReportGenerationJob {
         totalRevenue,
         totalExpenses,
         netProfit: totalRevenue - totalExpenses,
-        transactionCount: transactions.length
+        transactionCount: transactions.length,
       },
       transactions,
-      categories: this.groupBy(transactions, 'category')
+      categories: this.groupBy(transactions, 'category'),
     };
   }
 
@@ -302,7 +312,7 @@ export class ReportGenerationJob {
       generatedAt: new Date(),
       parameters,
       data: parameters.data || [],
-      customFields: parameters.fields || {}
+      customFields: parameters.fields || {},
     };
   }
 
@@ -338,14 +348,14 @@ export class ReportGenerationJob {
     // Simple CSV conversion - in real implementation, use a proper CSV library
     if (Array.isArray(data)) {
       const headers = Object.keys(data[0] || {});
-      const rows = data.map(item => headers.map(header => item[header]).join(','));
+      const rows = data.map((item) => headers.map((header) => item[header]).join(','));
       const csv = [headers.join(','), ...rows].join('\n');
       return Buffer.from(csv);
     }
 
     // For non-array data, convert to single-row CSV
     const headers = Object.keys(data);
-    const values = headers.map(header => data[header]);
+    const values = headers.map((header) => data[header]);
     const csv = [headers.join(','), values.join(',')].join('\n');
     return Buffer.from(csv);
   }
@@ -403,13 +413,13 @@ export class ReportGenerationJob {
     if (data.length === 0) return '<p>No data available</p>';
 
     const headers = Object.keys(data[0]);
-    const rows = data.map(item =>
-      `<tr>${headers.map(header => `<td>${item[header]}</td>`).join('')}</tr>`
-    ).join('');
+    const rows = data
+      .map((item) => `<tr>${headers.map((header) => `<td>${item[header]}</td>`).join('')}</tr>`)
+      .join('');
 
     return `
       <table>
-        <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+        <thead><tr>${headers.map((h) => `<th>${h}</th>`).join('')}</tr></thead>
         <tbody>${rows}</tbody>
       </table>
     `;
@@ -419,9 +429,9 @@ export class ReportGenerationJob {
    * Convert object to HTML
    */
   private objectToHTML(data: any): string {
-    const entries = Object.entries(data).map(([key, value]) =>
-      `<dt>${key}</dt><dd>${JSON.stringify(value)}</dd>`
-    ).join('');
+    const entries = Object.entries(data)
+      .map(([key, value]) => `<dt>${key}</dt><dd>${JSON.stringify(value)}</dd>`)
+      .join('');
 
     return `<dl>${entries}</dl>`;
   }
@@ -449,7 +459,7 @@ export class ReportGenerationJob {
     // In real implementation, this would create an EmailJob with the report as attachment
     this.logger.info('Report email sending not implemented yet', {
       outputPath,
-      email: data.output.email
+      email: data.output.email,
     });
   }
 
@@ -457,14 +467,17 @@ export class ReportGenerationJob {
    * Utility function to group array by key
    */
   private groupBy<T>(array: T[], key: keyof T): Record<string, T[]> {
-    return array.reduce((groups, item) => {
-      const groupKey = String(item[key]);
-      if (!groups[groupKey]) {
-        groups[groupKey] = [];
-      }
-      groups[groupKey].push(item);
-      return groups;
-    }, {} as Record<string, T[]>);
+    return array.reduce(
+      (groups, item) => {
+        const groupKey = String(item[key]);
+        if (!groups[groupKey]) {
+          groups[groupKey] = [];
+        }
+        groups[groupKey].push(item);
+        return groups;
+      },
+      {} as Record<string, T[]>
+    );
   }
 
   /**
@@ -492,13 +505,13 @@ export class ReportGenerationJob {
       format: 'html',
       filters: {
         dateRange,
-        userIds: options?.userIds
+        userIds: options?.userIds,
       },
       output: {
         filename: outputFilename,
         path: options?.path,
-        email: options?.email
-      }
+        email: options?.email,
+      },
     });
   }
 
@@ -520,8 +533,8 @@ export class ReportGenerationJob {
       output: {
         filename: outputFilename,
         path: options?.path,
-        email: options?.email
-      }
+        email: options?.email,
+      },
     });
   }
 }

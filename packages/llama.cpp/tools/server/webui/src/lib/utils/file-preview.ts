@@ -4,13 +4,13 @@
  * @returns Formatted file size string
  */
 export function formatFileSize(bytes: number): string {
-	if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) return '0 Bytes';
 
-	const k = 1024;
-	const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-	const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-	return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
 /**
@@ -19,7 +19,7 @@ export function formatFileSize(bytes: number): string {
  * @returns Formatted file type label
  */
 export function getFileTypeLabel(fileType: string): string {
-	return fileType.split('/').pop()?.toUpperCase() || 'FILE';
+  return fileType.split('/').pop()?.toUpperCase() || 'FILE';
 }
 
 /**
@@ -28,5 +28,5 @@ export function getFileTypeLabel(fileType: string): string {
  * @returns Truncated content with ellipsis if needed
  */
 export function getPreviewText(content: string): string {
-	return content.length > 150 ? content.substring(0, 150) + '...' : content;
+  return content.length > 150 ? content.substring(0, 150) + '...' : content;
 }

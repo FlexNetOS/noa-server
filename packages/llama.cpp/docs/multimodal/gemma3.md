@@ -6,7 +6,8 @@
 
 ## Quick started
 
-You can use pre-quantized model from [ggml-org](https://huggingface.co/ggml-org)'s Hugging Face account
+You can use pre-quantized model from
+[ggml-org](https://huggingface.co/ggml-org)'s Hugging Face account
 
 ```bash
 # build
@@ -37,6 +38,7 @@ python ../llama.cpp/convert_hf_to_gguf.py --outfile model.gguf --outtype f16 --m
 ## How to run it?
 
 What you need:
+
 - The text model GGUF, can be converted using `convert_hf_to_gguf.py`
 - The mmproj file from step above
 - An image file

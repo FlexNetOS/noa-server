@@ -10,26 +10,34 @@ export const WebhookJobDataSchema = z.object({
   headers: z.record(z.string()).optional(),
   body: z.any().optional(),
   timeout: z.number().optional(),
-  retries: z.object({
-    maxAttempts: z.number().optional(),
-    backoffMs: z.number().optional(),
-    backoffMultiplier: z.number().optional()
-  }).optional(),
-  auth: z.object({
-    type: z.enum(['none', 'basic', 'bearer', 'api-key', 'signature']),
-    credentials: z.record(z.string()).optional()
-  }).optional(),
-  signature: z.object({
-    algorithm: z.enum(['sha256', 'sha512', 'md5']).optional(),
-    secret: z.string().optional(),
-    header: z.string().optional()
-  }).optional(),
-  validation: z.object({
-    expectedStatusCodes: z.array(z.number()).optional(),
-    expectedResponseSchema: z.any().optional(),
-    customValidator: z.string().optional() // Function name or code
-  }).optional(),
-  metadata: z.record(z.any()).optional()
+  retries: z
+    .object({
+      maxAttempts: z.number().optional(),
+      backoffMs: z.number().optional(),
+      backoffMultiplier: z.number().optional(),
+    })
+    .optional(),
+  auth: z
+    .object({
+      type: z.enum(['none', 'basic', 'bearer', 'api-key', 'signature']),
+      credentials: z.record(z.string()).optional(),
+    })
+    .optional(),
+  signature: z
+    .object({
+      algorithm: z.enum(['sha256', 'sha512', 'md5']).optional(),
+      secret: z.string().optional(),
+      header: z.string().optional(),
+    })
+    .optional(),
+  validation: z
+    .object({
+      expectedStatusCodes: z.array(z.number()).optional(),
+      expectedResponseSchema: z.any().optional(),
+      customValidator: z.string().optional(), // Function name or code
+    })
+    .optional(),
+  metadata: z.record(z.any()).optional(),
 });
 
 export type WebhookJobData = z.infer<typeof WebhookJobDataSchema>;
@@ -96,7 +104,7 @@ export class WebhookJob {
       jobId: job.id,
       url: webhookData.url,
       method: webhookData.method || 'POST',
-      maxAttempts
+      maxAttempts,
     });
 
     while (attempts < maxAttempts) {
@@ -106,7 +114,7 @@ export class WebhookJob {
         this.logger.debug('Making webhook request', {
           jobId: job.id,
           attempt: attempts,
-          url: webhookData.url
+          url: webhookData.url,
         });
 
         // Prepare request options
@@ -121,7 +129,7 @@ export class WebhookJob {
           headers: response.headers,
           body: response.body,
           attempts,
-          duration: Date.now() - startTime
+          duration: Date.now() - startTime,
         };
 
         // Validate response if validation rules are specified
@@ -136,11 +144,10 @@ export class WebhookJob {
           jobId: job.id,
           statusCode: response.statusCode,
           attempts,
-          duration: webhookResponse.duration
+          duration: webhookResponse.duration,
         });
 
         return webhookResponse;
-
       } catch (error) {
         lastError = error as Error;
 
@@ -148,7 +155,7 @@ export class WebhookJob {
           jobId: job.id,
           attempt: attempts,
           error: lastError.message,
-          url: webhookData.url
+          url: webhookData.url,
         });
 
         // If this is not the last attempt, wait before retrying
@@ -167,14 +174,14 @@ export class WebhookJob {
       body: null,
       attempts,
       duration: Date.now() - startTime,
-      error: lastError?.message || 'All retry attempts failed'
+      error: lastError?.message || 'All retry attempts failed',
     };
 
     this.logger.error('Webhook execution failed after all retries', {
       jobId: job.id,
       attempts,
       finalError: finalResponse.error,
-      url: webhookData.url
+      url: webhookData.url,
     });
 
     return finalResponse;
@@ -219,7 +226,7 @@ export class WebhookJob {
       method,
       headers,
       body,
-      timeout: webhookData.timeout || 30000 // 30 seconds default
+      timeout: webhookData.timeout || 30000, // 30 seconds default
     };
   }
 
@@ -301,7 +308,7 @@ export class WebhookJob {
       if (!validation.expectedStatusCodes.includes(response.statusCode)) {
         this.logger.warn('Response status code validation failed', {
           statusCode: response.statusCode,
-          expected: validation.expectedStatusCodes
+          expected: validation.expectedStatusCodes,
         });
         return false;
       }
@@ -371,7 +378,7 @@ export class WebhookJob {
    * Utility method for delaying execution
    */
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
@@ -411,7 +418,7 @@ export class WebhookJob {
       auth: options?.auth,
       signature: options?.signature,
       validation: options?.validation,
-      metadata: options?.metadata
+      metadata: options?.metadata,
     });
   }
 
@@ -441,7 +448,7 @@ export class WebhookJob {
       retries: options?.retries,
       auth: options?.auth,
       validation: options?.validation,
-      metadata: options?.metadata
+      metadata: options?.metadata,
     });
   }
 
@@ -477,10 +484,10 @@ export class WebhookJob {
       signature: {
         algorithm: options?.algorithm || 'sha256',
         secret,
-        header: options?.signatureHeader || 'X-Signature'
+        header: options?.signatureHeader || 'X-Signature',
       },
       validation: options?.validation,
-      metadata: options?.metadata
+      metadata: options?.metadata,
     });
   }
 }

@@ -100,7 +100,6 @@ async function main() {
         console.log(`   MIME Type: ${resource.mimeType}`);
       }
     });
-
   } catch (error) {
     console.error('✗ Error:', error);
   } finally {

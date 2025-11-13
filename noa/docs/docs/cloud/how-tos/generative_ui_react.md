@@ -6,17 +6,26 @@
     - [LangGraph Server](../../concepts/langgraph_server.md)
     - [`useStream()` React Hook](./use_stream_react.md)
 
-Generative user interfaces (Generative UI) allows agents to go beyond text and generate rich user interfaces. This enables creating more interactive and context-aware applications where the UI adapts based on the conversation flow and AI responses.
+Generative user interfaces (Generative UI) allows agents to go beyond text and
+generate rich user interfaces. This enables creating more interactive and
+context-aware applications where the UI adapts based on the conversation flow
+and AI responses.
 
 ![Generative UI Sample](./img/generative_ui_sample.jpg)
 
-LangGraph Platform supports colocating your React components with your graph code. This allows you to focus on building specific UI components for your graph while easily plugging into existing chat interfaces such as [Agent Chat](https://agentchat.vercel.app) and loading the code only when actually needed.
+LangGraph Platform supports colocating your React components with your graph
+code. This allows you to focus on building specific UI components for your graph
+while easily plugging into existing chat interfaces such as
+[Agent Chat](https://agentchat.vercel.app) and loading the code only when
+actually needed.
 
 ## Tutorial
 
 ### 1. Define and configure UI components
 
-First, create your first UI component. For each component you need to provide an unique identifier that will be used to reference the component in your graph code.
+First, create your first UI component. For each component you need to provide an
+unique identifier that will be used to reference the component in your graph
+code.
 
 ```tsx title="src/agent/ui.tsx"
 const WeatherComponent = (props: { city: string }) => {
@@ -58,11 +67,19 @@ Next, define your UI components in your `langgraph.json` configuration:
     }
     ```
 
-The `ui` section points to the UI components that will be used by graphs. By default, we recommend using the same key as the graph name, but you can split out the components however you like, see [Customise the namespace of UI components](#customise-the-namespace-of-ui-components) for more details.
+The `ui` section points to the UI components that will be used by graphs. By
+default, we recommend using the same key as the graph name, but you can split
+out the components however you like, see
+[Customise the namespace of UI components](#customise-the-namespace-of-ui-components)
+for more details.
 
-LangGraph Platform will automatically bundle your UI components code and styles and serve them as external assets that can be loaded by the `LoadExternalComponent` component. Some dependencies such as `react` and `react-dom` will be automatically excluded from the bundle.
+LangGraph Platform will automatically bundle your UI components code and styles
+and serve them as external assets that can be loaded by the
+`LoadExternalComponent` component. Some dependencies such as `react` and
+`react-dom` will be automatically excluded from the bundle.
 
-CSS and Tailwind 4.x is also supported out of the box, so you can freely use Tailwind classes as well as `shadcn/ui` in your UI components.
+CSS and Tailwind 4.x is also supported out of the box, so you can freely use
+Tailwind classes as well as `shadcn/ui` in your UI components.
 
 === "`src/agent/ui.tsx`"
 
@@ -188,18 +205,19 @@ CSS and Tailwind 4.x is also supported out of the box, so you can freely use Tai
 
 ### 3. Handle UI elements in your React application
 
-On the client side, you can use `useStream()` and `LoadExternalComponent` to display the UI elements.
+On the client side, you can use `useStream()` and `LoadExternalComponent` to
+display the UI elements.
 
 ```tsx title="src/app/page.tsx"
-"use client";
+'use client';
 
-import { useStream } from "@langchain/langgraph-sdk/react";
-import { LoadExternalComponent } from "@langchain/langgraph-sdk/react-ui";
+import { useStream } from '@langchain/langgraph-sdk/react';
+import { LoadExternalComponent } from '@langchain/langgraph-sdk/react-ui';
 
 export default function Page() {
   const { thread, values } = useStream({
-    apiUrl: "http://localhost:2024",
-    assistantId: "agent",
+    apiUrl: 'http://localhost:2024',
+    assistantId: 'agent',
   });
 
   return (
@@ -219,13 +237,17 @@ export default function Page() {
 }
 ```
 
-Behind the scenes, `LoadExternalComponent` will fetch the JS and CSS for the UI components from LangGraph Platform and render them in a shadow DOM, thus ensuring style isolation from the rest of your application.
+Behind the scenes, `LoadExternalComponent` will fetch the JS and CSS for the UI
+components from LangGraph Platform and render them in a shadow DOM, thus
+ensuring style isolation from the rest of your application.
 
 ## How-to guides
 
 ### Provide custom components on the client side
 
-If you already have the components loaded in your client application, you can provide a map of such components to be rendered directly without fetching the UI code from LangGraph Platform.
+If you already have the components loaded in your client application, you can
+provide a map of such components to be rendered directly without fetching the UI
+code from LangGraph Platform.
 
 ```tsx
 const clientComponents = {
@@ -253,7 +275,9 @@ You can provide a fallback UI to be rendered when the components are loading.
 
 ### Customise the namespace of UI components.
 
-By default `LoadExternalComponent` will use the `assistantId` from `useStream()` hook to fetch the code for UI components. You can customise this by providing a `namespace` prop to the `LoadExternalComponent` component.
+By default `LoadExternalComponent` will use the `assistantId` from `useStream()`
+hook to fetch the code for UI components. You can customise this by providing a
+`namespace` prop to the `LoadExternalComponent` component.
 
 === "`src/app/page.tsx`"
 
@@ -277,10 +301,11 @@ By default `LoadExternalComponent` will use the `assistantId` from `useStream()`
 
 ### Access and interact with the thread state from the UI component
 
-You can access the thread state inside the UI component by using the `useStreamContext` hook.
+You can access the thread state inside the UI component by using the
+`useStreamContext` hook.
 
 ```tsx
-import { useStreamContext } from "@langchain/langgraph-sdk/react-ui";
+import { useStreamContext } from '@langchain/langgraph-sdk/react-ui';
 
 const WeatherComponent = (props: { city: string }) => {
   const { thread, submit } = useStreamContext();
@@ -291,7 +316,7 @@ const WeatherComponent = (props: { city: string }) => {
       <button
         onClick={() => {
           const newMessage = {
-            type: "human",
+            type: 'human',
             content: `What's the weather in ${props.city}?`,
           };
 
@@ -307,16 +332,18 @@ const WeatherComponent = (props: { city: string }) => {
 
 ### Pass additional context to the client components
 
-You can pass additional context to the client components by providing a `meta` prop to the `LoadExternalComponent` component.
+You can pass additional context to the client components by providing a `meta`
+prop to the `LoadExternalComponent` component.
 
 ```tsx
-<LoadExternalComponent stream={thread} message={ui} meta={{ userId: "123" }} />
+<LoadExternalComponent stream={thread} message={ui} meta={{ userId: '123' }} />
 ```
 
-Then, you can access the `meta` prop in the UI component by using the `useStreamContext` hook.
+Then, you can access the `meta` prop in the UI component by using the
+`useStreamContext` hook.
 
 ```tsx
-import { useStreamContext } from "@langchain/langgraph-sdk/react-ui";
+import { useStreamContext } from '@langchain/langgraph-sdk/react-ui';
 
 const WeatherComponent = (props: { city: string }) => {
   const { meta } = useStreamContext<
@@ -334,14 +361,16 @@ const WeatherComponent = (props: { city: string }) => {
 
 ### Streaming UI messages from the server
 
-You can stream UI messages before the node execution is finished by using the `onCustomEvent` callback of the `useStream()` hook. This is especially useful when updating the UI component as the LLM is generating the response.
+You can stream UI messages before the node execution is finished by using the
+`onCustomEvent` callback of the `useStream()` hook. This is especially useful
+when updating the UI component as the LLM is generating the response.
 
 ```tsx
-import { uiMessageReducer } from "@langchain/langgraph-sdk/react-ui";
+import { uiMessageReducer } from '@langchain/langgraph-sdk/react-ui';
 
 const { thread, submit } = useStream({
-  apiUrl: "http://localhost:2024",
-  assistantId: "agent",
+  apiUrl: 'http://localhost:2024',
+  assistantId: 'agent',
   onCustomEvent: (event, options) => {
     options.mutate((prev) => {
       const ui = uiMessageReducer(prev.ui ?? [], event);
@@ -351,7 +380,8 @@ const { thread, submit } = useStream({
 });
 ```
 
-Then you can push updates to the UI component by calling `ui.push()` / `push_ui_message()` with the same ID as the UI message you wish to update.
+Then you can push updates to the UI component by calling `ui.push()` /
+`push_ui_message()` with the same ID as the UI message you wish to update.
 
 === "Python"
 
@@ -509,7 +539,9 @@ Then you can push updates to the UI component by calling `ui.push()` / `push_ui_
 
 ### Remove UI messages from state
 
-Similar to how messages can be removed from the state by appending a RemoveMessage you can remove an UI message from the state by calling `remove_ui_message` / `ui.delete` with the ID of the UI message.
+Similar to how messages can be removed from the state by appending a
+RemoveMessage you can remove an UI message from the state by calling
+`remove_ui_message` / `ui.delete` with the ID of the UI message.
 
 === "Python"
 

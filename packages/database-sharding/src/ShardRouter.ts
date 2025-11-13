@@ -27,7 +27,7 @@ export class ShardRouter {
   async initialize(): Promise<void> {
     this.logger.info('Initializing ShardRouter', {
       shardCount: this.config.shards.length,
-      databaseType: this.config.databaseType
+      databaseType: this.config.databaseType,
     });
 
     // Initialize adapters for each shard
@@ -46,13 +46,13 @@ export class ShardRouter {
         adapter = new PostgreSQLShardAdapter({
           config: shard,
           poolConfig: this.config.connectionPool,
-          logger: this.logger
+          logger: this.logger,
         });
       } else {
         adapter = new MongoDBShardAdapter({
           config: shard,
           poolConfig: this.config.connectionPool,
-          logger: this.logger
+          logger: this.logger,
         });
       }
 
@@ -109,10 +109,7 @@ export class ShardRouter {
     }
   }
 
-  async executeOnShard<T>(
-    shardId: string,
-    operation: (connection: any) => Promise<T>
-  ): Promise<T> {
+  async executeOnShard<T>(shardId: string, operation: (connection: any) => Promise<T>): Promise<T> {
     const adapter = this.adapters.get(shardId);
     if (!adapter) {
       throw new Error(`No adapter found for shard ${shardId}`);
@@ -127,7 +124,7 @@ export class ShardRouter {
       this.logger.debug('Query executed successfully', {
         shardId,
         duration,
-        operation: operation.name || 'anonymous'
+        operation: operation.name || 'anonymous',
       });
 
       return result;
@@ -137,16 +134,13 @@ export class ShardRouter {
         shardId,
         duration,
         error: error.message,
-        operation: operation.name || 'anonymous'
+        operation: operation.name || 'anonymous',
       });
       throw error;
     }
   }
 
-  async executeQuery<T>(
-    key: any,
-    operation: (connection: any) => Promise<T>
-  ): Promise<T> {
+  async executeQuery<T>(key: any, operation: (connection: any) => Promise<T>): Promise<T> {
     const shardId = await this.getShardForKey(key);
     return this.executeOnShard(shardId, operation);
   }
@@ -282,11 +276,16 @@ export class ShardRouter {
     }
   }
 
-  async getAllShardHealth(): Promise<Record<string, {
-    isHealthy: boolean;
-    latency: number;
-    error?: string;
-  }>> {
+  async getAllShardHealth(): Promise<
+    Record<
+      string,
+      {
+        isHealthy: boolean;
+        latency: number;
+        error?: string;
+      }
+    >
+  > {
     const healthPromises = this.getShardIds().map(async (shardId) => {
       const health = await this.getShardHealth(shardId);
       return [shardId, health] as const;
@@ -297,10 +296,7 @@ export class ShardRouter {
   }
 
   // Transaction support
-  async executeTransaction<T>(
-    key: any,
-    operation: (connection: any) => Promise<T>
-  ): Promise<T> {
+  async executeTransaction<T>(key: any, operation: (connection: any) => Promise<T>): Promise<T> {
     const shardId = await this.getShardForKey(key);
     const adapter = this.adapters.get(shardId);
 
@@ -318,10 +314,13 @@ export class ShardRouter {
     }>
   ): Promise<T[]> {
     // Group operations by shard
-    const operationsByShard = new Map<string, Array<{
-      key: any;
-      operation: (connection: any) => Promise<any>;
-    }>>();
+    const operationsByShard = new Map<
+      string,
+      Array<{
+        key: any;
+        operation: (connection: any) => Promise<any>;
+      }>
+    >();
 
     for (const op of operations) {
       const shardId = await this.getShardForKey(op.key);
@@ -332,21 +331,23 @@ export class ShardRouter {
     }
 
     // Execute transactions on each shard
-    const transactionPromises = Array.from(operationsByShard.entries()).map(async ([shardId, ops]) => {
-      const adapter = this.adapters.get(shardId);
-      if (!adapter) {
-        throw new Error(`No adapter found for shard ${shardId}`);
-      }
-
-      return adapter.executeTransaction(async (conn) => {
-        const results = [];
-        for (const op of ops) {
-          const result = await op.operation(conn);
-          results.push(result);
+    const transactionPromises = Array.from(operationsByShard.entries()).map(
+      async ([shardId, ops]) => {
+        const adapter = this.adapters.get(shardId);
+        if (!adapter) {
+          throw new Error(`No adapter found for shard ${shardId}`);
         }
-        return results;
-      });
-    });
+
+        return adapter.executeTransaction(async (conn) => {
+          const results = [];
+          for (const op of ops) {
+            const result = await op.operation(conn);
+            results.push(result);
+          }
+          return results;
+        });
+      }
+    );
 
     const results = await Promise.all(transactionPromises);
     return results.flat();

@@ -40,8 +40,12 @@ export class JobProcessor extends EventEmitter {
   private queueManager: QueueManager;
   private config: JobProcessorConfig;
   private activeJobs: Map<string, JobExecutionContext> = new Map();
-  private jobHandlers: Map<string, (job: QueueJob, context: JobExecutionContext) => Promise<any>> = new Map();
-  private circuitBreakerState: Map<string, { failures: number; lastFailure: Date; state: 'closed' | 'open' | 'half-open' }> = new Map();
+  private jobHandlers: Map<string, (job: QueueJob, context: JobExecutionContext) => Promise<any>> =
+    new Map();
+  private circuitBreakerState: Map<
+    string,
+    { failures: number; lastFailure: Date; state: 'closed' | 'open' | 'half-open' }
+  > = new Map();
   private isRunning = false;
 
   constructor(queueManager: QueueManager, config: JobProcessorConfig) {
@@ -89,7 +93,10 @@ export class JobProcessor extends EventEmitter {
   /**
    * Register a job handler
    */
-  registerHandler(jobType: string, handler: (job: QueueJob, context: JobExecutionContext) => Promise<any>): void {
+  registerHandler(
+    jobType: string,
+    handler: (job: QueueJob, context: JobExecutionContext) => Promise<any>
+  ): void {
     this.jobHandlers.set(jobType, handler);
     this.emit('handler-registered', { jobType });
   }
@@ -125,7 +132,7 @@ export class JobProcessor extends EventEmitter {
       attempt: job.retryCount + 1,
       startTime: new Date(),
       timeout: job.timeout || this.config.jobTimeout,
-      cancelToken: { cancelled: false }
+      cancelToken: { cancelled: false },
     };
 
     this.activeJobs.set(job.id, context);
@@ -149,11 +156,10 @@ export class JobProcessor extends EventEmitter {
         jobId: job.id,
         jobType: job.type,
         result,
-        duration: Date.now() - context.startTime.getTime()
+        duration: Date.now() - context.startTime.getTime(),
       });
 
       return result;
-
     } catch (error) {
       this.activeJobs.delete(job.id);
 
@@ -167,7 +173,7 @@ export class JobProcessor extends EventEmitter {
         jobId: job.id,
         jobType: job.type,
         error: (error as Error).message,
-        duration: Date.now() - context.startTime.getTime()
+        duration: Date.now() - context.startTime.getTime(),
       });
 
       throw error;
@@ -205,7 +211,6 @@ export class JobProcessor extends EventEmitter {
         clearTimeout(timeoutId);
         clearInterval(checkInterval);
         resolve(result);
-
       } catch (error) {
         clearTimeout(timeoutId);
         clearInterval(checkInterval);
@@ -229,7 +234,7 @@ export class JobProcessor extends EventEmitter {
         jobId: job.id,
         attempt: job.retryCount + 1,
         delay: retryDelay,
-        error: error.message
+        error: error.message,
       });
 
       // Use setTimeout for retry scheduling
@@ -239,18 +244,17 @@ export class JobProcessor extends EventEmitter {
         } catch (retryError) {
           this.emit('job-retry-failed', {
             jobId: job.id,
-            error: (retryError as Error).message
+            error: (retryError as Error).message,
           });
         }
       }, retryDelay);
-
     } else {
       // Max retries reached
       await this.queueManager.failJob(job.id, error.message);
       this.emit('job-max-retries-reached', {
         jobId: job.id,
         attempts: job.retryCount + 1,
-        error: error.message
+        error: error.message,
       });
     }
   }
@@ -327,7 +331,7 @@ export class JobProcessor extends EventEmitter {
     const state = this.circuitBreakerState.get(jobType) || {
       failures: 0,
       lastFailure: new Date(),
-      state: 'closed' as const
+      state: 'closed' as const,
     };
 
     state.failures++;
@@ -367,7 +371,7 @@ export class JobProcessor extends EventEmitter {
       circuitBreakerStats[jobType] = {
         state: state.state,
         failures: state.failures,
-        lastFailure: state.lastFailure
+        lastFailure: state.lastFailure,
       };
     });
 
@@ -376,7 +380,7 @@ export class JobProcessor extends EventEmitter {
       activeJobs: this.activeJobs.size,
       maxConcurrentJobs: this.config.maxConcurrentJobs,
       registeredHandlers: Array.from(this.jobHandlers.keys()),
-      circuitBreakerStats
+      circuitBreakerStats,
     };
   }
 
@@ -386,12 +390,12 @@ export class JobProcessor extends EventEmitter {
   getActiveJobs(): Array<{ jobId: string; jobType: string; startTime: Date; attempt: number }> {
     const jobs: Array<{ jobId: string; jobType: string; startTime: Date; attempt: number }> = [];
 
-    this.activeJobs.forEach(context => {
+    this.activeJobs.forEach((context) => {
       jobs.push({
         jobId: context.job.id,
         jobType: context.job.type,
         startTime: context.startTime,
-        attempt: context.attempt
+        attempt: context.attempt,
       });
     });
 

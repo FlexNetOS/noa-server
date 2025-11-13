@@ -10,7 +10,7 @@
       {
         "title": "API Availability (SLA: 99.9%)",
         "type": "gauge",
-        "gridPos": {"x": 0, "y": 0, "w": 8, "h": 8},
+        "gridPos": { "x": 0, "y": 0, "w": 8, "h": 8 },
         "targets": [
           {
             "expr": "(sum(rate(http_requests_total{service=\"api\",status!~\"5..\"}[30d])) / sum(rate(http_requests_total{service=\"api\"}[30d]))) * 100",
@@ -29,9 +29,9 @@
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                {"value": 99, "color": "red"},
-                {"value": 99.5, "color": "yellow"},
-                {"value": 99.9, "color": "green"}
+                { "value": 99, "color": "red" },
+                { "value": 99.5, "color": "yellow" },
+                { "value": 99.9, "color": "green" }
               ]
             }
           }
@@ -40,7 +40,7 @@
       {
         "title": "P95 Latency SLO (Target: <2s)",
         "type": "gauge",
-        "gridPos": {"x": 8, "y": 0, "w": 8, "h": 8},
+        "gridPos": { "x": 8, "y": 0, "w": 8, "h": 8 },
         "targets": [
           {
             "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{service=\"api\"}[5m])) by (le))",
@@ -59,9 +59,9 @@
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                {"value": 0, "color": "green"},
-                {"value": 2, "color": "yellow"},
-                {"value": 3, "color": "red"}
+                { "value": 0, "color": "green" },
+                { "value": 2, "color": "yellow" },
+                { "value": 3, "color": "red" }
               ]
             }
           }
@@ -70,7 +70,7 @@
       {
         "title": "Error Budget Remaining",
         "type": "gauge",
-        "gridPos": {"x": 16, "y": 0, "w": 8, "h": 8},
+        "gridPos": { "x": 16, "y": 0, "w": 8, "h": 8 },
         "targets": [
           {
             "expr": "((0.999 - (sum(rate(http_requests_total{service=\"api\",status!~\"5..\"}[30d])) / sum(rate(http_requests_total{service=\"api\"}[30d])))) / 0.001) * 100",
@@ -89,9 +89,9 @@
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                {"value": 0, "color": "red"},
-                {"value": 20, "color": "yellow"},
-                {"value": 50, "color": "green"}
+                { "value": 0, "color": "red" },
+                { "value": 20, "color": "yellow" },
+                { "value": 50, "color": "green" }
               ]
             }
           }
@@ -100,10 +100,10 @@
           "name": "Error Budget Depleted",
           "conditions": [
             {
-              "evaluator": {"params": [10], "type": "lt"},
-              "operator": {"type": "and"},
-              "query": {"params": ["A", "5m", "now"]},
-              "reducer": {"params": [], "type": "last"},
+              "evaluator": { "params": [10], "type": "lt" },
+              "operator": { "type": "and" },
+              "query": { "params": ["A", "5m", "now"] },
+              "reducer": { "params": [], "type": "last" },
               "type": "query"
             }
           ],
@@ -118,7 +118,7 @@
       {
         "title": "30-Day Availability Trend",
         "type": "graph",
-        "gridPos": {"x": 0, "y": 8, "w": 12, "h": 8},
+        "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "(sum(rate(http_requests_total{service=\"api\",status!~\"5..\"}[1d])) / sum(rate(http_requests_total{service=\"api\"}[1d]))) * 100",
@@ -132,14 +132,19 @@
           }
         ],
         "yaxes": [
-          {"format": "percent", "label": "Availability", "min": 99, "max": 100},
-          {"format": "short"}
+          {
+            "format": "percent",
+            "label": "Availability",
+            "min": 99,
+            "max": 100
+          },
+          { "format": "short" }
         ]
       },
       {
         "title": "Request Success Rate by Endpoint",
         "type": "graph",
-        "gridPos": {"x": 12, "y": 8, "w": 12, "h": 8},
+        "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "(sum(rate(http_requests_total{service=\"api\",status!~\"5..\"}[5m])) by (endpoint) / sum(rate(http_requests_total{service=\"api\"}[5m])) by (endpoint)) * 100",
@@ -148,14 +153,19 @@
           }
         ],
         "yaxes": [
-          {"format": "percent", "label": "Success Rate", "min": 95, "max": 100},
-          {"format": "short"}
+          {
+            "format": "percent",
+            "label": "Success Rate",
+            "min": 95,
+            "max": 100
+          },
+          { "format": "short" }
         ]
       },
       {
         "title": "SLO Compliance Status",
         "type": "table",
-        "gridPos": {"x": 0, "y": 16, "w": 24, "h": 8},
+        "gridPos": { "x": 0, "y": 16, "w": 24, "h": 8 },
         "targets": [
           {
             "expr": "(\n  sum(rate(http_requests_total{service=\"api\",status!~\"5..\"}[30d])) by (endpoint) /\n  sum(rate(http_requests_total{service=\"api\"}[30d])) by (endpoint)\n) * 100",
@@ -184,7 +194,7 @@
           {
             "id": "organize",
             "options": {
-              "excludeByName": {"Time": true},
+              "excludeByName": { "Time": true },
               "indexByName": {},
               "renameByName": {
                 "endpoint": "Endpoint",
@@ -199,7 +209,7 @@
       {
         "title": "Downtime Minutes (30 Days)",
         "type": "stat",
-        "gridPos": {"x": 0, "y": 24, "w": 8, "h": 4},
+        "gridPos": { "x": 0, "y": 24, "w": 8, "h": 4 },
         "targets": [
           {
             "expr": "(1 - (sum(rate(http_requests_total{service=\"api\",status!~\"5..\"}[30d])) / sum(rate(http_requests_total{service=\"api\"}[30d])))) * 30 * 24 * 60",
@@ -215,13 +225,13 @@
           "defaults": {
             "displayName": "Downtime Minutes",
             "unit": "m",
-            "color": {"mode": "thresholds"},
+            "color": { "mode": "thresholds" },
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                {"value": 0, "color": "green"},
-                {"value": 43.2, "color": "yellow"},
-                {"value": 86.4, "color": "red"}
+                { "value": 0, "color": "green" },
+                { "value": 43.2, "color": "yellow" },
+                { "value": 86.4, "color": "red" }
               ]
             }
           }
@@ -230,7 +240,7 @@
       {
         "title": "Budget Burn Rate",
         "type": "stat",
-        "gridPos": {"x": 8, "y": 24, "w": 8, "h": 4},
+        "gridPos": { "x": 8, "y": 24, "w": 8, "h": 4 },
         "targets": [
           {
             "expr": "(sum(rate(http_requests_total{service=\"api\",status=~\"5..\"}[1h])) / sum(rate(http_requests_total{service=\"api\"}[1h]))) / 0.001",
@@ -246,13 +256,13 @@
           "defaults": {
             "displayName": "Burn Rate (1h)",
             "decimals": 2,
-            "color": {"mode": "thresholds"},
+            "color": { "mode": "thresholds" },
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                {"value": 0, "color": "green"},
-                {"value": 1, "color": "yellow"},
-                {"value": 10, "color": "red"}
+                { "value": 0, "color": "green" },
+                { "value": 1, "color": "yellow" },
+                { "value": 10, "color": "red" }
               ]
             }
           }
@@ -261,7 +271,7 @@
       {
         "title": "Time to SLA Breach",
         "type": "stat",
-        "gridPos": {"x": 16, "y": 24, "w": 8, "h": 4},
+        "gridPos": { "x": 16, "y": 24, "w": 8, "h": 4 },
         "targets": [
           {
             "expr": "((0.999 - (sum(rate(http_requests_total{service=\"api\",status!~\"5..\"}[30d])) / sum(rate(http_requests_total{service=\"api\"}[30d])))) / (sum(rate(http_requests_total{service=\"api\",status=~\"5..\"}[1h])) / sum(rate(http_requests_total{service=\"api\"}[1h])))) / 60",
@@ -278,13 +288,13 @@
             "displayName": "Hours to Breach",
             "unit": "h",
             "decimals": 1,
-            "color": {"mode": "thresholds"},
+            "color": { "mode": "thresholds" },
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                {"value": 0, "color": "red"},
-                {"value": 24, "color": "yellow"},
-                {"value": 168, "color": "green"}
+                { "value": 0, "color": "red" },
+                { "value": 24, "color": "yellow" },
+                { "value": 168, "color": "green" }
               ]
             }
           }
@@ -293,7 +303,7 @@
       {
         "title": "Database Availability (SLA: 99.95%)",
         "type": "gauge",
-        "gridPos": {"x": 0, "y": 28, "w": 8, "h": 8},
+        "gridPos": { "x": 0, "y": 28, "w": 8, "h": 8 },
         "targets": [
           {
             "expr": "(1 - (rate(pg_stat_database_conflicts_total{datname=\"noa_db\"}[30d]))) * 100",
@@ -312,9 +322,9 @@
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                {"value": 99.5, "color": "red"},
-                {"value": 99.9, "color": "yellow"},
-                {"value": 99.95, "color": "green"}
+                { "value": 99.5, "color": "red" },
+                { "value": 99.9, "color": "yellow" },
+                { "value": 99.95, "color": "green" }
               ]
             }
           }
@@ -323,7 +333,7 @@
       {
         "title": "Data Durability SLO",
         "type": "gauge",
-        "gridPos": {"x": 8, "y": 28, "w": 8, "h": 8},
+        "gridPos": { "x": 8, "y": 28, "w": 8, "h": 8 },
         "targets": [
           {
             "expr": "100 - (rate(backup_failures_total[30d]) * 100)",
@@ -342,9 +352,9 @@
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                {"value": 99.99, "color": "red"},
-                {"value": 99.999, "color": "yellow"},
-                {"value": 99.9999, "color": "green"}
+                { "value": 99.99, "color": "red" },
+                { "value": 99.999, "color": "yellow" },
+                { "value": 99.9999, "color": "green" }
               ]
             }
           }
@@ -353,7 +363,7 @@
       {
         "title": "Recovery Time Objective (RTO)",
         "type": "stat",
-        "gridPos": {"x": 16, "y": 28, "w": 8, "h": 8},
+        "gridPos": { "x": 16, "y": 28, "w": 8, "h": 8 },
         "targets": [
           {
             "expr": "avg_over_time(incident_recovery_time_seconds[30d]) / 60",
@@ -369,13 +379,13 @@
           "defaults": {
             "displayName": "Avg Recovery Time",
             "unit": "m",
-            "color": {"mode": "thresholds"},
+            "color": { "mode": "thresholds" },
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                {"value": 0, "color": "green"},
-                {"value": 15, "color": "yellow"},
-                {"value": 30, "color": "red"}
+                { "value": 0, "color": "green" },
+                { "value": 15, "color": "yellow" },
+                { "value": 30, "color": "red" }
               ]
             }
           }

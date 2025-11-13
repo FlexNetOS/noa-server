@@ -1,13 +1,18 @@
 # LangGraph Prebuilt
 
-This library defines high-level APIs for creating and executing LangGraph agents and tools.
+This library defines high-level APIs for creating and executing LangGraph agents
+and tools.
 
-> [!IMPORTANT]
-> This library is meant to be bundled with `langgraph`, don't install it directly
+> [!IMPORTANT] This library is meant to be bundled with `langgraph`, don't
+> install it directly
 
 ## Agents
 
-`langgraph-prebuilt` provides an [implementation](https://langchain-ai.github.io/langgraph/reference/prebuilt/#langgraph.prebuilt.chat_agent_executor.create_react_agent) of a tool-calling [ReAct-style](https://langchain-ai.github.io/langgraph/concepts/agentic_concepts/#react-implementation) agent - `create_react_agent`:
+`langgraph-prebuilt` provides an
+[implementation](https://langchain-ai.github.io/langgraph/reference/prebuilt/#langgraph.prebuilt.chat_agent_executor.create_react_agent)
+of a tool-calling
+[ReAct-style](https://langchain-ai.github.io/langgraph/concepts/agentic_concepts/#react-implementation)
+agent - `create_react_agent`:
 
 ```bash
 pip install langchain-anthropic
@@ -39,7 +44,9 @@ app.invoke(
 
 ### ToolNode
 
-`langgraph-prebuilt` provides an [implementation](https://langchain-ai.github.io/langgraph/reference/prebuilt/#langgraph.prebuilt.tool_node.ToolNode) of a node that executes tool calls - `ToolNode`:
+`langgraph-prebuilt` provides an
+[implementation](https://langchain-ai.github.io/langgraph/reference/prebuilt/#langgraph.prebuilt.tool_node.ToolNode)
+of a node that executes tool calls - `ToolNode`:
 
 ```python
 from langgraph.prebuilt import ToolNode
@@ -61,7 +68,10 @@ tool_node.invoke({"messages": [ai_message]})
 
 ### ValidationNode
 
-`langgraph-prebuilt` provides an [implementation](https://langchain-ai.github.io/langgraph/reference/prebuilt/#langgraph.prebuilt.tool_validator.ValidationNode) of a node that validates tool calls against a pydantic schema - `ValidationNode`:
+`langgraph-prebuilt` provides an
+[implementation](https://langchain-ai.github.io/langgraph/reference/prebuilt/#langgraph.prebuilt.tool_validator.ValidationNode)
+of a node that validates tool calls against a pydantic schema -
+`ValidationNode`:
 
 ```python
 from pydantic import BaseModel, field_validator
@@ -86,7 +96,10 @@ validation_node.invoke({
 
 ## Agent Inbox
 
-The library contains schemas for using the [Agent Inbox](https://github.com/langchain-ai/agent-inbox) with LangGraph agents. Learn more about how to use Agent Inbox [here](https://github.com/langchain-ai/agent-inbox#interrupts).
+The library contains schemas for using the
+[Agent Inbox](https://github.com/langchain-ai/agent-inbox) with LangGraph
+agents. Learn more about how to use Agent Inbox
+[here](https://github.com/langchain-ai/agent-inbox#interrupts).
 
 ```python
 from langgraph.types import interrupt

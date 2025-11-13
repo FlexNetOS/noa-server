@@ -1,10 +1,12 @@
 # Noa Server Phase 6: Monitoring Infrastructure
 
-Comprehensive monitoring solution with metrics, tracing, and logging for the Noa Server platform.
+Comprehensive monitoring solution with metrics, tracing, and logging for the Noa
+Server platform.
 
 ## Packages
 
 ### [@noa/metrics](./metrics/README.md)
+
 Application metrics collection and Prometheus integration.
 
 - **Metrics Types**: Counters, Gauges, Histograms, Summaries
@@ -13,6 +15,7 @@ Application metrics collection and Prometheus integration.
 - **Custom Metrics**: Easy registration of application-specific metrics
 
 ### [@noa/tracing](./tracing/README.md)
+
 Distributed tracing with OpenTelemetry, Jaeger, and Zipkin.
 
 - **OpenTelemetry**: Industry-standard tracing implementation
@@ -21,6 +24,7 @@ Distributed tracing with OpenTelemetry, Jaeger, and Zipkin.
 - **Context Propagation**: Trace requests across services
 
 ### [@noa/logging](./logging/README.md)
+
 Structured logging with ELK stack integration.
 
 - **Structured Logs**: JSON-formatted logs with metadata

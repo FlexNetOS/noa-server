@@ -83,13 +83,13 @@ export function Authentication() {
   };
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="flex-none flex items-center justify-between mb-6">
+    <div className="flex h-full flex-col">
+      <div className="mb-6 flex flex-none items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
             Authentication Settings
           </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Configure authentication providers and security policies
           </p>
         </div>
@@ -97,20 +97,20 @@ export function Authentication() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-400"
         >
           {saving ? 'Saving...' : 'Save Changes'}
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto space-y-6">
+      <div className="flex-1 space-y-6 overflow-y-auto">
         {/* Local Authentication */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+          className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
         >
-          <div className="flex items-center justify-between mb-4">
+          <div className="mb-4 flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               Local Authentication
             </h3>
@@ -142,12 +142,12 @@ export function Authentication() {
             </label>
 
             <div>
-              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+              <h4 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
                 Password Policy
               </h4>
               <div className="space-y-3 pl-4">
                 <div>
-                  <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="mb-1 block text-sm text-gray-700 dark:text-gray-300">
                     Minimum Length
                   </label>
                   <input
@@ -162,7 +162,7 @@ export function Authentication() {
                     disabled={!config.providers.local.enabled}
                     min="6"
                     max="32"
-                    className="w-32 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-32 rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   />
                 </div>
 
@@ -245,9 +245,9 @@ export function Authentication() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+          className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
         >
-          <div className="flex items-center justify-between mb-4">
+          <div className="mb-4 flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">OAuth Providers</h3>
             <label className="flex items-center gap-2">
               <input
@@ -280,7 +280,7 @@ export function Authentication() {
                   disabled={!config.providers.oauth.enabled}
                   className="rounded border-gray-300 dark:border-gray-600"
                 />
-                <span className="text-sm text-gray-700 dark:text-gray-300 capitalize">
+                <span className="text-sm capitalize text-gray-700 dark:text-gray-300">
                   {provider}
                 </span>
               </label>
@@ -293,15 +293,15 @@ export function Authentication() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+          className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
         >
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
             Session Management
           </h3>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Session Timeout (minutes)
               </label>
               <input
@@ -310,12 +310,12 @@ export function Authentication() {
                 onChange={(e) => updateConfig(['session', 'timeout'], parseInt(e.target.value))}
                 min="5"
                 max="1440"
-                className="w-32 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-32 rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Maximum Concurrent Sessions
               </label>
               <input
@@ -326,7 +326,7 @@ export function Authentication() {
                 }
                 min="1"
                 max="10"
-                className="w-32 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-32 rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
               />
             </div>
           </div>
@@ -337,9 +337,9 @@ export function Authentication() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+          className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
         >
-          <div className="flex items-center justify-between mb-4">
+          <div className="mb-4 flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               Multi-Factor Authentication
             </h3>
@@ -369,7 +369,7 @@ export function Authentication() {
             </label>
 
             <div>
-              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+              <h4 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
                 Available Methods
               </h4>
               <div className="space-y-2 pl-4">

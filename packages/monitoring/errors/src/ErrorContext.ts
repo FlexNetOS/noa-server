@@ -23,7 +23,7 @@ export class ErrorContextManager {
     this.context.environment = {
       nodeVersion: process.version,
       platform: process.platform,
-      hostname: os.hostname()
+      hostname: os.hostname(),
     };
   }
 
@@ -61,7 +61,7 @@ export class ErrorContextManager {
   setTags(tags: Record<string, string>): void {
     this.context.tags = {
       ...this.context.tags,
-      ...tags
+      ...tags,
     };
   }
 
@@ -91,7 +91,7 @@ export class ErrorContextManager {
   setExtras(extras: Record<string, unknown>): void {
     this.context.extra = {
       ...this.context.extra,
-      ...extras
+      ...extras,
     };
   }
 
@@ -101,7 +101,7 @@ export class ErrorContextManager {
   addBreadcrumb(breadcrumb: Omit<ErrorBreadcrumb, 'timestamp'>): void {
     const fullBreadcrumb: ErrorBreadcrumb = {
       ...breadcrumb,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     this.breadcrumbs.push(fullBreadcrumb);
@@ -132,7 +132,7 @@ export class ErrorContextManager {
   getContext(): ErrorContext {
     return {
       ...this.context,
-      environment: { ...this.context.environment }
+      environment: { ...this.context.environment },
     };
   }
 
@@ -149,16 +149,16 @@ export class ErrorContextManager {
       request: additionalContext.request || this.context.request,
       environment: {
         ...this.context.environment,
-        ...additionalContext.environment
+        ...additionalContext.environment,
       },
       tags: {
         ...this.context.tags,
-        ...additionalContext.tags
+        ...additionalContext.tags,
       },
       extra: {
         ...this.context.extra,
-        ...additionalContext.extra
-      }
+        ...additionalContext.extra,
+      },
     };
   }
 

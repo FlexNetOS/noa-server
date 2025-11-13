@@ -49,15 +49,15 @@ export class PreAgentAddHook {
     await this.validateExistingState(agentInfo);
     await this.backupCriticalFiles();
 
-    const canProceed = this.errors.length === 0 &&
-                       prerequisites.every(p => p.passed || !p.required);
+    const canProceed =
+      this.errors.length === 0 && prerequisites.every((p) => p.passed || !p.required);
 
     const result: PreHookResult = {
       canProceed,
       context: { ...context, prerequisites },
       warnings: this.warnings,
       errors: this.errors,
-      preparationSteps: this.preparationSteps
+      preparationSteps: this.preparationSteps,
     };
 
     this.printHookReport(result);
@@ -73,7 +73,7 @@ export class PreAgentAddHook {
       timestamp: new Date(),
       environment: process.env,
       workingDirectory: process.cwd(),
-      prerequisites: []
+      prerequisites: [],
     };
   }
 
@@ -91,7 +91,7 @@ export class PreAgentAddHook {
       passed: fileExists,
       message: fileExists
         ? `Agent file found: ${agentInfo.path}`
-        : `Agent file not found: ${agentInfo.path}`
+        : `Agent file not found: ${agentInfo.path}`,
     });
 
     if (!fileExists) {
@@ -104,9 +104,7 @@ export class PreAgentAddHook {
       name: 'typescript-installed',
       required: false,
       passed: hasTypeScript,
-      message: hasTypeScript
-        ? 'TypeScript is installed'
-        : 'TypeScript not found (optional)'
+      message: hasTypeScript ? 'TypeScript is installed' : 'TypeScript not found (optional)',
     });
 
     // Check: Claude-Flow installed
@@ -115,9 +113,7 @@ export class PreAgentAddHook {
       name: 'claude-flow-installed',
       required: true,
       passed: hasClaudeFlow,
-      message: hasClaudeFlow
-        ? 'Claude-Flow is installed'
-        : 'Claude-Flow not installed'
+      message: hasClaudeFlow ? 'Claude-Flow is installed' : 'Claude-Flow not installed',
     });
 
     if (!hasClaudeFlow) {
@@ -131,9 +127,7 @@ export class PreAgentAddHook {
       name: 'claude-directory-exists',
       required: false,
       passed: hasClaudeDir,
-      message: hasClaudeDir
-        ? '.claude directory exists'
-        : '.claude directory will be created'
+      message: hasClaudeDir ? '.claude directory exists' : '.claude directory will be created',
     });
 
     if (!hasClaudeDir) {
@@ -147,9 +141,7 @@ export class PreAgentAddHook {
       name: 'no-agent-conflict',
       required: true,
       passed: !hasConflict,
-      message: hasConflict
-        ? `Agent already exists: ${agentInfo.name}`
-        : 'No agent name conflicts'
+      message: hasConflict ? `Agent already exists: ${agentInfo.name}` : 'No agent name conflicts',
     });
 
     if (hasConflict) {
@@ -162,9 +154,7 @@ export class PreAgentAddHook {
       name: 'sufficient-disk-space',
       required: true,
       passed: hasSpace,
-      message: hasSpace
-        ? 'Sufficient disk space available'
-        : 'Low disk space warning'
+      message: hasSpace ? 'Sufficient disk space available' : 'Low disk space warning',
     });
 
     if (!hasSpace) {
@@ -251,19 +241,12 @@ export class PreAgentAddHook {
     const backupDir = path.join(process.cwd(), '.claude/backups');
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
 
-    const criticalFiles = [
-      '.claude/agents.json',
-      '.claude/config.json',
-      'package.json'
-    ];
+    const criticalFiles = ['.claude/agents.json', '.claude/config.json', 'package.json'];
 
     for (const file of criticalFiles) {
       const fullPath = path.join(process.cwd(), file);
       if (fs.existsSync(fullPath)) {
-        const backupPath = path.join(
-          backupDir,
-          `${path.basename(file)}.${timestamp}.backup`
-        );
+        const backupPath = path.join(backupDir, `${path.basename(file)}.${timestamp}.backup`);
 
         fs.copyFileSync(fullPath, backupPath);
         this.preparationSteps.push(`Backed up: ${file}`);
@@ -287,7 +270,7 @@ export class PreAgentAddHook {
       const pkg = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
       const deps = {
         ...pkg.dependencies,
-        ...pkg.devDependencies
+        ...pkg.devDependencies,
       };
 
       return packageName in deps;
@@ -346,8 +329,8 @@ export class PreAgentAddHook {
 
     if (result.context.prerequisites.length > 0) {
       console.log('📋 Prerequisites:');
-      result.context.prerequisites.forEach(check => {
-        const icon = check.passed ? '✅' : (check.required ? '❌' : '⚠️');
+      result.context.prerequisites.forEach((check) => {
+        const icon = check.passed ? '✅' : check.required ? '❌' : '⚠️';
         console.log(`   ${icon} ${check.name}: ${check.message}`);
       });
       console.log('');

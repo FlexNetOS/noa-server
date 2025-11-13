@@ -1,10 +1,13 @@
 # Claude Code + llama.cpp MCP Integration Guide
 
-This guide provides comprehensive documentation for the Model Context Protocol (MCP) integration between Claude Code and the llama.cpp neural processing layer.
+This guide provides comprehensive documentation for the Model Context Protocol
+(MCP) integration between Claude Code and the llama.cpp neural processing layer.
 
 ## Overview
 
-The integration enables Claude Code to access powerful local neural processing capabilities through MCP, allowing seamless AI-assisted development with local LLM models.
+The integration enables Claude Code to access powerful local neural processing
+capabilities through MCP, allowing seamless AI-assisted development with local
+LLM models.
 
 ## Architecture
 
@@ -68,7 +71,10 @@ The `.mcp.json` configuration file is automatically detected:
   "mcpServers": {
     "neural-processing": {
       "command": "/home/deflex/praisonai_env/bin/python3",
-      "args": ["/home/deflex/noa-server/packages/llama.cpp/shims/http_bridge.py", "mcp"],
+      "args": [
+        "/home/deflex/noa-server/packages/llama.cpp/shims/http_bridge.py",
+        "mcp"
+      ],
       "env": {
         "LLAMA_CPP_DIR": "/home/deflex/noa-server/packages/llama.cpp",
         "LLM_MODEL_PATH": "/home/deflex/noa-server/packages/llama.cpp/models",
@@ -100,11 +106,11 @@ claude mcp list
 
 **Parameters**:
 
-- `prompt` *(required)*: Input text prompt
-- `model_path` *(optional)*: Path to GGUF model file
-- `context_size` *(optional)*: Context window size (default: 4096)
-- `temperature` *(optional)*: Sampling temperature (default: 0.8)
-- `max_tokens` *(optional)*: Maximum tokens to generate (default: 256)
+- `prompt` _(required)_: Input text prompt
+- `model_path` _(optional)_: Path to GGUF model file
+- `context_size` _(optional)_: Context window size (default: 4096)
+- `temperature` _(optional)_: Sampling temperature (default: 0.8)
+- `max_tokens` _(optional)_: Maximum tokens to generate (default: 256)
 
 **Usage Examples**:
 
@@ -145,10 +151,10 @@ claude --print "Write a short story about AI consciousness"
 
 **Parameters**:
 
-- `prompt` *(required)*: Input text prompt
-- `model_path` *(optional)*: Path to GGUF model file
-- `context_size` *(optional)*: Context window size (default: 4096)
-- `temperature` *(optional)*: Sampling temperature (default: 0.8)
+- `prompt` _(required)_: Input text prompt
+- `model_path` _(optional)_: Path to GGUF model file
+- `context_size` _(optional)_: Context window size (default: 4096)
+- `temperature` _(optional)_: Sampling temperature (default: 0.8)
 
 **Usage Examples**:
 
@@ -168,9 +174,9 @@ claude --print "Stream an explanation of this Python code: [code snippet]"
 
 **Parameters**:
 
-- `model_path` *(optional)*: Path to GGUF model file
-- `prompt` *(optional)*: Test prompt (default: "Hello, how are you?")
-- `n_predict` *(optional)*: Number of tokens to predict (default: 128)
+- `model_path` _(optional)_: Path to GGUF model file
+- `prompt` _(optional)_: Test prompt (default: "Hello, how are you?")
+- `n_predict` _(optional)_: Number of tokens to predict (default: 128)
 
 **Usage Examples**:
 
@@ -204,7 +210,7 @@ claude --print "Benchmark with 256 tokens prediction"
 
 **Parameters**:
 
-- `model_path` *(required)*: Path to GGUF model file
+- `model_path` _(required)_: Path to GGUF model file
 
 **Usage Examples**:
 
@@ -327,13 +333,13 @@ claude
 
 ### Environment Variables
 
-| Variable | Description | Default | Impact |
-|----------|-------------|---------|---------|
-| `LLAMA_CPP_DIR` | llama.cpp installation path | Auto-detect | Required |
-| `LLM_MODEL_PATH` | Default model directory | None | Optional |
-| `LLAMA_CUDA` | Enable CUDA acceleration | `false` | Performance |
-| `LLAMA_CUDA_NO_VMM` | Disable unified memory | `false` | Memory management |
-| `LLAMA_CUDA_VMM_MAX_SIZE` | VMM pool size (bytes) | `1073741824` | Large model support |
+| Variable                  | Description                 | Default      | Impact              |
+| ------------------------- | --------------------------- | ------------ | ------------------- |
+| `LLAMA_CPP_DIR`           | llama.cpp installation path | Auto-detect  | Required            |
+| `LLM_MODEL_PATH`          | Default model directory     | None         | Optional            |
+| `LLAMA_CUDA`              | Enable CUDA acceleration    | `false`      | Performance         |
+| `LLAMA_CUDA_NO_VMM`       | Disable unified memory      | `false`      | Memory management   |
+| `LLAMA_CUDA_VMM_MAX_SIZE` | VMM pool size (bytes)       | `1073741824` | Large model support |
 
 ### Model Directory Structure
 
@@ -553,4 +559,5 @@ CMD ["python3", "shims/http_bridge.py", "serve"]
 
 ---
 
-*This integration enables powerful local AI capabilities within Claude Code, combining the flexibility of MCP with the performance of llama.cpp.*
+_This integration enables powerful local AI capabilities within Claude Code,
+combining the flexibility of MCP with the performance of llama.cpp._

@@ -42,6 +42,7 @@ kubectl patch service noa-service -n production \
 **Symptoms**: Error rate > 5% in logs or monitoring
 
 **Action**:
+
 ```bash
 # Immediate rollback
 ./scripts/release/rollback.sh v1.0.0
@@ -55,6 +56,7 @@ kubectl logs -n production -l color=blue --tail=500 | grep -c ERROR
 **Symptoms**: Response time > 2x normal, high CPU/memory
 
 **Action**:
+
 ```bash
 # Check metrics
 kubectl top pods -n production
@@ -71,6 +73,7 @@ watch -n 5 'kubectl top pods -n production'
 **Symptoms**: Pods not becoming ready, health checks failing
 
 **Action**:
+
 ```bash
 # Check pod status
 kubectl get pods -n production -l app=noa
@@ -87,6 +90,7 @@ kubectl get pods -n production -l color=blue
 **Symptoms**: Database connection errors, migration failures
 
 **Action**:
+
 ```bash
 # Rollback application
 ./scripts/release/rollback.sh v1.0.0
@@ -103,6 +107,7 @@ kubectl exec -n production deployment/noa-blue -- npm run migrate:status
 **Symptoms**: Feature not working as expected, flag evaluation errors
 
 **Action**:
+
 ```bash
 # Disable feature flag immediately
 curl -X POST https://api.launchdarkly.com/api/v2/flags/project/feature-key \
@@ -310,14 +315,13 @@ Create incident report:
 ```markdown
 ## Incident Report: Rollback v1.1.0 -> v1.0.0
 
-**Date**: 2025-10-22 14:30 EST
-**Duration**: 5 minutes
-**Affected Version**: v1.1.0
-**Rolled Back To**: v1.0.0
+**Date**: 2025-10-22 14:30 EST **Duration**: 5 minutes **Affected Version**:
+v1.1.0 **Rolled Back To**: v1.0.0
 
 **Trigger**: High error rate (15% of requests)
 
 **Actions Taken**:
+
 1. Detected errors in monitoring
 2. Triggered emergency rollback
 3. Verified health checks
@@ -326,6 +330,7 @@ Create incident report:
 **Root Cause**: TBD
 
 **Follow-up Actions**:
+
 - [ ] Investigate error cause
 - [ ] Fix issues in v1.1.0
 - [ ] Add additional monitoring
@@ -384,6 +389,7 @@ kubectl get events -n production --sort-by='.lastTimestamp' | \
 ### 5. Prevention
 
 Update deployment checklist:
+
 - Add new smoke test for discovered issue
 - Update monitoring alerts
 - Document lessons learned

@@ -7,13 +7,13 @@ export enum HealthStatus {
   HEALTHY = 'healthy',
   DEGRADED = 'degraded',
   UNHEALTHY = 'unhealthy',
-  UNKNOWN = 'unknown'
+  UNKNOWN = 'unknown',
 }
 
 export enum CheckType {
   LIVENESS = 'liveness',
   READINESS = 'readiness',
-  STARTUP = 'startup'
+  STARTUP = 'startup',
 }
 
 export interface HealthCheckResult {

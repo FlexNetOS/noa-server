@@ -39,8 +39,8 @@ export function MetricsChart({ title, data, dataKey, color, unit }: MetricsChart
   const min = values.length > 0 ? Math.min(...values) : 0;
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-      <div className="flex items-center justify-between mb-4">
+    <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
+      <div className="mb-4 flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h3>
         <div className="text-2xl font-bold" style={{ color }}>
           {current.toFixed(1)}
@@ -49,7 +49,7 @@ export function MetricsChart({ title, data, dataKey, color, unit }: MetricsChart
       </div>
 
       {/* Chart */}
-      <div className="h-48 mb-4">
+      <div className="mb-4 h-48">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.2} />
@@ -89,21 +89,21 @@ export function MetricsChart({ title, data, dataKey, color, unit }: MetricsChart
       {/* Statistics */}
       <div className="grid grid-cols-3 gap-4 text-sm">
         <div>
-          <span className="text-gray-500 dark:text-gray-400 block">Average</span>
+          <span className="block text-gray-500 dark:text-gray-400">Average</span>
           <div className="font-semibold text-gray-900 dark:text-white">
             {avg.toFixed(1)}
             {unit}
           </div>
         </div>
         <div>
-          <span className="text-gray-500 dark:text-gray-400 block">Min</span>
+          <span className="block text-gray-500 dark:text-gray-400">Min</span>
           <div className="font-semibold text-gray-900 dark:text-white">
             {min.toFixed(1)}
             {unit}
           </div>
         </div>
         <div>
-          <span className="text-gray-500 dark:text-gray-400 block">Max</span>
+          <span className="block text-gray-500 dark:text-gray-400">Max</span>
           <div className="font-semibold text-gray-900 dark:text-white">
             {max.toFixed(1)}
             {unit}

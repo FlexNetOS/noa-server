@@ -1,7 +1,7 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { Globe, ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Globe, ExternalLink } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 
 interface PreviewPromptDialogProps {
   /**
@@ -32,7 +32,7 @@ interface PreviewPromptDialogProps {
 
 /**
  * Dialog component that prompts the user to open a detected URL in the preview pane
- * 
+ *
  * @example
  * <PreviewPromptDialog
  *   isOpen={showPrompt}
@@ -65,39 +65,40 @@ export const PreviewPromptDialog: React.FC<PreviewPromptDialogProps> = ({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Globe className="h-5 w-5 text-primary" />
+            <Globe className="text-primary h-5 w-5" />
             Open Preview?
           </DialogTitle>
           <DialogDescription>
-            A URL was detected in the terminal output. Would you like to open it in the preview pane?
+            A URL was detected in the terminal output. Would you like to open it in the preview
+            pane?
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="py-4">
-          <div className="rounded-lg border bg-muted/50 p-4">
+          <div className="bg-muted/50 rounded-lg border p-4">
             <div className="flex items-start gap-3">
-              <ExternalLink className={`h-4 w-4 mt-0.5 ${isLocalhost ? 'text-green-500' : 'text-blue-500'}`} />
-              <div className="flex-1 min-w-0">
+              <ExternalLink
+                className={`mt-0.5 h-4 w-4 ${isLocalhost ? 'text-green-500' : 'text-blue-500'}`}
+              />
+              <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium">
                   {isLocalhost ? 'Local Development Server' : 'External URL'}
                 </p>
-                <p className="text-xs text-muted-foreground mt-1 break-all">
-                  {url}
-                </p>
+                <p className="text-muted-foreground mt-1 text-xs break-all">{url}</p>
               </div>
             </div>
           </div>
-          
+
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="mt-3 text-xs text-muted-foreground"
+            className="text-muted-foreground mt-3 text-xs"
           >
             The preview will open in a split view on the right side of the screen.
           </motion.div>
         </div>
-        
+
         <DialogFooter>
           <Button variant="outline" onClick={onCancel}>
             Cancel
@@ -110,4 +111,4 @@ export const PreviewPromptDialog: React.FC<PreviewPromptDialogProps> = ({
       </DialogContent>
     </Dialog>
   );
-}; 
+};

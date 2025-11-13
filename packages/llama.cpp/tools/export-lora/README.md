@@ -22,7 +22,8 @@ For example:
     --lora lora-open-llama-3b-v2-english2tokipona-chat-LATEST.gguf
 ```
 
-Multiple LORA adapters can be applied by passing multiple `--lora FNAME` or `--lora-scaled FNAME S` command line parameters:
+Multiple LORA adapters can be applied by passing multiple `--lora FNAME` or
+`--lora-scaled FNAME S` command line parameters:
 
 ```bash
 ./bin/llama-export-lora \

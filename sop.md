@@ -1,8 +1,10 @@
 # SOP - Standard Operating Procedures
+
 <!-- Living document of how we work -->
 <!-- Version: 1.0.0 | Last Updated: 2025-01-10 -->
 
 ## 📋 Table of Contents
+
 1. [Development Standards](#development-standards)
 2. [Deployment Procedures](#deployment-procedures)
 3. [Architecture Guidelines](#architecture-guidelines)
@@ -17,6 +19,7 @@
 ### 1.1 Code Style Guidelines
 
 #### Python
+
 ```python
 # Use type hints
 def calculate_total(price: float, quantity: int) -> float:
@@ -29,11 +32,12 @@ DEFAULT_TIMEOUT = 30
 ```
 
 #### JavaScript/TypeScript
+
 ```typescript
 // Use const/let, never var
 const CONFIG = {
   apiUrl: process.env.API_URL,
-  timeout: 5000
+  timeout: 5000,
 };
 
 // Async/await over promises
@@ -46,12 +50,14 @@ async function fetchData(): Promise<Data> {
 ### 1.2 Git Workflow
 
 #### Branch Naming
+
 - `feature/description-of-feature`
 - `bugfix/issue-number-description`
 - `hotfix/critical-issue-description`
 - `release/v1.2.3`
 
 #### Commit Message Format
+
 ```
 <type>(<scope>): <subject>
 
@@ -63,6 +69,7 @@ async function fetchData(): Promise<Data> {
 Types: feat, fix, docs, style, refactor, test, chore
 
 Example:
+
 ```
 feat(auth): add two-factor authentication
 
@@ -76,11 +83,13 @@ Closes #123
 ### 1.3 Testing Requirements
 
 #### Coverage Targets
+
 - Unit Tests: ≥80% coverage
 - Integration Tests: All API endpoints
 - E2E Tests: Critical user paths
 
 #### Test Structure
+
 ```
 tests/
 ├── unit/           # Fast, isolated tests
@@ -92,6 +101,7 @@ tests/
 ### 1.4 Code Review Process
 
 **Before Submitting PR:**
+
 - [ ] All tests pass locally
 - [ ] Code follows style guidelines
 - [ ] Documentation updated
@@ -99,6 +109,7 @@ tests/
 - [ ] Security considerations addressed
 
 **Review Checklist:**
+
 - [ ] Logic is correct and efficient
 - [ ] Error handling is comprehensive
 - [ ] No credentials or secrets in code
@@ -171,6 +182,7 @@ claude mcp list
 ### 2.1 Pre-Deployment Checklist
 
 #### Automated Checks (CI/CD)
+
 - [ ] All unit tests pass
 - [ ] Integration tests pass
 - [ ] Security scan clean (no high/critical)
@@ -178,6 +190,7 @@ claude mcp list
 - [ ] Linting passes
 
 #### Manual Verification
+
 - [ ] Release notes prepared
 - [ ] Database migrations tested
 - [ ] Rollback plan documented
@@ -187,6 +200,7 @@ claude mcp list
 ### 2.2 Deployment Process
 
 #### Step-by-Step
+
 ```bash
 # 1. Tag the release
 git tag -a v1.2.3 -m "Release version 1.2.3"
@@ -246,12 +260,14 @@ npm run test:smoke
 ### 3.3 Technology Stack
 
 #### Approved Technologies
+
 - **Languages**: Python 3.11+, TypeScript 5+, Rust 1.75+
 - **Frameworks**: FastAPI, React 18+, Next.js 14+
 - **Databases**: PostgreSQL 15+, Redis 7+
 - **Infrastructure**: Docker, Kubernetes, AWS/GCP
 
 #### Adding New Technologies
+
 1. Document the problem it solves
 2. Proof of concept required
 3. Team review and approval
@@ -263,13 +279,13 @@ npm run test:smoke
 
 ### 4.1 Backup Schedule
 
-| Component | Frequency | Type | Retention | Location |
-|-----------|-----------|------|-----------|----------|
-| Database | Daily 02:00 UTC | Full | 30 days | S3 |
-| Database | Hourly | Incremental | 7 days | S3 |
-| Files | Daily 03:00 UTC | Incremental | 30 days | S3 |
-| Files | Weekly Sunday | Full | 90 days | S3 |
-| Configs | On change | Version | Forever | Git |
+| Component | Frequency       | Type        | Retention | Location |
+| --------- | --------------- | ----------- | --------- | -------- |
+| Database  | Daily 02:00 UTC | Full        | 30 days   | S3       |
+| Database  | Hourly          | Incremental | 7 days    | S3       |
+| Files     | Daily 03:00 UTC | Incremental | 30 days   | S3       |
+| Files     | Weekly Sunday   | Full        | 90 days   | S3       |
+| Configs   | On change       | Version     | Forever   | Git      |
 
 ### 4.2 Backup Verification
 
@@ -285,9 +301,11 @@ pg_restore --list backup_file.sql
 ### 4.3 Recovery Procedures
 
 #### RTO (Recovery Time Objective): 4 hours
+
 #### RPO (Recovery Point Objective): 1 hour
 
 **Database Recovery:**
+
 ```bash
 # 1. Stop application
 kubectl scale deployment api --replicas=0
@@ -345,6 +363,7 @@ project-root/
 ### 5.3 Documentation Standards
 
 Every directory should have a README.md with:
+
 - Purpose of the directory
 - File descriptions
 - Dependencies
@@ -357,22 +376,24 @@ Every directory should have a README.md with:
 
 ### 6.1 Quarterly Objectives (Q1 2025)
 
-| Objective | Key Results | Status |
-|-----------|-------------|--------|
-| Improve Performance | <100ms API response time | 🟡 85ms avg |
-| Increase Reliability | 99.9% uptime | 🟢 99.95% |
-| Enhance Security | Zero critical vulnerabilities | 🟢 Achieved |
-| Reduce Tech Debt | <20% debt ratio | 🔴 25% |
+| Objective            | Key Results                   | Status      |
+| -------------------- | ----------------------------- | ----------- |
+| Improve Performance  | <100ms API response time      | 🟡 85ms avg |
+| Increase Reliability | 99.9% uptime                  | 🟢 99.95%   |
+| Enhance Security     | Zero critical vulnerabilities | 🟢 Achieved |
+| Reduce Tech Debt     | <20% debt ratio               | 🔴 25%      |
 
 ### 6.2 Key Performance Indicators (KPIs)
 
 #### Development Metrics
+
 - **Deployment Frequency**: 2x per week (target: daily)
 - **Lead Time**: 3 days (target: <1 day)
 - **MTTR**: 2 hours (target: <1 hour)
 - **Change Failure Rate**: 5% (target: <3%)
 
 #### System Metrics
+
 - **Availability**: 99.95% (target: 99.99%)
 - **Response Time (p95)**: 150ms (target: <100ms)
 - **Error Rate**: 0.1% (target: <0.05%)
@@ -381,6 +402,7 @@ Every directory should have a README.md with:
 ### 6.3 Monitoring & Alerting
 
 #### Alert Priorities
+
 - **P1 (Critical)**: System down, data loss risk
   - Response: Immediate, all hands
   - SLA: 15 minutes
@@ -410,9 +432,9 @@ Every directory should have a README.md with:
 
 ## 🔄 Document History
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0.0 | 2025-01-10 | System | Initial creation |
+| Version | Date       | Author | Changes          |
+| ------- | ---------- | ------ | ---------------- |
+| 1.0.0   | 2025-01-10 | System | Initial creation |
 
 ---
 

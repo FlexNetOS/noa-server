@@ -6,14 +6,14 @@ import React, { useState, useEffect } from 'react';
 import { HooksEditor } from '@/components/HooksEditor';
 import { SlashCommandsManager } from '@/components/SlashCommandsManager';
 import { api } from '@/lib/api';
-import { 
-  AlertTriangle, 
-  ArrowLeft, 
+import {
+  AlertTriangle,
+  ArrowLeft,
   Settings,
   FolderOpen,
   GitBranch,
   Shield,
-  Command
+  Command,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -28,14 +28,10 @@ interface ProjectSettingsProps {
   className?: string;
 }
 
-export const ProjectSettings: React.FC<ProjectSettingsProps> = ({
-  project,
-  onBack,
-  className
-}) => {
+export const ProjectSettings: React.FC<ProjectSettingsProps> = ({ project, onBack, className }) => {
   const [activeTab, setActiveTab] = useState('commands');
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
-  
+
   // Other hooks settings
   const [gitIgnoreLocal, setGitIgnoreLocal] = useState(true);
 
@@ -59,13 +55,13 @@ export const ProjectSettings: React.FC<ProjectSettingsProps> = ({
     try {
       const gitignorePath = `${project.path}/.gitignore`;
       let content = '';
-      
+
       try {
         content = await api.readClaudeMdFile(gitignorePath);
       } catch {
         // File doesn't exist, create it
       }
-      
+
       if (!content.includes('.claude/settings.local.json')) {
         content += '\n# Claude local settings (machine-specific)\n.claude/settings.local.json\n';
         await api.saveClaudeMdFile(gitignorePath, content);
@@ -79,23 +75,23 @@ export const ProjectSettings: React.FC<ProjectSettingsProps> = ({
   };
 
   return (
-    <div className={cn("flex flex-col h-full", className)}>
+    <div className={cn('flex h-full flex-col', className)}>
       {/* Header */}
       <div className="border-b px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="sm" onClick={onBack}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ArrowLeft className="mr-2 h-4 w-4" />
               Back
             </Button>
             <div className="flex items-center gap-2">
-              <Settings className="h-5 w-5 text-muted-foreground" />
+              <Settings className="text-muted-foreground h-5 w-5" />
               <h2 className="text-xl font-semibold">Project Settings</h2>
             </div>
           </div>
         </div>
-        
-        <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">
+
+        <div className="text-muted-foreground mt-4 flex items-center gap-4 text-sm">
           <div className="flex items-center gap-2">
             <FolderOpen className="h-4 w-4" />
             <span className="font-mono">{project.path}</span>
@@ -126,18 +122,18 @@ export const ProjectSettings: React.FC<ProjectSettingsProps> = ({
               <Card className="p-6">
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-lg font-semibold mb-2">Project Slash Commands</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Custom commands that are specific to this project. These commands are stored in
-                      <code className="mx-1 px-2 py-1 bg-muted rounded text-xs">.claude/slash-commands/</code>
+                    <h3 className="mb-2 text-lg font-semibold">Project Slash Commands</h3>
+                    <p className="text-muted-foreground mb-4 text-sm">
+                      Custom commands that are specific to this project. These commands are stored
+                      in
+                      <code className="bg-muted mx-1 rounded px-2 py-1 text-xs">
+                        .claude/slash-commands/
+                      </code>
                       and can be committed to version control.
                     </p>
                   </div>
-                  
-                  <SlashCommandsManager
-                    projectPath={project.path}
-                    scopeFilter="project"
-                  />
+
+                  <SlashCommandsManager projectPath={project.path} scopeFilter="project" />
                 </div>
               </Card>
             </TabsContent>
@@ -146,18 +142,17 @@ export const ProjectSettings: React.FC<ProjectSettingsProps> = ({
               <Card className="p-6">
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-lg font-semibold mb-2">Project Hooks</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
+                    <h3 className="mb-2 text-lg font-semibold">Project Hooks</h3>
+                    <p className="text-muted-foreground mb-4 text-sm">
                       These hooks apply to all users working on this project. They are stored in
-                      <code className="mx-1 px-2 py-1 bg-muted rounded text-xs">.claude/settings.json</code>
+                      <code className="bg-muted mx-1 rounded px-2 py-1 text-xs">
+                        .claude/settings.json
+                      </code>
                       and should be committed to version control.
                     </p>
                   </div>
-                  
-                  <HooksEditor
-                    projectPath={project.path}
-                    scope="project"
-                  />
+
+                  <HooksEditor projectPath={project.path} scope="project" />
                 </div>
               </Card>
             </TabsContent>
@@ -166,36 +161,31 @@ export const ProjectSettings: React.FC<ProjectSettingsProps> = ({
               <Card className="p-6">
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-lg font-semibold mb-2">Local Hooks</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
+                    <h3 className="mb-2 text-lg font-semibold">Local Hooks</h3>
+                    <p className="text-muted-foreground mb-4 text-sm">
                       These hooks only apply to your machine. They are stored in
-                      <code className="mx-1 px-2 py-1 bg-muted rounded text-xs">.claude/settings.local.json</code>
+                      <code className="bg-muted mx-1 rounded px-2 py-1 text-xs">
+                        .claude/settings.local.json
+                      </code>
                       and should NOT be committed to version control.
                     </p>
-                    
+
                     {!gitIgnoreLocal && (
-                      <div className="flex items-center gap-4 p-3 bg-yellow-500/10 rounded-md">
+                      <div className="flex items-center gap-4 rounded-md bg-yellow-500/10 p-3">
                         <AlertTriangle className="h-5 w-5 text-yellow-600" />
                         <div className="flex-1">
                           <p className="text-sm text-yellow-600">
                             Local settings file is not in .gitignore
                           </p>
                         </div>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={addToGitIgnore}
-                        >
+                        <Button size="sm" variant="outline" onClick={addToGitIgnore}>
                           Add to .gitignore
                         </Button>
                       </div>
                     )}
                   </div>
-                  
-                  <HooksEditor
-                    projectPath={project.path}
-                    scope="local"
-                  />
+
+                  <HooksEditor projectPath={project.path} scope="local" />
                 </div>
               </Card>
             </TabsContent>
@@ -206,13 +196,9 @@ export const ProjectSettings: React.FC<ProjectSettingsProps> = ({
       {/* Toast Container */}
       <ToastContainer>
         {toast && (
-          <Toast
-            message={toast.message}
-            type={toast.type}
-            onDismiss={() => setToast(null)}
-          />
+          <Toast message={toast.message} type={toast.type} onDismiss={() => setToast(null)} />
         )}
       </ToastContainer>
     </div>
   );
-}; 
+};

@@ -44,9 +44,7 @@ export class AutomationLogger {
    * Log error message
    */
   error(message: string, error?: any): void {
-    const data = error instanceof Error
-      ? { message: error.message, stack: error.stack }
-      : error;
+    const data = error instanceof Error ? { message: error.message, stack: error.stack } : error;
     this.log('error', message, data);
   }
 
@@ -88,7 +86,7 @@ export class AutomationLogger {
 
     this.info('Prompt bypassed optimization', {
       original: original.substring(0, 100),
-      cleaned: cleaned.substring(0, 100)
+      cleaned: cleaned.substring(0, 100),
     });
   }
 
@@ -102,7 +100,7 @@ export class AutomationLogger {
 
     if (config.logging.level === 'verbose') {
       this.verbose('Cache hit', {
-        prompt: prompt.substring(0, 100)
+        prompt: prompt.substring(0, 100),
       });
     }
   }
@@ -126,7 +124,7 @@ export class AutomationLogger {
       timestamp: new Date().toISOString(),
       level,
       message,
-      data
+      data,
     };
 
     // Store in memory
@@ -188,6 +186,6 @@ export class AutomationLogger {
    * Get logs by level
    */
   getLogsByLevel(level: LogEntry['level']): LogEntry[] {
-    return this.logs.filter(log => log.level === level);
+    return this.logs.filter((log) => log.level === level);
   }
 }

@@ -63,7 +63,10 @@ export abstract class BaseHealthCheck implements IHealthCheck {
    */
   private async executeCheckWithTimeout(): Promise<HealthCheckResult> {
     const timeoutPromise = new Promise<never>((_, reject) => {
-      setTimeout(() => reject(new Error(`Health check timeout after ${this.config.timeout}ms`)), this.config.timeout);
+      setTimeout(
+        () => reject(new Error(`Health check timeout after ${this.config.timeout}ms`)),
+        this.config.timeout
+      );
     });
 
     return Promise.race([this.performCheck(), timeoutPromise]);
@@ -83,7 +86,7 @@ export abstract class BaseHealthCheck implements IHealthCheck {
       timestamp: new Date(),
       duration,
       message,
-      metadata
+      metadata,
     };
   }
 
@@ -101,7 +104,7 @@ export abstract class BaseHealthCheck implements IHealthCheck {
       timestamp: new Date(),
       duration,
       message,
-      metadata
+      metadata,
     };
   }
 
@@ -118,8 +121,8 @@ export abstract class BaseHealthCheck implements IHealthCheck {
       error: error.message,
       metadata: {
         errorName: error.name,
-        stack: error.stack
-      }
+        stack: error.stack,
+      },
     };
   }
 
@@ -132,7 +135,7 @@ export abstract class BaseHealthCheck implements IHealthCheck {
       status: HealthStatus.UNKNOWN,
       timestamp: new Date(),
       duration: 0,
-      message
+      message,
     };
   }
 

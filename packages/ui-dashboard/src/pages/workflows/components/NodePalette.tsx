@@ -84,13 +84,13 @@ export function NodePalette({ onNodeDragStart }: NodePaletteProps) {
   const categories = Array.from(new Set(nodeTypes.map((n) => n.category)));
 
   return (
-    <div className="h-full overflow-y-auto bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
+    <div className="h-full overflow-y-auto border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
       <div className="p-4">
-        <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Node Palette</h3>
+        <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Node Palette</h3>
 
         {categories.map((category) => (
           <div key={category} className="mb-6">
-            <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mb-2">
+            <h4 className="mb-2 text-xs font-medium uppercase text-gray-500 dark:text-gray-400">
               {category}
             </h4>
             <div className="space-y-2">
@@ -102,17 +102,17 @@ export function NodePalette({ onNodeDragStart }: NodePaletteProps) {
                     draggable
                     onDragStart={() => onNodeDragStart(nodeType.type, nodeType.label)}
                     whileHover={{ scale: 1.02, x: 4 }}
-                    className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg cursor-move hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors group"
+                    className="group cursor-move rounded-lg bg-gray-50 p-3 transition-colors hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600"
                   >
                     <div className="flex items-start gap-3">
-                      <span className="text-2xl flex-none" role="img" aria-hidden="true">
+                      <span className="flex-none text-2xl" role="img" aria-hidden="true">
                         {nodeType.icon}
                       </span>
-                      <div className="flex-1 min-w-0">
+                      <div className="min-w-0 flex-1">
                         <div className="text-sm font-medium text-gray-900 dark:text-white">
                           {nodeType.label}
                         </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                           {nodeType.description}
                         </div>
                       </div>

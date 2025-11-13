@@ -72,13 +72,13 @@ export interface ShardMetrics {
 // Configuration schemas
 export const ShardKeySchema = z.object({
   value: z.union([z.string(), z.number()]),
-  type: z.enum(['string', 'number', 'uuid'])
+  type: z.enum(['string', 'number', 'uuid']),
 });
 
 export const ShardRangeSchema = z.object({
   min: ShardKeySchema,
   max: ShardKeySchema,
-  shardId: z.string()
+  shardId: z.string(),
 });
 
 export const ShardInfoSchema = z.object({
@@ -93,14 +93,14 @@ export const ShardInfoSchema = z.object({
     connections: z.number(),
     storage: z.number(),
     readOps: z.number(),
-    writeOps: z.number()
+    writeOps: z.number(),
   }),
   metrics: z.object({
     connectionCount: z.number(),
     queryLatency: z.number(),
     errorRate: z.number(),
-    lastHealthCheck: z.date()
-  })
+    lastHealthCheck: z.date(),
+  }),
 });
 
 export const MigrationPlanSchema = z.object({
@@ -114,7 +114,7 @@ export const MigrationPlanSchema = z.object({
   actualRows: z.number().optional(),
   startTime: z.date().optional(),
   endTime: z.date().optional(),
-  error: z.string().optional()
+  error: z.string().optional(),
 });
 
 // Database-specific types

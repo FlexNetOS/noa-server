@@ -1,0 +1,82 @@
+name: Enhanced CI with Custom Actions
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  typescript-lint:
+    name: TypeScript Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Setup Node.js
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript Lint (Custom Action)
+        uses: ./.github/actions/typescript-lint-action
+        with:
+          working-directory: "."
+          eslint-config: ".eslintrc.json"
+          tsconfig: "tsconfig.json"
+          files: "packages/**/*.{ts,tsx} src/**/*.{ts,tsx} scripts/**/*.{ts,tsx}"
+          max-warnings: "0"
+
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    needs: typescript-lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Setup Node.js
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build:all
+
+      - name: Run tests
+        run: npm run test:all
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Setup Node.js
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Security audit
+        run: npm run security:audit
+
+      - name: License check
+        run: npm run license:check

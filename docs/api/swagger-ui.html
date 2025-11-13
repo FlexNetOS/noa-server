@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOA Server API Documentation</title>
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui.css">
+  <style>
+    :root {
+      --bg-color: #1a1a1a;
+      --text-color: #e0e0e0;
+      --border-color: #333;
+      --highlight-color: #4a90e2;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
+
+    #swagger-ui {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .topbar {
+      background-color: #0d1117;
+      padding: 15px 30px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .topbar-wrapper {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topbar-wrapper h1 {
+      margin: 0;
+      color: #fff;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .api-selector {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .api-selector select {
+      padding: 8px 15px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background-color: #21262d;
+      color: var(--text-color);
+      font-size: 14px;
+      cursor: pointer;
+      min-width: 200px;
+    }
+
+    .api-selector select:hover {
+      border-color: var(--highlight-color);
+    }
+
+    .api-selector button {
+      padding: 8px 20px;
+      border-radius: 6px;
+      border: 1px solid var(--highlight-color);
+      background-color: var(--highlight-color);
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .api-selector button:hover {
+      background-color: #3a7bc8;
+      border-color: #3a7bc8;
+    }
+
+    /* Dark theme customization */
+    .swagger-ui .topbar {
+      display: none;
+    }
+
+    .swagger-ui {
+      filter: invert(88%) hue-rotate(180deg);
+    }
+
+    .swagger-ui .microlight {
+      filter: invert(100%) hue-rotate(180deg);
+    }
+
+    .swagger-ui .scheme-container {
+      background-color: #f7f7f7;
+      padding: 15px;
+      border-radius: 4px;
+    }
+
+    /* Override dark theme filter for code blocks */
+    .swagger-ui pre,
+    .swagger-ui code {
+      filter: invert(100%) hue-rotate(180deg);
+    }
+
+    .info-container {
+      max-width: 1400px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #21262d;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .info-container h2 {
+      margin-top: 0;
+      color: var(--highlight-color);
+    }
+
+    .info-container p {
+      line-height: 1.6;
+    }
+
+    .quick-links {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .quick-links a {
+      padding: 8px 16px;
+      background-color: #30363d;
+      color: var(--text-color);
+      text-decoration: none;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      transition: all 0.2s;
+    }
+
+    .quick-links a:hover {
+      border-color: var(--highlight-color);
+      color: var(--highlight-color);
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-wrapper">
+      <h1>NOA Server API Documentation</h1>
+      <div class="api-selector">
+        <select id="api-select" onchange="loadAPI()">
+          <option value="openapi/ai-inference-api.yaml">AI Inference API</option>
+          <option value="openapi/auth-api.yaml">Authentication API</option>
+          <option value="openapi/message-queue-api.yaml">Message Queue API</option>
+          <option value="openapi/monitoring-api.yaml">Monitoring API</option>
+        </select>
+        <button onclick="window.location.href='redoc.html'">View ReDoc</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-container">
+    <h2>Welcome to NOA Server API Documentation</h2>
+    <p>
+      Interactive API documentation powered by Swagger UI. Select an API from the dropdown above to explore endpoints,
+      request/response schemas, and try out API calls directly in your browser.
+    </p>
+    <div class="quick-links">
+      <a href="#section/Authentication">Authentication Guide</a>
+      <a href="postman/noa-server.json" download>Download Postman Collection</a>
+      <a href="examples/javascript/">JavaScript Examples</a>
+      <a href="examples/python/">Python Examples</a>
+    </div>
+  </div>
+
+  <div id="swagger-ui"></div>
+
+  <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-bundle.js"></script>
+  <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-standalone-preset.js"></script>
+  <script>
+    function getApiUrl() {
+      const select = document.getElementById('api-select');
+      return select.value;
+    }
+
+    function loadAPI() {
+      const apiUrl = getApiUrl();
+
+      window.ui = SwaggerUIBundle({
+        url: apiUrl,
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "StandaloneLayout",
+        defaultModelsExpandDepth: 1,
+        defaultModelExpandDepth: 3,
+        docExpansion: 'list',
+        filter: true,
+        showRequestHeaders: true,
+        persistAuthorization: true,
+        tryItOutEnabled: true,
+        requestInterceptor: (request) => {
+          // Add custom headers or modify requests here
+          const token = localStorage.getItem('auth_token');
+          if (token && !request.url.includes('/auth/')) {
+            request.headers['Authorization'] = `Bearer ${token}`;
+          }
+          return request;
+        },
+        onComplete: () => {
+          // Add authentication helper
+          const authButton = document.createElement('button');
+          authButton.textContent = 'Set Auth Token';
+          authButton.style.cssText = 'position: fixed; bottom: 20px; right: 20px; padding: 10px 20px; background-color: #4a90e2; color: white; border: none; border-radius: 6px; cursor: pointer; z-index: 9999; box-shadow: 0 2px 8px rgba(0,0,0,0.3);';
+          authButton.onclick = () => {
+            const token = prompt('Enter your JWT token:');
+            if (token) {
+              localStorage.setItem('auth_token', token);
+              alert('Token saved! Requests will now include authentication.');
+              window.location.reload();
+            }
+          };
+          document.body.appendChild(authButton);
+        }
+      });
+    }
+
+    // Load default API on page load
+    window.addEventListener('load', loadAPI);
+  </script>
+</body>
+</html>

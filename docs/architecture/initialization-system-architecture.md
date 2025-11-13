@@ -2,12 +2,17 @@
 
 ## Executive Summary
 
-This document defines the architecture for the initialization system within the noa-server project, designed to support SPARC methodology, swarm coordination, and multi-agent development workflows.
+This document defines the architecture for the initialization system within the
+noa-server project, designed to support SPARC methodology, swarm coordination,
+and multi-agent development workflows.
 
 ## 1. System Overview
 
 ### 1.1 Purpose
-The initialization system provides a robust, extensible framework for bootstrapping new projects and environments with:
+
+The initialization system provides a robust, extensible framework for
+bootstrapping new projects and environments with:
+
 - Directory structure creation
 - Configuration management
 - Swarm coordination setup
@@ -15,6 +20,7 @@ The initialization system provides a robust, extensible framework for bootstrapp
 - Agent coordination protocols
 
 ### 1.2 Design Principles
+
 1. **Idempotency**: Initialization operations can be safely repeated
 2. **Composability**: Modular components that can be used independently
 3. **Extensibility**: Plugin-based architecture for custom initializers
@@ -26,17 +32,20 @@ The initialization system provides a robust, extensible framework for bootstrapp
 ### 2.1 Primary Patterns
 
 #### Strategy Pattern
+
 Used for different initialization strategies:
+
 - **SparcInitStrategy**: SPARC methodology setup
 - **SwarmInitStrategy**: Multi-agent coordination
 - **StandardInitStrategy**: Basic project scaffolding
 - **CustomInitStrategy**: User-defined initialization flows
 
 #### Builder Pattern
+
 For constructing complex initialization configurations:
+
 ```typescript
-InitializationBuilder
-  .withDirectoryStructure()
+InitializationBuilder.withDirectoryStructure()
   .withConfiguration(config)
   .withSwarmTopology('mesh')
   .withSparcEnvironment()
@@ -44,20 +53,26 @@ InitializationBuilder
 ```
 
 #### Factory Pattern
+
 For creating appropriate initializers based on project type:
+
 ```typescript
 InitializerFactory.create(projectType: ProjectType): Initializer
 ```
 
 #### Chain of Responsibility
+
 For sequential initialization phases:
+
 ```
 Phase1 (Validation) -> Phase2 (Structure) -> Phase3 (Config) ->
 Phase4 (Swarm) -> Phase5 (SPARC)
 ```
 
 #### Observer Pattern
+
 For monitoring initialization progress and hooks:
+
 - Pre-task hooks
 - Post-task hooks
 - Session management hooks
@@ -65,13 +80,16 @@ For monitoring initialization progress and hooks:
 ### 2.2 Supporting Patterns
 
 #### Singleton Pattern
+
 - ConfigurationManager: Single source of truth for config
 - StateTracker: Centralized state management
 
 #### Decorator Pattern
+
 - InitializerDecorator: Add logging, validation, rollback to any initializer
 
 #### Template Method Pattern
+
 - BaseInitializer: Defines skeleton with customizable steps
 
 ## 3. Component Architecture
@@ -114,24 +132,29 @@ For monitoring initialization progress and hooks:
 ### 3.2 Module Breakdown
 
 #### 3.2.1 Initialization Controller
+
 **Responsibility**: Orchestrate the entire initialization process
 
 **Key Methods**:
+
 - `initialize(options: InitOptions): Promise<InitResult>`
 - `validateEnvironment(): ValidationResult`
 - `executePhase(phase: Phase): PhaseResult`
 - `rollback(checkpoint: Checkpoint): void`
 
 **Dependencies**:
+
 - PhaseManager
 - StrategyManager
 - StateTracker
 - HooksManager
 
 #### 3.2.2 Phase Manager
+
 **Responsibility**: Execute initialization phases in sequence
 
 **Phases**:
+
 1. **Validation Phase**: Check prerequisites, permissions, conflicts
 2. **Structure Phase**: Create directory hierarchy
 3. **Configuration Phase**: Generate config files
@@ -139,14 +162,17 @@ For monitoring initialization progress and hooks:
 5. **SPARC Phase**: Provision SPARC environment
 
 **Key Methods**:
+
 - `registerPhase(phase: Phase): void`
 - `executePhase(phaseId: string): Promise<PhaseResult>`
 - `getPhaseStatus(phaseId: string): PhaseStatus`
 
 #### 3.2.3 Strategy Manager
+
 **Responsibility**: Select and apply appropriate initialization strategy
 
 **Strategies**:
+
 - **Standard**: Basic project setup
 - **SPARC**: Full SPARC methodology environment
 - **Swarm**: Multi-agent coordination focus
@@ -154,14 +180,17 @@ For monitoring initialization progress and hooks:
 - **Custom**: User-defined configuration
 
 **Key Methods**:
+
 - `selectStrategy(context: InitContext): Strategy`
 - `applyStrategy(strategy: Strategy): Promise<void>`
 - `registerCustomStrategy(name: string, strategy: Strategy): void`
 
 #### 3.2.4 Directory Structure Manager
+
 **Responsibility**: Create and manage project directory hierarchy
 
 **Structure**:
+
 ```
 project-root/
 ├── .claude/
@@ -193,14 +222,17 @@ project-root/
 ```
 
 **Key Methods**:
+
 - `createStructure(template: DirectoryTemplate): void`
 - `validateStructure(): ValidationResult`
 - `ensureDirectoryExists(path: string): void`
 
 #### 3.2.5 Configuration Manager
+
 **Responsibility**: Generate and manage configuration files
 
 **Configuration Types**:
+
 - **CLAUDE.md**: Project instructions
 - **.mcp.json**: MCP server configuration
 - **package.json**: NPM dependencies
@@ -209,35 +241,42 @@ project-root/
 - **.gitignore**: Version control exclusions
 
 **Key Methods**:
+
 - `generateConfig(type: ConfigType, options: ConfigOptions): Config`
 - `validateConfig(config: Config): ValidationResult`
 - `mergeConfigs(existing: Config, new: Config): Config`
 
 #### 3.2.6 Swarm Coordinator
+
 **Responsibility**: Setup multi-agent coordination infrastructure
 
 **Coordination Topologies**:
+
 - **Mesh**: Full peer-to-peer connectivity
 - **Hierarchical**: Tree-based coordination
 - **Ring**: Circular message passing
 - **Star**: Central coordinator pattern
 
 **Key Methods**:
+
 - `initializeTopology(type: TopologyType): void`
 - `registerAgent(agent: AgentConfig): void`
 - `setupMemory(namespace: string): void`
 - `configureHooks(): void`
 
 #### 3.2.7 SPARC Environment Provisioner
+
 **Responsibility**: Setup SPARC methodology environment
 
 **Components**:
+
 - **Mode Registry**: Register SPARC modes
 - **Batch Tools**: Setup parallel execution
 - **TDD Environment**: Configure test-driven workflow
 - **Documentation**: Generate SPARC guides
 
 **Key Methods**:
+
 - `provisionModes(): void`
 - `setupBatchTools(): void`
 - `configureTDD(): void`
@@ -420,14 +459,19 @@ interface SparcConfig {
 ### 6.1 Claude Flow Integration
 
 **Hooks Integration**:
+
 ```typescript
 class ClaudeFlowIntegration {
   async preTaskHook(description: string): Promise<void> {
-    await exec(`npx claude-flow@alpha hooks pre-task --description "${description}"`);
+    await exec(
+      `npx claude-flow@alpha hooks pre-task --description "${description}"`
+    );
   }
 
   async postEditHook(file: string, memoryKey: string): Promise<void> {
-    await exec(`npx claude-flow@alpha hooks post-edit --file "${file}" --memory-key "${memoryKey}"`);
+    await exec(
+      `npx claude-flow@alpha hooks post-edit --file "${file}" --memory-key "${memoryKey}"`
+    );
   }
 
   async notifyHook(message: string): Promise<void> {
@@ -441,14 +485,19 @@ class ClaudeFlowIntegration {
 ```
 
 **Memory Integration**:
+
 ```typescript
 class MemoryIntegration {
   async store(key: string, value: any): Promise<void> {
-    await exec(`npx claude-flow@alpha memory store "${key}" "${JSON.stringify(value)}"`);
+    await exec(
+      `npx claude-flow@alpha memory store "${key}" "${JSON.stringify(value)}"`
+    );
   }
 
   async retrieve(key: string): Promise<any> {
-    const result = await exec(`npx claude-flow@alpha memory retrieve --key "${key}"`);
+    const result = await exec(
+      `npx claude-flow@alpha memory retrieve --key "${key}"`
+    );
     return JSON.parse(result);
   }
 }
@@ -457,9 +506,13 @@ class MemoryIntegration {
 ### 6.2 MCP Server Integration
 
 **Swarm Initialization**:
+
 ```typescript
 class MCPIntegration {
-  async initializeSwarm(topology: TopologyType, maxAgents: number): Promise<void> {
+  async initializeSwarm(
+    topology: TopologyType,
+    maxAgents: number
+  ): Promise<void> {
     await mcp('swarm_init', { topology, maxAgents });
   }
 
@@ -473,14 +526,22 @@ class MCPIntegration {
 ### 6.3 File System Integration
 
 **Safe File Operations**:
+
 ```typescript
 class FileSystemIntegration {
-  async createDirectory(path: string, options: CreateDirOptions): Promise<void> {
+  async createDirectory(
+    path: string,
+    options: CreateDirOptions
+  ): Promise<void> {
     await fs.mkdir(path, { recursive: true, mode: options.mode });
   }
 
-  async writeFile(path: string, content: string, backup: boolean): Promise<void> {
-    if (backup && await this.fileExists(path)) {
+  async writeFile(
+    path: string,
+    content: string,
+    backup: boolean
+  ): Promise<void> {
+    if (backup && (await this.fileExists(path))) {
       await this.backupFile(path);
     }
     await fs.writeFile(path, content, 'utf-8');
@@ -499,6 +560,7 @@ class FileSystemIntegration {
 ### 7.1 Error Handling Strategy
 
 **Error Types**:
+
 1. **ValidationError**: Pre-condition failures
 2. **FileSystemError**: Directory/file operation failures
 3. **ConfigurationError**: Invalid configuration
@@ -506,9 +568,13 @@ class FileSystemIntegration {
 5. **NetworkError**: Remote resource failures
 
 **Error Recovery**:
+
 ```typescript
 class ErrorHandler {
-  async handleError(error: InitError, context: InitContext): Promise<ErrorResolution> {
+  async handleError(
+    error: InitError,
+    context: InitContext
+  ): Promise<ErrorResolution> {
     switch (error.type) {
       case 'ValidationError':
         return this.suggestFixes(error);
@@ -526,6 +592,7 @@ class ErrorHandler {
 ### 7.2 Rollback Mechanism
 
 **Checkpoint System**:
+
 ```typescript
 class CheckpointManager {
   async createCheckpoint(phase: string, state: InitState): Promise<Checkpoint> {
@@ -536,7 +603,7 @@ class CheckpointManager {
       state: cloneDeep(state),
       filesCreated: [],
       filesModified: [],
-      backups: []
+      backups: [],
     };
 
     await this.saveCheckpoint(checkpoint);
@@ -565,17 +632,19 @@ class CheckpointManager {
 ### 8.1 Parallel Execution
 
 **Parallelizable Operations**:
+
 - Phase 4 (Swarm) and Phase 5 (SPARC) can run in parallel
 - Directory creation can be parallelized per branch
 - Configuration file generation can be parallelized
 - Hook notifications can be batched
 
 **Optimization Strategy**:
+
 ```typescript
 class PerformanceOptimizer {
   async executeParallel<T>(tasks: Task<T>[]): Promise<T[]> {
     const results = await Promise.allSettled(
-      tasks.map(task => task.execute())
+      tasks.map((task) => task.execute())
     );
 
     return results.map((result, index) => {
@@ -592,12 +661,14 @@ class PerformanceOptimizer {
 ### 8.2 Caching Strategy
 
 **Cache Targets**:
+
 - Template files
 - Configuration defaults
 - Dependency resolution
 - Validation results
 
 **Cache Implementation**:
+
 ```typescript
 class CacheManager {
   private cache: Map<string, CacheEntry> = new Map();
@@ -622,6 +693,7 @@ class CacheManager {
 ### 9.1 Input Validation
 
 **Validation Rules**:
+
 - Project name: alphanumeric with hyphens/underscores
 - Paths: must be within project boundary
 - Templates: must be from trusted sources
@@ -633,7 +705,7 @@ class SecurityValidator {
     if (!/^[a-zA-Z0-9_-]+$/.test(name)) {
       return {
         valid: false,
-        error: 'Project name must be alphanumeric with hyphens/underscores'
+        error: 'Project name must be alphanumeric with hyphens/underscores',
       };
     }
     return { valid: true };
@@ -644,7 +716,7 @@ class SecurityValidator {
     if (!resolved.startsWith(root)) {
       return {
         valid: false,
-        error: 'Path must be within project directory'
+        error: 'Path must be within project directory',
       };
     }
     return { valid: true };
@@ -655,6 +727,7 @@ class SecurityValidator {
 ### 9.2 Permission Handling
 
 **Permission Checks**:
+
 - Write permissions for target directory
 - Execute permissions for scripts
 - Read permissions for templates
@@ -665,9 +738,7 @@ class PermissionChecker {
     const results: PermissionCheck[] = [];
 
     // Check write permission
-    results.push(
-      await this.checkWritePermission(context.workingDirectory)
-    );
+    results.push(await this.checkWritePermission(context.workingDirectory));
 
     // Check execute permission for scripts
     for (const script of context.options.scripts || []) {
@@ -675,8 +746,8 @@ class PermissionChecker {
     }
 
     return {
-      allGranted: results.every(r => r.granted),
-      checks: results
+      allGranted: results.every((r) => r.granted),
+      checks: results,
     };
   }
 }
@@ -687,18 +758,21 @@ class PermissionChecker {
 ### 10.1 Test Levels
 
 **Unit Tests**:
+
 - Individual phase execution
 - Configuration generation
 - Validation logic
 - Error handling
 
 **Integration Tests**:
+
 - Full initialization workflow
 - Hook integration
 - MCP integration
 - File system operations
 
 **End-to-End Tests**:
+
 - Complete project initialization
 - Multi-strategy scenarios
 - Rollback scenarios
@@ -718,7 +792,7 @@ describe('InitializationController', () => {
         sparc: false,
         swarm: false,
         force: false,
-        dryRun: false
+        dryRun: false,
       });
 
       expect(result.success).toBe(true);
@@ -738,6 +812,7 @@ describe('InitializationController', () => {
 ### 11.1 Plugin System
 
 **Plugin Interface**:
+
 ```typescript
 interface InitializerPlugin {
   name: string;
@@ -769,6 +844,7 @@ class PluginManager {
 ### 11.2 Custom Templates
 
 **Template System**:
+
 ```typescript
 interface ProjectTemplate {
   name: string;
@@ -801,6 +877,7 @@ class TemplateRegistry {
 ### 12.1 Metrics Collection
 
 **Key Metrics**:
+
 - Initialization duration
 - Phase execution times
 - Error rates
@@ -814,7 +891,7 @@ class MetricsCollector {
       name: metric.name,
       value: metric.value,
       timestamp: Date.now(),
-      labels: metric.labels
+      labels: metric.labels,
     });
   }
 
@@ -827,6 +904,7 @@ class MetricsCollector {
 ### 12.2 Logging Strategy
 
 **Log Levels**:
+
 - DEBUG: Detailed execution flow
 - INFO: Phase transitions, major operations
 - WARN: Non-critical issues, fallbacks used
@@ -855,37 +933,48 @@ class InitLogger {
 ## 13. Architecture Decision Records (ADRs)
 
 ### ADR-001: Use Strategy Pattern for Initialization Types
+
 **Status**: Accepted
 
-**Context**: Different projects require different initialization approaches (standard, SPARC, swarm, custom).
+**Context**: Different projects require different initialization approaches
+(standard, SPARC, swarm, custom).
 
-**Decision**: Implement Strategy pattern to encapsulate initialization logic for each type.
+**Decision**: Implement Strategy pattern to encapsulate initialization logic for
+each type.
 
 **Consequences**:
+
 - Positive: Easy to add new initialization types
 - Positive: Clear separation of concerns
 - Negative: Slight overhead for simple cases
 
 ### ADR-002: Implement Checkpoint-Based Rollback
+
 **Status**: Accepted
 
-**Context**: Initialization failures should not leave projects in inconsistent states.
+**Context**: Initialization failures should not leave projects in inconsistent
+states.
 
 **Decision**: Use checkpoint system with file backups for rollback capability.
 
 **Consequences**:
+
 - Positive: Safe recovery from failures
 - Positive: Testable rollback scenarios
 - Negative: Additional disk space for backups
 
 ### ADR-003: Parallel Execution of Independent Phases
+
 **Status**: Accepted
 
-**Context**: Some initialization phases are independent and can run concurrently.
+**Context**: Some initialization phases are independent and can run
+concurrently.
 
-**Decision**: Implement dependency graph and execute independent phases in parallel.
+**Decision**: Implement dependency graph and execute independent phases in
+parallel.
 
 **Consequences**:
+
 - Positive: Faster initialization times
 - Positive: Better resource utilization
 - Negative: More complex orchestration logic
@@ -893,6 +982,7 @@ class InitLogger {
 ## 14. Future Enhancements
 
 ### 14.1 Planned Features
+
 1. **Interactive Mode**: CLI prompts for configuration
 2. **Template Marketplace**: Share and download community templates
 3. **Incremental Updates**: Update existing projects to new patterns
@@ -900,6 +990,7 @@ class InitLogger {
 5. **Migration Tools**: Migrate from other project structures
 
 ### 14.2 Technology Roadmap
+
 - Phase 1 (Current): Core initialization system
 - Phase 2 (Q1 2025): Plugin system and custom templates
 - Phase 3 (Q2 2025): Interactive mode and health checks
@@ -907,9 +998,13 @@ class InitLogger {
 
 ## 15. Conclusion
 
-This architecture provides a robust, extensible foundation for project initialization within the noa-server ecosystem. The use of proven design patterns, comprehensive error handling, and integration with existing tools (Claude Flow, MCP servers) ensures reliability and maintainability.
+This architecture provides a robust, extensible foundation for project
+initialization within the noa-server ecosystem. The use of proven design
+patterns, comprehensive error handling, and integration with existing tools
+(Claude Flow, MCP servers) ensures reliability and maintainability.
 
 ### Key Architectural Strengths
+
 1. **Modularity**: Clear separation of concerns with well-defined interfaces
 2. **Extensibility**: Plugin system and custom templates support
 3. **Safety**: Rollback mechanisms and validation at every step
@@ -917,6 +1012,7 @@ This architecture provides a robust, extensible foundation for project initializ
 5. **Integration**: Seamless integration with Claude Flow and MCP ecosystem
 
 ### Implementation Priority
+
 1. Core initialization controller and phase manager
 2. Directory structure and configuration managers
 3. Swarm and SPARC provisioners
@@ -925,7 +1021,6 @@ This architecture provides a robust, extensible foundation for project initializ
 
 ---
 
-**Document Version**: 1.0
-**Last Updated**: 2025-10-22
-**Author**: SystemDesigner (Architecture Agent)
-**Status**: Design Complete - Ready for Implementation
+**Document Version**: 1.0 **Last Updated**: 2025-10-22 **Author**:
+SystemDesigner (Architecture Agent) **Status**: Design Complete - Ready for
+Implementation

@@ -59,7 +59,10 @@ export class HttpInstrumentation {
         const statusCode = res.statusCode;
 
         span.setAttribute('http.status_code', statusCode);
-        span.setAttribute('http.response_content_length', parseInt(res.get('content-length') || '0', 10));
+        span.setAttribute(
+          'http.response_content_length',
+          parseInt(res.get('content-length') || '0', 10)
+        );
 
         // Set span status based on HTTP status code
         if (statusCode >= 200 && statusCode < 400) {

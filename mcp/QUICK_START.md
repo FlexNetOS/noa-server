@@ -16,6 +16,7 @@ python example_server.py
 ```
 
 Output will show demo credentials:
+
 ```
 Demo users initialized:
   Admin Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -138,15 +139,15 @@ def my_handler(request):
 
 ### Available Roles
 
-| Role | Description | Access Level |
-|------|-------------|--------------|
-| `admin` | Full access | All tools, all operations |
-| `developer` | Development | Most tools, no system management |
-| `readonly` | Monitoring | Read-only access |
-| `operator` | Operations | Deployment and monitoring |
-| `ml-engineer` | ML workloads | Neural processing tools |
-| `ci-bot` | CI/CD | Limited automation access |
-| `guest` | Minimal | Basic health checks only |
+| Role          | Description  | Access Level                     |
+| ------------- | ------------ | -------------------------------- |
+| `admin`       | Full access  | All tools, all operations        |
+| `developer`   | Development  | Most tools, no system management |
+| `readonly`    | Monitoring   | Read-only access                 |
+| `operator`    | Operations   | Deployment and monitoring        |
+| `ml-engineer` | ML workloads | Neural processing tools          |
+| `ci-bot`      | CI/CD        | Limited automation access        |
+| `guest`       | Minimal      | Basic health checks only         |
 
 ### Check Permissions
 
@@ -177,14 +178,15 @@ Create `prometheus.yml`:
 
 ```yaml
 scrape_configs:
-  - job_name: "mcp-server"
+  - job_name: 'mcp-server'
     static_configs:
-      - targets: ["localhost:8080"]
-    metrics_path: "/metrics"
+      - targets: ['localhost:8080']
+    metrics_path: '/metrics'
     scrape_interval: 15s
 ```
 
 Start Prometheus:
+
 ```bash
 ./prometheus --config.file=prometheus.yml
 ```
@@ -198,14 +200,16 @@ Start Prometheus:
 ### Alert Rules
 
 Copy alerts to Prometheus:
+
 ```bash
 cp /home/deflex/noa-server/mcp/monitoring/alerts.yml /etc/prometheus/
 ```
 
 Add to `prometheus.yml`:
+
 ```yaml
 rule_files:
-  - "/etc/prometheus/alerts.yml"
+  - '/etc/prometheus/alerts.yml'
 ```
 
 ## Troubleshooting
@@ -221,11 +225,13 @@ curl -X POST http://localhost:8080/auth/token \
 
 ### Rate Limit Exceeded
 
-Wait for rate limit window to expire (default: 60 seconds) or request rate limit increase.
+Wait for rate limit window to expire (default: 60 seconds) or request rate limit
+increase.
 
 ### Permission Denied
 
 Check role permissions:
+
 ```python
 from mcp.auth import RBACManager
 
@@ -246,7 +252,8 @@ rbac.check_permission("developer", "mcp.swarm.init", "execute")
 
 - **Full Auth Guide**: `/home/deflex/noa-server/mcp/auth/README.md`
 - **Full Monitoring Guide**: `/home/deflex/noa-server/mcp/monitoring/README.md`
-- **Implementation Details**: `/home/deflex/noa-server/mcp/IMPLEMENTATION_SUMMARY.md`
+- **Implementation Details**:
+  `/home/deflex/noa-server/mcp/IMPLEMENTATION_SUMMARY.md`
 
 ## Production Checklist
 

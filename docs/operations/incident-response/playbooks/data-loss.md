@@ -2,8 +2,7 @@
 
 ## Overview
 
-**Severity**: SEV1 (Critical)
-**Estimated Duration**: 1-4 hours
+**Severity**: SEV1 (Critical) **Estimated Duration**: 1-4 hours
 **Prerequisites**: Database admin access, backup access
 
 **CRITICAL**: Time is of the essence. Data recovery success decreases with time.
@@ -52,6 +51,7 @@ kubectl exec -n production nginx-0 -- \
 ### Step 2: Assess Data Loss (5-15 minutes)
 
 **Determine Scope**:
+
 ```bash
 # Count records in affected tables
 kubectl exec -n database postgres-0 -- psql -U admin -d noa_db -c \
@@ -83,6 +83,7 @@ kubectl exec -n database postgres-0 -- psql -U admin -d noa_db -c \
 ```
 
 **Identify Timeframe**:
+
 ```bash
 # Find when data was last known good
 kubectl exec -n database postgres-0 -- psql -U admin -d noa_db -c \
@@ -99,6 +100,7 @@ kubectl exec -n database postgres-replica-0 -- psql -U admin -d noa_db -c \
 ```
 
 **Document Loss**:
+
 ```bash
 # Generate data loss report
 cat > /incident/data-loss-report-$(date +%Y%m%d-%H%M%S).txt <<EOF
@@ -123,15 +125,16 @@ EOF
 
 **Decision Matrix**:
 
-| Scenario | Recovery Method | Time | Data Loss |
-|----------|----------------|------|-----------|
-| Accidental DELETE | Point-in-time recovery | 30-60 min | None |
-| Table DROP | Restore from backup | 1-2 hours | Minutes |
-| Database corruption | Restore + replay WAL | 2-4 hours | Minimal |
-| Complete DB loss | Restore latest backup | 1-3 hours | Hours |
-| Partial corruption | Selective table restore | 1-2 hours | Minimal |
+| Scenario            | Recovery Method         | Time      | Data Loss |
+| ------------------- | ----------------------- | --------- | --------- |
+| Accidental DELETE   | Point-in-time recovery  | 30-60 min | None      |
+| Table DROP          | Restore from backup     | 1-2 hours | Minutes   |
+| Database corruption | Restore + replay WAL    | 2-4 hours | Minimal   |
+| Complete DB loss    | Restore latest backup   | 1-3 hours | Hours     |
+| Partial corruption  | Selective table restore | 1-2 hours | Minimal   |
 
 **Check Available Backups**:
+
 ```bash
 # List recent backups
 ls -lh /backup/noa-db-*.sql | tail -10
@@ -259,6 +262,7 @@ kubectl exec -n database postgres-0 -- psql -U admin -d noa_db -c \
 ### Step 5: Validate Recovery (15-30 minutes)
 
 **Data Integrity Checks**:
+
 ```bash
 # Check record counts
 kubectl exec -n database postgres-0 -- psql -U admin -d noa_db -c \
@@ -291,6 +295,7 @@ kubectl exec -n database postgres-0 -- psql -U admin -d noa_db -c \
 ```
 
 **Application Testing**:
+
 ```bash
 # Start application in test mode
 kubectl set env deployment/api -n production TEST_MODE=true
@@ -315,6 +320,7 @@ kubectl logs -n production api-0 --tail=100 | grep -i error
 ### Step 6: Resume Normal Operations (10-20 minutes)
 
 **Re-enable Writes**:
+
 ```bash
 # Remove read-only mode
 kubectl exec -n database postgres-0 -- psql -U admin -d noa_db -c \
@@ -333,6 +339,7 @@ watch kubectl logs -f -n production -l app=api | grep ERROR
 ```
 
 **Create New Backup**:
+
 ```bash
 # Take fresh backup of restored state
 kubectl exec -n database postgres-0 -- \
@@ -348,6 +355,7 @@ echo "$(date): Post-recovery backup created" >> /backup/backup-log.txt
 ## Communication Template
 
 ### Initial Alert
+
 ```
 [SEV1 INCIDENT] Data Loss Detected
 Status: Investigating
@@ -359,6 +367,7 @@ Next Update: 15 minutes
 ```
 
 ### During Recovery
+
 ```
 [SEV1 UPDATE] Data Loss - Recovery in Progress
 Status: Recovering
@@ -370,6 +379,7 @@ Next Update: 20 minutes
 ```
 
 ### Resolution
+
 ```
 [SEV1 RESOLVED] Data Loss - Recovered
 Status: Resolved
@@ -427,6 +437,7 @@ Next Steps: Post-mortem, enhanced backup procedures
 
 ## References
 
-- PostgreSQL PITR: https://www.postgresql.org/docs/current/continuous-archiving.html
+- PostgreSQL PITR:
+  https://www.postgresql.org/docs/current/continuous-archiving.html
 - Backup Best Practices: [docs/operations/backup-best-practices.md]
 - Data Recovery SOP: [docs/operations/data-recovery-sop.md]

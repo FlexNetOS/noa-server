@@ -35,7 +35,7 @@ class MetricsCollector {
       system: await this.collectSystemMetrics(),
       application: await this.collectApplicationMetrics(),
       business: await this.collectBusinessMetrics(),
-      custom: await this.collectCustomMetrics()
+      custom: await this.collectCustomMetrics(),
     };
 
     await this.storeMetrics(metrics);
@@ -61,18 +61,18 @@ class MetricsCollector {
         usage: cpuUsage,
         count: cpus.length,
         model: cpus[0].model,
-        speed: cpus[0].speed
+        speed: cpus[0].speed,
       },
       memory: {
         total: totalMemory,
         used: usedMemory,
         free: freeMemory,
-        usagePercent: (usedMemory / totalMemory) * 100
+        usagePercent: (usedMemory / totalMemory) * 100,
       },
       disk: await this.getDiskUsage(),
       network: await this.getNetworkStats(),
       uptime: os.uptime(),
-      loadAverage: os.loadavg()
+      loadAverage: os.loadavg(),
     };
   }
 
@@ -88,17 +88,17 @@ class MetricsCollector {
 
     const getIdle = (cpu) => cpu.times.idle;
 
-    const startMeasure = cpus.map(cpu => ({
+    const startMeasure = cpus.map((cpu) => ({
       total: getTotal(cpu),
-      idle: getIdle(cpu)
+      idle: getIdle(cpu),
     }));
 
     // Wait 100ms for measurement
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
-    const endMeasure = os.cpus().map(cpu => ({
+    const endMeasure = os.cpus().map((cpu) => ({
       total: getTotal(cpu),
-      idle: getIdle(cpu)
+      idle: getIdle(cpu),
     }));
 
     const usages = startMeasure.map((start, i) => {
@@ -111,7 +111,7 @@ class MetricsCollector {
 
     return {
       average: usages.reduce((a, b) => a + b, 0) / usages.length,
-      perCore: usages
+      perCore: usages,
     };
   }
 
@@ -132,7 +132,7 @@ class MetricsCollector {
         total: parseInt(data[1]) * 1024,
         used: parseInt(data[2]) * 1024,
         available: parseInt(data[3]) * 1024,
-        usagePercent: parseInt(data[4])
+        usagePercent: parseInt(data[4]),
       };
     } catch {
       return null;
@@ -148,8 +148,8 @@ class MetricsCollector {
 
     for (const [name, addrs] of Object.entries(interfaces)) {
       stats[name] = {
-        ipv4: addrs.filter(a => a.family === 'IPv4'),
-        ipv6: addrs.filter(a => a.family === 'IPv6')
+        ipv4: addrs.filter((a) => a.family === 'IPv4'),
+        ipv6: addrs.filter((a) => a.family === 'IPv6'),
       };
     }
 
@@ -171,26 +171,26 @@ class MetricsCollector {
           rss: memUsage.rss,
           heapTotal: memUsage.heapTotal,
           heapUsed: memUsage.heapUsed,
-          external: memUsage.external
+          external: memUsage.external,
         },
-        cpu: process.cpuUsage()
+        cpu: process.cpuUsage(),
       },
       requests: {
         total: this.getCounter('requests_total'),
         success: this.getCounter('requests_success'),
         errors: this.getCounter('requests_errors'),
-        errorRate: this.calculateErrorRate()
+        errorRate: this.calculateErrorRate(),
       },
       latency: {
         average: this.getGauge('latency_average'),
         p50: this.getGauge('latency_p50'),
         p95: this.getGauge('latency_p95'),
-        p99: this.getGauge('latency_p99')
+        p99: this.getGauge('latency_p99'),
       },
       throughput: {
         requestsPerSecond: this.getGauge('throughput_rps'),
-        bytesPerSecond: this.getGauge('throughput_bps')
-      }
+        bytesPerSecond: this.getGauge('throughput_bps'),
+      },
     };
   }
 
@@ -204,7 +204,7 @@ class MetricsCollector {
       agentSpawns: this.getCounter('agent_spawns'),
       swarmSessions: this.getGauge('swarm_sessions_active'),
       neuralInferences: this.getCounter('neural_inferences'),
-      cacheHitRate: this.getGauge('cache_hit_rate')
+      cacheHitRate: this.getGauge('cache_hit_rate'),
     };
   }
 
@@ -274,7 +274,7 @@ class MetricsCollector {
       error_rate: this.calculateErrorRate(),
       avg_latency: metrics.application.latency.average,
       memory_usage: metrics.system.memory.usagePercent / 100,
-      cpu_usage: metrics.system.cpu.usage.average / 100
+      cpu_usage: metrics.system.cpu.usage.average / 100,
     };
 
     try {
@@ -300,8 +300,8 @@ class MetricsCollector {
         errorRate: this.calculateErrorRate(),
         latency: metrics.application.latency.average,
         memoryUsage: metrics.system.memory.usagePercent,
-        cpuUsage: metrics.system.cpu.usage.average
-      }
+        cpuUsage: metrics.system.cpu.usage.average,
+      },
     };
 
     console.error(`[ALERT] ${rule.severity.toUpperCase()}: ${rule.name}`);
@@ -398,9 +398,7 @@ class MetricsCollector {
       }
     }
 
-    return recent.sort((a, b) =>
-      new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-    );
+    return recent.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
   }
 
   /**

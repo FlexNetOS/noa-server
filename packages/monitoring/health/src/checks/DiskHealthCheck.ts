@@ -29,7 +29,7 @@ export class DiskHealthCheck extends BaseHealthCheck {
       enabled: true,
       critical: true,
       checkTypes: ['liveness'],
-      retries: 1
+      retries: 1,
     });
 
     this.paths = options.paths || [os.tmpdir()];
@@ -65,11 +65,11 @@ export class DiskHealthCheck extends BaseHealthCheck {
       const duration = Date.now() - startTime;
 
       // Find highest usage
-      const maxUsage = Math.max(...diskStats.map(s => s.percentage));
+      const maxUsage = Math.max(...diskStats.map((s) => s.percentage));
 
       const metadata = {
         disks: diskStats,
-        writeTest
+        writeTest,
       };
 
       // Check critical threshold
@@ -92,18 +92,10 @@ export class DiskHealthCheck extends BaseHealthCheck {
 
       // Check write test
       if (writeTest && !writeTest.success) {
-        return this.createDegradedResult(
-          duration,
-          'Disk write test failed',
-          metadata
-        );
+        return this.createDegradedResult(duration, 'Disk write test failed', metadata);
       }
 
-      return this.createSuccessResult(
-        duration,
-        `Disk usage: ${maxUsage.toFixed(2)}%`,
-        metadata
-      );
+      return this.createSuccessResult(duration, `Disk usage: ${maxUsage.toFixed(2)}%`, metadata);
     } catch (error) {
       return this.createErrorResult(error as Error, Date.now() - startTime);
     }
@@ -139,7 +131,7 @@ export class DiskHealthCheck extends BaseHealthCheck {
         total,
         used,
         free,
-        percentage
+        percentage,
       };
     } catch (error) {
       throw new Error(`Failed to check disk usage for ${checkPath}: ${(error as Error).message}`);
@@ -167,7 +159,7 @@ export class DiskHealthCheck extends BaseHealthCheck {
 
       return {
         success: true,
-        duration: Date.now() - startTime
+        duration: Date.now() - startTime,
       };
     } catch (error) {
       // Try to clean up
@@ -179,7 +171,7 @@ export class DiskHealthCheck extends BaseHealthCheck {
 
       return {
         success: false,
-        duration: Date.now() - startTime
+        duration: Date.now() - startTime,
       };
     }
   }

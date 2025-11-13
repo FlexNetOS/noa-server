@@ -96,7 +96,7 @@ export class HttpMetrics {
         this.collector.observeHistogram('http_request_duration_seconds', duration, labels);
 
         // Track response size
-        const responseSize = parseInt(res.getHeader('content-length') as string || '0', 10);
+        const responseSize = parseInt((res.getHeader('content-length') as string) || '0', 10);
         if (responseSize > 0) {
           this.collector.observeHistogram('http_response_size_bytes', responseSize, labels);
         }

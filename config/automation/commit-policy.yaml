@@ -3,13 +3,13 @@
 
 # Global settings
 enabled: true
-dry_run: false  # Set to true to preview commits without creating them
+dry_run: false # Set to true to preview commits without creating them
 
 # Commit triggers
 triggers:
   post_agent_task:
     enabled: true
-    min_changes: 1  # Minimum number of changed files
+    min_changes: 1 # Minimum number of changed files
     skip_on_error: true
     skip_empty: true
 
@@ -24,13 +24,13 @@ triggers:
   post_test:
     enabled: true
     only_on_success: true
-    min_coverage: 0  # Minimum coverage percentage
-    include_coverage_reports: false  # Usually in .gitignore
+    min_coverage: 0 # Minimum coverage percentage
+    include_coverage_reports: false # Usually in .gitignore
 
   scheduled:
     enabled: false
-    cron: "0 */6 * * *"  # Every 6 hours
-    description: "Periodic auto-commit of accumulated changes"
+    cron: '0 */6 * * *' # Every 6 hours
+    description: 'Periodic auto-commit of accumulated changes'
 
 # Commit message configuration
 commit_message:
@@ -39,7 +39,7 @@ commit_message:
 
   # Neural model settings
   neural:
-    model_path: ""  # Auto-detect from LLM_MODEL_PATH
+    model_path: '' # Auto-detect from LLM_MODEL_PATH
     max_tokens: 150
     temperature: 0.7
     context_size: 2048
@@ -60,31 +60,31 @@ commit_message:
 # Conventional Commits configuration
 conventional_commits:
   types:
-    - feat      # New feature
-    - fix       # Bug fix
-    - docs      # Documentation changes
-    - style     # Code style changes (formatting, etc)
-    - refactor  # Code refactoring
-    - perf      # Performance improvements
-    - test      # Test additions or updates
-    - build     # Build system or dependency changes
-    - ci        # CI/CD pipeline changes
-    - chore     # Other changes
-    - revert    # Revert previous commit
+    - feat # New feature
+    - fix # Bug fix
+    - docs # Documentation changes
+    - style # Code style changes (formatting, etc)
+    - refactor # Code refactoring
+    - perf # Performance improvements
+    - test # Test additions or updates
+    - build # Build system or dependency changes
+    - ci # CI/CD pipeline changes
+    - chore # Other changes
+    - revert # Revert previous commit
 
   # Auto-detect scope from file paths
   auto_scope: true
 
   scopes:
-    src: "core"
-    tests: "test"
-    docs: "docs"
-    scripts: "automation"
-    config: "config"
-    packages: "package"
-    "*.sh": "scripts"
-    "*.json": "config"
-    "*.yaml": "config"
+    src: 'core'
+    tests: 'test'
+    docs: 'docs'
+    scripts: 'automation'
+    config: 'config'
+    packages: 'package'
+    '*.sh': 'scripts'
+    '*.json': 'config'
+    '*.yaml': 'config'
 
 # Breaking change detection
 breaking_changes:
@@ -92,13 +92,13 @@ breaking_changes:
 
   # Patterns that indicate breaking changes
   patterns:
-    - "BREAKING CHANGE"
-    - "breaking:"
-    - "removed.*function"
-    - "removed.*class"
-    - "removed.*api"
-    - "incompatible"
-    - "deprecated.*removed"
+    - 'BREAKING CHANGE'
+    - 'breaking:'
+    - 'removed.*function'
+    - 'removed.*class'
+    - 'removed.*api'
+    - 'incompatible'
+    - 'deprecated.*removed'
 
   # Require manual review for breaking changes
   require_manual_review: false
@@ -107,32 +107,32 @@ breaking_changes:
 file_filters:
   # Always include these patterns
   include:
-    - "src/**"
-    - "tests/**"
-    - "docs/**"
-    - "scripts/**"
-    - "config/**"
-    - "*.md"
-    - "*.json"
-    - "*.yaml"
-    - "*.sh"
+    - 'src/**'
+    - 'tests/**'
+    - 'docs/**'
+    - 'scripts/**'
+    - 'config/**'
+    - '*.md'
+    - '*.json'
+    - '*.yaml'
+    - '*.sh'
 
   # Always exclude these patterns
   exclude:
-    - "node_modules/**"
-    - ".git/**"
-    - "*.log"
-    - ".env"
-    - ".env.*"
-    - "credentials.*"
-    - "secrets.*"
-    - "*.key"
-    - "*.pem"
-    - ".DS_Store"
-    - "Thumbs.db"
-    - "coverage/**"
-    - "dist/**"
-    - "build/**"
+    - 'node_modules/**'
+    - '.git/**'
+    - '*.log'
+    - '.env'
+    - '.env.*'
+    - 'credentials.*'
+    - 'secrets.*'
+    - '*.key'
+    - '*.pem'
+    - '.DS_Store'
+    - 'Thumbs.db'
+    - 'coverage/**'
+    - 'dist/**'
+    - 'build/**'
 
   # Max file size (in KB) to include in commits
   max_file_size_kb: 1024
@@ -142,28 +142,28 @@ agent_attribution:
   enabled: true
 
   # Co-author format
-  format: "Co-Authored-By: {name} <{email}>"
+  format: 'Co-Authored-By: {name} <{email}>'
 
   # Agent email domain
-  email_domain: "claude-code.anthropic.com"
+  email_domain: 'claude-code.anthropic.com'
 
   # Known agents
   agents:
     coder:
-      name: "Coder"
-      email: "coder@claude-code.anthropic.com"
+      name: 'Coder'
+      email: 'coder@claude-code.anthropic.com'
     tester:
-      name: "Test-Agent"
-      email: "test@claude-code.anthropic.com"
+      name: 'Test-Agent'
+      email: 'test@claude-code.anthropic.com'
     reviewer:
-      name: "Reviewer"
-      email: "reviewer@claude-code.anthropic.com"
+      name: 'Reviewer'
+      email: 'reviewer@claude-code.anthropic.com'
     build:
-      name: "Build-Agent"
-      email: "build@claude-code.anthropic.com"
+      name: 'Build-Agent'
+      email: 'build@claude-code.anthropic.com'
     cicd:
-      name: "CICD-Agent"
-      email: "cicd@claude-code.anthropic.com"
+      name: 'CICD-Agent'
+      email: 'cicd@claude-code.anthropic.com'
 
 # Git configuration
 git:
@@ -179,8 +179,8 @@ git:
   # Push after commit
   auto_push:
     enabled: false
-    remote: "origin"
-    branch: "main"
+    remote: 'origin'
+    branch: 'main'
 
 # Notifications
 notifications:
@@ -193,7 +193,7 @@ notifications:
   # Webhook notifications
   webhook:
     enabled: false
-    url: ""
+    url: ''
     on_success: true
     on_failure: true
 
@@ -212,18 +212,18 @@ safety:
       - main
       - master
       - production
-    action: "warn"  # "warn" or "block"
+    action: 'warn' # "warn" or "block"
 
   # Backup before commit
   backup:
     enabled: false
-    path: ".git/auto-commit-backups"
+    path: '.git/auto-commit-backups'
 
 # Logging
 logging:
   enabled: true
-  level: "info"  # debug, info, warn, error
-  file: "logs/auto-commit.log"
+  level: 'info' # debug, info, warn, error
+  file: 'logs/auto-commit.log'
   rotate: true
   max_size_mb: 10
   max_files: 5
@@ -258,6 +258,6 @@ maintenance:
   # Generate commit report
   reporting:
     enabled: true
-    interval: "weekly"
-    format: "markdown"
-    output: "docs/automation/commit-report.md"
+    interval: 'weekly'
+    format: 'markdown'
+    output: 'docs/automation/commit-report.md'

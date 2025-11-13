@@ -1,6 +1,7 @@
 # File Storage & Management
 
-Secure cloud storage with bucket management, file operations, and URL generation for Flow Nexus applications.
+Secure cloud storage with bucket management, file operations, and URL generation
+for Flow Nexus applications.
 
 ## MCP Tools for Storage Management
 
@@ -24,25 +25,30 @@ Upload files to secure cloud storage buckets:
 const uploadResult = await client.storage.upload({
   bucket: 'user-files',
   path: 'configs/app-config.json',
-  content: JSON.stringify({
-    database: {
-      host: 'localhost',
-      port: 5432,
-      name: 'production_db'
+  content: JSON.stringify(
+    {
+      database: {
+        host: 'localhost',
+        port: 5432,
+        name: 'production_db',
+      },
+      api: {
+        version: 'v2',
+        timeout: 30000,
+        rate_limit: 1000,
+      },
     },
-    api: {
-      version: 'v2',
-      timeout: 30000,
-      rate_limit: 1000
-    }
-  }, null, 2),
-  content_type: 'application/json'
+    null,
+    2
+  ),
+  content_type: 'application/json',
 });
 
 console.log('File uploaded:', uploadResult);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -84,8 +90,8 @@ const imageUpload = await client.storage.upload({
   metadata: {
     user_id: 'user_123',
     upload_source: 'profile_update',
-    image_dimensions: '800x600'
-  }
+    image_dimensions: '800x600',
+  },
 });
 
 console.log('Image uploaded:', imageUpload);
@@ -102,27 +108,27 @@ const projectFiles = [
     bucket: 'project-files',
     path: 'src/index.js',
     content: 'console.log("Hello World");',
-    content_type: 'application/javascript'
+    content_type: 'application/javascript',
   },
   {
-    bucket: 'project-files', 
+    bucket: 'project-files',
     path: 'package.json',
     content: JSON.stringify({
       name: 'my-app',
-      version: '1.0.0'
+      version: '1.0.0',
     }),
-    content_type: 'application/json'
+    content_type: 'application/json',
   },
   {
     bucket: 'project-files',
     path: 'README.md',
     content: '# My Application\n\nThis is a sample app.',
-    content_type: 'text/markdown'
-  }
+    content_type: 'text/markdown',
+  },
 ];
 
 const uploadResults = await Promise.all(
-  projectFiles.map(file => client.storage.upload(file))
+  projectFiles.map((file) => client.storage.upload(file))
 );
 
 console.log(`Uploaded ${uploadResults.length} files successfully`);
@@ -133,51 +139,53 @@ console.log(`Uploaded ${uploadResults.length} files successfully`);
 ```javascript
 // Upload large files with progress tracking
 async function uploadLargeFile(filePath, bucketPath) {
-  const fileSize = await fs.stat(filePath).then(stats => stats.size);
+  const fileSize = await fs.stat(filePath).then((stats) => stats.size);
   const chunkSize = 5 * 1024 * 1024; // 5MB chunks
-  
-  console.log(`Uploading ${fileSize} bytes in ${Math.ceil(fileSize / chunkSize)} chunks`);
-  
+
+  console.log(
+    `Uploading ${fileSize} bytes in ${Math.ceil(fileSize / chunkSize)} chunks`
+  );
+
   // For large files, use chunked upload
   const uploadId = await client.storage.initMultipartUpload({
     bucket: 'large-files',
     path: bucketPath,
-    content_type: 'application/octet-stream'
+    content_type: 'application/octet-stream',
   });
-  
+
   const uploadProgress = {
     uploadId,
     totalSize: fileSize,
     uploadedBytes: 0,
-    parts: []
+    parts: [],
   };
-  
+
   // Upload chunks and track progress
   for (let i = 0; i < Math.ceil(fileSize / chunkSize); i++) {
     const chunk = await fs.readFile(filePath, {
       start: i * chunkSize,
-      end: Math.min((i + 1) * chunkSize - 1, fileSize - 1)
+      end: Math.min((i + 1) * chunkSize - 1, fileSize - 1),
     });
-    
+
     const partResult = await client.storage.uploadPart({
       uploadId: uploadId,
       partNumber: i + 1,
-      content: chunk.toString('base64')
+      content: chunk.toString('base64'),
     });
-    
+
     uploadProgress.parts.push(partResult);
     uploadProgress.uploadedBytes += chunk.length;
-    
+
     const percentComplete = (uploadProgress.uploadedBytes / fileSize) * 100;
     console.log(`Upload progress: ${percentComplete.toFixed(1)}%`);
   }
-  
+
   // Complete multipart upload
   const finalResult = await client.storage.completeMultipartUpload({
     uploadId: uploadId,
-    parts: uploadProgress.parts
+    parts: uploadProgress.parts,
   });
-  
+
   return finalResult;
 }
 ```
@@ -194,13 +202,14 @@ const fileList = await client.storage.list({
   bucket: 'user-files',
   path: 'projects/', // Optional path prefix
   limit: 50,
-  recursive: true
+  recursive: true,
 });
 
 console.log('Files found:', fileList);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -259,10 +268,10 @@ const searchResults = await client.storage.list({
     min_size: 100000, // Minimum 100KB
     max_size: 5000000, // Maximum 5MB
     modified_after: '2024-12-01T00:00:00Z',
-    has_metadata: ['user_id', 'project']
+    has_metadata: ['user_id', 'project'],
   },
   sort_by: 'size_desc',
-  limit: 25
+  limit: 25,
 });
 ```
 
@@ -275,13 +284,13 @@ const metadataSearch = await client.storage.search({
   metadata_query: {
     project: 'ai-research',
     status: 'processed',
-    tags: ['machine-learning', 'production']
+    tags: ['machine-learning', 'production'],
   },
   content_types: ['application/json', 'text/csv'],
   date_range: {
     start: '2024-11-01',
-    end: '2024-12-01'
-  }
+    end: '2024-12-01',
+  },
 });
 
 console.log('Metadata search results:', metadataSearch);
@@ -298,13 +307,14 @@ Create public URLs for file access:
 const publicUrl = await client.storage.getUrl({
   bucket: 'user-files',
   path: 'reports/monthly-analytics.pdf',
-  expires_in: 3600 // 1 hour expiry
+  expires_in: 3600, // 1 hour expiry
 });
 
 console.log('Public URL generated:', publicUrl);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -336,8 +346,8 @@ const signedUrl = await client.storage.getUrl({
   permissions: ['read', 'download'],
   user_context: {
     user_id: 'user_123',
-    role: 'admin'
-  }
+    role: 'admin',
+  },
 });
 
 console.log('Signed URL:', signedUrl);
@@ -349,21 +359,24 @@ console.log('Signed URL:', signedUrl);
 // Generate URLs for multiple files
 const files = [
   'images/photo1.jpg',
-  'images/photo2.jpg', 
-  'documents/report.pdf'
+  'images/photo2.jpg',
+  'documents/report.pdf',
 ];
 
 const urls = await Promise.all(
-  files.map(path => 
+  files.map((path) =>
     client.storage.getUrl({
       bucket: 'user-assets',
       path: path,
-      expires_in: 7200 // 2 hours
+      expires_in: 7200, // 2 hours
     })
   )
 );
 
-console.log('Generated URLs:', urls.map(u => u.url));
+console.log(
+  'Generated URLs:',
+  urls.map((u) => u.url)
+);
 ```
 
 ## File Deletion & Cleanup
@@ -376,13 +389,14 @@ Remove files from storage:
 // Delete specific file
 const deleteResult = await client.storage.delete({
   bucket: 'user-files',
-  path: 'temp/old-data.csv'
+  path: 'temp/old-data.csv',
 });
 
 console.log('File deleted:', deleteResult);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -406,14 +420,14 @@ console.log('File deleted:', deleteResult);
 const filesToDelete = [
   'temp/cache-file-1.tmp',
   'temp/cache-file-2.tmp',
-  'logs/old-logs.txt'
+  'logs/old-logs.txt',
 ];
 
 const deleteResults = await Promise.all(
-  filesToDelete.map(path =>
+  filesToDelete.map((path) =>
     client.storage.delete({
       bucket: 'user-files',
-      path: path
+      path: path,
     })
   )
 );
@@ -428,35 +442,40 @@ console.log(`Deleted ${deleteResults.length} files`);
 async function cleanupOldFiles(bucket, olderThanDays = 30) {
   const cutoffDate = new Date();
   cutoffDate.setDate(cutoffDate.getDate() - olderThanDays);
-  
+
   const files = await client.storage.list({
     bucket: bucket,
     filters: {
-      modified_before: cutoffDate.toISOString()
+      modified_before: cutoffDate.toISOString(),
     },
-    limit: 1000
+    limit: 1000,
   });
-  
-  console.log(`Found ${files.files.length} files older than ${olderThanDays} days`);
-  
-  const deletePromises = files.files.map(file =>
+
+  console.log(
+    `Found ${files.files.length} files older than ${olderThanDays} days`
+  );
+
+  const deletePromises = files.files.map((file) =>
     client.storage.delete({
       bucket: bucket,
-      path: file.path
+      path: file.path,
     })
   );
-  
+
   const results = await Promise.all(deletePromises);
-  const totalFreed = results.reduce((sum, result) => 
-    sum + result.file_info.size_bytes, 0
+  const totalFreed = results.reduce(
+    (sum, result) => sum + result.file_info.size_bytes,
+    0
   );
-  
-  console.log(`Cleanup complete: ${results.length} files deleted, ${totalFreed} bytes freed`);
-  
+
+  console.log(
+    `Cleanup complete: ${results.length} files deleted, ${totalFreed} bytes freed`
+  );
+
   return {
     files_deleted: results.length,
     storage_freed: totalFreed,
-    cleanup_date: new Date().toISOString()
+    cleanup_date: new Date().toISOString(),
   };
 }
 ```
@@ -472,13 +491,14 @@ Access files created during sandbox or workflow executions:
 const executionFiles = await client.storage.listExecutionFiles({
   stream_id: 'exec_abc123',
   created_by: 'claude-code',
-  file_type: 'output'
+  file_type: 'output',
 });
 
 console.log('Execution files:', executionFiles);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -500,7 +520,7 @@ console.log('Execution files:', executionFiles);
     },
     {
       id: 'file_ghi789',
-      path: '/output/visualization.png', 
+      path: '/output/visualization.png',
       size_bytes: 234567,
       content_type: 'image/png',
       created_by: 'claude-flow',
@@ -520,13 +540,14 @@ console.log('Execution files:', executionFiles);
 // Retrieve specific execution file
 const executionFile = await client.storage.getExecutionFile({
   file_id: 'file_def456',
-  include_content: true
+  include_content: true,
 });
 
 console.log('Execution file:', executionFile);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -572,13 +593,14 @@ console.log('Execution file:', executionFile);
 const storageAnalytics = await client.storage.getAnalytics({
   bucket: 'user-files',
   timeframe: '30d',
-  breakdown_by: ['content_type', 'path_prefix']
+  breakdown_by: ['content_type', 'path_prefix'],
 });
 
 console.log('Storage analytics:', storageAnalytics);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -643,6 +665,7 @@ console.log('Storage quota status:', quotaStatus);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -686,7 +709,7 @@ try {
   await client.storage.upload({
     bucket: 'invalid-bucket',
     path: 'test.txt',
-    content: 'test content'
+    content: 'test content',
   });
 } catch (error) {
   switch (error.code) {
@@ -730,13 +753,13 @@ class FileOrganizer {
       userFiles: 'user-files',
       assets: 'user-assets',
       temp: 'temp-files',
-      archive: 'archive-files'
+      archive: 'archive-files',
     };
   }
-  
+
   generatePath(category, userId, filename) {
     const date = new Date().toISOString().split('T')[0];
-    
+
     switch (category) {
       case 'profile':
         return `users/${userId}/profile/${filename}`;
@@ -748,11 +771,12 @@ class FileOrganizer {
         return `users/${userId}/misc/${filename}`;
     }
   }
-  
+
   async uploadOrganized(category, userId, filename, content) {
     const path = this.generatePath(category, userId, filename);
-    const bucket = category === 'temp' ? this.buckets.temp : this.buckets.userFiles;
-    
+    const bucket =
+      category === 'temp' ? this.buckets.temp : this.buckets.userFiles;
+
     return await this.client.storage.upload({
       bucket,
       path,
@@ -760,8 +784,8 @@ class FileOrganizer {
       metadata: {
         user_id: userId,
         category,
-        uploaded_at: new Date().toISOString()
-      }
+        uploaded_at: new Date().toISOString(),
+      },
     });
   }
 }
@@ -776,19 +800,19 @@ async function backupCriticalFiles(bucket) {
   const criticalFiles = await client.storage.list({
     bucket: bucket,
     filters: {
-      has_metadata: ['critical', 'backup_required']
-    }
+      has_metadata: ['critical', 'backup_required'],
+    },
   });
-  
+
   console.log(`Found ${criticalFiles.files.length} critical files to backup`);
-  
+
   for (const file of criticalFiles.files) {
     // Copy to backup bucket
     await client.storage.copy({
       source_bucket: bucket,
       source_path: file.path,
       destination_bucket: 'backup-files',
-      destination_path: `backups/${new Date().toISOString().split('T')[0]}/${file.path}`
+      destination_path: `backups/${new Date().toISOString().split('T')[0]}/${file.path}`,
     });
   }
 }
@@ -803,31 +827,31 @@ class CDNManager {
     this.client = client;
     this.cdnDomain = cdnDomain;
   }
-  
+
   async uploadWithCDN(bucket, path, content, options = {}) {
     // Upload to storage
     const uploadResult = await this.client.storage.upload({
       bucket,
       path,
       content,
-      ...options
+      ...options,
     });
-    
+
     // Generate CDN URL
     const cdnUrl = `https://${this.cdnDomain}/${bucket}/${path}`;
-    
+
     // Invalidate CDN cache if needed
     if (options.invalidateCache) {
       await this.invalidateCDNCache(cdnUrl);
     }
-    
+
     return {
       ...uploadResult,
       cdn_url: cdnUrl,
-      cache_invalidated: options.invalidateCache || false
+      cache_invalidated: options.invalidateCache || false,
     };
   }
-  
+
   async invalidateCDNCache(url) {
     // Implementation depends on CDN provider
     console.log(`Invalidating CDN cache for: ${url}`);
@@ -843,16 +867,16 @@ class FileProcessor {
   constructor(client) {
     this.client = client;
     this.processors = new Map();
-    
+
     // Register processors
     this.processors.set('image/*', this.processImage.bind(this));
     this.processors.set('application/pdf', this.processPDF.bind(this));
     this.processors.set('text/csv', this.processCSV.bind(this));
   }
-  
+
   async processUpload(uploadResult) {
     const contentType = uploadResult.content_type;
-    
+
     // Find matching processor
     for (const [pattern, processor] of this.processors) {
       if (this.matchesPattern(contentType, pattern)) {
@@ -861,41 +885,41 @@ class FileProcessor {
       }
     }
   }
-  
+
   async processImage(uploadResult) {
     console.log('Processing image:', uploadResult.path);
-    
+
     // Generate thumbnail
     const thumbnailUrl = await this.generateThumbnail(uploadResult);
-    
+
     // Extract metadata
     const metadata = await this.extractImageMetadata(uploadResult);
-    
+
     // Update file metadata
     await this.updateFileMetadata(uploadResult, {
       thumbnail_url: thumbnailUrl,
       dimensions: metadata.dimensions,
-      color_palette: metadata.colors
+      color_palette: metadata.colors,
     });
   }
-  
+
   async processCSV(uploadResult) {
     console.log('Processing CSV:', uploadResult.path);
-    
+
     // Analyze CSV structure
     const analysis = await this.analyzeCSVStructure(uploadResult);
-    
+
     // Generate preview
     const preview = await this.generateCSVPreview(uploadResult);
-    
+
     // Update metadata
     await this.updateFileMetadata(uploadResult, {
       row_count: analysis.rows,
       column_count: analysis.columns,
-      preview_data: preview
+      preview_data: preview,
     });
   }
-  
+
   matchesPattern(contentType, pattern) {
     const regex = new RegExp(pattern.replace('*', '.*'));
     return regex.test(contentType);
@@ -905,6 +929,8 @@ class FileProcessor {
 
 ## Next Steps
 
-- [Sandbox Execution](../sandbox/sandbox-execution.md) - File processing in sandboxes
+- [Sandbox Execution](../sandbox/sandbox-execution.md) - File processing in
+  sandboxes
 - [Workflows](../workflows/workflow-orchestration.md) - Automated file workflows
-- [Credit Management](../payments/credit-management.md) - Storage cost management
+- [Credit Management](../payments/credit-management.md) - Storage cost
+  management

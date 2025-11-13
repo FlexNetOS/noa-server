@@ -17,20 +17,20 @@ class AgenticMarketingServer {
       dbPath: config.dbPath || path.join(process.cwd(), 'data', 'mediaspend.db'),
       schemaPath: config.schemaPath || path.join(process.cwd(), 'schema.sql'),
       autoInitialize: config.autoInitialize !== false,
-      ...config
+      ...config,
     };
-    
+
     // Initialize components
     this.dbManager = new DatabaseManager(this.config);
     this.flowNexusSDK = new FlowNexusSDK(this.config);
     this.authManager = new AuthenticationManager(this.config);
     this.api = new MediaPlanningAPI(this.config);
-    
+
     // State
     this.server = null;
     this.mcpTools = null;
     this.initialized = false;
-    
+
     this.setupEventListeners();
   }
 
@@ -48,7 +48,9 @@ class AgenticMarketingServer {
     });
 
     this.flowNexusSDK.on('swarm:initialized', (data) => {
-      console.log(chalk.cyan(`🐝 Swarm initialized: ${data.swarmId} (${data.agents.length} agents)`));
+      console.log(
+        chalk.cyan(`🐝 Swarm initialized: ${data.swarmId} (${data.agents.length} agents)`)
+      );
     });
 
     this.flowNexusSDK.on('workflows:created', (data) => {
@@ -137,9 +139,9 @@ class AgenticMarketingServer {
           const email = process.env.AUTO_AUTH_EMAIL;
           const password = process.env.AUTO_AUTH_PASSWORD;
           const action = process.env.AUTO_AUTH_ACTION || 'login';
-          
+
           console.log(chalk.yellow(`Attempting ${action} for: ${email}`));
-          
+
           if (action === 'register') {
             await this.flowNexusSDK.register(email, password, 'Test User');
             console.log(chalk.green('✅ Non-interactive registration successful!'));
@@ -147,14 +149,14 @@ class AgenticMarketingServer {
             await this.flowNexusSDK.login(email, password);
             console.log(chalk.green('✅ Non-interactive login successful!'));
           }
-          
+
           return;
         } catch (error) {
           console.log(chalk.red('Non-interactive authentication failed:', error.message));
           console.log(chalk.yellow('Falling back to other authentication methods...'));
         }
       }
-      
+
       // Check for saved credentials from CLI init
       if (this.authManager.hasCredentialsFile()) {
         console.log(chalk.yellow('🔑 Processing saved credentials...'));
@@ -164,25 +166,29 @@ class AgenticMarketingServer {
           console.log(chalk.red('Failed to process saved credentials:', error.message));
         }
       }
-      
+
       // Restore previous session from database
       else {
         console.log(chalk.yellow('🔄 Checking for previous session...'));
         const systemState = await this.dbManager.getSystemState();
-        
+
         if (systemState.session && systemState.swarms.length > 0) {
           console.log(chalk.cyan('📦 Restoring previous Flow Nexus session...'));
-          
+
           // Set restored state in components
           this.flowNexusSDK.swarmId = systemState.swarms[0]?.swarmId;
-          systemState.agents.forEach(agent => {
+          systemState.agents.forEach((agent) => {
             this.flowNexusSDK.agents.set(agent.id, agent);
           });
-          systemState.workflows.forEach(workflow => {
+          systemState.workflows.forEach((workflow) => {
             this.flowNexusSDK.workflows.set(workflow.name, workflow);
           });
-          
-          console.log(chalk.green(`✅ Restored: ${systemState.swarms.length} swarms, ${systemState.agents.length} agents, ${systemState.workflows.length} workflows`));
+
+          console.log(
+            chalk.green(
+              `✅ Restored: ${systemState.swarms.length} swarms, ${systemState.agents.length} agents, ${systemState.workflows.length} workflows`
+            )
+          );
         }
       }
     } catch (error) {
@@ -215,11 +221,13 @@ class AgenticMarketingServer {
    * Display startup banner
    */
   displayStartupBanner() {
-    console.log(chalk.cyan(`
+    console.log(
+      chalk.cyan(`
 ╔═══════════════════════════════════════════════════════════════╗
 ║     AGENTIC MARKETING - MODULAR ARCHITECTURE v2.0           ║
 ║     Powered by Flow Nexus MCP Integration                    ║
-╚═══════════════════════════════════════════════════════════════╝`));
+╚═══════════════════════════════════════════════════════════════╝`)
+    );
 
     console.log(chalk.green(`\n✅ Server running on port ${this.config.port}`));
     console.log(chalk.yellow(`📊 Dashboard: http://localhost:${this.config.port}`));
@@ -234,7 +242,7 @@ class AgenticMarketingServer {
    */
   displaySystemStatus() {
     console.log(chalk.white('\n📊 System Status:'));
-    
+
     // Authentication status
     if (this.flowNexusSDK.isAuthenticated()) {
       const user = this.flowNexusSDK.getUserInfo();
@@ -256,7 +264,7 @@ class AgenticMarketingServer {
 
     // Database status
     console.log(chalk.green('   🗄️  Database: ✅ Connected'));
-    
+
     // MCP status
     console.log(chalk.green('   🔧 MCP Tools: ✅ Loaded'));
 
@@ -265,18 +273,18 @@ class AgenticMarketingServer {
     console.log(chalk.white('     POST /api/flow-nexus/register'));
     console.log(chalk.white('     POST /api/flow-nexus/login'));
     console.log(chalk.white('     GET  /api/flow-nexus/status'));
-    
+
     console.log(chalk.gray('   Media Planning:'));
     console.log(chalk.white('     POST /api/insertion-orders'));
     console.log(chalk.white('     GET  /api/insertion-orders'));
     console.log(chalk.white('     POST /api/daily-spend'));
-    
+
     console.log(chalk.gray('   Analytics & AI:'));
     console.log(chalk.white('     GET  /api/analytics/performance'));
     console.log(chalk.white('     GET  /api/analytics/pacing'));
     console.log(chalk.white('     POST /api/optimize/campaign'));
     console.log(chalk.white('     POST /api/optimize/budget'));
-    
+
     if (!this.flowNexusSDK.isAuthenticated()) {
       console.log(chalk.yellow('\n💡 Next Steps:'));
       console.log(chalk.white('   1. Visit the dashboard to authenticate with Flow Nexus'));
@@ -293,11 +301,11 @@ class AgenticMarketingServer {
       initialized: this.initialized,
       server: {
         running: !!this.server,
-        port: this.config.port
+        port: this.config.port,
       },
       flowNexus: this.flowNexusSDK ? this.flowNexusSDK.getStatus() : null,
       authentication: this.authManager ? this.authManager.getStatus() : null,
-      database: 'connected'
+      database: 'connected',
     };
   }
 
@@ -306,17 +314,17 @@ class AgenticMarketingServer {
    */
   async shutdown() {
     console.log(chalk.yellow('🛑 Shutting down server...'));
-    
+
     if (this.server) {
       await new Promise((resolve) => {
         this.server.close(resolve);
       });
     }
-    
+
     if (this.api) {
       this.api.close();
     }
-    
+
     console.log(chalk.green('✅ Server shutdown complete'));
   }
 

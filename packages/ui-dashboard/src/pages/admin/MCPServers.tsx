@@ -80,25 +80,25 @@ export function MCPServers() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      <div className="flex h-full items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-500" />
       </div>
     );
   }
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="flex-none flex items-center justify-between mb-6">
+    <div className="flex h-full flex-col">
+      <div className="mb-6 flex flex-none items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">MCP Servers</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Manage Model Context Protocol servers and integrations
           </p>
         </div>
 
         <button
           onClick={() => setShowAddModal(true)}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           + Add Server
         </button>
@@ -106,7 +106,7 @@ export function MCPServers() {
 
       <div className="flex-1 overflow-y-auto">
         {servers.length === 0 ? (
-          <div className="text-center py-12">
+          <div className="py-12 text-center">
             <svg
               className="mx-auto h-12 w-12 text-gray-400"
               fill="none"
@@ -128,17 +128,17 @@ export function MCPServers() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {servers.map((server, index) => (
               <motion.div
                 key={server.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
+                className="overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
               >
                 <div className="p-6">
-                  <div className="flex items-start justify-between mb-4">
+                  <div className="mb-4 flex items-start justify-between">
                     <div className="flex items-center gap-3">
                       <span className="text-3xl">{getServerIcon(server.type)}</span>
                       <div>
@@ -150,7 +150,7 @@ export function MCPServers() {
                     </div>
 
                     <span
-                      className={`px-2 py-1 text-xs font-medium rounded ${getStatusColor(
+                      className={`rounded px-2 py-1 text-xs font-medium ${getStatusColor(
                         server.status
                       )}`}
                     >
@@ -159,33 +159,33 @@ export function MCPServers() {
                   </div>
 
                   {server.url && (
-                    <div className="mb-4 p-2 bg-gray-50 dark:bg-gray-700 rounded text-sm font-mono text-gray-700 dark:text-gray-300 break-all">
+                    <div className="mb-4 break-all rounded bg-gray-50 p-2 font-mono text-sm text-gray-700 dark:bg-gray-700 dark:text-gray-300">
                       {server.url}
                     </div>
                   )}
 
                   {/* Metrics */}
-                  <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+                  <div className="mb-4 grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span className="text-gray-500 dark:text-gray-400 block">Tools</span>
+                      <span className="block text-gray-500 dark:text-gray-400">Tools</span>
                       <div className="font-semibold text-gray-900 dark:text-white">
                         {server.toolCount}
                       </div>
                     </div>
                     <div>
-                      <span className="text-gray-500 dark:text-gray-400 block">Requests</span>
+                      <span className="block text-gray-500 dark:text-gray-400">Requests</span>
                       <div className="font-semibold text-gray-900 dark:text-white">
                         {server.metrics.requestCount.toLocaleString()}
                       </div>
                     </div>
                     <div>
-                      <span className="text-gray-500 dark:text-gray-400 block">Uptime</span>
+                      <span className="block text-gray-500 dark:text-gray-400">Uptime</span>
                       <div className="font-semibold text-gray-900 dark:text-white">
                         {(server.metrics.uptime / 3600).toFixed(1)}h
                       </div>
                     </div>
                     <div>
-                      <span className="text-gray-500 dark:text-gray-400 block">Avg Response</span>
+                      <span className="block text-gray-500 dark:text-gray-400">Avg Response</span>
                       <div className="font-semibold text-gray-900 dark:text-white">
                         {server.metrics.avgResponseTime.toFixed(0)}ms
                       </div>
@@ -195,14 +195,14 @@ export function MCPServers() {
                   {/* Features */}
                   {server.features.length > 0 && (
                     <div className="mb-4">
-                      <span className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2 block">
+                      <span className="mb-2 block text-xs font-medium text-gray-500 dark:text-gray-400">
                         Features
                       </span>
                       <div className="flex flex-wrap gap-2">
                         {server.features.map((feature) => (
                           <span
                             key={feature}
-                            className="px-2 py-1 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded"
+                            className="rounded bg-blue-100 px-2 py-1 text-xs text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                           >
                             {feature}
                           </span>
@@ -215,17 +215,17 @@ export function MCPServers() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleHealthCheck(server.id)}
-                      className="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="flex-1 rounded bg-blue-600 px-3 py-2 text-sm text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       Health Check
                     </button>
                     <button
                       onClick={() => handleDelete(server.id)}
-                      className="px-3 py-2 bg-red-100 hover:bg-red-200 dark:bg-red-900 dark:hover:bg-red-800 text-red-700 dark:text-red-300 text-sm rounded transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+                      className="rounded bg-red-100 px-3 py-2 text-sm text-red-700 transition-colors hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 dark:bg-red-900 dark:text-red-300 dark:hover:bg-red-800"
                       aria-label="Remove server"
                     >
                       <svg
-                        className="w-4 h-4"
+                        className="h-4 w-4"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -242,7 +242,7 @@ export function MCPServers() {
                 </div>
 
                 {server.lastHealthCheck && (
-                  <div className="px-6 py-3 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
+                  <div className="border-t border-gray-200 bg-gray-50 px-6 py-3 text-xs text-gray-500 dark:border-gray-700 dark:bg-gray-700/50 dark:text-gray-400">
                     Last health check: {format(new Date(server.lastHealthCheck), 'PPp')}
                   </div>
                 )}
@@ -259,7 +259,7 @@ export function MCPServers() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
             onClick={() => setShowAddModal(false)}
           >
             <motion.div
@@ -267,22 +267,22 @@ export function MCPServers() {
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4"
+              className="mx-4 w-full max-w-md rounded-lg bg-white p-6 dark:bg-gray-800"
             >
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
                 Add MCP Server
               </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+              <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
                 Configure a new Model Context Protocol server integration.
               </p>
               <div className="flex justify-end gap-3">
                 <button
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors"
+                  className="rounded-lg bg-gray-100 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
                 >
                   Cancel
                 </button>
-                <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                <button className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700">
                   Add Server
                 </button>
               </div>

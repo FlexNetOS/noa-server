@@ -81,7 +81,10 @@ export class CacheMetrics {
     duration: number
   ): void {
     this.collector.incrementCounter('cache_operations_total', { operation, cache, result });
-    this.collector.observeHistogram('cache_operation_duration_seconds', duration, { operation, cache });
+    this.collector.observeHistogram('cache_operation_duration_seconds', duration, {
+      operation,
+      cache,
+    });
   }
 
   /**

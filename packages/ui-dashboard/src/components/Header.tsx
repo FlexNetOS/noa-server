@@ -19,11 +19,11 @@ export function Header({
     <motion.header
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-brand-card border-b border-brand-border px-8 py-6"
+      className="border-b border-brand-border bg-brand-card px-8 py-6"
     >
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-brand-accent mb-1">Claude Suite Dashboard</h1>
+          <h1 className="mb-1 text-3xl font-bold text-brand-accent">Claude Suite Dashboard</h1>
           <p className="text-sm text-brand-muted">
             Real-time MCP Orchestration & Agent Swarm Monitoring
           </p>
@@ -38,10 +38,10 @@ export function Header({
 
           <button
             onClick={onToggleAutoRefresh}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            className={`rounded-lg px-4 py-2 font-medium transition-colors ${
               autoRefresh
-                ? 'bg-brand-success/20 text-brand-success border border-brand-success/30'
-                : 'bg-brand-border text-brand-muted border border-brand-border'
+                ? 'border border-brand-success/30 bg-brand-success/20 text-brand-success'
+                : 'border border-brand-border bg-brand-border text-brand-muted'
             }`}
           >
             Auto-refresh {autoRefresh ? 'ON' : 'OFF'}
@@ -49,7 +49,7 @@ export function Header({
 
           <button
             onClick={onManualRefresh}
-            className="px-4 py-2 bg-brand-accent text-brand-bg rounded-lg font-medium hover:bg-brand-accent/90 transition-colors"
+            className="rounded-lg bg-brand-accent px-4 py-2 font-medium text-brand-bg transition-colors hover:bg-brand-accent/90"
           >
             Refresh Now
           </button>

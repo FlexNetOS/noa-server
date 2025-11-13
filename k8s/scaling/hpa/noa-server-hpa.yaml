@@ -8,8 +8,8 @@ metadata:
     component: autoscaling
     version: v1.0.0
   annotations:
-    description: "Horizontal Pod Autoscaler for Noa Server with custom metrics"
-    maintainer: "devops@noa-server.io"
+    description: 'Horizontal Pod Autoscaler for Noa Server with custom metrics'
+    maintainer: 'devops@noa-server.io'
 spec:
   # Target deployment to scale
   scaleTargetRef:
@@ -18,92 +18,92 @@ spec:
     name: noa-server
 
   # Replica configuration
-  minReplicas: 3  # Minimum for high availability
+  minReplicas: 3 # Minimum for high availability
   maxReplicas: 20 # Maximum to prevent runaway scaling
 
   # Scaling behavior policies
   behavior:
     scaleUp:
-      stabilizationWindowSeconds: 30  # Wait 30s before scaling up
+      stabilizationWindowSeconds: 30 # Wait 30s before scaling up
       policies:
-      # Aggressive scale-up: double pods every 30 seconds when needed
-      - type: Pods
-        value: 4
-        periodSeconds: 30
-      - type: Percent
-        value: 100  # Double the number of pods
-        periodSeconds: 30
-      selectPolicy: Max  # Use the policy that scales up most
+        # Aggressive scale-up: double pods every 30 seconds when needed
+        - type: Pods
+          value: 4
+          periodSeconds: 30
+        - type: Percent
+          value: 100 # Double the number of pods
+          periodSeconds: 30
+      selectPolicy: Max # Use the policy that scales up most
 
     scaleDown:
-      stabilizationWindowSeconds: 300  # Wait 5 minutes before scaling down
+      stabilizationWindowSeconds: 300 # Wait 5 minutes before scaling down
       policies:
-      # Conservative scale-down: reduce by 1 pod or 10% every 5 minutes
-      - type: Pods
-        value: 1
-        periodSeconds: 300
-      - type: Percent
-        value: 10
-        periodSeconds: 300
-      selectPolicy: Min  # Use the policy that scales down least
+        # Conservative scale-down: reduce by 1 pod or 10% every 5 minutes
+        - type: Pods
+          value: 1
+          periodSeconds: 300
+        - type: Percent
+          value: 10
+          periodSeconds: 300
+      selectPolicy: Min # Use the policy that scales down least
 
   # Metrics for autoscaling decisions
   metrics:
-  # CPU-based scaling
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70  # Target 70% CPU utilization
+    # CPU-based scaling
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70 # Target 70% CPU utilization
 
-  # Memory-based scaling
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: 80  # Target 80% memory utilization
+    # Memory-based scaling
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80 # Target 80% memory utilization
 
-  # Custom metrics - Request rate
-  - type: Pods
-    pods:
-      metric:
-        name: http_requests_per_second
-      target:
-        type: AverageValue
-        averageValue: "1000"  # Scale when avg requests > 1000/s per pod
+    # Custom metrics - Request rate
+    - type: Pods
+      pods:
+        metric:
+          name: http_requests_per_second
+        target:
+          type: AverageValue
+          averageValue: '1000' # Scale when avg requests > 1000/s per pod
 
-  # Custom metrics - Response time
-  - type: Pods
-    pods:
-      metric:
-        name: http_request_duration_p95
-      target:
-        type: AverageValue
-        averageValue: "500m"  # Scale when P95 response time > 500ms
+    # Custom metrics - Response time
+    - type: Pods
+      pods:
+        metric:
+          name: http_request_duration_p95
+        target:
+          type: AverageValue
+          averageValue: '500m' # Scale when P95 response time > 500ms
 
-  # Custom metrics - Active connections
-  - type: Pods
-    pods:
-      metric:
-        name: active_connections
-      target:
-        type: AverageValue
-        averageValue: "100"  # Scale when avg connections > 100 per pod
+    # Custom metrics - Active connections
+    - type: Pods
+      pods:
+        metric:
+          name: active_connections
+        target:
+          type: AverageValue
+          averageValue: '100' # Scale when avg connections > 100 per pod
 
-  # Custom metrics - Queue depth
-  - type: Object
-    object:
-      metric:
-        name: queue_depth
-      describedObject:
-        apiVersion: v1
-        kind: Service
-        name: rabbitmq
-      target:
-        type: Value
-        value: "1000"  # Scale when queue depth > 1000
+    # Custom metrics - Queue depth
+    - type: Object
+      object:
+        metric:
+          name: queue_depth
+        describedObject:
+          apiVersion: v1
+          kind: Service
+          name: rabbitmq
+        target:
+          type: Value
+          value: '1000' # Scale when queue depth > 1000
 
 ---
 # ServiceMonitor for Prometheus metrics collection
@@ -119,10 +119,10 @@ spec:
     matchLabels:
       app: noa-server
   endpoints:
-  - port: metrics
-    interval: 15s
-    path: /metrics
-    scheme: http
+    - port: metrics
+      interval: 15s
+      path: /metrics
+      scheme: http
 
 ---
 # PodMonitor for pod-level metrics
@@ -136,8 +136,8 @@ spec:
     matchLabels:
       app: noa-server
   podMetricsEndpoints:
-  - port: metrics
-    interval: 15s
+    - port: metrics
+      interval: 15s
 
 ---
 # PrometheusRule for custom alerting
@@ -148,58 +148,58 @@ metadata:
   namespace: noa-system
 spec:
   groups:
-  - name: noa-server-scaling
-    interval: 30s
-    rules:
-    # Alert when approaching max replicas
-    - alert: NoaServerNearMaxReplicas
-      expr: |
-        kube_horizontalpodautoscaler_status_current_replicas{horizontalpodautoscaler="noa-server-hpa"}
-        >=
-        kube_horizontalpodautoscaler_spec_max_replicas{horizontalpodautoscaler="noa-server-hpa"} * 0.9
-      for: 5m
-      labels:
-        severity: warning
-        component: autoscaling
-      annotations:
-        summary: "Noa Server approaching maximum replicas"
-        description: "HPA is at {{ $value }} replicas (90% of max)"
+    - name: noa-server-scaling
+      interval: 30s
+      rules:
+        # Alert when approaching max replicas
+        - alert: NoaServerNearMaxReplicas
+          expr: |
+            kube_horizontalpodautoscaler_status_current_replicas{horizontalpodautoscaler="noa-server-hpa"}
+            >=
+            kube_horizontalpodautoscaler_spec_max_replicas{horizontalpodautoscaler="noa-server-hpa"} * 0.9
+          for: 5m
+          labels:
+            severity: warning
+            component: autoscaling
+          annotations:
+            summary: 'Noa Server approaching maximum replicas'
+            description: 'HPA is at {{ $value }} replicas (90% of max)'
 
-    # Alert when frequently scaling
-    - alert: NoaServerFrequentScaling
-      expr: |
-        rate(kube_horizontalpodautoscaler_status_current_replicas{horizontalpodautoscaler="noa-server-hpa"}[15m]) > 0.1
-      for: 30m
-      labels:
-        severity: warning
-        component: autoscaling
-      annotations:
-        summary: "Noa Server scaling too frequently"
-        description: "HPA is scaling more than expected, investigate load patterns"
+        # Alert when frequently scaling
+        - alert: NoaServerFrequentScaling
+          expr: |
+            rate(kube_horizontalpodautoscaler_status_current_replicas{horizontalpodautoscaler="noa-server-hpa"}[15m]) > 0.1
+          for: 30m
+          labels:
+            severity: warning
+            component: autoscaling
+          annotations:
+            summary: 'Noa Server scaling too frequently'
+            description: 'HPA is scaling more than expected, investigate load patterns'
 
-    # Alert on high CPU utilization
-    - alert: NoaServerHighCPU
-      expr: |
-        avg(rate(container_cpu_usage_seconds_total{pod=~"noa-server-.*"}[5m])) > 0.85
-      for: 10m
-      labels:
-        severity: critical
-        component: resources
-      annotations:
-        summary: "Noa Server high CPU usage"
-        description: "Average CPU usage is {{ $value | humanizePercentage }}"
+        # Alert on high CPU utilization
+        - alert: NoaServerHighCPU
+          expr: |
+            avg(rate(container_cpu_usage_seconds_total{pod=~"noa-server-.*"}[5m])) > 0.85
+          for: 10m
+          labels:
+            severity: critical
+            component: resources
+          annotations:
+            summary: 'Noa Server high CPU usage'
+            description: 'Average CPU usage is {{ $value | humanizePercentage }}'
 
-    # Alert on high memory utilization
-    - alert: NoaServerHighMemory
-      expr: |
-        avg(container_memory_usage_bytes{pod=~"noa-server-.*"} / container_spec_memory_limit_bytes{pod=~"noa-server-.*"}) > 0.9
-      for: 10m
-      labels:
-        severity: critical
-        component: resources
-      annotations:
-        summary: "Noa Server high memory usage"
-        description: "Average memory usage is {{ $value | humanizePercentage }}"
+        # Alert on high memory utilization
+        - alert: NoaServerHighMemory
+          expr: |
+            avg(container_memory_usage_bytes{pod=~"noa-server-.*"} / container_spec_memory_limit_bytes{pod=~"noa-server-.*"}) > 0.9
+          for: 10m
+          labels:
+            severity: critical
+            component: resources
+          annotations:
+            summary: 'Noa Server high memory usage'
+            description: 'Average memory usage is {{ $value | humanizePercentage }}'
 
 ---
 # ConfigMap for HPA configuration
@@ -210,17 +210,17 @@ metadata:
   namespace: noa-system
 data:
   # Scaling thresholds
-  cpu-threshold: "70"
-  memory-threshold: "80"
-  request-rate-threshold: "1000"
-  response-time-threshold: "500"
+  cpu-threshold: '70'
+  memory-threshold: '80'
+  request-rate-threshold: '1000'
+  response-time-threshold: '500'
 
   # Scaling behavior
-  scale-up-stabilization: "30"
-  scale-down-stabilization: "300"
-  scale-up-percent: "100"
-  scale-down-percent: "10"
+  scale-up-stabilization: '30'
+  scale-down-stabilization: '300'
+  scale-up-percent: '100'
+  scale-down-percent: '10'
 
   # Replica limits
-  min-replicas: "3"
-  max-replicas: "20"
+  min-replicas: '3'
+  max-replicas: '20'

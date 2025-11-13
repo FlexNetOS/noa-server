@@ -1,11 +1,15 @@
 # ADR 001: Monorepo Structure
 
 ## Status
+
 Accepted
 
 ## Context
 
-Noa Server consists of multiple related packages (core, API, llama.cpp integration, web interface, MCP servers) that need to be developed and deployed together. We need to decide on the repository structure and package management strategy.
+Noa Server consists of multiple related packages (core, API, llama.cpp
+integration, web interface, MCP servers) that need to be developed and deployed
+together. We need to decide on the repository structure and package management
+strategy.
 
 ### Options Considered
 
@@ -29,6 +33,7 @@ We will use a **monorepo structure** with npm/pnpm workspaces.
 ### Rationale
 
 **Advantages**:
+
 - Single source of truth for all code
 - Easier refactoring across packages
 - Shared tooling (linting, testing, building)
@@ -37,6 +42,7 @@ We will use a **monorepo structure** with npm/pnpm workspaces.
 - Better code reuse
 
 **Structure**:
+
 ```
 noa-server/
 ├── packages/
@@ -55,15 +61,15 @@ noa-server/
 ```
 
 **Workspace Configuration**:
+
 ```json
 {
-  "workspaces": [
-    "packages/*"
-  ]
+  "workspaces": ["packages/*"]
 }
 ```
 
 **Benefits**:
+
 1. **Developer Experience**: Single `npm install` for all packages
 2. **Code Sharing**: Easy to share code between packages
 3. **Testing**: Run tests across all packages with one command
@@ -100,6 +106,7 @@ noa-server/
 ### Package Structure
 
 Each package follows consistent structure:
+
 ```
 packages/example/
 ├── src/
@@ -114,6 +121,7 @@ packages/example/
 ### Dependency Management
 
 - **Internal Dependencies**: Use workspace protocol
+
   ```json
   {
     "dependencies": {
@@ -128,6 +136,7 @@ packages/example/
 ### Build System
 
 - **Root Scripts**:
+
   ```json
   {
     "scripts": {
@@ -151,11 +160,13 @@ packages/example/
 ### Polyrepo
 
 **Pros**:
+
 - Clear boundaries
 - Independent versioning
 - Smaller repositories
 
 **Cons**:
+
 - Harder to coordinate changes
 - Duplicate tooling
 - Complex dependency management
@@ -166,11 +177,13 @@ packages/example/
 ### Hybrid Approach
 
 **Pros**:
+
 - Core packages together
 - Optional packages separate
 - Flexibility
 
 **Cons**:
+
 - Mixed strategy confusion
 - Still need coordination
 - Partial benefits only
@@ -194,5 +207,6 @@ packages/example/
 ---
 
 **Related ADRs**:
+
 - [ADR 002: TypeScript Adoption](002-typescript-adoption.md)
 - [ADR 003: Microservices Architecture](003-microservices-architecture.md)

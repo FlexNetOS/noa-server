@@ -1,6 +1,7 @@
 # TypeScript API Client
 
-TypeScript client library for the Noa Server API, auto-generated from the OpenAPI specification.
+TypeScript client library for the Noa Server API, auto-generated from the
+OpenAPI specification.
 
 ## Installation
 
@@ -27,12 +28,16 @@ npm link @noa-server/api-client
 ## Quick Start
 
 ```typescript
-import { Configuration, AuthenticationApi, UsersApi } from '@noa-server/api-client';
+import {
+  Configuration,
+  AuthenticationApi,
+  UsersApi,
+} from '@noa-server/api-client';
 
 // Configure API client
 const config = new Configuration({
   basePath: 'https://api.noa-server.io/v1',
-  accessToken: 'YOUR_ACCESS_TOKEN'
+  accessToken: 'YOUR_ACCESS_TOKEN',
 });
 
 // Initialize APIs
@@ -44,7 +49,7 @@ async function login() {
   try {
     const response = await authApi.authLogin({
       email: 'user@example.com',
-      password: 'SecurePass123!'
+      password: 'SecurePass123!',
     });
 
     console.log('Access token:', response.data.data.accessToken);
@@ -185,7 +190,7 @@ await mcpApi.mcpGithub({ operation: 'create_issue', repository: 'owner/repo' });
 ```typescript
 const config = new Configuration({
   basePath: 'https://api.noa-server.io/v1',
-  accessToken: 'YOUR_ACCESS_TOKEN'
+  accessToken: 'YOUR_ACCESS_TOKEN',
 });
 ```
 
@@ -194,7 +199,7 @@ const config = new Configuration({
 ```typescript
 const config = new Configuration({
   basePath: 'https://api.noa-server.io/v1',
-  apiKey: 'noa_sk_live_abc123xyz789'
+  apiKey: 'noa_sk_live_abc123xyz789',
 });
 ```
 
@@ -206,16 +211,16 @@ import axios from 'axios';
 const axiosInstance = axios.create({
   headers: {
     'X-Client-ID': 'my-app',
-    'X-Client-Version': '1.0.0'
-  }
+    'X-Client-Version': '1.0.0',
+  },
 });
 
 const config = new Configuration({
   basePath: 'https://api.noa-server.io/v1',
   accessToken: 'YOUR_ACCESS_TOKEN',
   baseOptions: {
-    httpsAgent: axiosInstance
-  }
+    httpsAgent: axiosInstance,
+  },
 });
 ```
 
@@ -234,7 +239,7 @@ try {
       status: error.response?.status,
       error: apiError?.error,
       message: apiError?.message,
-      details: apiError?.details
+      details: apiError?.details,
     });
 
     // Handle specific errors
@@ -243,7 +248,10 @@ try {
         console.error('Unauthorized - check credentials');
         break;
       case 429:
-        console.error('Rate limited - retry after:', apiError?.details?.retryAfter);
+        console.error(
+          'Rate limited - retry after:',
+          apiError?.details?.retryAfter
+        );
         break;
       default:
         console.error('Unexpected error');
@@ -276,7 +284,7 @@ class TokenManager {
 
     const authApi = new AuthenticationApi();
     const response = await authApi.authRefresh({
-      refreshToken: this.refreshToken
+      refreshToken: this.refreshToken,
     });
 
     this.accessToken = response.data.data.accessToken;
@@ -288,7 +296,7 @@ class TokenManager {
   getConfig(): Configuration {
     return new Configuration({
       basePath: 'https://api.noa-server.io/v1',
-      accessToken: this.accessToken || undefined
+      accessToken: this.accessToken || undefined,
     });
   }
 }

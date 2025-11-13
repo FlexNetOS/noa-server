@@ -7,7 +7,7 @@ import {
   EmbeddingRequest,
   EmbeddingResponse,
   ModelInfo,
-  ProviderConfig
+  ProviderConfig,
 } from '@noa/ai-provider';
 
 class AIService {
@@ -17,12 +17,16 @@ class AIService {
     this.factory = ProviderFactory.getInstance();
   }
 
-  async createChatCompletion(messages: Message[], model: string, config?: GenerationConfig): Promise<GenerationResponse> {
+  async createChatCompletion(
+    messages: Message[],
+    model: string,
+    config?: GenerationConfig
+  ): Promise<GenerationResponse> {
     // For simplicity, assume using OpenAI as default. In production, this could be configurable.
     const providerConfig: ProviderConfig = {
       type: ProviderType.OPENAI,
       apiKey: process.env.OPENAI_API_KEY,
-      defaultModel: model
+      defaultModel: model,
     };
 
     const provider = this.factory.createProvider(providerConfig);
@@ -33,7 +37,7 @@ class AIService {
     const providerConfig: ProviderConfig = {
       type: ProviderType.OPENAI,
       apiKey: process.env.OPENAI_API_KEY,
-      defaultModel: model
+      defaultModel: model,
     };
 
     const provider = this.factory.createProvider(providerConfig);
@@ -80,7 +84,7 @@ class AIService {
       }
     }
 
-    const overallStatus = Object.values(health).some(h => h) ? 'healthy' : 'unhealthy';
+    const overallStatus = Object.values(health).some((h) => h) ? 'healthy' : 'unhealthy';
     return { status: overallStatus, providers: health };
   }
 
@@ -92,7 +96,7 @@ class AIService {
       status[provider.getProviderName()] = {
         type: provider.getProviderType(),
         config: provider.getConfig(),
-        defaultModel: provider.getDefaultModel()
+        defaultModel: provider.getDefaultModel(),
       };
     }
 

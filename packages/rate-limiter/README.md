@@ -22,7 +22,7 @@ Advanced distributed rate limiting with multiple algorithms and abuse detection.
   - Dynamic threshold adjustment
 
 - **Standards Compliant**
-  - Rate limit headers (X-RateLimit-*)
+  - Rate limit headers (X-RateLimit-\*)
   - RFC 6585 (429 Too Many Requests)
   - Retry-After header
 
@@ -92,25 +92,30 @@ import { ExpressRateLimiter } from '@noa/rate-limiter/middleware';
 const app = express();
 
 // Apply globally
-app.use(ExpressRateLimiter({
-  rateLimiter: rateLimiter,
-  keyGenerator: (req) => req.ip,
-  skip: (req) => req.path === '/health',
-  onLimitReached: (req, res) => {
-    res.status(429).json({
-      error: 'Too many requests',
-      retryAfter: res.getHeader('Retry-After'),
-    });
-  },
-}));
+app.use(
+  ExpressRateLimiter({
+    rateLimiter: rateLimiter,
+    keyGenerator: (req) => req.ip,
+    skip: (req) => req.path === '/health',
+    onLimitReached: (req, res) => {
+      res.status(429).json({
+        error: 'Too many requests',
+        retryAfter: res.getHeader('Retry-After'),
+      });
+    },
+  })
+);
 
 // Apply to specific routes
-app.use('/api/', ExpressRateLimiter({
-  rateLimiter: rateLimiter,
-  keyGenerator: (req) => req.user?.id || req.ip,
-  points: 60,
-  duration: 60,
-}));
+app.use(
+  '/api/',
+  ExpressRateLimiter({
+    rateLimiter: rateLimiter,
+    keyGenerator: (req) => req.user?.id || req.ip,
+    points: 60,
+    duration: 60,
+  })
+);
 ```
 
 ### Fastify
@@ -173,6 +178,7 @@ const limiter = new RateLimiter({
 ```
 
 **How it works:**
+
 - Tokens are added to bucket at fixed rate
 - Each request consumes 1 token
 - Burst allowed up to bucket capacity
@@ -195,6 +201,7 @@ const limiter = new RateLimiter({
 ```
 
 **How it works:**
+
 - Tracks requests in rolling time window
 - More accurate than fixed window
 - Prevents edge case exploits
@@ -217,6 +224,7 @@ const limiter = new RateLimiter({
 ```
 
 **How it works:**
+
 - Counts requests in fixed time windows
 - Resets at window boundary
 - Low memory usage
@@ -239,6 +247,7 @@ const limiter = new RateLimiter({
 ```
 
 **How it works:**
+
 - Requests added to queue (bucket)
 - Processed at constant rate (leak)
 - Smooths traffic automatically
@@ -404,7 +413,10 @@ const stats = rateLimiter.getStatistics();
 console.log('Total requests:', stats.totalRequests);
 console.log('Allowed:', stats.allowedRequests);
 console.log('Blocked:', stats.blockedRequests);
-console.log('Block rate:', (stats.blockedRequests / stats.totalRequests * 100).toFixed(2) + '%');
+console.log(
+  'Block rate:',
+  ((stats.blockedRequests / stats.totalRequests) * 100).toFixed(2) + '%'
+);
 console.log('Violations:', stats.violations);
 console.log('Blacklisted keys:', stats.blacklistedKeys);
 console.log('Whitelisted keys:', stats.whitelistedKeys);

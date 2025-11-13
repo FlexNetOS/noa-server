@@ -1,12 +1,14 @@
 # AI Assistant (Seraphina) - Chat Integration
 
-Queen Seraphina is Flow Nexus's intelligent AI assistant that provides guidance, wisdom, and orchestrates the platform's 140+ tools through natural conversation.
+Queen Seraphina is Flow Nexus's intelligent AI assistant that provides guidance,
+wisdom, and orchestrates the platform's 140+ tools through natural conversation.
 
 ## Overview
 
 Queen Seraphina offers:
+
 - **Direct Tool Execution**: 4 core functions with immediate action
-- **Natural Language Interface**: Keyword-triggered automated responses  
+- **Natural Language Interface**: Keyword-triggered automated responses
 - **Smart Defaults**: Minimal input required for complex operations
 - **Credit Management**: Real-time balance tracking and optimization
 
@@ -15,9 +17,10 @@ Queen Seraphina offers:
 Based on actual testing, Seraphina has these verified functions:
 
 ### 1. Swarm Orchestration
+
 ```javascript
 const response = await mcp_flow_nexus_seraphina_chat({
-  message: "create swarm for data processing with mesh topology"
+  message: 'create swarm for data processing with mesh topology',
 });
 
 // Seraphina automatically:
@@ -27,9 +30,10 @@ const response = await mcp_flow_nexus_seraphina_chat({
 ```
 
 ### 2. Sandbox Deployment
+
 ```javascript
 const response = await mcp_flow_nexus_seraphina_chat({
-  message: "deploy this code to a Python sandbox"
+  message: 'deploy this code to a Python sandbox',
 });
 
 // Triggers: deploy_to_sandbox function
@@ -37,9 +41,10 @@ const response = await mcp_flow_nexus_seraphina_chat({
 ```
 
 ### 3. Performance Analysis
+
 ```javascript
 const response = await mcp_flow_nexus_seraphina_chat({
-  message: "analyze performance of my neural network"
+  message: 'analyze performance of my neural network',
 });
 
 // Executes: analyze_performance function
@@ -47,9 +52,10 @@ const response = await mcp_flow_nexus_seraphina_chat({
 ```
 
 ### 4. Credit Management
+
 ```javascript
 const response = await mcp_flow_nexus_seraphina_chat({
-  message: "check my credit balance"
+  message: 'check my credit balance',
 });
 
 // Real response includes:
@@ -60,12 +66,12 @@ const response = await mcp_flow_nexus_seraphina_chat({
 
 Seraphina responds to specific keywords with immediate tool execution:
 
-| Keywords | Action | Function Called |
-|----------|--------|----------------|
-| "sandbox", "test", "deploy" | Creates development environment | `deploy_to_sandbox` |
-| "swarm", "spawn", "agents" | Orchestrates agent swarms | `orchestrate_swarm` |
-| "balance", "credits", "rUv" | Checks credit balance | `query_credits` |
-| "analytics", "metrics", "performance" | Runs analysis | `analyze_performance` |
+| Keywords                              | Action                          | Function Called       |
+| ------------------------------------- | ------------------------------- | --------------------- |
+| "sandbox", "test", "deploy"           | Creates development environment | `deploy_to_sandbox`   |
+| "swarm", "spawn", "agents"            | Orchestrates agent swarms       | `orchestrate_swarm`   |
+| "balance", "credits", "rUv"           | Checks credit balance           | `query_credits`       |
+| "analytics", "metrics", "performance" | Runs analysis                   | `analyze_performance` |
 
 ## Basic Chat Usage
 
@@ -73,7 +79,8 @@ Seraphina responds to specific keywords with immediate tool execution:
 
 ```javascript
 const response = await mcp_flow_nexus_seraphina_chat({
-  message: "I'm documenting the Flow Nexus SDK. Can you tell me about your capabilities?"
+  message:
+    "I'm documenting the Flow Nexus SDK. Can you tell me about your capabilities?",
 });
 
 console.log(response);
@@ -86,32 +93,35 @@ console.log(response);
 ```javascript
 const conversation = [
   {
-    role: "user",
-    content: "I need help with neural network training"
+    role: 'user',
+    content: 'I need help with neural network training',
   },
   {
-    role: "assistant", 
-    content: "I can help orchestrate training workflows..."
-  }
+    role: 'assistant',
+    content: 'I can help orchestrate training workflows...',
+  },
 ];
 
 const response = await mcp_flow_nexus_seraphina_chat({
-  message: "Set up a distributed training environment",
-  conversation_history: conversation
+  message: 'Set up a distributed training environment',
+  conversation_history: conversation,
 });
 ```
 
 ## Tool Execution Parameters
 
-**Note**: Testing revealed that `enable_tools` parameter doesn't exist. Seraphina has direct access to her 4 core functions and executes them based on natural language triggers.
+**Note**: Testing revealed that `enable_tools` parameter doesn't exist.
+Seraphina has direct access to her 4 core functions and executes them based on
+natural language triggers.
 
 ### Strategic Planning Sessions
 
 ```javascript
 const planningSession = await mcp_flow_nexus_seraphina_chat({
-  message: "I need to build a real-time analytics platform. Help me plan the architecture and implementation strategy.",
+  message:
+    'I need to build a real-time analytics platform. Help me plan the architecture and implementation strategy.',
   conversation_history: [],
-  enable_tools: true
+  enable_tools: true,
 });
 
 console.log(planningSession.reply);
@@ -143,18 +153,21 @@ console.log(planningSession.reply);
 ## Use Cases
 
 ### Technical Guidance
+
 - Architecture decisions
 - Technology stack recommendations
 - Performance optimization strategies
 - Security best practices
 
 ### Project Management
+
 - Task breakdown and planning
 - Resource allocation advice
 - Timeline estimation
 - Risk assessment
 
 ### Code Review and Analysis
+
 - Code quality assessment
 - Refactoring suggestions
 - Bug detection strategies
@@ -175,8 +188,8 @@ console.log(planningSession.reply);
 ```javascript
 // Get advice and automatically implement
 const advice = await mcp_flow_nexus_seraphina_chat({
-  message: "Set up a swarm for processing customer feedback analysis",
-  enable_tools: true
+  message: 'Set up a swarm for processing customer feedback analysis',
+  enable_tools: true,
 });
 
 // Seraphina may automatically:
@@ -189,18 +202,19 @@ const advice = await mcp_flow_nexus_seraphina_chat({
 
 ```javascript
 const mlGuidance = await mcp_flow_nexus_seraphina_chat({
-  message: "I have 10,000 customer reviews. What's the best approach for sentiment analysis?",
-  enable_tools: false // Get guidance first
+  message:
+    "I have 10,000 customer reviews. What's the best approach for sentiment analysis?",
+  enable_tools: false, // Get guidance first
 });
 
 // Follow up with implementation request
 const implementation = await mcp_flow_nexus_seraphina_chat({
-  message: "Please implement the recommended approach",
+  message: 'Please implement the recommended approach',
   enable_tools: true,
   conversation_history: [
-    { role: "user", content: "I have 10,000 customer reviews..." },
-    { role: "assistant", content: mlGuidance.reply }
-  ]
+    { role: 'user', content: 'I have 10,000 customer reviews...' },
+    { role: 'assistant', content: mlGuidance.reply },
+  ],
 });
 ```
 
@@ -211,4 +225,5 @@ const implementation = await mcp_flow_nexus_seraphina_chat({
 - All actions are logged and auditable
 - Sensitive information handling follows platform security policies
 
-Queen Seraphina combines deep technical knowledge with practical wisdom to accelerate your Flow Nexus development journey.
+Queen Seraphina combines deep technical knowledge with practical wisdom to
+accelerate your Flow Nexus development journey.

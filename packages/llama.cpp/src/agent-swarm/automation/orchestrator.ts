@@ -73,7 +73,7 @@ export class AutomationOrchestrator {
       failFast: false,
       enableHooks: true,
       enableValidation: true,
-      enableSwarm: true
+      enableSwarm: true,
     };
 
     return { ...defaultConfig, ...config };
@@ -167,7 +167,6 @@ export class AutomationOrchestrator {
         console.log('Integration completed with issues');
         console.log('⚠️ '.repeat(15) + '\n');
       }
-
     } catch (error) {
       console.error('\n❌ CRITICAL ERROR during integration:', error);
 
@@ -176,7 +175,7 @@ export class AutomationOrchestrator {
         agentName: agentInfo.name,
         totalDuration: Date.now() - startTime,
         timestamp: new Date(),
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       });
     }
   }
@@ -206,7 +205,7 @@ export class AutomationOrchestrator {
             preHookResult,
             totalDuration: Date.now() - startTime,
             timestamp: new Date(),
-            error: 'Pre-integration hook failed - cannot proceed'
+            error: 'Pre-integration hook failed - cannot proceed',
           };
         }
       }
@@ -262,9 +261,8 @@ export class AutomationOrchestrator {
         validationResult,
         postHookResult,
         totalDuration: Date.now() - startTime,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
-
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
 
@@ -280,7 +278,7 @@ export class AutomationOrchestrator {
         postHookResult,
         totalDuration: Date.now() - startTime,
         timestamp: new Date(),
-        error: errorMessage
+        error: errorMessage,
       };
     }
   }
@@ -327,24 +325,20 @@ export class AutomationOrchestrator {
     averageDuration: number;
     recentIntegrations: OrchestrationResult[];
   } {
-    const successful = this.integrationHistory.filter(r => r.success).length;
-    const failed = this.integrationHistory.filter(r => !r.success).length;
+    const successful = this.integrationHistory.filter((r) => r.success).length;
+    const failed = this.integrationHistory.filter((r) => !r.success).length;
 
-    const totalDuration = this.integrationHistory.reduce(
-      (sum, r) => sum + r.totalDuration,
-      0
-    );
+    const totalDuration = this.integrationHistory.reduce((sum, r) => sum + r.totalDuration, 0);
 
-    const averageDuration = this.integrationHistory.length > 0
-      ? totalDuration / this.integrationHistory.length
-      : 0;
+    const averageDuration =
+      this.integrationHistory.length > 0 ? totalDuration / this.integrationHistory.length : 0;
 
     return {
       totalIntegrations: this.integrationHistory.length,
       successful,
       failed,
       averageDuration,
-      recentIntegrations: this.integrationHistory.slice(-10)
+      recentIntegrations: this.integrationHistory.slice(-10),
     };
   }
 
@@ -363,7 +357,7 @@ export class AutomationOrchestrator {
       config: this.config,
       triggerStatus: this.trigger.getStatus(),
       activeSwarms: this.swarmInitializer.getActiveSessions().length,
-      statistics: this.getStatistics()
+      statistics: this.getStatistics(),
     };
   }
 
@@ -380,7 +374,9 @@ export class AutomationOrchestrator {
    */
   setAutoTrigger(autoTrigger: boolean): void {
     this.config.autoTrigger = autoTrigger;
-    console.log(`\n${autoTrigger ? '✅' : '⚠️'} Auto-trigger ${autoTrigger ? 'enabled' : 'disabled'}`);
+    console.log(
+      `\n${autoTrigger ? '✅' : '⚠️'} Auto-trigger ${autoTrigger ? 'enabled' : 'disabled'}`
+    );
   }
 
   /**
@@ -399,7 +395,7 @@ export class AutomationOrchestrator {
       generated: new Date().toISOString(),
       statistics: this.getStatistics(),
       status: this.getStatus(),
-      history: this.integrationHistory
+      history: this.integrationHistory,
     };
 
     const reportJson = JSON.stringify(report, null, 2);

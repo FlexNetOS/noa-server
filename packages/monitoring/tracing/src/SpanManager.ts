@@ -103,11 +103,7 @@ export class SpanManager {
   /**
    * Execute a synchronous function within a span context
    */
-  public withSpanSync<T>(
-    name: string,
-    fn: (span: Span) => T,
-    options?: SpanOptions
-  ): T {
+  public withSpanSync<T>(name: string, fn: (span: Span) => T, options?: SpanOptions): T {
     const span = this.startSpan(name, options);
 
     try {

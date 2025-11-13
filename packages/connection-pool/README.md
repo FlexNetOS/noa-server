@@ -1,6 +1,7 @@
 # @noa/connection-pool
 
-Advanced multi-database connection pooling with health checks, load balancing, and adaptive sizing.
+Advanced multi-database connection pooling with health checks, load balancing,
+and adaptive sizing.
 
 ## Features
 
@@ -91,9 +92,7 @@ const poolManager = new ConnectionPoolManager({
         port: 6379,
         db: 0,
       },
-      replicas: [
-        { host: 'replica1.redis.local', port: 6379, db: 0 },
-      ],
+      replicas: [{ host: 'replica1.redis.local', port: 6379, db: 0 }],
     },
   },
   healthCheck: {
@@ -263,10 +262,9 @@ class UserRepository {
   async getUserById(id: string) {
     const client = await this.poolManager.getPostgresConnection(false);
     try {
-      const result = await client.query(
-        'SELECT * FROM users WHERE id = $1',
-        [id]
-      );
+      const result = await client.query('SELECT * FROM users WHERE id = $1', [
+        id,
+      ]);
       return result.rows[0];
     } finally {
       this.poolManager.releasePostgresConnection(client);
@@ -277,7 +275,8 @@ class UserRepository {
 
 ## Load Balancing
 
-The connection pool manager automatically load balances read requests across replicas using round-robin:
+The connection pool manager automatically load balances read requests across
+replicas using round-robin:
 
 ```typescript
 // Request 1: replica1
@@ -307,7 +306,7 @@ for (const result of results) {
 
 // Automatic health checks (configured via healthCheck.interval)
 poolManager.on('health-check-completed', (results) => {
-  const unhealthy = results.filter(r => !r.healthy);
+  const unhealthy = results.filter((r) => !r.healthy);
   if (unhealthy.length > 0) {
     console.log('Unhealthy databases:', unhealthy);
   }
@@ -403,7 +402,7 @@ app.get('/metrics', async (req, res) => {
 
 1. **Set Appropriate Pool Sizes**
    - Min: 2-5 connections for most applications
-   - Max: CPU cores * 2-4 for CPU-bound
+   - Max: CPU cores \* 2-4 for CPU-bound
    - Max: Higher for I/O-bound operations
    - Monitor and adjust based on metrics
 
@@ -470,10 +469,7 @@ async function batchInsert(records: any[]) {
     await client.query('BEGIN');
 
     for (const record of records) {
-      await client.query(
-        'INSERT INTO records (data) VALUES ($1)',
-        [record]
-      );
+      await client.query('INSERT INTO records (data) VALUES ($1)', [record]);
     }
 
     await client.query('COMMIT');

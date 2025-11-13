@@ -47,9 +47,7 @@
       "description": "Enable gzip/brotli compression for HTTP responses",
       "expected_impact": "70% payload size reduction",
       "estimated_effort": "1 hour",
-      "target_files": [
-        "packages/*/src/server.ts"
-      ]
+      "target_files": ["packages/*/src/server.ts"]
     },
     {
       "id": "opt-002",
@@ -58,9 +56,7 @@
       "description": "Optimize database connection pool settings",
       "expected_impact": "40% faster query execution",
       "estimated_effort": "2 hours",
-      "target_files": [
-        "packages/database-optimizer/src/pool.ts"
-      ]
+      "target_files": ["packages/database-optimizer/src/pool.ts"]
     },
     {
       "id": "opt-003",
@@ -69,9 +65,7 @@
       "description": "Implement response caching for static/read-only endpoints",
       "expected_impact": "90% reduction in repeated request time",
       "estimated_effort": "3 hours",
-      "target_files": [
-        "packages/cache-manager/src/strategies.ts"
-      ]
+      "target_files": ["packages/cache-manager/src/strategies.ts"]
     },
     {
       "id": "opt-004",
@@ -80,9 +74,7 @@
       "description": "Add database indexes on frequently queried columns",
       "expected_impact": "10x faster queries",
       "estimated_effort": "2 hours",
-      "target_files": [
-        "packages/*/migrations/*.sql"
-      ]
+      "target_files": ["packages/*/migrations/*.sql"]
     },
     {
       "id": "opt-005",
@@ -91,10 +83,7 @@
       "description": "Enable tree-shaking and code splitting",
       "expected_impact": "50% faster cold start",
       "estimated_effort": "4 hours",
-      "target_files": [
-        "webpack.config.js",
-        "tsconfig.json"
-      ]
+      "target_files": ["webpack.config.js", "tsconfig.json"]
     }
   ],
   "metrics": {

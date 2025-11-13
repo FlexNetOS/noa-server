@@ -19,15 +19,16 @@ Learn how agent swarms work in Noa Server and how to use them effectively.
 
 ## Introduction to Agent Swarms
 
-A swarm is a group of AI agents working together to solve complex problems. Think of it like a software development team where each member has specific expertise.
+A swarm is a group of AI agents working together to solve complex problems.
+Think of it like a software development team where each member has specific
+expertise.
 
 ### Key Concepts
 
-**Agent**: Specialized AI worker (e.g., coder, tester, reviewer)
-**Swarm**: Coordinated group of agents
-**Topology**: How agents are connected
-**Coordinator**: Agent managing the swarm
-**Memory**: Shared context for coordination
+**Agent**: Specialized AI worker (e.g., coder, tester, reviewer) **Swarm**:
+Coordinated group of agents **Topology**: How agents are connected
+**Coordinator**: Agent managing the swarm **Memory**: Shared context for
+coordination
 
 ## Part 1: Understanding Topologies
 
@@ -46,18 +47,21 @@ graph LR
 ```
 
 **Characteristics**:
+
 - Direct peer-to-peer communication
 - High fault tolerance
 - Best for collaboration
 - Higher communication overhead
 
 **When to Use**:
+
 - Code review sessions (3-5 agents)
 - Design brainstorming
 - Pair programming
 - Small team collaboration
 
 **Create Mesh Swarm**:
+
 ```bash
 npx claude-flow@alpha swarm init \
   --topology mesh \
@@ -67,6 +71,7 @@ npx claude-flow@alpha swarm init \
 ```
 
 **Example Use Case**: Code Review
+
 ```bash
 # Three agents review code together
 # - Coder explains changes
@@ -90,18 +95,21 @@ graph TD
 ```
 
 **Characteristics**:
+
 - Structured organization
 - Efficient for large teams
 - Clear chain of command
 - Lower communication overhead
 
 **When to Use**:
+
 - Large projects (10+ agents)
 - Enterprise workflows
 - Multi-team coordination
 - Clear role separation
 
 **Create Hierarchical Swarm**:
+
 ```bash
 npx claude-flow@alpha swarm init \
   --topology hierarchical \
@@ -112,6 +120,7 @@ npx claude-flow@alpha swarm init \
 ```
 
 **Example Use Case**: Full Application Build
+
 ```bash
 # Root Coordinator oversees:
 # - Backend Team (API, Database, Services)
@@ -135,18 +144,21 @@ graph TB
 ```
 
 **Characteristics**:
+
 - Self-optimizing
 - Resource efficient
 - Adapts to complexity
 - Smart coordination
 
 **When to Use**:
+
 - Variable workloads
 - Production environments
 - Auto-scaling systems
 - Unknown task complexity
 
 **Create Adaptive Swarm**:
+
 ```bash
 npx claude-flow@alpha swarm init \
   --topology adaptive \
@@ -158,6 +170,7 @@ npx claude-flow@alpha swarm init \
 ```
 
 **Example Use Case**: CI/CD Pipeline
+
 ```bash
 # Adapts based on:
 # - Single file change → Star (1 coordinator + workers)
@@ -235,6 +248,7 @@ npx claude-flow@alpha hooks post-task \
 Multiple agents reach agreement:
 
 **Byzantine Consensus**:
+
 ```bash
 # For critical decisions requiring fault tolerance
 npx claude-flow@alpha consensus byzantine \
@@ -244,6 +258,7 @@ npx claude-flow@alpha consensus byzantine \
 ```
 
 **Raft Consensus**:
+
 ```bash
 # For sequential decisions with leader election
 npx claude-flow@alpha consensus raft \
@@ -252,6 +267,7 @@ npx claude-flow@alpha consensus raft \
 ```
 
 **Gossip Protocol**:
+
 ```bash
 # For distributed information sharing
 npx claude-flow@alpha consensus gossip \
@@ -508,6 +524,7 @@ npx claude-flow@alpha metrics swarm \
 ### Optimization Strategies
 
 **1. Topology Optimization**:
+
 ```bash
 # Analyze current topology efficiency
 npx claude-flow@alpha perf analyze \
@@ -521,6 +538,7 @@ npx claude-flow@alpha swarm optimize \
 ```
 
 **2. Load Balancing**:
+
 ```bash
 # Enable intelligent load balancing
 npx claude-flow@alpha swarm configure \
@@ -530,6 +548,7 @@ npx claude-flow@alpha swarm configure \
 ```
 
 **3. Memory Optimization**:
+
 ```bash
 # Clear old memory entries
 npx claude-flow@alpha memory cleanup \
@@ -570,16 +589,19 @@ npx claude-flow@alpha memory cleanup \
 ### Common Patterns
 
 **Pattern 1: Design → Implement → Review**
+
 ```bash
 Architect → [Parallel Implementers] → Reviewer
 ```
 
 **Pattern 2: Parallel Teams**
+
 ```bash
 Coordinator → Backend Team | Frontend Team | QA Team
 ```
 
 **Pattern 3: Iterative Refinement**
+
 ```bash
 Coder → Reviewer → Coder → Reviewer → ... (until approved)
 ```
@@ -588,7 +610,8 @@ Coder → Reviewer → Coder → Reviewer → ... (until approved)
 
 - Try [MCP Tools Usage](mcp-tools-usage.md) to leverage MCP capabilities
 - Explore [Custom Agent Development](../../developer/examples/custom-agent.md)
-- Read [Architecture Overview](../../architecture/ARCHITECTURE_OVERVIEW.md) for technical depth
+- Read [Architecture Overview](../../architecture/ARCHITECTURE_OVERVIEW.md) for
+  technical depth
 
 ## Further Reading
 
@@ -598,4 +621,5 @@ Coder → Reviewer → Coder → Reviewer → ... (until approved)
 
 ---
 
-**Questions?** Check the [FAQ](../FAQ.md) or ask in [GitHub Discussions](https://github.com/your-org/noa-server/discussions).
+**Questions?** Check the [FAQ](../FAQ.md) or ask in
+[GitHub Discussions](https://github.com/your-org/noa-server/discussions).

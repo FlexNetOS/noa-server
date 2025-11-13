@@ -1,16 +1,21 @@
 # Phase 1: Comprehensive Codebase Analysis Report
 
-**Generated**: 2025-10-23T03:59:54.948Z
-**Repository**: `/home/deflex/noa-server`
-**Analysis Scope**: Full codebase inventory, architecture mapping, duplicate detection, and pattern analysis
+**Generated**: 2025-10-23T03:59:54.948Z **Repository**:
+`/home/deflex/noa-server` **Analysis Scope**: Full codebase inventory,
+architecture mapping, duplicate detection, and pattern analysis
 
 ---
 
 ## Executive Summary
 
-The noa-server repository is a **large-scale monorepo** containing multiple integrated systems for AI agent orchestration, MCP (Model Context Protocol) tooling, llama.cpp integration, and enterprise infrastructure components. The codebase spans **1.4+ million source files** with significant code duplication and architectural complexity across 50+ top-level directories.
+The noa-server repository is a **large-scale monorepo** containing multiple
+integrated systems for AI agent orchestration, MCP (Model Context Protocol)
+tooling, llama.cpp integration, and enterprise infrastructure components. The
+codebase spans **1.4+ million source files** with significant code duplication
+and architectural complexity across 50+ top-level directories.
 
 **Key Findings**:
+
 - 📊 **Total Source Files**: 1,389,572 files (TS/JS/Python/Go)
 - 📝 **Lines of Code**: 454,618 LOC (32,307 TS/JS + 339,109 Python + 83,202 Go)
 - 📦 **Package Managers**: 1,332 package.json files (excluding vendor)
@@ -24,16 +29,17 @@ The noa-server repository is a **large-scale monorepo** containing multiple inte
 
 ### 1.1 Total File Counts by Type
 
-| File Type | Count | Lines of Code | Percentage |
-|-----------|-------|---------------|------------|
-| TypeScript/JavaScript | ~32,000 files | 32,307 LOC | 7.1% |
-| Python | ~340,000 files | 339,109 LOC | 74.6% |
-| Go | ~83,000 files | 83,202 LOC | 18.3% |
-| Markdown (docs) | 23,863 files | N/A | Documentation |
-| JSON (config) | 1,332+ files | N/A | Configuration |
-| Docker | 1,831 files | N/A | Infrastructure |
+| File Type             | Count          | Lines of Code | Percentage     |
+| --------------------- | -------------- | ------------- | -------------- |
+| TypeScript/JavaScript | ~32,000 files  | 32,307 LOC    | 7.1%           |
+| Python                | ~340,000 files | 339,109 LOC   | 74.6%          |
+| Go                    | ~83,000 files  | 83,202 LOC    | 18.3%          |
+| Markdown (docs)       | 23,863 files   | N/A           | Documentation  |
+| JSON (config)         | 1,332+ files   | N/A           | Configuration  |
+| Docker                | 1,831 files    | N/A           | Infrastructure |
 
-**Note**: The high Python file count includes vendor dependencies in `agentic-homelab/sandbox-plane/workspaces/` and `noa/` directories.
+**Note**: The high Python file count includes vendor dependencies in
+`agentic-homelab/sandbox-plane/workspaces/` and `noa/` directories.
 
 ### 1.2 Directory Structure Overview
 
@@ -77,6 +83,7 @@ integrations, jest.config.js, k8s, logs, mcp, memory, models, noa, node_modules,
 octelium, opcode, packages, scripts, servers, src, srv, terraform, test-audit-demo,
 tests, tools, vault
 ```
+
 </details>
 
 ---
@@ -85,30 +92,36 @@ tests, tools, vault
 
 ### 2.1 Exact File Duplicates (MD5 Hash Analysis)
 
-**Critical Finding**: Extensive file duplication detected across workspace snapshots and multiple repository copies.
+**Critical Finding**: Extensive file duplication detected across workspace
+snapshots and multiple repository copies.
 
 #### High-Impact Duplicates
 
-| Hash | File Example | Duplicate Count | Location Pattern |
-|------|--------------|-----------------|------------------|
-| `00019ef5a68...` | `kernel/dist/index.js` | 3+ copies | `noa_ark_os/`, `.projects/`, `repos/` |
-| `0005859a091...` | `planner.actions.ts` | 24+ copies | Multiple workspace snapshots |
-| `000aa0ba514...` | `JSONFormatter.ts` | 2 copies | `packages/audit-logger/`, `agentic-homelab/deployed-plane-green/` |
+| Hash             | File Example           | Duplicate Count | Location Pattern                                                  |
+| ---------------- | ---------------------- | --------------- | ----------------------------------------------------------------- |
+| `00019ef5a68...` | `kernel/dist/index.js` | 3+ copies       | `noa_ark_os/`, `.projects/`, `repos/`                             |
+| `0005859a091...` | `planner.actions.ts`   | 24+ copies      | Multiple workspace snapshots                                      |
+| `000aa0ba514...` | `JSONFormatter.ts`     | 2 copies        | `packages/audit-logger/`, `agentic-homelab/deployed-plane-green/` |
 
 **Pattern Analysis**: The duplication primarily stems from:
-1. **Workspace Snapshots**: Multiple copies in `agentic-homelab/sandbox-plane/workspaces/workspace-1/.projects/`
-2. **Repository Mirrors**: Triplication of `noa_ark_os` (original, `repos/`, `.projects/`)
+
+1. **Workspace Snapshots**: Multiple copies in
+   `agentic-homelab/sandbox-plane/workspaces/workspace-1/.projects/`
+2. **Repository Mirrors**: Triplication of `noa_ark_os` (original, `repos/`,
+   `.projects/`)
 3. **Build Artifacts**: Duplicated `dist/` directories across packages
 4. **Vendor Dependencies**: Rust/Go vendor directories with identical files
 
 ### 2.2 Architectural Duplication
 
 **Import/Export Analysis** (packages/ directory):
+
 - **Import Statements**: 958 total occurrences across 331 files
 - **Export Statements**: 1,562 total occurrences across 377 files
 - **Export/Import Ratio**: 1.63:1 (indicates modular design)
 
 **Similar Files Detected**:
+
 - Multiple `server.js` / `server.ts` entry points (30+ files)
 - Duplicated `index.js` / `index.ts` files across packages
 - Similar authentication middleware across services
@@ -117,12 +130,15 @@ tests, tools, vault
 ### 2.3 Duplicate Reduction Opportunities
 
 **Estimated Waste**:
+
 - **Storage**: ~2-3GB of duplicate code and artifacts
 - **Maintenance**: 3-5x effort due to multi-location updates
 - **Build Time**: Redundant compilation of duplicate modules
 
 **Recommendations**:
-1. **Immediate**: Remove workspace snapshots in `agentic-homelab/sandbox-plane/workspaces/workspace-1/.projects/`
+
+1. **Immediate**: Remove workspace snapshots in
+   `agentic-homelab/sandbox-plane/workspaces/workspace-1/.projects/`
 2. **Short-term**: Consolidate `noa_ark_os` repositories (eliminate 2/3 copies)
 3. **Medium-term**: Extract shared utilities to dedicated packages
 4. **Long-term**: Implement monorepo build caching (Turborepo/Nx)
@@ -135,20 +151,21 @@ tests, tools, vault
 
 #### Primary Entry Points
 
-| Entry Point | Type | Purpose | Dependencies |
-|-------------|------|---------|--------------|
-| `package.json` (root) | Monorepo | Workspace orchestration | pnpm, vitest, eslint |
-| `claude-flow/package.json` | NPM Package | AI agent orchestration | @anthropic-ai/sdk, ruv-swarm |
-| `packages/*/package.json` | Microservices | 29 specialized services | Varies by service |
-| `mcp/example_server.py` | MCP Server | Model Context Protocol | Python SDK |
-| `octelium/main.go` | Go Binary | Cluster management | Go 1.21+ |
-| `noa/libs/langgraph/` | Python Package | Graph-based agents | LangChain |
+| Entry Point                | Type           | Purpose                 | Dependencies                 |
+| -------------------------- | -------------- | ----------------------- | ---------------------------- |
+| `package.json` (root)      | Monorepo       | Workspace orchestration | pnpm, vitest, eslint         |
+| `claude-flow/package.json` | NPM Package    | AI agent orchestration  | @anthropic-ai/sdk, ruv-swarm |
+| `packages/*/package.json`  | Microservices  | 29 specialized services | Varies by service            |
+| `mcp/example_server.py`    | MCP Server     | Model Context Protocol  | Python SDK                   |
+| `octelium/main.go`         | Go Binary      | Cluster management      | Go 1.21+                     |
+| `noa/libs/langgraph/`      | Python Package | Graph-based agents      | LangChain                    |
 
 #### Package.json Distribution
 
 **Total**: 1,332 package.json files (excluding vendor)
 
 **Primary Locations**:
+
 - `claude-flow/`: 1 main package
 - `packages/`: 29 microservice packages
 - `agentic-homelab/`: 100+ workspace configs
@@ -158,18 +175,18 @@ tests, tools, vault
 
 #### 29 Packages Breakdown
 
-| Category | Packages | Purpose |
-|----------|----------|---------|
-| **AI/ML** | ai-inference-api, ai-provider, llama.cpp | Model serving, provider abstraction, neural processing |
-| **Authentication** | auth-service | JWT, OAuth, RBAC, MFA |
-| **Data Management** | database-optimizer, database-sharding, connection-pool | DB performance, sharding, pooling |
-| **Compliance** | gdpr-compliance, data-retention, audit-logger | GDPR, retention policies, audit trails |
-| **Orchestration** | agent-swarm, claude-flow-integration, workflow-orchestration | Agent coordination, workflows |
-| **Monitoring** | monitoring (5 sub-packages), alerting | Metrics, tracing, logging, health checks, errors |
-| **Infrastructure** | cdn-manager, cache-manager, rate-limiter, message-queue | CDN, caching, rate limiting, queues |
-| **Security** | secrets-manager | AWS/Azure/GCP/Vault secret management |
-| **UI** | ui-dashboard, contains-studio-dashboard | React dashboards, Next.js studio |
-| **Integration** | mcp-client, feature-flags, microservices | MCP client, feature flags, service mesh |
+| Category            | Packages                                                     | Purpose                                                |
+| ------------------- | ------------------------------------------------------------ | ------------------------------------------------------ |
+| **AI/ML**           | ai-inference-api, ai-provider, llama.cpp                     | Model serving, provider abstraction, neural processing |
+| **Authentication**  | auth-service                                                 | JWT, OAuth, RBAC, MFA                                  |
+| **Data Management** | database-optimizer, database-sharding, connection-pool       | DB performance, sharding, pooling                      |
+| **Compliance**      | gdpr-compliance, data-retention, audit-logger                | GDPR, retention policies, audit trails                 |
+| **Orchestration**   | agent-swarm, claude-flow-integration, workflow-orchestration | Agent coordination, workflows                          |
+| **Monitoring**      | monitoring (5 sub-packages), alerting                        | Metrics, tracing, logging, health checks, errors       |
+| **Infrastructure**  | cdn-manager, cache-manager, rate-limiter, message-queue      | CDN, caching, rate limiting, queues                    |
+| **Security**        | secrets-manager                                              | AWS/Azure/GCP/Vault secret management                  |
+| **UI**              | ui-dashboard, contains-studio-dashboard                      | React dashboards, Next.js studio                       |
+| **Integration**     | mcp-client, feature-flags, microservices                     | MCP client, feature flags, service mesh                |
 
 #### Monitoring Package Structure
 
@@ -205,17 +222,20 @@ monitoring/
 ### 3.4 Technology Stack
 
 #### Languages
+
 - **TypeScript**: 60% of source code (packages/, claude-flow/, src/)
 - **Python**: 35% (mcp/, adapters/, noa/)
 - **Go**: 5% (octelium/, claude-squad/)
 - **Rust**: <1% (vendor dependencies in noa_ark_os/)
 
 #### Frameworks
+
 - **Node.js**: Express, Fastify, Nest.js
 - **Python**: FastAPI, LangChain, LangGraph
 - **Go**: Standard library, gRPC
 
 #### Databases
+
 - **PostgreSQL**: Primary relational DB
 - **Redis**: Caching and queues
 - **SQLite**: Local storage (claude-flow, MCP)
@@ -223,6 +243,7 @@ monitoring/
 - **Sled**: Embedded KV store (Rust)
 
 #### Infrastructure
+
 - **Docker**: 1,831 configuration files
 - **Kubernetes**: 50+ YAML manifests in `k8s/`
 - **Terraform**: Infrastructure as code in `terraform/`
@@ -234,9 +255,11 @@ monitoring/
 ### 4.1 Architectural Patterns Detected
 
 #### 1. Microservices Pattern
+
 **Detected in**: `packages/`, `servers/`
 
 **Characteristics**:
+
 - Service-per-package structure
 - API Gateway pattern (`microservices/api-gateway/`)
 - Service registry (`microservices/service-registry/`)
@@ -245,9 +268,11 @@ monitoring/
 **Consistency**: ✅ Good - Each package follows similar structure
 
 #### 2. MCP Server Pattern
+
 **Detected in**: `mcp/`, `adapters/`, `packages/mcp-client/`
 
 **Characteristics**:
+
 - Stdio/HTTP/WebSocket transports
 - Tool/Resource/Prompt providers
 - LangChain adapter integration
@@ -255,9 +280,12 @@ monitoring/
 **Consistency**: ⚠️ Mixed - Multiple MCP implementations
 
 #### 3. Agent Orchestration Pattern
-**Detected in**: `claude-flow/`, `packages/agent-swarm/`, `packages/claude-flow-integration/`
+
+**Detected in**: `claude-flow/`, `packages/agent-swarm/`,
+`packages/claude-flow-integration/`
 
 **Characteristics**:
+
 - Swarm coordination via `ruv-swarm`
 - Task delegation and result aggregation
 - Memory management (SQLite-based)
@@ -265,9 +293,11 @@ monitoring/
 **Consistency**: ✅ Good - Centralized through claude-flow
 
 #### 4. Monitoring/Observability Pattern
+
 **Detected in**: `packages/monitoring/`, `config/monitoring/`
 
 **Characteristics**:
+
 - Prometheus metrics
 - OpenTelemetry tracing
 - Structured logging (JSON/Logstash)
@@ -279,12 +309,12 @@ monitoring/
 
 #### Inconsistencies Detected
 
-| Pattern | Examples | Recommendation |
-|---------|----------|----------------|
-| **CamelCase vs snake_case** | `CacheManager` vs `cache_manager` | Standardize to camelCase for TS/JS |
-| **File naming** | `server.ts` vs `Server.ts` vs `server.js` | Use kebab-case for files |
-| **Directory naming** | `mcp-client` vs `messageQueue` | Use kebab-case consistently |
-| **Export naming** | `export default` vs `export const` | Prefer named exports |
+| Pattern                     | Examples                                  | Recommendation                     |
+| --------------------------- | ----------------------------------------- | ---------------------------------- |
+| **CamelCase vs snake_case** | `CacheManager` vs `cache_manager`         | Standardize to camelCase for TS/JS |
+| **File naming**             | `server.ts` vs `Server.ts` vs `server.js` | Use kebab-case for files           |
+| **Directory naming**        | `mcp-client` vs `messageQueue`            | Use kebab-case consistently        |
+| **Export naming**           | `export default` vs `export const`        | Prefer named exports               |
 
 **Code Examples**:
 
@@ -322,6 +352,7 @@ import { MessageQueue } from './message-queue';
    - MongoDB connection logic
 
 **Refactoring Opportunity**: Extract to shared packages
+
 - `@noa/auth-middleware`
 - `@noa/health-checks`
 - `@noa/error-handling`
@@ -331,19 +362,21 @@ import { MessageQueue } from './message-queue';
 
 #### External Service Integrations
 
-| Service | Packages Using It | Integration Method |
-|---------|-------------------|-------------------|
-| **Claude API** | 5+ packages | `@anthropic-ai/sdk` |
-| **OpenAI API** | 3+ packages | `openai` package |
-| **Llama.cpp** | 2+ packages | HTTP/gRPC bridge |
-| **PostgreSQL** | 10+ packages | `pg` / `prisma` |
-| **Redis** | 8+ packages | `ioredis` |
-| **Prometheus** | 5+ packages | `prom-client` |
-| **Elasticsearch** | 3+ packages | `@elastic/elasticsearch` |
+| Service           | Packages Using It | Integration Method       |
+| ----------------- | ----------------- | ------------------------ |
+| **Claude API**    | 5+ packages       | `@anthropic-ai/sdk`      |
+| **OpenAI API**    | 3+ packages       | `openai` package         |
+| **Llama.cpp**     | 2+ packages       | HTTP/gRPC bridge         |
+| **PostgreSQL**    | 10+ packages      | `pg` / `prisma`          |
+| **Redis**         | 8+ packages       | `ioredis`                |
+| **Prometheus**    | 5+ packages       | `prom-client`            |
+| **Elasticsearch** | 3+ packages       | `@elastic/elasticsearch` |
 
-**Finding**: Multiple packages implement the same external service clients independently.
+**Finding**: Multiple packages implement the same external service clients
+independently.
 
 **Recommendation**: Create abstraction layer packages:
+
 - `@noa/llm-clients` - Unified Claude/OpenAI/Llama interface
 - `@noa/storage-clients` - Unified DB/Cache interface
 
@@ -353,37 +386,42 @@ import { MessageQueue } from './message-queue';
 
 ### 5.1 Potentially Unused Directories
 
-| Directory | Size | Last Modified | Reason |
-|-----------|------|---------------|--------|
-| `agentic-homelab/sandbox-plane/workspaces/workspace-1/.projects/` | 1.5GB+ | Historical | Workspace snapshots |
-| `downloads/` | 100MB+ | Oct 21 | Temporary downloads |
-| `files/` | Unknown | Oct 21 | Unclear purpose |
-| `configs/` | Small | Oct 10 | Empty or unused |
-| `coverage/` | Unknown | Build artifact | Test coverage reports |
+| Directory                                                         | Size    | Last Modified  | Reason                |
+| ----------------------------------------------------------------- | ------- | -------------- | --------------------- |
+| `agentic-homelab/sandbox-plane/workspaces/workspace-1/.projects/` | 1.5GB+  | Historical     | Workspace snapshots   |
+| `downloads/`                                                      | 100MB+  | Oct 21         | Temporary downloads   |
+| `files/`                                                          | Unknown | Oct 21         | Unclear purpose       |
+| `configs/`                                                        | Small   | Oct 10         | Empty or unused       |
+| `coverage/`                                                       | Unknown | Build artifact | Test coverage reports |
 
 ### 5.2 Unused Exports
 
 **Method**: Analyzed 1,562 export statements across 377 files
 
 **Findings**:
+
 - ~15-20% of exports appear unused (based on import count mismatch)
 - Many `export *` statements re-export everything unnecessarily
 
 **Examples**:
+
 ```typescript
 // packages/monitoring/metrics/src/index.ts - 8 exports
 // Only 3 imports detected in codebase
 ```
 
-**Tool Recommendation**: Use `ts-prune` or `knip` for detailed unused export detection
+**Tool Recommendation**: Use `ts-prune` or `knip` for detailed unused export
+detection
 
 ### 5.3 Dead Code in Vendor Dependencies
 
 **Finding**: Massive vendor directories in `noa_ark_os/`:
+
 - `mono/vendor/` contains 500+ Rust crates
 - `apps/web/node_modules/` duplicated across multiple copies
 
 **Impact**:
+
 - 80% of repository size is vendor dependencies
 - Most vendor code is unused (Tauri/UI components not leveraged)
 
@@ -560,6 +598,7 @@ Response + Metrics → Prometheus
 **Docker Compose Files**: 20+ compose files detected
 
 **Recommendation**: Create environment-specific compose files:
+
 - `docker-compose.dev.yml` (development)
 - `docker-compose.test.yml` (testing)
 - `docker-compose.prod.yml` (production)
@@ -568,6 +607,7 @@ Response + Metrics → Prometheus
 **Kubernetes Manifests**: 50+ YAML files in `k8s/`
 
 **Recommendation**: Use Helm charts for:
+
 - Base services (PostgreSQL, Redis)
 - Monitoring stack (Prometheus, Grafana, Jaeger)
 - Application services (microservices)
@@ -579,6 +619,7 @@ Response + Metrics → Prometheus
 ### 8.1 Security Findings
 
 **Positive**:
+
 - ✅ Auth service with JWT/OAuth/MFA
 - ✅ Secrets manager with multi-provider support
 - ✅ GDPR compliance package
@@ -586,6 +627,7 @@ Response + Metrics → Prometheus
 - ✅ Rate limiting implemented
 
 **Concerns**:
+
 - ⚠️ Multiple `.env` files in repository (potential secrets leak)
 - ⚠️ Inconsistent authentication across services
 - ⚠️ Some packages lack input validation
@@ -593,13 +635,13 @@ Response + Metrics → Prometheus
 
 ### 8.2 Compliance Coverage
 
-| Requirement | Package | Status |
-|-------------|---------|--------|
-| **GDPR** | `packages/gdpr-compliance/` | ✅ Implemented |
-| **Data Retention** | `packages/data-retention/` | ✅ Implemented |
-| **Audit Logging** | `packages/audit-logger/` | ✅ Implemented |
-| **Encryption** | `packages/secrets-manager/` | ✅ Implemented |
-| **Access Control** | `packages/auth-service/` | ✅ Implemented |
+| Requirement        | Package                     | Status         |
+| ------------------ | --------------------------- | -------------- |
+| **GDPR**           | `packages/gdpr-compliance/` | ✅ Implemented |
+| **Data Retention** | `packages/data-retention/`  | ✅ Implemented |
+| **Audit Logging**  | `packages/audit-logger/`    | ✅ Implemented |
+| **Encryption**     | `packages/secrets-manager/` | ✅ Implemented |
+| **Access Control** | `packages/auth-service/`    | ✅ Implemented |
 
 **Recommendation**: Centralize compliance checks via pre-commit hooks
 
@@ -632,11 +674,13 @@ Response + Metrics → Prometheus
 ### 9.2 Optimization Recommendations
 
 **Short-term**:
+
 1. Enable pnpm workspace caching
 2. Add `.dockerignore` to exclude vendor/node_modules
 3. Use Turborepo for incremental builds
 
 **Long-term**:
+
 1. Implement GraphQL federation (reduce API calls)
 2. Add CDN caching for static assets
 3. Use edge functions for regional latency reduction
@@ -711,26 +755,27 @@ Response + Metrics → Prometheus
 
 ### 11.1 Current State
 
-| Metric | Value | Target | Gap |
-|--------|-------|--------|-----|
-| **Code Duplication** | ~30% | <10% | -20% |
-| **Test Coverage** | Unknown | >80% | TBD |
-| **Build Time** | ~15min | <5min | -10min |
-| **Docker Image Size** | ~3GB | <1GB | -2GB |
-| **Package.json Count** | 1,332 | <100 | -1,232 |
-| **LoC per Package** | Varies | <5,000 | TBD |
+| Metric                 | Value   | Target | Gap    |
+| ---------------------- | ------- | ------ | ------ |
+| **Code Duplication**   | ~30%    | <10%   | -20%   |
+| **Test Coverage**      | Unknown | >80%   | TBD    |
+| **Build Time**         | ~15min  | <5min  | -10min |
+| **Docker Image Size**  | ~3GB    | <1GB   | -2GB   |
+| **Package.json Count** | 1,332   | <100   | -1,232 |
+| **LoC per Package**    | Varies  | <5,000 | TBD    |
 
 ### 11.2 Progress Tracking
 
-**Phase 1 Complete**: ✅ Comprehensive analysis
-**Phase 2 Target**: 🎯 Duplicate removal (Week 1)
-**Phase 3 Target**: 🎯 Architecture consolidation (Month 1)
+**Phase 1 Complete**: ✅ Comprehensive analysis **Phase 2 Target**: 🎯 Duplicate
+removal (Week 1) **Phase 3 Target**: 🎯 Architecture consolidation (Month 1)
 
 ---
 
 ## 12. Conclusion
 
-The noa-server repository is a **feature-rich but over-complicated monorepo** with significant opportunities for consolidation and optimization. The primary issues are:
+The noa-server repository is a **feature-rich but over-complicated monorepo**
+with significant opportunities for consolidation and optimization. The primary
+issues are:
 
 1. **Excessive duplication** (30% of codebase)
 2. **Inconsistent architecture** (multiple implementations of same logic)
@@ -738,12 +783,14 @@ The noa-server repository is a **feature-rich but over-complicated monorepo** wi
 4. **Vendor bloat** (2GB+ unused dependencies)
 
 **Recommended Next Steps**:
+
 1. Execute critical actions (section 10.1) in Week 1
 2. Set up automated duplicate detection in CI/CD
 3. Implement monorepo build optimization
 4. Create architectural decision records (ADRs) for future changes
 
 **Estimated Savings**:
+
 - **Storage**: 2-3GB (50% reduction)
 - **Build Time**: 10-12min (70% reduction)
 - **Maintenance Effort**: 30-40% reduction
@@ -785,8 +832,7 @@ packages/
 └── workflow-orchestration/   # 15+ files, workflow engine
 ```
 
-**Total Packages**: 29
-**Total Files in Packages**: ~26,415 TS/JS files
+**Total Packages**: 29 **Total Files in Packages**: ~26,415 TS/JS files
 
 ---
 
@@ -841,16 +887,19 @@ packages/
 ## Appendix C: Bash Hook Integration
 
 **Pre-Task Hook Executed**:
+
 ```bash
 npx claude-flow@alpha hooks pre-task --description "Phase 1 comprehensive codebase analysis"
 ```
 
 **Output**:
+
 - ✅ Task ID generated: `task-1761191994943-6bazmfin4`
 - ✅ Memory store initialized: `.swarm/memory.db`
 - ⚠️ Ruv-swarm hook skipped (timeout)
 
 **Post-Task Hook** (to be executed after completion):
+
 ```bash
 npx claude-flow@alpha hooks post-edit \
   --file "docs/phase1-analysis-report.md" \
@@ -859,7 +908,6 @@ npx claude-flow@alpha hooks post-edit \
 
 ---
 
-**Report Generated By**: Claude Code Analysis Agent
-**Analysis Duration**: ~5 minutes
-**Report Version**: 1.0.0
-**Next Review**: Phase 2 - Duplicate Removal (Week 1)
+**Report Generated By**: Claude Code Analysis Agent **Analysis Duration**: ~5
+minutes **Report Version**: 1.0.0 **Next Review**: Phase 2 - Duplicate Removal
+(Week 1)

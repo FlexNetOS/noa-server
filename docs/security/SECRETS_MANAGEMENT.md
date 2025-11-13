@@ -1,6 +1,7 @@
 # Secrets Management
 
-Complete guide for secrets management in Noa Server using the `@noa-server/secrets-manager` package.
+Complete guide for secrets management in Noa Server using the
+`@noa-server/secrets-manager` package.
 
 ## Table of Contents
 
@@ -13,7 +14,8 @@ Complete guide for secrets management in Noa Server using the `@noa-server/secre
 
 ## Architecture Overview
 
-The Secrets Manager provides a unified interface for managing secrets across multiple backend providers:
+The Secrets Manager provides a unified interface for managing secrets across
+multiple backend providers:
 
 ```
 ┌─────────────────┐
@@ -86,6 +88,7 @@ const manager = new SecretsManager({
 ```
 
 **Environment Variables:**
+
 ```bash
 SECRETS_PROVIDER=vault
 VAULT_ADDR=https://vault.example.com:8200
@@ -396,10 +399,9 @@ async function rotateDatabasePassword(dbConnection: DatabaseConnection) {
   const newPassword = generateSecurePassword(32);
 
   // Update database user
-  await dbConnection.query(
-    'ALTER USER app_user WITH PASSWORD $1',
-    [newPassword]
-  );
+  await dbConnection.query('ALTER USER app_user WITH PASSWORD $1', [
+    newPassword,
+  ]);
 
   // Update secret
   await manager.set('database/password', newPassword);
@@ -475,7 +477,8 @@ class ResilientSecretsManager {
 
   async get(key: string): Promise<string> {
     for (let i = 0; i < this.providers.length; i++) {
-      const provider = this.providers[(this.currentProvider + i) % this.providers.length];
+      const provider =
+        this.providers[(this.currentProvider + i) % this.providers.length];
 
       try {
         return await provider.get(key);

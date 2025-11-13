@@ -4,10 +4,7 @@
   "packageManager": "yarn@1.22.22",
   "description": "A simple monorepo example for LangGraph integration testing.",
   "private": true,
-  "workspaces": [
-    "libs/*",
-    "apps/*"
-  ],
+  "workspaces": ["libs/*", "apps/*"],
   "type": "module",
   "scripts": {
     "build": "turbo build",

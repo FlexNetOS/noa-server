@@ -2,7 +2,9 @@
 
 <!-- POL-0165: Developer onboarding -->
 
-Welcome to the NOA Server Platform development guide! This document will help you get started with development, understand the codebase structure, and contribute effectively.
+Welcome to the NOA Server Platform development guide! This document will help
+you get started with development, understand the codebase structure, and
+contribute effectively.
 
 ## Table of Contents
 
@@ -29,18 +31,21 @@ Ensure you have the following installed:
 ### Initial Setup
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/noa-server/noa-server.git
    cd noa-server
    ```
 
 2. **Run development setup script**
+
    ```bash
    chmod +x setup-development-mode.sh
    ./setup-development-mode.sh
    ```
 
 3. **Install development tools**
+
    ```bash
    # Node.js development tools
    npm install -g typescript ts-node nodemon eslint prettier
@@ -63,6 +68,7 @@ Ensure you have the following installed:
    - GitLens
 
    **VS Code Settings** (`.vscode/settings.json`):
+
    ```json
    {
      "editor.formatOnSave": true,
@@ -134,6 +140,7 @@ noa-server/
 ### Daily Development
 
 1. **Update your branch**
+
    ```bash
    git checkout develop
    git pull origin develop
@@ -141,6 +148,7 @@ noa-server/
    ```
 
 2. **Start development servers**
+
    ```bash
    # Terminal 1: Main services
    npm run dev
@@ -159,6 +167,7 @@ noa-server/
    - Update documentation as needed
 
 4. **Run quality checks**
+
    ```bash
    # Lint code
    npm run lint
@@ -192,6 +201,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 ```
 
 **Types:**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -202,6 +212,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `chore`: Maintenance tasks
 
 **Examples:**
+
 ```bash
 feat(api-gateway): add rate limiting middleware
 fix(neural): resolve CUDA memory leak
@@ -214,6 +225,7 @@ test(microservices): add integration tests for service discovery
 ### Node.js Debugging
 
 **VS Code Launch Configuration** (`.vscode/launch.json`):
+
 ```json
 {
   "version": "0.2.0",
@@ -242,6 +254,7 @@ test(microservices): add integration tests for service discovery
 ```
 
 **Command Line Debugging:**
+
 ```bash
 # Start with inspector
 node --inspect-brk packages/microservices/api-gateway/src/server.js
@@ -253,6 +266,7 @@ node --inspect-brk packages/microservices/api-gateway/src/server.js
 ### Python Debugging
 
 **PyCharm/VS Code:**
+
 ```python
 # Add breakpoint
 import pdb; pdb.set_trace()
@@ -341,6 +355,7 @@ npm run bench:compare
 ### Code Quality
 
 1. **POL-0109-0116: Error Handling**
+
    ```javascript
    // ❌ Bad
    const data = JSON.parse(input);
@@ -356,6 +371,7 @@ npm run bench:compare
    ```
 
 2. **Use TypeScript**
+
    ```typescript
    // Define interfaces
    interface User {
@@ -371,6 +387,7 @@ npm run bench:compare
    ```
 
 3. **Write Tests First (TDD)**
+
    ```javascript
    // POL-0117-0122: Test edge cases
    describe('validateEmail', () => {
@@ -391,6 +408,7 @@ npm run bench:compare
 ### Performance
 
 1. **Avoid Blocking Operations**
+
    ```javascript
    // ❌ Bad
    const data = fs.readFileSync('large-file.json');
@@ -400,6 +418,7 @@ npm run bench:compare
    ```
 
 2. **Use Connection Pooling**
+
    ```javascript
    const pool = new Pool({
      max: 20,
@@ -409,6 +428,7 @@ npm run bench:compare
    ```
 
 3. **Implement Caching**
+
    ```javascript
    const cache = new Redis();
 
@@ -425,10 +445,9 @@ npm run bench:compare
 ### Security
 
 1. **Validate All Input**
+
    ```javascript
-   const { body } = await request
-     .post('/api/users')
-     .send({ email, password });
+   const { body } = await request.post('/api/users').send({ email, password });
 
    // Validate
    if (!isValidEmail(email)) {
@@ -437,6 +456,7 @@ npm run bench:compare
    ```
 
 2. **Use Parameterized Queries**
+
    ```javascript
    // ❌ Bad
    db.query(`SELECT * FROM users WHERE id = ${userId}`);
@@ -446,6 +466,7 @@ npm run bench:compare
    ```
 
 3. **Never Commit Secrets**
+
    ```bash
    # Use environment variables
    export DATABASE_URL=postgresql://...
@@ -457,6 +478,7 @@ npm run bench:compare
 ### Documentation
 
 1. **POL-0142-0159: Document All Public APIs**
+
    ```javascript
    /**
     * Creates a new user account

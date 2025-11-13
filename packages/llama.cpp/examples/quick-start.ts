@@ -25,9 +25,15 @@ async function quickStartExample() {
 
   console.log('📊 Analysis Results:');
   console.log(`   Strategy: ${result1.developResult.strategySelection.primaryType}`);
-  console.log(`   Clarity: ${result1.diagnoseResult.clarityScore.score}/10 → Improved +${result1.metrics.clarityImprovement.toFixed(1)}%`);
-  console.log(`   Specificity: ${result1.diagnoseResult.specificityCheck.score}/10 → Improved +${result1.metrics.specificityImprovement.toFixed(1)}%`);
-  console.log(`   Completeness: ${result1.diagnoseResult.completenessMatrix.completenessPercentage}% → Improved +${result1.metrics.completenessImprovement.toFixed(1)}%\n`);
+  console.log(
+    `   Clarity: ${result1.diagnoseResult.clarityScore.score}/10 → Improved +${result1.metrics.clarityImprovement.toFixed(1)}%`
+  );
+  console.log(
+    `   Specificity: ${result1.diagnoseResult.specificityCheck.score}/10 → Improved +${result1.metrics.specificityImprovement.toFixed(1)}%`
+  );
+  console.log(
+    `   Completeness: ${result1.diagnoseResult.completenessMatrix.completenessPercentage}% → Improved +${result1.metrics.completenessImprovement.toFixed(1)}%\n`
+  );
 
   console.log('✨ Optimized Prompt:');
   console.log('─'.repeat(80));
@@ -72,12 +78,14 @@ async function quickStartExample() {
   console.log(`Session ID: ${stats.sessionId}`);
   console.log(`Total Optimizations: ${stats.optimizationCount}`);
   console.log(`Successful: ${stats.successfulOptimizations}`);
-  console.log(`Success Rate: ${(stats.successfulOptimizations / stats.optimizationCount * 100).toFixed(1)}%`);
+  console.log(
+    `Success Rate: ${((stats.successfulOptimizations / stats.optimizationCount) * 100).toFixed(1)}%`
+  );
   console.log(`Average Improvement: ${stats.averageQualityImprovement.toFixed(1)}%`);
 
   if (stats.learnedPatterns.length > 0) {
     console.log(`\nLearned Patterns:`);
-    stats.learnedPatterns.forEach(pattern => console.log(`  - ${pattern}`));
+    stats.learnedPatterns.forEach((pattern) => console.log(`  - ${pattern}`));
   }
 
   console.log('\n' + '═'.repeat(80));
@@ -92,7 +100,7 @@ async function quickStartExample() {
 
 // Run if executed directly
 if (require.main === module) {
-  quickStartExample().catch(error => {
+  quickStartExample().catch((error) => {
     console.error('❌ Error:', error);
     process.exit(1);
   });

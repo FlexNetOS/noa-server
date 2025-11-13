@@ -3,20 +3,29 @@
 ## Quick Links
 
 ### Getting Started
-- [Infrastructure Overview](docs/infrastructure/INFRASTRUCTURE_OVERVIEW.md) - Start here for architecture overview
+
+- [Infrastructure Overview](docs/infrastructure/INFRASTRUCTURE_OVERVIEW.md) -
+  Start here for architecture overview
 - [Docker Quick Start](docker/README.md) - Deploy with Docker Compose
 - [Kubernetes Quick Start](k8s/README.md) - Deploy to Kubernetes
 
 ### Deployment Guides
-- [Docker Deployment Guide](docs/infrastructure/DOCKER_GUIDE.md) - Complete Docker reference
-- [Kubernetes Deployment Guide](docs/infrastructure/KUBERNETES_GUIDE.md) - Complete Kubernetes reference
+
+- [Docker Deployment Guide](docs/infrastructure/DOCKER_GUIDE.md) - Complete
+  Docker reference
+- [Kubernetes Deployment Guide](docs/infrastructure/KUBERNETES_GUIDE.md) -
+  Complete Kubernetes reference
 - [Deployment Script](scripts/infrastructure/deploy.sh) - Automated deployment
 
 ### Configuration
-- [Environment Variables](docs/infrastructure/ENVIRONMENT_VARIABLES.md) - All environment variables
-- [Health Checks](docs/infrastructure/HEALTH_CHECKS.md) - Health check implementation
+
+- [Environment Variables](docs/infrastructure/ENVIRONMENT_VARIABLES.md) - All
+  environment variables
+- [Health Checks](docs/infrastructure/HEALTH_CHECKS.md) - Health check
+  implementation
 
 ### Implementation Status
+
 - [Phase 1 Summary](docs/infrastructure/PHASE1_SUMMARY.md) - What was delivered
 
 ## Project Structure
@@ -61,15 +70,15 @@ noa-server/
 
 ## Services
 
-| Service | Port | Technology | Purpose |
-|---------|------|------------|---------|
-| MCP | 8001 | Node.js | Model Context Protocol coordination |
-| Claude Flow | 9100 | Node.js | AI workflow orchestration |
-| UI Dashboard | 9200 | Next.js 14 | Web interface |
-| Llama.cpp | 9300 | Python/C++ | Neural processing (CUDA) |
-| AgenticOS | 9400 | Python | Agent system management |
-| PostgreSQL | 5432 | PostgreSQL 16 | Primary database |
-| Redis | 6379 | Redis 7 | Cache & sessions |
+| Service      | Port | Technology    | Purpose                             |
+| ------------ | ---- | ------------- | ----------------------------------- |
+| MCP          | 8001 | Node.js       | Model Context Protocol coordination |
+| Claude Flow  | 9100 | Node.js       | AI workflow orchestration           |
+| UI Dashboard | 9200 | Next.js 14    | Web interface                       |
+| Llama.cpp    | 9300 | Python/C++    | Neural processing (CUDA)            |
+| AgenticOS    | 9400 | Python        | Agent system management             |
+| PostgreSQL   | 5432 | PostgreSQL 16 | Primary database                    |
+| Redis        | 6379 | Redis 7       | Cache & sessions                    |
 
 ## Quick Start
 
@@ -182,7 +191,8 @@ MODEL_PATH=/app/models/demo.gguf
 CUDA_VISIBLE_DEVICES=0
 ```
 
-See [complete environment variable reference](docs/infrastructure/ENVIRONMENT_VARIABLES.md).
+See
+[complete environment variable reference](docs/infrastructure/ENVIRONMENT_VARIABLES.md).
 
 ## Health Monitoring
 
@@ -209,11 +219,13 @@ curl http://localhost:9400/health
 ## Resource Requirements
 
 ### Minimum (Development)
+
 - CPU: 4 vCPUs
 - Memory: 8GB RAM
 - Storage: 50GB
 
 ### Recommended (Production)
+
 - CPU: 16+ vCPUs
 - Memory: 32+ GB RAM
 - Storage: 200GB SSD
@@ -222,12 +234,14 @@ curl http://localhost:9400/health
 ## Scaling
 
 ### Docker Compose
+
 ```bash
 # Scale specific service
 docker-compose up -d --scale claude-flow=3
 ```
 
 ### Kubernetes
+
 ```bash
 # Manual scaling
 kubectl scale deployment noa-mcp --replicas=5 -n noa-server
@@ -289,16 +303,19 @@ curl localhost:8001/health
 ## Monitoring & Observability
 
 ### Metrics
+
 - Prometheus annotations configured
 - Metrics endpoint: `/metrics` on each service
 - Grafana dashboards ready
 
 ### Logging
+
 - JSON structured logging
 - Log rotation: 10MB, 3 files
 - Aggregation ready (Fluent Bit compatible)
 
 ### Tracing
+
 - OpenTelemetry instrumentation ready
 - Jaeger integration points configured
 
@@ -362,6 +379,7 @@ The infrastructure is CI/CD ready:
 ## Support
 
 ### Documentation
+
 - [Infrastructure Overview](docs/infrastructure/INFRASTRUCTURE_OVERVIEW.md)
 - [Docker Guide](docs/infrastructure/DOCKER_GUIDE.md)
 - [Kubernetes Guide](docs/infrastructure/KUBERNETES_GUIDE.md)
@@ -369,10 +387,12 @@ The infrastructure is CI/CD ready:
 - [Health Checks](docs/infrastructure/HEALTH_CHECKS.md)
 
 ### Quick References
+
 - [Docker README](docker/README.md)
 - [Kubernetes README](k8s/README.md)
 
 ### Issues & Questions
+
 - Check troubleshooting sections in guides
 - Review service logs
 - Verify environment configuration
@@ -384,6 +404,5 @@ See project LICENSE file.
 
 ---
 
-**Last Updated:** October 22, 2025
-**Version:** Phase 1 Complete
-**Status:** Production Ready
+**Last Updated:** October 22, 2025 **Version:** Phase 1 Complete **Status:**
+Production Ready

@@ -19,7 +19,7 @@ const colors = {
   yellow: '\x1b[33m',
   blue: '\x1b[34m',
   magenta: '\x1b[35m',
-  cyan: '\x1b[36m'
+  cyan: '\x1b[36m',
 };
 
 class AgentSwarmCLI {
@@ -86,7 +86,6 @@ class AgentSwarmCLI {
           this.helpCommand();
           process.exit(1);
       }
-
     } catch (error) {
       this.error(error instanceof Error ? error.message : String(error));
       process.exit(1);
@@ -128,9 +127,15 @@ class AgentSwarmCLI {
     const status = this.orchestrator.getStatus();
 
     console.log(`${colors.bright}System Status:${colors.reset}`);
-    console.log(`  Running: ${status.isRunning ? this.colorize('YES', 'green') : this.colorize('NO', 'red')}`);
-    console.log(`  Enabled: ${status.config.enabled ? this.colorize('YES', 'green') : this.colorize('NO', 'yellow')}`);
-    console.log(`  Auto-trigger: ${status.config.autoTrigger ? this.colorize('ON', 'green') : this.colorize('OFF', 'yellow')}`);
+    console.log(
+      `  Running: ${status.isRunning ? this.colorize('YES', 'green') : this.colorize('NO', 'red')}`
+    );
+    console.log(
+      `  Enabled: ${status.config.enabled ? this.colorize('YES', 'green') : this.colorize('NO', 'yellow')}`
+    );
+    console.log(
+      `  Auto-trigger: ${status.config.autoTrigger ? this.colorize('ON', 'green') : this.colorize('OFF', 'yellow')}`
+    );
     console.log('');
 
     console.log(`${colors.bright}Configuration:${colors.reset}`);
@@ -202,10 +207,14 @@ class AgentSwarmCLI {
       return;
     }
 
-    console.log(`${colors.bright}Last ${stats.recentIntegrations.length} integrations:${colors.reset}\n`);
+    console.log(
+      `${colors.bright}Last ${stats.recentIntegrations.length} integrations:${colors.reset}\n`
+    );
 
     stats.recentIntegrations.forEach((result, i) => {
-      const status = result.success ? this.colorize('✅ SUCCESS', 'green') : this.colorize('❌ FAILED', 'red');
+      const status = result.success
+        ? this.colorize('✅ SUCCESS', 'green')
+        : this.colorize('❌ FAILED', 'red');
       const timestamp = new Date(result.timestamp).toLocaleString();
 
       console.log(`${i + 1}. ${colors.bright}${result.agentName}${colors.reset}`);
@@ -229,13 +238,17 @@ class AgentSwarmCLI {
 
     console.log(`${colors.bright}Overall Statistics:${colors.reset}`);
     console.log(`  Total Integrations: ${stats.totalIntegrations}`);
-    console.log(`  ✅ Successful: ${this.colorize(stats.successful, 'green')} (${this.percentage(stats.successful, stats.totalIntegrations)}%)`);
-    console.log(`  ❌ Failed: ${this.colorize(stats.failed, 'red')} (${this.percentage(stats.failed, stats.totalIntegrations)}%)`);
+    console.log(
+      `  ✅ Successful: ${this.colorize(stats.successful, 'green')} (${this.percentage(stats.successful, stats.totalIntegrations)}%)`
+    );
+    console.log(
+      `  ❌ Failed: ${this.colorize(stats.failed, 'red')} (${this.percentage(stats.failed, stats.totalIntegrations)}%)`
+    );
     console.log(`  ⏱️  Average Duration: ${Math.round(stats.averageDuration)}ms`);
     console.log('');
 
     if (stats.recentIntegrations.length > 0) {
-      const durations = stats.recentIntegrations.map(r => r.totalDuration);
+      const durations = stats.recentIntegrations.map((r) => r.totalDuration);
       const minDuration = Math.min(...durations);
       const maxDuration = Math.max(...durations);
 
@@ -343,7 +356,7 @@ class AgentSwarmCLI {
       type,
       path: path.resolve(filePath),
       className,
-      capabilities: []
+      capabilities: [],
     };
   }
 
@@ -408,7 +421,7 @@ class AgentSwarmCLI {
 // Execute CLI
 if (require.main === module) {
   const cli = new AgentSwarmCLI();
-  cli.run(process.argv).catch(error => {
+  cli.run(process.argv).catch((error) => {
     console.error('Fatal error:', error);
     process.exit(1);
   });

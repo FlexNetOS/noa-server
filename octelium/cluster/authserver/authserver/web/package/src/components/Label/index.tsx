@@ -1,12 +1,12 @@
-import { twMerge } from "tailwind-merge";
+import { twMerge } from 'tailwind-merge';
 
 export default (props: { children?: React.ReactNode; outlined?: boolean }) => {
   return (
     <span
       className={twMerge(
-        "px-2 py-1 rounded-full font-bold text-xs flex-none mx-1",
+        'mx-1 flex-none rounded-full px-2 py-1 text-xs font-bold',
         props.outlined
-          ? `text-gray-800 border-[1px] border-gray-400 shadow-sm`
+          ? `border-[1px] border-gray-400 text-gray-800 shadow-sm`
           : `bg-gray-800 text-white shadow-lg`
       )}
     >

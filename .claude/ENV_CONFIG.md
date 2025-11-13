@@ -2,7 +2,11 @@
 
 ## Overview
 
-This document provides comprehensive documentation for configuring the Claude Code Desktop environment for the NOA Server project. The configuration system uses a combination of settings files, environment variables, and hooks to create a robust, automated development environment optimized for SPARC methodology and multi-agent orchestration.
+This document provides comprehensive documentation for configuring the Claude
+Code Desktop environment for the NOA Server project. The configuration system
+uses a combination of settings files, environment variables, and hooks to create
+a robust, automated development environment optimized for SPARC methodology and
+multi-agent orchestration.
 
 **Last Updated**: 2025-10-22
 
@@ -24,12 +28,12 @@ This document provides comprehensive documentation for configuring the Claude Co
 
 ### Primary Configuration Files
 
-| File | Purpose | Scope |
-|------|---------|-------|
-| `.env` | Environment variables for the entire project | Project-wide |
-| `.claude/settings.json` | Claude Code settings, permissions, hooks | Shared team settings |
-| `.claude/settings.local.json` | Personal developer preferences | Local overrides |
-| `.claude/config.json` | Audit system and neural processing config | Project-specific features |
+| File                          | Purpose                                      | Scope                     |
+| ----------------------------- | -------------------------------------------- | ------------------------- |
+| `.env`                        | Environment variables for the entire project | Project-wide              |
+| `.claude/settings.json`       | Claude Code settings, permissions, hooks     | Shared team settings      |
+| `.claude/settings.local.json` | Personal developer preferences               | Local overrides           |
+| `.claude/config.json`         | Audit system and neural processing config    | Project-specific features |
 
 ### Settings Precedence
 
@@ -68,6 +72,7 @@ MODELS_DIR=${PWD}/packages/llama.cpp/models  # Model directory
 ```
 
 **Model Selection Profiles**:
+
 - **balanced**: Best for most deployments, good CPU/GPU performance
 - **high-performance**: Requires GPU ≥6GB VRAM, maximum reasoning capability
 - **lightweight**: Minimal resources, fast on CPU, suitable for edge deployment
@@ -105,6 +110,7 @@ CLAUDE_FLOW_SPAWN_TIMEOUT=30000        # Agent spawn timeout (ms)
 ```
 
 **Topology Options**:
+
 - **hierarchical**: Coordinator-worker pattern, best for complex planning
 - **mesh**: Peer-to-peer, optimal for parallel tasks
 - **adaptive**: Automatically adjusts topology based on task complexity
@@ -247,19 +253,20 @@ PRAISON_AI_ENV=praisonai_env
 
 ## Hooks System
 
-Claude Code supports hooks that execute at various lifecycle events. Hooks are shell commands that run automatically in response to actions.
+Claude Code supports hooks that execute at various lifecycle events. Hooks are
+shell commands that run automatically in response to actions.
 
 ### Hook Events
 
-| Event | When It Fires | Use Cases |
-|-------|---------------|-----------|
-| `SessionStart` | When Claude Code session begins | Environment validation, dependency checks |
-| `SessionEnd` | When session ends | Export metrics, save state |
-| `PreToolUse` | Before any tool executes | Validation, resource preparation |
-| `PostToolUse` | After tool completes | Formatting, metric tracking |
-| `UserPromptSubmit` | When user submits a prompt | Custom preprocessing |
-| `Stop` | When Claude finishes responding | Cleanup, state persistence |
-| `PreCompact` | Before context compaction | Guidance reminders |
+| Event              | When It Fires                   | Use Cases                                 |
+| ------------------ | ------------------------------- | ----------------------------------------- |
+| `SessionStart`     | When Claude Code session begins | Environment validation, dependency checks |
+| `SessionEnd`       | When session ends               | Export metrics, save state                |
+| `PreToolUse`       | Before any tool executes        | Validation, resource preparation          |
+| `PostToolUse`      | After tool completes            | Formatting, metric tracking               |
+| `UserPromptSubmit` | When user submits a prompt      | Custom preprocessing                      |
+| `Stop`             | When Claude finishes responding | Cleanup, state persistence                |
+| `PreCompact`       | Before context compaction       | Guidance reminders                        |
 
 ### Hook Configuration
 
@@ -286,11 +293,13 @@ Hooks are configured in `.claude/settings.json`:
 ### Current Hooks
 
 #### SessionStart Hook
+
 **Location**: `.claude/hooks/session-start`
 
 **Purpose**: Validates environment on session start
 
 **Functions**:
+
 - ✅ Validates `.env` file and environment variables
 - ✅ Checks Node.js and npm versions
 - ✅ Verifies Claude Flow installation
@@ -302,11 +311,13 @@ Hooks are configured in `.claude/settings.json`:
 - ✅ Displays environment summary
 
 #### Post-Task Hook
+
 **Location**: `.claude/hooks/post-task`
 
 **Purpose**: Triggers audit system after task completion
 
 **Functions**:
+
 - Intercepts TodoWrite completions
 - Spawns 7-agent audit swarm
 - Executes triple-verification protocol
@@ -316,7 +327,8 @@ Hooks are configured in `.claude/settings.json`:
 
 ## Model Selection
 
-The Model Selector automatically chooses the optimal SLLM (Small Language Model) for the Queen coordinator based on hardware capabilities.
+The Model Selector automatically chooses the optimal SLLM (Small Language Model)
+for the Queen coordinator based on hardware capabilities.
 
 ### How It Works
 
@@ -357,16 +369,19 @@ node claude-flow/hooks/select-queen-model.js --hardware
 ### Recommended Models
 
 #### Premium Tier (GPU ≥6GB VRAM)
+
 - **Llama-3.1-8B-Instruct Q5**: Best reasoning, 92% fitness
 - **Gemma2-9B-Instruct Q4**: Strong performance, 90% fitness
 - **Phi-3.5-mini-instruct Q8**: Excellent JSON reliability, 95% fitness
 
 #### Balanced Tier (≥4GB RAM)
+
 - **Phi-3.5-mini-instruct Q4**: Recommended default, 95% fitness
 - **Gemma2-2B-Instruct Q5**: Good speed, 87% fitness
 - **Qwen2-7B-Instruct Q4**: Balanced performance, 88% fitness
 
 #### Lightweight Tier (≥2GB RAM)
+
 - **Qwen2-1.5B-Instruct Q4**: Fast inference, 82% fitness
 - **Gemma2-2B-Instruct Q4**: Minimal resources, 85% fitness
 - **Llama-3.2-1B-Instruct Q4**: Edge deployment, 78% fitness
@@ -375,7 +390,8 @@ node claude-flow/hooks/select-queen-model.js --hardware
 
 ## Permissions
 
-Permissions control which tools and operations Claude Code can perform. Configured in `.claude/settings.json`.
+Permissions control which tools and operations Claude Code can perform.
+Configured in `.claude/settings.json`.
 
 ### Permission Rules
 
@@ -383,17 +399,17 @@ Permissions control which tools and operations Claude Code can perform. Configur
 {
   "permissions": {
     "allow": [
-      "Bash(npm:*)",           // Allow all npm commands
-      "Read(/home/user/**)",   // Allow reading user directory
+      "Bash(npm:*)", // Allow all npm commands
+      "Read(/home/user/**)", // Allow reading user directory
       "Write(/project/src/**)" // Allow writing to src
     ],
     "deny": [
-      "Bash(rm -rf /)",        // Deny destructive commands
-      "Write(/etc/**)",        // Deny system file writes
-      "Read(/home/user/.ssh/id_*)"  // Deny SSH key access
+      "Bash(rm -rf /)", // Deny destructive commands
+      "Write(/etc/**)", // Deny system file writes
+      "Read(/home/user/.ssh/id_*)" // Deny SSH key access
     ],
     "ask": [
-      "Bash(git push:*)"       // Always ask before git push
+      "Bash(git push:*)" // Always ask before git push
     ]
   }
 }
@@ -409,6 +425,7 @@ Permissions control which tools and operations Claude Code can perform. Configur
 ### Current Permissions
 
 **Allowed Operations**:
+
 - All `npx claude-flow` commands
 - Git operations (status, diff, log, commit, push)
 - Node.js and npm commands
@@ -417,6 +434,7 @@ Permissions control which tools and operations Claude Code can perform. Configur
 - Python3, pip, and sqlite3
 
 **Denied Operations**:
+
 - Destructive rm commands (`rm -rf /`, `rm -rf ~`)
 - System directory writes (`/etc/**`, `/root/**`)
 - SSH key access (`.ssh/id_*`)
@@ -425,16 +443,17 @@ Permissions control which tools and operations Claude Code can perform. Configur
 
 ## MCP Server Integration
 
-MCP (Model Context Protocol) servers provide additional capabilities to Claude Code.
+MCP (Model Context Protocol) servers provide additional capabilities to Claude
+Code.
 
 ### Available MCP Servers
 
-| Server | Purpose | Installation |
-|--------|---------|--------------|
-| `claude-flow` | Multi-agent orchestration | `claude mcp add claude-flow npx claude-flow@alpha mcp start` |
-| `ruv-swarm` | Enhanced coordination | `claude mcp add ruv-swarm npx ruv-swarm mcp start` |
-| `flow-nexus` | Cloud features (optional) | `claude mcp add flow-nexus npx flow-nexus@latest mcp start` |
-| `neural-processing` | llama.cpp integration | Configured via `packages/llama.cpp/shims/http_bridge.py` |
+| Server              | Purpose                   | Installation                                                 |
+| ------------------- | ------------------------- | ------------------------------------------------------------ |
+| `claude-flow`       | Multi-agent orchestration | `claude mcp add claude-flow npx claude-flow@alpha mcp start` |
+| `ruv-swarm`         | Enhanced coordination     | `claude mcp add ruv-swarm npx ruv-swarm mcp start`           |
+| `flow-nexus`        | Cloud features (optional) | `claude mcp add flow-nexus npx flow-nexus@latest mcp start`  |
+| `neural-processing` | llama.cpp integration     | Configured via `packages/llama.cpp/shims/http_bridge.py`     |
 
 ### Enabling MCP Servers
 
@@ -442,10 +461,7 @@ MCP servers are enabled in `.claude/settings.json`:
 
 ```json
 {
-  "enabledMcpjsonServers": [
-    "claude-flow",
-    "ruv-swarm"
-  ]
+  "enabledMcpjsonServers": ["claude-flow", "ruv-swarm"]
 }
 ```
 
@@ -469,6 +485,7 @@ claude mcp list
 **Problem**: Environment variables not loaded
 
 **Solution**:
+
 ```bash
 # Verify .env file exists
 ls -la /home/deflex/noa-server/.env
@@ -483,6 +500,7 @@ source .env
 **Problem**: SessionStart hook not executing
 
 **Solution**:
+
 ```bash
 # Verify hook is executable
 chmod +x .claude/hooks/session-start
@@ -499,6 +517,7 @@ cat .claude/settings.json | jq '.hooks.SessionStart'
 **Problem**: No models found
 
 **Solution**:
+
 ```bash
 # Check models directory
 ls -la /home/deflex/noa-server/packages/llama.cpp/models
@@ -514,6 +533,7 @@ node claude-flow/hooks/select-queen-model.js --recommend
 **Problem**: GPU not detected
 
 **Solution**:
+
 ```bash
 # Check NVIDIA drivers
 nvidia-smi
@@ -529,6 +549,7 @@ nvcc --version
 **Problem**: MCP server not connecting
 
 **Solution**:
+
 ```bash
 # Check if server is configured
 claude mcp list
@@ -546,6 +567,7 @@ npx claude-flow@alpha --version
 **Problem**: Audits not running automatically
 
 **Solution**:
+
 ```bash
 # Check audit configuration
 cat .claude/config.json | jq '.audit'
@@ -562,6 +584,7 @@ node claude-flow/hooks/run-audit.js --task-id test-task --target ./src
 **Problem**: Tool execution blocked
 
 **Solution**:
+
 ```bash
 # Check permission rules
 cat .claude/settings.json | jq '.permissions'
@@ -578,49 +601,61 @@ claude --dangerously-skip-permissions
 ## Best Practices
 
 ### Environment Variables
+
 ✅ **Do**:
+
 - Use `.env` for project-wide configuration
 - Keep `.env` out of version control
 - Provide `.env.example` as template
 - Document all variables in this file
 
 ⚠️ **Don't**:
+
 - Hardcode sensitive values
 - Commit `.env` to git
 - Use production credentials in development
 
 ### Hooks
+
 ✅ **Do**:
+
 - Make hooks executable (`chmod +x`)
 - Use absolute paths in hook scripts
 - Log hook execution for debugging
 - Keep hooks fast (<5 seconds)
 
 ⚠️ **Don't**:
+
 - Run long-running operations in hooks
 - Use hooks for side effects
 - Ignore hook failures silently
 
 ### Model Selection
+
 ✅ **Do**:
+
 - Start with auto-selection
 - Benchmark before production
 - Monitor Queen events
 - Keep model database updated
 
 ⚠️ **Don't**:
+
 - Hardcode model paths
 - Use lightweight models for complex tasks
 - Ignore low confidence scores
 
 ### Permissions
+
 ✅ **Do**:
+
 - Use principle of least privilege
 - Test permissions thoroughly
 - Document permission requirements
 - Review permissions regularly
 
 ⚠️ **Don't**:
+
 - Grant broad wildcard permissions
 - Bypass permissions in production
 - Allow destructive operations by default
@@ -647,6 +682,5 @@ For issues or questions:
 
 ---
 
-**Document Version**: 1.0.0
-**Last Updated**: 2025-10-22
-**Maintained By**: NOA Server Development Team
+**Document Version**: 1.0.0 **Last Updated**: 2025-10-22 **Maintained By**: NOA
+Server Development Team

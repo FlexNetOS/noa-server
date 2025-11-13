@@ -10,7 +10,7 @@ export enum RequestType {
   TECHNICAL = 'technical',
   EDUCATIONAL = 'educational',
   COMPLEX = 'complex',
-  HYBRID = 'hybrid'
+  HYBRID = 'hybrid',
 }
 
 export enum OptimizationTechnique {
@@ -23,14 +23,14 @@ export enum OptimizationTechnique {
   CHAIN_OF_THOUGHT = 'chain_of_thought',
   SYSTEMATIC_FRAMEWORK = 'systematic_framework',
   CONTEXT_ENRICHMENT = 'context_enrichment',
-  DECOMPOSITION = 'decomposition'
+  DECOMPOSITION = 'decomposition',
 }
 
 export enum ComplexityLevel {
   SIMPLE = 'simple',
   MODERATE = 'moderate',
   COMPLEX = 'complex',
-  EXPERT = 'expert'
+  EXPERT = 'expert',
 }
 
 // ==================== DECONSTRUCT PHASE ====================
@@ -324,5 +324,5 @@ export type {
   OptimizationStrategy,
   StrategyConfig,
   AgentConfig,
-  AgentState
+  AgentState,
 };

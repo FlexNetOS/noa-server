@@ -16,13 +16,16 @@ Complete guide to using the Noa Server authentication service.
 
 ## Overview
 
-The Noa Server authentication service (`@noa/auth-service`) provides enterprise-grade authentication and authorization with:
+The Noa Server authentication service (`@noa/auth-service`) provides
+enterprise-grade authentication and authorization with:
 
-- **Multiple Authentication Methods**: JWT, OAuth 2.0, SAML, LDAP, Magic Links, WebAuthn
+- **Multiple Authentication Methods**: JWT, OAuth 2.0, SAML, LDAP, Magic Links,
+  WebAuthn
 - **Multi-Factor Authentication**: TOTP, SMS, Email, Hardware Keys
 - **Role-Based Access Control**: Flexible RBAC with wildcard support
 - **Session Management**: Redis-backed sessions with automatic cleanup
-- **Security Features**: Rate limiting, brute force protection, password breach checking
+- **Security Features**: Rate limiting, brute force protection, password breach
+  checking
 - **Compliance**: OWASP Top 10, GDPR, SOC 2 compliant
 
 ## Quick Start
@@ -55,7 +58,7 @@ const config = {
     issuer: 'noa-server',
     audience: 'noa-client',
     accessTokenExpiry: '15m',
-    refreshTokenExpiry: '7d'
+    refreshTokenExpiry: '7d',
   },
   password: {
     minLength: 12,
@@ -63,32 +66,32 @@ const config = {
     requireLowercase: true,
     requireNumbers: true,
     requireSpecialChars: true,
-    preventBreached: true
+    preventBreached: true,
   },
   mfa: {
     enabled: true,
     issuer: 'Noa Server',
-    window: 1
+    window: 1,
   },
   session: {
     redis: {
       host: 'localhost',
       port: 6379,
       password: process.env.REDIS_PASSWORD,
-      db: 0
+      db: 0,
     },
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  }
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+  },
 };
 
 const db = new Pool({
-  connectionString: process.env.DATABASE_URL
+  connectionString: process.env.DATABASE_URL,
 });
 
 const redis = new Redis({
   host: config.session.redis.host,
   port: config.session.redis.port,
-  password: config.session.redis.password
+  password: config.session.redis.password,
 });
 
 const authService = new AuthService(config, db, redis);
@@ -103,8 +106,8 @@ const result = await authService.register({
   password: 'SecurePassword123!',
   metadata: {
     firstName: 'John',
-    lastName: 'Doe'
-  }
+    lastName: 'Doe',
+  },
 });
 
 // Login
@@ -112,7 +115,7 @@ const loginResult = await authService.login({
   email: 'user@example.com',
   password: 'SecurePassword123!',
   ipAddress: req.ip,
-  userAgent: req.headers['user-agent']
+  userAgent: req.headers['user-agent'],
 });
 
 if (loginResult.success) {
@@ -135,7 +138,7 @@ const jwtProvider = new JWTProvider({
   issuer: 'noa-server',
   audience: 'noa-client',
   accessTokenExpiry: '15m',
-  refreshTokenExpiry: '7d'
+  refreshTokenExpiry: '7d',
 });
 
 // Generate token
@@ -181,8 +184,8 @@ const config = {
     entryPoint: 'https://idp.example.com/sso',
     issuer: 'noa-server',
     cert: fs.readFileSync('idp-cert.pem'),
-    privateKey: fs.readFileSync('sp-private.key')
-  }
+    privateKey: fs.readFileSync('sp-private.key'),
+  },
 };
 
 // SAML authentication handled by passport-saml middleware
@@ -198,8 +201,8 @@ const config = {
     bindDN: 'cn=admin,dc=example,dc=com',
     bindCredentials: process.env.LDAP_PASSWORD,
     searchBase: 'ou=users,dc=example,dc=com',
-    searchFilter: '(uid={{username}})'
-  }
+    searchFilter: '(uid={{username}})',
+  },
 };
 ```
 
@@ -213,7 +216,7 @@ import { TOTPProvider } from '@noa/auth-service';
 const totpProvider = new TOTPProvider({
   issuer: 'Noa Server',
   window: 1, // ±30 seconds
-  digits: 6
+  digits: 6,
 });
 
 // Setup MFA
@@ -231,7 +234,7 @@ const loginResult = await authService.login({
   password: 'SecurePassword123!',
   mfaCode: '123456',
   ipAddress: req.ip,
-  userAgent: req.headers['user-agent']
+  userAgent: req.headers['user-agent'],
 });
 ```
 
@@ -251,16 +254,13 @@ import { RBACEngine } from '@noa/auth-service';
 const rbacEngine = new RBACEngine({
   enableWildcards: true,
   enableInheritance: true,
-  cachePermissions: true
+  cachePermissions: true,
 });
 
 // Check permission
-const result = await authService.checkPermission(
-  userId,
-  'users',
-  'read',
-  { department: 'engineering' }
-);
+const result = await authService.checkPermission(userId, 'users', 'read', {
+  department: 'engineering',
+});
 
 if (result.allowed) {
   // User has permission
@@ -274,6 +274,7 @@ if (result.allowed) {
 Permissions use the format: `resource:action`
 
 Examples:
+
 - `users:read` - Read user data
 - `users:write` - Create/update users
 - `users:delete` - Delete users
@@ -352,7 +353,7 @@ const policy = new PasswordPolicy({
   preventUserInfo: true,
   preventReuse: 5, // Last 5 passwords
   maxAge: 90, // Days before expiration
-  minAge: 1 // Days before can change
+  minAge: 1, // Days before can change
 });
 
 // Validate password
@@ -397,16 +398,22 @@ console.log(`Password found in ${count} breaches`);
 ### Express Middleware
 
 ```typescript
-import { createExpressAuthMiddleware, requireRoles, requirePermissions } from '@noa/auth-service';
+import {
+  createExpressAuthMiddleware,
+  requireRoles,
+  requirePermissions,
+} from '@noa/auth-service';
 
 const { jwtProvider, sessionManager } = authService.getServices();
 
 // Authentication middleware
-app.use(createExpressAuthMiddleware({
-  jwtProvider,
-  sessionManager,
-  optional: false
-}));
+app.use(
+  createExpressAuthMiddleware({
+    jwtProvider,
+    sessionManager,
+    optional: false,
+  })
+);
 
 // Protect routes
 app.get('/admin', requireRoles('admin'), (req, res) => {
@@ -423,17 +430,23 @@ app.post('/users', requirePermissions('users', 'write'), (req, res) => {
 ```typescript
 import { createFastifyAuthPlugin } from '@noa/auth-service';
 
-fastify.register(createFastifyAuthPlugin({
-  jwtProvider,
-  sessionManager
-}));
+fastify.register(
+  createFastifyAuthPlugin({
+    jwtProvider,
+    sessionManager,
+  })
+);
 
 // Protected route
-fastify.get('/profile', {
-  config: { auth: true }
-}, async (request, reply) => {
-  return { user: request.user };
-});
+fastify.get(
+  '/profile',
+  {
+    config: { auth: true },
+  },
+  async (request, reply) => {
+    return { user: request.user };
+  }
+);
 ```
 
 ## Best Practices
@@ -537,16 +550,19 @@ ORDER BY timestamp DESC;
 ### Common Issues
 
 **Issue**: Token verification fails
+
 - Check JWT secret matches between services
 - Verify token hasn't expired
 - Ensure clock synchronization
 
 **Issue**: MFA code not working
+
 - Check server time is synchronized (NTP)
 - Verify window configuration
 - Use backup codes if available
 
 **Issue**: Session not persisting
+
 - Verify Redis connection
 - Check session expiry configuration
 - Ensure cookies are being set correctly
@@ -554,6 +570,7 @@ ORDER BY timestamp DESC;
 ## Support
 
 For issues and questions:
+
 - GitHub Issues: https://github.com/noa-server/auth-service/issues
 - Documentation: https://docs.noa-server.com/authentication
 - Security Issues: security@noa-server.com

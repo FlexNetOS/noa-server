@@ -1,17 +1,20 @@
 # Runbook: Service Down
 
 ## Alert Details
+
 - **Alert Name**: ServiceDown
 - **Severity**: Critical
 - **Target**: 99.9% uptime (43 minutes downtime per month)
 
 ## Symptoms
+
 - Service health check failing
 - `up{job="noa-api"} == 0` in Prometheus
 - Users unable to access application
 - 503 Service Unavailable errors
 
 ## Impact
+
 - **User Impact**: Complete service outage
 - **Business Impact**: Revenue loss, customer dissatisfaction
 - **SLA Impact**: Direct impact on 99.9% uptime commitment
@@ -19,6 +22,7 @@
 ## Immediate Response (< 2 minutes)
 
 ### 1. Acknowledge Alert
+
 ```bash
 # Acknowledge in PagerDuty
 # Or silence in Alertmanager for investigation period
@@ -34,6 +38,7 @@ curl -X POST http://localhost:9093/api/v1/silences \
 ```
 
 ### 2. Check Service Status
+
 ```bash
 # Quick health check
 curl -f https://noa-server.example.com/health || echo "Service DOWN"
@@ -46,6 +51,7 @@ kubectl describe pods -l app=noa-api
 ```
 
 ### 3. Create Incident Channel
+
 ```bash
 # Create Slack incident channel (if not automated)
 # #incident-2025-10-22-service-down
@@ -62,6 +68,7 @@ curl -X POST $SLACK_WEBHOOK_URL \
 ## Diagnosis Steps
 
 ### 1. Check Pod Health
+
 ```bash
 # Get pod status
 kubectl get pods -l app=noa-api -o wide
@@ -84,6 +91,7 @@ kubectl logs -l app=noa-api --previous --tail=100
 ```
 
 ### 2. Check Node Health
+
 ```bash
 # Check node status
 kubectl get nodes
@@ -96,6 +104,7 @@ kubectl get events --all-namespaces --sort-by='.lastTimestamp' | tail -20
 ```
 
 ### 3. Check Service & Endpoints
+
 ```bash
 # Check service
 kubectl get service noa-api
@@ -107,6 +116,7 @@ kubectl get endpoints noa-api
 ```
 
 ### 4. Check Ingress/Load Balancer
+
 ```bash
 # Check ingress
 kubectl get ingress
@@ -120,6 +130,7 @@ kubectl run test-pod --rm -it --image=curlimages/curl -- \
 ```
 
 ### 5. Check Dependencies
+
 ```bash
 # Check database connectivity
 kubectl exec -it deployment/noa-api -- \
@@ -247,6 +258,7 @@ kubectl set image deployment/noa-api api=noa-api:v1.2.3
 ## Emergency Procedures
 
 ### Quick Restart (Nuclear Option)
+
 ```bash
 # Only if other methods fail
 kubectl delete pods -l app=noa-api
@@ -256,6 +268,7 @@ kubectl scale deployment/noa-api --replicas=5
 ```
 
 ### Deploy Emergency Maintenance Page
+
 ```bash
 # Route traffic to maintenance page
 kubectl apply -f - <<EOF
@@ -294,6 +307,7 @@ kubectl patch ingress noa-api -p '{"spec":{"rules":[{"http":{"paths":[{"backend"
 ```
 
 ### Failover to Backup Region (if multi-region)
+
 ```bash
 # Update DNS to point to backup region
 # Via AWS Route 53, CloudFlare, etc.
@@ -305,6 +319,7 @@ aws route53 change-resource-record-sets \
 ## Verification
 
 ### 1. Service Health
+
 ```bash
 # Check health endpoint
 curl -f https://noa-server.example.com/health
@@ -318,6 +333,7 @@ done
 ```
 
 ### 2. Pod Status
+
 ```bash
 # All pods should be Running and Ready
 kubectl get pods -l app=noa-api
@@ -327,6 +343,7 @@ kubectl get pods -l app=noa-api -o custom-columns=NAME:.metadata.name,AGE:.metad
 ```
 
 ### 3. Metrics
+
 ```bash
 # Check service up metric
 curl -G 'http://localhost:9090/api/v1/query' \
@@ -336,6 +353,7 @@ curl -G 'http://localhost:9090/api/v1/query' \
 ```
 
 ### 4. Synthetic Tests
+
 ```bash
 # Run smoke tests
 ./tests/smoke-tests.sh
@@ -346,6 +364,7 @@ curl -G 'http://localhost:9090/api/v1/query' \
 ## Post-Incident
 
 ### 1. Update Status Page
+
 ```bash
 # Mark incident as resolved
 curl -X PATCH https://status.noa-server.example.com/api/incidents/123 \
@@ -354,6 +373,7 @@ curl -X PATCH https://status.noa-server.example.com/api/incidents/123 \
 ```
 
 ### 2. Notify Stakeholders
+
 ```bash
 # Send all-clear notification
 curl -X POST $SLACK_WEBHOOK_URL \
@@ -365,6 +385,7 @@ curl -X POST $SLACK_WEBHOOK_URL \
 ```
 
 ### 3. Collect Data for Post-Mortem
+
 ```bash
 # Export logs
 kubectl logs -l app=noa-api --since=2h > incident-logs.txt
@@ -400,6 +421,7 @@ EOF
 ```
 
 ### 4. Schedule Post-Mortem
+
 - Within 48 hours of incident
 - Invite all stakeholders
 - Focus on blameless analysis
@@ -408,6 +430,7 @@ EOF
 ## Prevention
 
 ### 1. Improve Monitoring
+
 ```yaml
 # Add more comprehensive health checks
 livenessProbe:
@@ -428,6 +451,7 @@ readinessProbe:
 ```
 
 ### 2. Implement Circuit Breakers
+
 ```javascript
 // Add circuit breaker for external dependencies
 const CircuitBreaker = require('opossum');
@@ -435,13 +459,14 @@ const CircuitBreaker = require('opossum');
 const breaker = new CircuitBreaker(callExternalAPI, {
   timeout: 3000,
   errorThresholdPercentage: 50,
-  resetTimeout: 30000
+  resetTimeout: 30000,
 });
 
 breaker.fallback(() => ({ status: 'degraded' }));
 ```
 
 ### 3. Add Chaos Engineering
+
 ```bash
 # Regularly test failure scenarios
 # Install Chaos Mesh
@@ -467,24 +492,29 @@ EOF
 ```
 
 ### 4. Multi-Region Deployment
+
 - Deploy to multiple regions
 - Use geo-distributed load balancing
 - Implement automatic failover
 
 ## Related Runbooks
+
 - [High Error Rate](./high-error-rate.md)
 - [Database Issues](./database-performance.md)
 - [Rollback Procedure](./rollback.md)
 
 ## References
+
 - [Incident Response Process](../INCIDENT_RESPONSE.md)
 - [SLA Commitments](../SLA.md)
 - [Architecture Diagram](../architecture.md)
 
 ## Last Updated
+
 2025-10-22
 
 ## On-Call Contact
+
 - **Primary**: DevOps Team (PagerDuty)
 - **Escalation**: Engineering Manager
 - **Emergency**: CTO

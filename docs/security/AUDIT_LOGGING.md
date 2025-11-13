@@ -1,6 +1,7 @@
 # Audit Logging
 
-Comprehensive guide for audit logging in Noa Server using the `@noa-server/audit-logger` package.
+Comprehensive guide for audit logging in Noa Server using the
+`@noa-server/audit-logger` package.
 
 ## Table of Contents
 
@@ -15,62 +16,62 @@ Comprehensive guide for audit logging in Noa Server using the `@noa-server/audit
 
 ### Authentication Events
 
-| Event Type | Description | When to Log | Required Fields |
-|------------|-------------|-------------|-----------------|
-| `AUTH_LOGIN` | Successful user login | Every login | actorId, ipAddress |
-| `AUTH_LOGOUT` | User logout | Every logout | actorId |
-| `AUTH_LOGIN_FAILED` | Failed login attempt | Every failed login | actorId, ipAddress, errorMessage |
-| `AUTH_PASSWORD_RESET` | Password reset | Password change | actorId |
-| `AUTH_MFA_ENABLED` | MFA enabled | MFA activation | actorId |
-| `AUTH_MFA_DISABLED` | MFA disabled | MFA deactivation | actorId |
-| `AUTH_TOKEN_REFRESH` | Token refresh | Token renewal | actorId |
-| `AUTH_SESSION_EXPIRED` | Session expiration | Session timeout | actorId |
+| Event Type             | Description           | When to Log        | Required Fields                  |
+| ---------------------- | --------------------- | ------------------ | -------------------------------- |
+| `AUTH_LOGIN`           | Successful user login | Every login        | actorId, ipAddress               |
+| `AUTH_LOGOUT`          | User logout           | Every logout       | actorId                          |
+| `AUTH_LOGIN_FAILED`    | Failed login attempt  | Every failed login | actorId, ipAddress, errorMessage |
+| `AUTH_PASSWORD_RESET`  | Password reset        | Password change    | actorId                          |
+| `AUTH_MFA_ENABLED`     | MFA enabled           | MFA activation     | actorId                          |
+| `AUTH_MFA_DISABLED`    | MFA disabled          | MFA deactivation   | actorId                          |
+| `AUTH_TOKEN_REFRESH`   | Token refresh         | Token renewal      | actorId                          |
+| `AUTH_SESSION_EXPIRED` | Session expiration    | Session timeout    | actorId                          |
 
 ### Authorization Events
 
-| Event Type | Description | When to Log | Required Fields |
-|------------|-------------|-------------|-----------------|
-| `AUTHZ_PERMISSION_CHECK` | Permission verification | Access control checks | actorId, resourceType, resourceId |
-| `AUTHZ_PERMISSION_DENIED` | Access denied | Permission failures | actorId, resourceType, resourceId, errorMessage |
-| `AUTHZ_ROLE_ASSIGNED` | Role assignment | Role changes | actorId, resourceId (roleId) |
-| `AUTHZ_ROLE_REVOKED` | Role revocation | Role removal | actorId, resourceId (roleId) |
+| Event Type                | Description             | When to Log           | Required Fields                                 |
+| ------------------------- | ----------------------- | --------------------- | ----------------------------------------------- |
+| `AUTHZ_PERMISSION_CHECK`  | Permission verification | Access control checks | actorId, resourceType, resourceId               |
+| `AUTHZ_PERMISSION_DENIED` | Access denied           | Permission failures   | actorId, resourceType, resourceId, errorMessage |
+| `AUTHZ_ROLE_ASSIGNED`     | Role assignment         | Role changes          | actorId, resourceId (roleId)                    |
+| `AUTHZ_ROLE_REVOKED`      | Role revocation         | Role removal          | actorId, resourceId (roleId)                    |
 
 ### Data Access Events
 
-| Event Type | Description | When to Log | Required Fields |
-|------------|-------------|-------------|-----------------|
-| `DATA_READ` | Data read operation | Data retrieval | actorId, resourceType, resourceId |
-| `DATA_CREATE` | Data creation | New data | actorId, resourceType, resourceId |
-| `DATA_UPDATE` | Data modification | Data changes | actorId, resourceType, resourceId |
-| `DATA_DELETE` | Data deletion | Data removal | actorId, resourceType, resourceId |
-| `DATA_EXPORT` | Data export | Bulk export | actorId, metadata (recordCount) |
-| `DATA_IMPORT` | Data import | Bulk import | actorId, metadata (recordCount) |
+| Event Type    | Description         | When to Log    | Required Fields                   |
+| ------------- | ------------------- | -------------- | --------------------------------- |
+| `DATA_READ`   | Data read operation | Data retrieval | actorId, resourceType, resourceId |
+| `DATA_CREATE` | Data creation       | New data       | actorId, resourceType, resourceId |
+| `DATA_UPDATE` | Data modification   | Data changes   | actorId, resourceType, resourceId |
+| `DATA_DELETE` | Data deletion       | Data removal   | actorId, resourceType, resourceId |
+| `DATA_EXPORT` | Data export         | Bulk export    | actorId, metadata (recordCount)   |
+| `DATA_IMPORT` | Data import         | Bulk import    | actorId, metadata (recordCount)   |
 
 ### Security Events
 
-| Event Type | Description | When to Log | Required Fields |
-|------------|-------------|-------------|-----------------|
-| `SECURITY_SUSPICIOUS_ACTIVITY` | Unusual behavior | Anomaly detection | actorId, ipAddress, errorMessage |
-| `SECURITY_RATE_LIMIT_EXCEEDED` | Rate limit hit | Throttling | actorId, ipAddress, metadata |
-| `SECURITY_IP_BLOCKED` | IP blocked | IP blacklisting | ipAddress, errorMessage |
-| `SECURITY_VULNERABILITY_DETECTED` | Security issue | Vulnerability scanning | metadata |
+| Event Type                        | Description      | When to Log            | Required Fields                  |
+| --------------------------------- | ---------------- | ---------------------- | -------------------------------- |
+| `SECURITY_SUSPICIOUS_ACTIVITY`    | Unusual behavior | Anomaly detection      | actorId, ipAddress, errorMessage |
+| `SECURITY_RATE_LIMIT_EXCEEDED`    | Rate limit hit   | Throttling             | actorId, ipAddress, metadata     |
+| `SECURITY_IP_BLOCKED`             | IP blocked       | IP blacklisting        | ipAddress, errorMessage          |
+| `SECURITY_VULNERABILITY_DETECTED` | Security issue   | Vulnerability scanning | metadata                         |
 
 ### Configuration Events
 
-| Event Type | Description | When to Log | Required Fields |
-|------------|-------------|-------------|-----------------|
-| `CONFIG_CHANGED` | Configuration change | Settings updates | actorId, resourceId, metadata |
-| `CONFIG_SECRET_ACCESSED` | Secret access | Secret retrieval | actorId, resourceId (secretKey) |
-| `CONFIG_SECRET_ROTATED` | Secret rotation | Secret updates | actorId, resourceId (secretKey) |
+| Event Type               | Description          | When to Log      | Required Fields                 |
+| ------------------------ | -------------------- | ---------------- | ------------------------------- |
+| `CONFIG_CHANGED`         | Configuration change | Settings updates | actorId, resourceId, metadata   |
+| `CONFIG_SECRET_ACCESSED` | Secret access        | Secret retrieval | actorId, resourceId (secretKey) |
+| `CONFIG_SECRET_ROTATED`  | Secret rotation      | Secret updates   | actorId, resourceId (secretKey) |
 
 ### Admin Events
 
-| Event Type | Description | When to Log | Required Fields |
-|------------|-------------|-------------|-----------------|
-| `ADMIN_USER_CREATED` | User creation | New users | actorId, resourceId (userId) |
-| `ADMIN_USER_DELETED` | User deletion | User removal | actorId, resourceId (userId) |
-| `ADMIN_USER_MODIFIED` | User modification | User updates | actorId, resourceId (userId) |
-| `ADMIN_SYSTEM_SETTING` | System setting change | System config | actorId, metadata |
+| Event Type             | Description           | When to Log   | Required Fields              |
+| ---------------------- | --------------------- | ------------- | ---------------------------- |
+| `ADMIN_USER_CREATED`   | User creation         | New users     | actorId, resourceId (userId) |
+| `ADMIN_USER_DELETED`   | User deletion         | User removal  | actorId, resourceId (userId) |
+| `ADMIN_USER_MODIFIED`  | User modification     | User updates  | actorId, resourceId (userId) |
+| `ADMIN_SYSTEM_SETTING` | System setting change | System config | actorId, metadata            |
 
 ## Integration Guide
 
@@ -84,7 +85,7 @@ import {
   AuditEventType,
   ActorType,
   ResourceType,
-  AuditResult
+  AuditResult,
 } from '@noa-server/audit-logger';
 
 const app = express();
@@ -100,10 +101,12 @@ const auditLogger = createAuditLogger({
 });
 
 // Add database transport
-auditLogger.addTransport(new DatabaseTransport({
-  connectionString: process.env.AUDIT_DB_CONNECTION_STRING,
-  tableName: 'audit_logs',
-}));
+auditLogger.addTransport(
+  new DatabaseTransport({
+    connectionString: process.env.AUDIT_DB_CONNECTION_STRING,
+    tableName: 'audit_logs',
+  })
+);
 
 await auditLogger.initialize();
 
@@ -243,7 +246,10 @@ export class UserRepository {
       resourceId: userId,
       metadata: {
         fields: Object.keys(updates),
-        previousValues: await this.getPreviousValues(userId, Object.keys(updates)),
+        previousValues: await this.getPreviousValues(
+          userId,
+          Object.keys(updates)
+        ),
       },
     });
 
@@ -346,11 +352,13 @@ async function detectDataExfiltration(userId: string): Promise<void> {
 **Control**: CC6.2 - System monitoring
 
 **Requirements**:
+
 - Monitor system activity
 - Detect and respond to security events
 - Maintain audit trails
 
 **Implementation**:
+
 ```typescript
 const logger = createAuditLogger({
   applicationName: 'noa-server',
@@ -366,6 +374,7 @@ const logger = createAuditLogger({
 ```
 
 **Audit Evidence**:
+
 - Authentication events
 - Authorization decisions
 - Data access logs
@@ -377,6 +386,7 @@ const logger = createAuditLogger({
 **Requirement**: 10.2 - Audit Logs
 
 **Requirements**:
+
 - User access to cardholder data
 - Actions by privileged users
 - Invalid logical access attempts
@@ -384,6 +394,7 @@ const logger = createAuditLogger({
 - Initialization of audit logs
 
 **Implementation**:
+
 ```typescript
 const logger = createAuditLogger({
   applicationName: 'payment-system',
@@ -412,6 +423,7 @@ await logger.log({
 ```
 
 **Required Events**:
+
 - User authentication
 - Access to cardholder data
 - Administrative actions
@@ -423,11 +435,13 @@ await logger.log({
 **Regulation**: 45 CFR 164.312(b) - Audit Controls
 
 **Requirements**:
+
 - Implement hardware, software, and/or procedural mechanisms
 - Record and examine activity in systems containing ePHI
 - Maintain audit logs for 7 years
 
 **Implementation**:
+
 ```typescript
 const logger = createAuditLogger({
   applicationName: 'healthcare-app',
@@ -456,6 +470,7 @@ await logger.log({
 ```
 
 **Required Events**:
+
 - Access to ePHI
 - User authentication
 - Emergency access
@@ -467,6 +482,7 @@ await logger.log({
 **Article**: Article 30 - Records of Processing Activities
 
 **Requirements**:
+
 - Purposes of processing
 - Categories of data subjects
 - Categories of personal data
@@ -474,6 +490,7 @@ await logger.log({
 - Security measures
 
 **Implementation**:
+
 ```typescript
 const logger = createAuditLogger({
   applicationName: 'eu-service',
@@ -527,11 +544,14 @@ const failedLogins = await auditLogger.query({
 });
 
 // Group by IP address
-const byIP = failedLogins.reduce((acc, event) => {
-  const ip = event.ipAddress || 'unknown';
-  acc[ip] = (acc[ip] || 0) + 1;
-  return acc;
-}, {} as Record<string, number>);
+const byIP = failedLogins.reduce(
+  (acc, event) => {
+    const ip = event.ipAddress || 'unknown';
+    acc[ip] = (acc[ip] || 0) + 1;
+    return acc;
+  },
+  {} as Record<string, number>
+);
 
 // Find IPs with >10 failures
 const suspiciousIPs = Object.entries(byIP)
@@ -582,7 +602,7 @@ const userActivity = await auditLogger.query({
 });
 
 // Create timeline
-const timeline = userActivity.map(event => ({
+const timeline = userActivity.map((event) => ({
   timestamp: event.timestamp,
   action: event.action,
   resource: `${event.resourceType}:${event.resourceId}`,
@@ -602,7 +622,7 @@ const incident = await auditLogger.query({
 
 // Get related events
 const relatedEvents = await auditLogger.query({
-  actorIds: incident.map(e => e.actorId).filter(Boolean),
+  actorIds: incident.map((e) => e.actorId).filter(Boolean),
   startDate: new Date('2024-10-22T08:00:00Z'),
   endDate: new Date('2024-10-22T14:00:00Z'),
 });
@@ -624,11 +644,13 @@ async function generateSOC2Report(startDate: Date, endDate: Date) {
       totalEvents: stats.totalEvents,
       authenticationEvents: stats.eventsByType[AuditEventType.AUTH_LOGIN] || 0,
       failedLogins: stats.eventsByType[AuditEventType.AUTH_LOGIN_FAILED] || 0,
-      permissionDenials: stats.eventsByType[AuditEventType.AUTHZ_PERMISSION_DENIED] || 0,
-      dataAccess: (stats.eventsByType[AuditEventType.DATA_READ] || 0) +
-                   (stats.eventsByType[AuditEventType.DATA_CREATE] || 0) +
-                   (stats.eventsByType[AuditEventType.DATA_UPDATE] || 0) +
-                   (stats.eventsByType[AuditEventType.DATA_DELETE] || 0),
+      permissionDenials:
+        stats.eventsByType[AuditEventType.AUTHZ_PERMISSION_DENIED] || 0,
+      dataAccess:
+        (stats.eventsByType[AuditEventType.DATA_READ] || 0) +
+        (stats.eventsByType[AuditEventType.DATA_CREATE] || 0) +
+        (stats.eventsByType[AuditEventType.DATA_UPDATE] || 0) +
+        (stats.eventsByType[AuditEventType.DATA_DELETE] || 0),
       securityIncidents: stats.suspiciousActivityCount,
     },
     topUsers: Object.entries(stats.eventsByActor)
@@ -701,7 +723,9 @@ async function archiveOldAuditLogs() {
     logs: oldLogs,
   };
 
-  await uploadToS3('audit-archives', `audit-logs-${cutoffDate.toISOString()}.json.gz`,
+  await uploadToS3(
+    'audit-archives',
+    `audit-logs-${cutoffDate.toISOString()}.json.gz`,
     gzipSync(JSON.stringify(archive))
   );
 
@@ -715,19 +739,16 @@ async function archiveOldAuditLogs() {
 
 ```typescript
 const retentionPolicies = {
-  [ComplianceFramework.SOC2]: 365,      // 1 year
-  [ComplianceFramework.PCI_DSS]: 365,   // 1 year
-  [ComplianceFramework.HIPAA]: 2555,    // 7 years
-  [ComplianceFramework.GDPR]: 730,      // 2 years (typical)
-  [ComplianceFramework.ISO27001]: 365,  // 1 year
+  [ComplianceFramework.SOC2]: 365, // 1 year
+  [ComplianceFramework.PCI_DSS]: 365, // 1 year
+  [ComplianceFramework.HIPAA]: 2555, // 7 years
+  [ComplianceFramework.GDPR]: 730, // 2 years (typical)
+  [ComplianceFramework.ISO27001]: 365, // 1 year
 };
 
 const logger = createAuditLogger({
   retentionDays: Math.max(...Object.values(retentionPolicies)),
-  complianceFrameworks: [
-    ComplianceFramework.SOC2,
-    ComplianceFramework.HIPAA,
-  ],
+  complianceFrameworks: [ComplianceFramework.SOC2, ComplianceFramework.HIPAA],
 });
 ```
 
@@ -786,7 +807,7 @@ await auditLogger.log({
 await auditLogger.log({
   metadata: {
     creditCard: '4111111111111111', // NEVER DO THIS
-    password: 'secret123',          // NEVER DO THIS
+    password: 'secret123', // NEVER DO THIS
   },
 });
 ```
@@ -830,27 +851,31 @@ async function verifyLogIntegrity(eventId: string) {
 
 ```typescript
 // Set up real-time monitoring
-setInterval(async () => {
-  const stats = await auditLogger.getStatistics(
-    new Date(Date.now() - 60 * 60 * 1000), // Last hour
-    new Date()
-  );
+setInterval(
+  async () => {
+    const stats = await auditLogger.getStatistics(
+      new Date(Date.now() - 60 * 60 * 1000), // Last hour
+      new Date()
+    );
 
-  // Alert on anomalies
-  if (stats.failureRate > 0.1) { // >10% failure rate
-    await alertOps({
-      type: 'high_failure_rate',
-      rate: stats.failureRate,
-    });
-  }
+    // Alert on anomalies
+    if (stats.failureRate > 0.1) {
+      // >10% failure rate
+      await alertOps({
+        type: 'high_failure_rate',
+        rate: stats.failureRate,
+      });
+    }
 
-  if (stats.suspiciousActivityCount > 0) {
-    await alertSecurityTeam({
-      type: 'suspicious_activity',
-      count: stats.suspiciousActivityCount,
-    });
-  }
-}, 5 * 60 * 1000); // Every 5 minutes
+    if (stats.suspiciousActivityCount > 0) {
+      await alertSecurityTeam({
+        type: 'suspicious_activity',
+        count: stats.suspiciousActivityCount,
+      });
+    }
+  },
+  5 * 60 * 1000
+); // Every 5 minutes
 ```
 
 ### 7. Regular Compliance Reviews

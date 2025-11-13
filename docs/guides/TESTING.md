@@ -2,7 +2,8 @@
 
 <!-- POL-0166: How to write and run tests -->
 
-This guide covers testing practices, frameworks, and workflows for the NOA Server Platform.
+This guide covers testing practices, frameworks, and workflows for the NOA
+Server Platform.
 
 ## Table of Contents
 
@@ -19,7 +20,8 @@ This guide covers testing practices, frameworks, and workflows for the NOA Serve
 We follow Test-Driven Development (TDD) principles:
 
 1. **Write tests first** - Define expected behavior before implementation
-2. **Test edge cases** - Handle null, empty, maximum, minimum values (POL-0117-0122)
+2. **Test edge cases** - Handle null, empty, maximum, minimum values
+   (POL-0117-0122)
 3. **Maintain high coverage** - Aim for >80% coverage (POL-0100)
 4. **Fast tests** - Unit tests should run in milliseconds
 5. **Isolated tests** - Each test should be independent
@@ -83,7 +85,7 @@ describe('User API', () => {
         .send({
           email: 'newuser@example.com',
           password: 'SecurePass123!',
-          name: 'New User'
+          name: 'New User',
         })
         .expect(201);
 
@@ -183,13 +185,15 @@ describe('Edge Case Testing', () => {
 
   describe('Maximum/Minimum values (POL-0118)', () => {
     it('handles maximum integer', () => {
-      expect(addNumbers(Number.MAX_SAFE_INTEGER, 1))
-        .toThrow('Integer overflow');
+      expect(addNumbers(Number.MAX_SAFE_INTEGER, 1)).toThrow(
+        'Integer overflow'
+      );
     });
 
     it('handles minimum integer', () => {
-      expect(subtractNumbers(Number.MIN_SAFE_INTEGER, 1))
-        .toThrow('Integer underflow');
+      expect(subtractNumbers(Number.MIN_SAFE_INTEGER, 1)).toThrow(
+        'Integer underflow'
+      );
     });
   });
 
@@ -215,30 +219,34 @@ describe('Edge Case Testing', () => {
 
   describe('Filesystem errors (POL-0121)', () => {
     it('handles permission denied', async () => {
-      await expect(readFile('/root/secret.txt'))
-        .rejects.toThrow('Permission denied');
+      await expect(readFile('/root/secret.txt')).rejects.toThrow(
+        'Permission denied'
+      );
     });
 
     it('handles disk full', async () => {
       // Mock disk full error
-      jest.spyOn(fs, 'writeFile').mockRejectedValue(
-        new Error('ENOSPC: no space left on device')
-      );
+      jest
+        .spyOn(fs, 'writeFile')
+        .mockRejectedValue(new Error('ENOSPC: no space left on device'));
 
-      await expect(writeFile('/tmp/test.txt', 'data'))
-        .rejects.toThrow('ENOSPC');
+      await expect(writeFile('/tmp/test.txt', 'data')).rejects.toThrow(
+        'ENOSPC'
+      );
     });
   });
 
   describe('Network errors (POL-0122)', () => {
     it('handles connection timeout', async () => {
-      await expect(fetchData('http://slow-server.com', { timeout: 100 }))
-        .rejects.toThrow('Request timeout');
+      await expect(
+        fetchData('http://slow-server.com', { timeout: 100 })
+      ).rejects.toThrow('Request timeout');
     });
 
     it('handles connection refused', async () => {
-      await expect(fetchData('http://localhost:9999'))
-        .rejects.toThrow('ECONNREFUSED');
+      await expect(fetchData('http://localhost:9999')).rejects.toThrow(
+        'ECONNREFUSED'
+      );
     });
   });
 });
@@ -309,6 +317,7 @@ FEATURE_FLAGS=minimal npm test
 ### Test Structure
 
 Follow the AAA pattern:
+
 - **Arrange**: Set up test data
 - **Act**: Execute the code being tested
 - **Assert**: Verify the results
@@ -318,7 +327,7 @@ it('creates a user with valid data', () => {
   // Arrange
   const userData = {
     email: 'user@example.com',
-    password: 'SecurePass123!'
+    password: 'SecurePass123!',
   };
 
   // Act
@@ -345,7 +354,7 @@ describe('User creation', () => {
 
     expect(emailService.sendEmail).toHaveBeenCalledWith({
       to: 'user@example.com',
-      subject: 'Welcome!'
+      subject: 'Welcome!',
     });
   });
 });
@@ -362,16 +371,14 @@ it('fetches user data', async () => {
 
 // Using promises
 it('fetches user data', () => {
-  return fetchUser(123).then(user => {
+  return fetchUser(123).then((user) => {
     expect(user.id).toBe(123);
   });
 });
 
 // Testing rejections
 it('handles non-existent user', async () => {
-  await expect(fetchUser(999))
-    .rejects
-    .toThrow('User not found');
+  await expect(fetchUser(999)).rejects.toThrow('User not found');
 });
 ```
 
@@ -407,9 +414,9 @@ module.exports = {
       branches: 80,
       functions: 80,
       lines: 80,
-      statements: 80
-    }
-  }
+      statements: 80,
+    },
+  },
 };
 ```
 
@@ -418,6 +425,7 @@ module.exports = {
 ### CI Configuration
 
 Tests run automatically on:
+
 - Every push to branches
 - Every pull request
 - Scheduled nightly builds
@@ -440,6 +448,7 @@ npm run bench:ci
 ## Best Practices
 
 1. **Test behavior, not implementation**
+
    ```javascript
    // ❌ Bad - tests implementation details
    it('calls getUserFromDb', () => {
@@ -453,6 +462,7 @@ npm run bench:ci
    ```
 
 2. **Use descriptive test names**
+
    ```javascript
    // ❌ Bad
    it('works', () => {});
@@ -462,6 +472,7 @@ npm run bench:ci
    ```
 
 3. **Keep tests focused**
+
    ```javascript
    // ❌ Bad - tests too many things
    it('handles user creation and updates', () => {
@@ -542,4 +553,5 @@ npm test -- --silent=false
 
 ---
 
-Remember: Good tests are **Fast**, **Isolated**, **Repeatable**, **Self-validating**, and **Timely** (FIRST principles).
+Remember: Good tests are **Fast**, **Isolated**, **Repeatable**,
+**Self-validating**, and **Timely** (FIRST principles).

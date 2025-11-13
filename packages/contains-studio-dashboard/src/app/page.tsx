@@ -34,19 +34,19 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold">Contains Studio Dashboard</h1>
-              <p className="text-muted-foreground mt-1">
+              <p className="mt-1 text-muted-foreground">
                 Real-time monitoring for 37 specialized AI agents
               </p>
             </div>
             <div className="flex items-center gap-4">
-              <Badge variant="outline" className="text-green-600 border-green-600">
+              <Badge variant="outline" className="border-green-600 text-green-600">
                 ✓ System Healthy
               </Badge>
               <Button variant="outline" size="icon">
-                <RefreshCw className="w-4 h-4" />
+                <RefreshCw className="h-4 w-4" />
               </Button>
               <Button variant="outline" size="icon">
-                <Settings className="w-4 h-4" />
+                <Settings className="h-4 w-4" />
               </Button>
             </div>
           </div>
@@ -58,30 +58,30 @@ export default function DashboardPage() {
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">
-              <Activity className="w-4 h-4 mr-2" />
+              <Activity className="mr-2 h-4 w-4" />
               Overview
             </TabsTrigger>
             <TabsTrigger value="agents">
-              <Bot className="w-4 h-4 mr-2" />
+              <Bot className="mr-2 h-4 w-4" />
               Agents ({agents.length})
             </TabsTrigger>
             <TabsTrigger value="workflows">
-              <Workflow className="w-4 h-4 mr-2" />
+              <Workflow className="mr-2 h-4 w-4" />
               Workflows ({workflows.length})
             </TabsTrigger>
             <TabsTrigger value="system">
-              <Settings className="w-4 h-4 mr-2" />
+              <Settings className="mr-2 h-4 w-4" />
               System Health
             </TabsTrigger>
             <TabsTrigger value="docs">
-              <FileText className="w-4 h-4 mr-2" />
+              <FileText className="mr-2 h-4 w-4" />
               Documentation
             </TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
               <Card>
                 <CardHeader className="pb-3">
                   <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -90,7 +90,7 @@ export default function DashboardPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold">{agents.length}</div>
-                  <p className="text-xs text-muted-foreground mt-1">{activeAgents.length} active</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{activeAgents.length} active</p>
                 </CardContent>
               </Card>
 
@@ -102,7 +102,7 @@ export default function DashboardPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold">{workflows.length}</div>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     {activeWorkflows.length} in progress
                   </p>
                 </CardContent>
@@ -116,7 +116,7 @@ export default function DashboardPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold">{completedWorkflows.length}</div>
-                  <p className="text-xs text-muted-foreground mt-1">Total completed</p>
+                  <p className="mt-1 text-xs text-muted-foreground">Total completed</p>
                 </CardContent>
               </Card>
 
@@ -128,17 +128,17 @@ export default function DashboardPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold">100%</div>
-                  <p className="text-xs text-muted-foreground mt-1">All services operational</p>
+                  <p className="mt-1 text-xs text-muted-foreground">All services operational</p>
                 </CardContent>
               </Card>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               <div>
-                <div className="flex items-center justify-between mb-4">
+                <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-2xl font-bold">Active Workflows</h2>
                   <Button onClick={() => setShowFeatureForm(!showFeatureForm)}>
-                    <Plus className="w-4 h-4 mr-2" />
+                    <Plus className="mr-2 h-4 w-4" />
                     New Feature
                   </Button>
                 </div>
@@ -165,7 +165,7 @@ export default function DashboardPage() {
               </div>
 
               <div>
-                <h2 className="text-2xl font-bold mb-4">System Health</h2>
+                <h2 className="mb-4 text-2xl font-bold">System Health</h2>
                 <SystemHealth systemState={systemState} />
               </div>
             </div>
@@ -193,7 +193,7 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold">All Workflows</h2>
               <Button onClick={() => setShowFeatureForm(!showFeatureForm)}>
-                <Plus className="w-4 h-4 mr-2" />
+                <Plus className="mr-2 h-4 w-4" />
                 New Workflow
               </Button>
             </div>
@@ -231,72 +231,72 @@ export default function DashboardPage() {
           <TabsContent value="docs" className="space-y-6">
             <h2 className="text-2xl font-bold">Documentation Hub</h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <Card className="cursor-pointer transition-shadow hover:shadow-lg">
                 <CardHeader>
                   <CardTitle>README</CardTitle>
                   <CardDescription>Project overview and quick start</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Badge>Current</Badge>
-                  <p className="text-sm text-muted-foreground mt-2">
+                  <p className="mt-2 text-sm text-muted-foreground">
                     Last updated: October 22, 2025
                   </p>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+              <Card className="cursor-pointer transition-shadow hover:shadow-lg">
                 <CardHeader>
                   <CardTitle>Setup Guide</CardTitle>
                   <CardDescription>Step-by-step installation</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Badge>Current</Badge>
-                  <p className="text-sm text-muted-foreground mt-2">577 lines | Validated</p>
+                  <p className="mt-2 text-sm text-muted-foreground">577 lines | Validated</p>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+              <Card className="cursor-pointer transition-shadow hover:shadow-lg">
                 <CardHeader>
                   <CardTitle>Health Check Report</CardTitle>
                   <CardDescription>System validation results</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Badge className="bg-green-600">100% Healthy</Badge>
-                  <p className="text-sm text-muted-foreground mt-2">19/19 tests passed</p>
+                  <p className="mt-2 text-sm text-muted-foreground">19/19 tests passed</p>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+              <Card className="cursor-pointer transition-shadow hover:shadow-lg">
                 <CardHeader>
                   <CardTitle>Integration Plan</CardTitle>
                   <CardDescription>Architecture and workflow design</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Badge>Current</Badge>
-                  <p className="text-sm text-muted-foreground mt-2">Full automation architecture</p>
+                  <p className="mt-2 text-sm text-muted-foreground">Full automation architecture</p>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+              <Card className="cursor-pointer transition-shadow hover:shadow-lg">
                 <CardHeader>
                   <CardTitle>Activation Status</CardTitle>
                   <CardDescription>Complete activation report</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Badge className="bg-green-600">Phase 1 Complete</Badge>
-                  <p className="text-sm text-muted-foreground mt-2">37/37 agents operational</p>
+                  <p className="mt-2 text-sm text-muted-foreground">37/37 agents operational</p>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+              <Card className="cursor-pointer transition-shadow hover:shadow-lg">
                 <CardHeader>
                   <CardTitle>Documentation Index</CardTitle>
                   <CardDescription>Complete documentation map</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Badge>Current</Badge>
-                  <p className="text-sm text-muted-foreground mt-2">5 major documents</p>
+                  <p className="mt-2 text-sm text-muted-foreground">5 major documents</p>
                 </CardContent>
               </Card>
             </div>

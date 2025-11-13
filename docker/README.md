@@ -1,6 +1,7 @@
 # Noa Server Docker Configuration
 
-This directory contains all Docker-related configuration for the Noa Server project.
+This directory contains all Docker-related configuration for the Noa Server
+project.
 
 ## Quick Start
 
@@ -43,15 +44,15 @@ docker-compose down -v
 
 ## Services
 
-| Service | Port | Purpose |
-|---------|------|---------|
-| mcp | 8001 | Model Context Protocol |
-| claude-flow | 9100 | AI workflow orchestration |
-| ui-dashboard | 9200 | Web interface |
-| llama-cpp | 9300 | Neural processing |
-| agenticos | 9400 | Agent management |
-| postgres | 5432 | Database |
-| redis | 6379 | Cache |
+| Service      | Port | Purpose                   |
+| ------------ | ---- | ------------------------- |
+| mcp          | 8001 | Model Context Protocol    |
+| claude-flow  | 9100 | AI workflow orchestration |
+| ui-dashboard | 9200 | Web interface             |
+| llama-cpp    | 9300 | Neural processing         |
+| agenticos    | 9400 | Agent management          |
+| postgres     | 5432 | Database                  |
+| redis        | 6379 | Cache                     |
 
 ## Building Individual Services
 
@@ -72,7 +73,9 @@ cp ../.env.example ../.env
 nano ../.env
 ```
 
-See [Environment Variables Guide](../docs/infrastructure/ENVIRONMENT_VARIABLES.md) for details.
+See
+[Environment Variables Guide](../docs/infrastructure/ENVIRONMENT_VARIABLES.md)
+for details.
 
 ## Troubleshooting
 

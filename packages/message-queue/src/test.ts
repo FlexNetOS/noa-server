@@ -12,7 +12,7 @@ const mockLogger = {
   silent: false,
   format: undefined,
   levels: {},
-  level: 'info'
+  level: 'info',
 } as any;
 
 /**
@@ -26,10 +26,14 @@ async function testMessageQueue() {
     console.log('Testing JobScheduler...');
     const scheduler = new JobScheduler();
 
-    const job = scheduler.createJob('test-job', { message: 'Hello World' }, {
-      priority: JobPriority.HIGH,
-      maxRetries: 2
-    });
+    const job = scheduler.createJob(
+      'test-job',
+      { message: 'Hello World' },
+      {
+        priority: JobPriority.HIGH,
+        maxRetries: 2,
+      }
+    );
 
     console.log('Created job:', job.id, job.status);
 
@@ -47,30 +51,31 @@ async function testMessageQueue() {
     new QueueManager({
       config: {
         defaultProvider: 'redis',
-        providers: [{
-          name: 'redis',
-          type: 'redis',
-          config: {
-            host: 'localhost',
-            port: 6379
-          }
-        }],
+        providers: [
+          {
+            name: 'redis',
+            type: 'redis',
+            config: {
+              host: 'localhost',
+              port: 6379,
+            },
+          },
+        ],
         queues: {
           'test-queue': {
-            provider: 'redis'
-          }
-        }
+            provider: 'redis',
+          },
+        },
       },
       logger: mockLogger,
       enableMonitoring: false,
-      enableHealthChecks: false
+      enableHealthChecks: false,
     });
 
     console.log('QueueManager created successfully');
 
     await scheduler.shutdown();
     console.log('All tests passed!');
-
   } catch (error) {
     console.error('Test failed:', error);
     process.exit(1);

@@ -10,7 +10,7 @@ import {
   CompletenessMatrix,
   ComplexityAssessment,
   ComplexityLevel,
-  DeconstructResult
+  DeconstructResult,
 } from '../types/interfaces';
 import { PromptParser } from '../utils/parser';
 
@@ -35,7 +35,7 @@ export class PromptDiagnostics {
       specificityCheck,
       completenessMatrix,
       complexityAssessment,
-      overallQualityScore
+      overallQualityScore,
     };
   }
 
@@ -59,7 +59,7 @@ export class PromptDiagnostics {
       { pattern: /\bseveral\b/gi, deduction: 0.5, message: 'Use of vague term "several"' },
       { pattern: /\bvarious\b/gi, deduction: 0.5, message: 'Use of vague term "various"' },
       { pattern: /\betc\.?\b/gi, deduction: 1, message: 'Use of "etc." without specificity' },
-      { pattern: /\band so on\b/gi, deduction: 1, message: 'Use of "and so on"' }
+      { pattern: /\band so on\b/gi, deduction: 1, message: 'Use of "and so on"' },
     ];
 
     vaguePatterns.forEach(({ pattern, deduction, message }) => {
@@ -79,7 +79,7 @@ export class PromptDiagnostics {
 
     // Check for run-on sentences
     const sentences = input.split(/[.!?]+/);
-    const longSentences = sentences.filter(s => s.split(' ').length > 30);
+    const longSentences = sentences.filter((s) => s.split(' ').length > 30);
     if (longSentences.length > 0) {
       score -= longSentences.length * 0.5;
       unclearInstructions.push(`${longSentences.length} overly long sentence(s)`);
@@ -101,7 +101,7 @@ export class PromptDiagnostics {
       score,
       ambiguousTerms,
       unclearInstructions,
-      recommendations
+      recommendations,
     };
   }
 
@@ -120,7 +120,7 @@ export class PromptDiagnostics {
 
     // Check for vague action verbs
     const vagueVerbs = ['do', 'make', 'get', 'handle', 'deal with', 'work on'];
-    vagueVerbs.forEach(verb => {
+    vagueVerbs.forEach((verb) => {
       if (new RegExp(`\\b${verb}\\b`, 'i').test(input)) {
         vaguePhrases.push(`Vague verb: "${verb}"`);
         score -= 0.5;
@@ -183,7 +183,7 @@ export class PromptDiagnostics {
       score,
       vaguePhrases,
       missingDetails,
-      improvementAreas
+      improvementAreas,
     };
   }
 
@@ -197,14 +197,14 @@ export class PromptDiagnostics {
       'Output format',
       'Success criteria',
       'Context',
-      'Constraints'
+      'Constraints',
     ];
     const optionalElements = [
       'Examples',
       'Length specification',
       'Tone guidance',
       'Audience definition',
-      'Edge cases'
+      'Edge cases',
     ];
 
     // Check what's provided
@@ -220,8 +220,10 @@ export class PromptDiagnostics {
       providedElements.push('Success criteria');
     }
 
-    if (deconstructResult.keyEntities.context.length > 0 ||
-        deconstructResult.keyEntities.domain !== 'general') {
+    if (
+      deconstructResult.keyEntities.context.length > 0 ||
+      deconstructResult.keyEntities.domain !== 'general'
+    ) {
       providedElements.push('Context');
     }
 
@@ -243,14 +245,14 @@ export class PromptDiagnostics {
     }
 
     // Calculate completeness percentage
-    const requiredProvided = requiredElements.filter(el => providedElements.includes(el)).length;
+    const requiredProvided = requiredElements.filter((el) => providedElements.includes(el)).length;
     const completenessPercentage = Math.round((requiredProvided / requiredElements.length) * 100);
 
     return {
       providedElements,
       requiredElements,
       optionalElements,
-      completenessPercentage
+      completenessPercentage,
     };
   }
 
@@ -275,8 +277,9 @@ export class PromptDiagnostics {
     }
 
     // Factor 2: Number of objectives
-    const objectives = deconstructResult.coreIntent.contextualGoals.length +
-                      (deconstructResult.coreIntent.actionVerbs.length > 1 ? 1 : 0);
+    const objectives =
+      deconstructResult.coreIntent.contextualGoals.length +
+      (deconstructResult.coreIntent.actionVerbs.length > 1 ? 1 : 0);
     if (objectives > 3) {
       complexityPoints += 2;
       factors.push('Multiple objectives');
@@ -337,7 +340,7 @@ export class PromptDiagnostics {
       level,
       factors,
       structuralNeeds,
-      recommendedApproach
+      recommendedApproach,
     };
   }
 
@@ -348,8 +351,10 @@ export class PromptDiagnostics {
     const approaches = {
       [ComplexityLevel.SIMPLE]: 'Direct, concise prompt with clear instructions',
       [ComplexityLevel.MODERATE]: 'Structured prompt with sections and examples',
-      [ComplexityLevel.COMPLEX]: 'Comprehensive prompt with hierarchical organization and verification',
-      [ComplexityLevel.EXPERT]: 'Multi-layered prompt with extensive context, examples, and systematic framework'
+      [ComplexityLevel.COMPLEX]:
+        'Comprehensive prompt with hierarchical organization and verification',
+      [ComplexityLevel.EXPERT]:
+        'Multi-layered prompt with extensive context, examples, and systematic framework',
     };
 
     return approaches[level];
@@ -365,7 +370,7 @@ export class PromptDiagnostics {
   ): number {
     // Weights: clarity 40%, specificity 35%, completeness 25%
     const completenessScore = completeness / 10; // Convert percentage to 1-10 scale
-    const overall = (clarity * 0.4) + (specificity * 0.35) + (completenessScore * 0.25);
+    const overall = clarity * 0.4 + specificity * 0.35 + completenessScore * 0.25;
 
     return Math.round(overall * 10) / 10;
   }

@@ -5,10 +5,17 @@ export { QueueManager } from './QueueManager';
 
 // Types
 export type {
-    QueueHealthStatus, QueueJob, QueueMessage, QueueMetrics, QueueProvider
+  QueueHealthStatus,
+  QueueJob,
+  QueueMessage,
+  QueueMetrics,
+  QueueProvider,
 } from './types';
 
 // Configuration schemas
 export {
-    QueueConfigSchema, QueueJobSchema, QueueMessageSchema, QueueProviderSchema
+  QueueConfigSchema,
+  QueueJobSchema,
+  QueueMessageSchema,
+  QueueProviderSchema,
 } from './types';

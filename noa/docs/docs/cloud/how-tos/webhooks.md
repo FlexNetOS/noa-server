@@ -1,15 +1,20 @@
 # Use webhooks
 
-When working with LangGraph Platform, you may want to use webhooks to receive updates after an API call completes. Webhooks are useful for triggering actions in your service once a run has finished processing. To implement this, you need to expose an endpoint that can accept `POST` requests and pass this endpoint as a `webhook` parameter in your API request.
+When working with LangGraph Platform, you may want to use webhooks to receive
+updates after an API call completes. Webhooks are useful for triggering actions
+in your service once a run has finished processing. To implement this, you need
+to expose an endpoint that can accept `POST` requests and pass this endpoint as
+a `webhook` parameter in your API request.
 
-Currently, the SDK does not provide built-in support for defining webhook endpoints, but you can specify them manually using API requests.
+Currently, the SDK does not provide built-in support for defining webhook
+endpoints, but you can specify them manually using API requests.
 
 ## Supported endpoints
 
 The following API endpoints accept a `webhook` parameter:
 
 | Operation            | HTTP Method | Endpoint                          |
-|----------------------|-------------|-----------------------------------|
+| -------------------- | ----------- | --------------------------------- |
 | Create Run           | `POST`      | `/thread/{thread_id}/runs`        |
 | Create Thread Cron   | `POST`      | `/thread/{thread_id}/runs/crons`  |
 | Stream Run           | `POST`      | `/thread/{thread_id}/runs/stream` |
@@ -63,21 +68,24 @@ Example response:
 
 ```json
 {
-    "thread_id": "9dde5490-2b67-47c8-aa14-4bfec88af217",
-    "created_at": "2024-08-30T23:07:38.242730+00:00",
-    "updated_at": "2024-08-30T23:07:38.242730+00:00",
-    "metadata": {},
-    "status": "idle",
-    "config": {},
-    "values": null
+  "thread_id": "9dde5490-2b67-47c8-aa14-4bfec88af217",
+  "created_at": "2024-08-30T23:07:38.242730+00:00",
+  "updated_at": "2024-08-30T23:07:38.242730+00:00",
+  "metadata": {},
+  "status": "idle",
+  "config": {},
+  "values": null
 }
 ```
 
 ## Use a webhook with a graph run
 
-To use a webhook, specify the `webhook` parameter in your API request. When the run completes, LangGraph Platform sends a `POST` request to the specified webhook URL.
+To use a webhook, specify the `webhook` parameter in your API request. When the
+run completes, LangGraph Platform sends a `POST` request to the specified
+webhook URL.
 
-For example, if your server listens for webhook events at `https://my-server.app/my-webhook-endpoint`, include this in your request:
+For example, if your server listens for webhook events at
+`https://my-server.app/my-webhook-endpoint`, include this in your request:
 
 === "Python"
 
@@ -128,11 +136,16 @@ For example, if your server listens for webhook events at `https://my-server.app
 
 ## Webhook payload
 
-LangGraph Platform sends webhook notifications in the format of a [Run](../../concepts/assistants.md#execution). See the [API Reference](https://langchain-ai.github.io/langgraph/cloud/reference/api/api_ref.html#model/run) for details. The request payload includes run input, configuration, and other metadata in the `kwargs` field.
+LangGraph Platform sends webhook notifications in the format of a
+[Run](../../concepts/assistants.md#execution). See the
+[API Reference](https://langchain-ai.github.io/langgraph/cloud/reference/api/api_ref.html#model/run)
+for details. The request payload includes run input, configuration, and other
+metadata in the `kwargs` field.
 
 ## Secure webhooks
 
-To ensure only authorized requests hit your webhook endpoint, consider adding a security token as a query parameter:
+To ensure only authorized requests hit your webhook endpoint, consider adding a
+security token as a query parameter:
 
 ```
 https://my-server.app/my-webhook-endpoint?token=YOUR_SECRET_TOKEN
@@ -142,7 +155,8 @@ Your server should extract and validate this token before processing requests.
 
 ## Disable webhooks
 
-As of `langgraph-api>=0.2.78`, developers can disable webhooks in the `langgraph.json` file:
+As of `langgraph-api>=0.2.78`, developers can disable webhooks in the
+`langgraph.json` file:
 
 ```json
 {
@@ -152,15 +166,23 @@ As of `langgraph-api>=0.2.78`, developers can disable webhooks in the `langgraph
 }
 ```
 
-This feature is primarily intended for self-hosted deployments, where platform administrators or developers may prefer to disable webhooks to simplify their security posture—especially if they are not configuring firewall rules or other network controls. Disabling webhooks helps prevent untrusted payloads from being sent to internal endpoints.
+This feature is primarily intended for self-hosted deployments, where platform
+administrators or developers may prefer to disable webhooks to simplify their
+security posture—especially if they are not configuring firewall rules or other
+network controls. Disabling webhooks helps prevent untrusted payloads from being
+sent to internal endpoints.
 
-For full configuration details, refer to the [configuration file reference](https://langchain-ai.github.io/langgraph/cloud/reference/cli/?h=disable_webhooks#configuration-file).
+For full configuration details, refer to the
+[configuration file reference](https://langchain-ai.github.io/langgraph/cloud/reference/cli/?h=disable_webhooks#configuration-file).
 
 ## Test webhooks
 
 You can test your webhook using online services like:
 
-- **[Beeceptor](https://beeceptor.com/)** – Quickly create a test endpoint and inspect incoming webhook payloads.
-- **[Webhook.site](https://webhook.site/)** – View, debug, and log incoming webhook requests in real time.
+- **[Beeceptor](https://beeceptor.com/)** – Quickly create a test endpoint and
+  inspect incoming webhook payloads.
+- **[Webhook.site](https://webhook.site/)** – View, debug, and log incoming
+  webhook requests in real time.
 
-These tools help you verify that LangGraph Platform is correctly triggering and sending webhooks to your service.
+These tools help you verify that LangGraph Platform is correctly triggering and
+sending webhooks to your service.

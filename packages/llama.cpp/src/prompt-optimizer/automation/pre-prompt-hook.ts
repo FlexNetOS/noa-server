@@ -6,7 +6,11 @@
 import { mandatoryOptimizer } from './auto-optimizer';
 import { AutomationLogger } from './logger';
 
-export type HookCallback = (prompt: string, optimized: string, metadata: any) => void | Promise<void>;
+export type HookCallback = (
+  prompt: string,
+  optimized: string,
+  metadata: any
+) => void | Promise<void>;
 
 export class PrePromptHook {
   private static instance: PrePromptHook;
@@ -61,7 +65,7 @@ export class PrePromptHook {
               cached: result.cached,
               processingTime: result.processingTime,
               qualityScore: result.qualityScore,
-              context
+              context,
             });
           } catch (error) {
             this.logger.error(`Hook ${name} failed`, error);
@@ -70,7 +74,6 @@ export class PrePromptHook {
       }
 
       return result.optimized;
-
     } catch (error) {
       this.logger.error('Pre-prompt hook execution failed', error);
       return prompt; // Return original on error
@@ -99,9 +102,6 @@ export const prePromptHook = PrePromptHook.getInstance();
 /**
  * Convenience function for executing pre-prompt hooks
  */
-export async function optimizeBeforeExecution(
-  prompt: string,
-  context?: any
-): Promise<string> {
+export async function optimizeBeforeExecution(prompt: string, context?: any): Promise<string> {
   return await prePromptHook.execute(prompt, context);
 }

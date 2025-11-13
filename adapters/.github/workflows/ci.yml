@@ -6,9 +6,9 @@ permissions:
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-  workflow_dispatch:  # Allows to trigger the workflow manually in GitHub UI
+  workflow_dispatch: # Allows to trigger the workflow manually in GitHub UI
 
 # If another push to the same PR or branch happens while this workflow is still running,
 # cancel the earlier run in favor of the next run.
@@ -32,9 +32,8 @@ jobs:
         # Starting new jobs is also relatively slow,
         # so linting on fewer versions makes CI faster.
         python-version:
-          - "3.12"
-    uses:
-      ./.github/workflows/_lint.yml
+          - '3.12'
+    uses: ./.github/workflows/_lint.yml
     with:
       working-directory: .
       python-version: ${{ matrix.python-version }}
@@ -50,12 +49,10 @@ jobs:
         # Starting new jobs is also relatively slow,
         # so linting on fewer versions makes CI faster.
         python-version:
-          - "3.10"
-          - "3.12"
-    uses:
-      ./.github/workflows/_test.yml
+          - '3.10'
+          - '3.12'
+    uses: ./.github/workflows/_test.yml
     with:
       working-directory: .
       python-version: ${{ matrix.python-version }}
     secrets: inherit
-

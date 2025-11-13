@@ -9,15 +9,15 @@ commonLabels:
   environment: staging
 
 bases:
-- ../../base
+  - ../../base
 
 configMapGenerator:
-- name: noa-server-config
-  behavior: merge
-  literals:
-  - NODE_ENV=staging
-  - LOG_LEVEL=info
+  - name: noa-server-config
+    behavior: merge
+    literals:
+      - NODE_ENV=staging
+      - LOG_LEVEL=info
 
 images:
-- name: noa-server
-  newTag: staging-latest
+  - name: noa-server
+    newTag: staging-latest

@@ -1,6 +1,7 @@
 # Code Generation Tools
 
-Noa Server includes automated code generation tools to accelerate development and ensure consistency across the codebase.
+Noa Server includes automated code generation tools to accelerate development
+and ensure consistency across the codebase.
 
 ## Available Generators
 
@@ -13,11 +14,13 @@ pnpm generate:package <package-name>
 ```
 
 **Example:**
+
 ```bash
 pnpm generate:package user-service
 ```
 
 **Creates:**
+
 ```
 packages/user-service/
 ├── src/
@@ -33,6 +36,7 @@ packages/user-service/
 ```
 
 **Features:**
+
 - ✅ TypeScript configuration
 - ✅ Package.json with standard scripts
 - ✅ Test setup with Vitest
@@ -49,11 +53,13 @@ pnpm generate:mcp-server <server-name>
 ```
 
 **Example:**
+
 ```bash
 pnpm generate:mcp-server weather
 ```
 
 **Creates:**
+
 ```
 mcp/servers/weather/
 ├── __init__.py
@@ -65,6 +71,7 @@ mcp/servers/weather/
 ```
 
 **Features:**
+
 - ✅ Async MCP server setup
 - ✅ Tool implementation template
 - ✅ Pytest test suite
@@ -81,11 +88,13 @@ pnpm generate:api-route <route-path>
 ```
 
 **Example:**
+
 ```bash
 pnpm generate:api-route /users
 ```
 
 **Creates:**
+
 ```
 packages/noa-server/src/routes/users/
 ├── index.ts         # Router configuration
@@ -96,6 +105,7 @@ packages/noa-server/src/routes/users/
 ```
 
 **Features:**
+
 - ✅ Full CRUD operations
 - ✅ Express router setup
 - ✅ Controller with error handling
@@ -113,11 +123,13 @@ pnpm generate:component <component-name>
 ```
 
 **Example:**
+
 ```bash
 pnpm generate:component UserCard
 ```
 
 **Creates:**
+
 ```
 packages/ui-dashboard/src/components/UserCard/
 ├── index.tsx
@@ -127,6 +139,7 @@ packages/ui-dashboard/src/components/UserCard/
 ```
 
 **Features:**
+
 - ✅ TypeScript React component
 - ✅ Props interface
 - ✅ CSS module
@@ -158,13 +171,14 @@ pnpm generate:component NotificationList
 
 The generators automatically handle naming conventions:
 
-| Input | Package Name | Class Name | File Name |
-|-------|-------------|------------|-----------|
+| Input          | Package Name               | Class Name    | File Name         |
+| -------------- | -------------------------- | ------------- | ----------------- |
 | `user-service` | `@noa-server/user-service` | `UserService` | `user-service.ts` |
-| `auth_helper` | `@noa-server/auth-helper` | `AuthHelper` | `auth-helper.ts` |
-| `APIClient` | `@noa-server/api-client` | `ApiClient` | `api-client.ts` |
+| `auth_helper`  | `@noa-server/auth-helper`  | `AuthHelper`  | `auth-helper.ts`  |
+| `APIClient`    | `@noa-server/api-client`   | `ApiClient`   | `api-client.ts`   |
 
 **Conventions:**
+
 - **Packages**: kebab-case (`user-service`)
 - **Classes**: PascalCase (`UserService`)
 - **Files**: kebab-case (`user-service.ts`)
@@ -174,9 +188,11 @@ The generators automatically handle naming conventions:
 
 ### Custom Templates
 
-Templates are located in `scripts/generators/templates/`. You can customize them for your needs.
+Templates are located in `scripts/generators/templates/`. You can customize them
+for your needs.
 
 **Template Variables:**
+
 - `{{name}}` - Original input name
 - `{{pascalName}}` - PascalCase version
 - `{{camelName}}` - camelCase version
@@ -187,7 +203,7 @@ Templates are located in `scripts/generators/templates/`. You can customize them
 Create a new generator function in `scripts/generators/generate.js`:
 
 ```javascript
-generators['my-generator'] = function(name) {
+generators['my-generator'] = function (name) {
   info(`Generating: ${name}`);
 
   const pascalName = toPascalCase(name);
@@ -205,6 +221,7 @@ generators['my-generator'] = function(name) {
 ```
 
 Then use it:
+
 ```bash
 pnpm generate:my-generator example
 ```
@@ -230,6 +247,7 @@ pnpm test
 ### 2. Customize After Generation
 
 Generators create boilerplate - you need to:
+
 - Implement business logic
 - Add proper validation rules
 - Write comprehensive tests
@@ -238,6 +256,7 @@ Generators create boilerplate - you need to:
 ### 3. Maintain Consistency
 
 Use generators for:
+
 - ✅ All new packages
 - ✅ All new API routes
 - ✅ All new MCP servers
@@ -322,6 +341,7 @@ Error: Unknown generator: xyz
 ```
 
 **Solution:** Check available generators:
+
 ```bash
 node scripts/generators/generate.js
 ```
@@ -333,6 +353,7 @@ Error: EACCES: permission denied
 ```
 
 **Solution:** Make script executable:
+
 ```bash
 chmod +x scripts/generators/generate.js
 ```
@@ -403,6 +424,7 @@ To improve the generators:
 ## Support
 
 For issues with code generation:
+
 - GitHub Issues: https://github.com/noa-server/noa-server/issues
 - Tag: `code-generation`
 - Include: Generator name, input, error message

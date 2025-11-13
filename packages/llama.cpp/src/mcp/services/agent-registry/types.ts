@@ -13,7 +13,7 @@ export enum AgentStatus {
   ERROR = 'error',
   OFFLINE = 'offline',
   INITIALIZING = 'initializing',
-  TERMINATING = 'terminating'
+  TERMINATING = 'terminating',
 }
 
 /**
@@ -65,7 +65,7 @@ export enum AgentCapability {
   MONITORING = 'monitoring',
   ALERTING = 'alerting',
   LOGGING = 'logging',
-  BACKUP = 'backup'
+  BACKUP = 'backup',
 }
 
 /**
@@ -137,7 +137,7 @@ export enum AgentType {
 
   // Other
   MIGRATION_PLANNER = 'migration-planner',
-  SWARM_INIT = 'swarm-init'
+  SWARM_INIT = 'swarm-init',
 }
 
 /**
@@ -329,7 +329,7 @@ export enum RegistryEventType {
   AGENT_HEARTBEAT = 'agent_heartbeat',
   TASK_ASSIGNED = 'task_assigned',
   TASK_COMPLETED = 'task_completed',
-  HEALTH_CHECK_FAILED = 'health_check_failed'
+  HEALTH_CHECK_FAILED = 'health_check_failed',
 }
 
 /**

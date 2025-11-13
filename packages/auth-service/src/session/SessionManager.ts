@@ -2,6 +2,7 @@
  * Session Manager with Redis backend
  */
 
+import { Redis } from 'ioredis';
 import { v4 as uuidv4 } from 'uuid';
 
 import { AuthConfig, Session, User } from '../types/index.js';

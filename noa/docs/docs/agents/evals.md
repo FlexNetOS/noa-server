@@ -9,7 +9,11 @@ hide:
 
 # Evals
 
-To evaluate your agent's performance you can use `LangSmith` [evaluations](https://docs.smith.langchain.com/evaluation). You would need to first define an evaluator function to judge the results from an agent, such as final outputs or trajectory. Depending on your evaluation technique, this may or may not involve a reference output:
+To evaluate your agent's performance you can use `LangSmith`
+[evaluations](https://docs.smith.langchain.com/evaluation). You would need to
+first define an evaluator function to judge the results from an agent, such as
+final outputs or trajectory. Depending on your evaluation technique, this may or
+may not involve a reference output:
 
 :::python
 
@@ -37,7 +41,7 @@ function evaluator({ outputs, referenceOutputs }: EvaluatorParams) {
   const outputMessages = outputs.messages;
   const referenceMessages = referenceOutputs.messages;
   const score = compareMessages(outputMessages, referenceMessages);
-  return { key: "evaluator_score", score: score };
+  return { key: 'evaluator_score', score: score };
 }
 ```
 
@@ -63,7 +67,8 @@ npm install agentevals
 
 ## Create evaluator
 
-A common way to evaluate agent performance is by comparing its trajectory (the order in which it calls its tools) against a reference trajectory:
+A common way to evaluate agent performance is by comparing its trajectory (the
+order in which it calls its tools) against a reference trajectory:
 
 :::python
 
@@ -122,22 +127,22 @@ result = evaluator(
 :::js
 
 ```typescript
-import { createTrajectoryMatchEvaluator } from "agentevals/trajectory/match";
+import { createTrajectoryMatchEvaluator } from 'agentevals/trajectory/match';
 
 const outputs = [
   {
-    role: "assistant",
+    role: 'assistant',
     tool_calls: [
       {
         function: {
-          name: "get_weather",
-          arguments: JSON.stringify({ city: "san francisco" }),
+          name: 'get_weather',
+          arguments: JSON.stringify({ city: 'san francisco' }),
         },
       },
       {
         function: {
-          name: "get_directions",
-          arguments: JSON.stringify({ destination: "presidio" }),
+          name: 'get_directions',
+          arguments: JSON.stringify({ destination: 'presidio' }),
         },
       },
     ],
@@ -146,12 +151,12 @@ const outputs = [
 
 const referenceOutputs = [
   {
-    role: "assistant",
+    role: 'assistant',
     tool_calls: [
       {
         function: {
-          name: "get_weather",
-          arguments: JSON.stringify({ city: "san francisco" }),
+          name: 'get_weather',
+          arguments: JSON.stringify({ city: 'san francisco' }),
         },
       },
     ],
@@ -161,7 +166,7 @@ const referenceOutputs = [
 // Create the evaluator
 const evaluator = createTrajectoryMatchEvaluator({
   // Specify how the trajectories will be compared. `superset` will accept output trajectory as valid if it's a superset of the reference one. Other options include: strict, unordered and subset
-  trajectoryMatchMode: "superset", // (1)!
+  trajectoryMatchMode: 'superset', // (1)!
 });
 
 // Run the evaluator
@@ -173,13 +178,21 @@ const result = evaluator({
 
 :::
 
-1. Specify how the trajectories will be compared. `superset` will accept output trajectory as valid if it's a superset of the reference one. Other options include: [strict](https://github.com/langchain-ai/agentevals?tab=readme-ov-file#strict-match), [unordered](https://github.com/langchain-ai/agentevals?tab=readme-ov-file#unordered-match) and [subset](https://github.com/langchain-ai/agentevals?tab=readme-ov-file#subset-and-superset-match)
+1. Specify how the trajectories will be compared. `superset` will accept output
+   trajectory as valid if it's a superset of the reference one. Other options
+   include:
+   [strict](https://github.com/langchain-ai/agentevals?tab=readme-ov-file#strict-match),
+   [unordered](https://github.com/langchain-ai/agentevals?tab=readme-ov-file#unordered-match)
+   and
+   [subset](https://github.com/langchain-ai/agentevals?tab=readme-ov-file#subset-and-superset-match)
 
-As a next step, learn more about how to [customize trajectory match evaluator](https://github.com/langchain-ai/agentevals?tab=readme-ov-file#agent-trajectory-match).
+As a next step, learn more about how to
+[customize trajectory match evaluator](https://github.com/langchain-ai/agentevals?tab=readme-ov-file#agent-trajectory-match).
 
 ### LLM-as-a-judge
 
-You can use LLM-as-a-judge evaluator that uses an LLM to compare the trajectory against the reference outputs and output a score:
+You can use LLM-as-a-judge evaluator that uses an LLM to compare the trajectory
+against the reference outputs and output a score:
 
 :::python
 
@@ -205,11 +218,11 @@ evaluator = create_trajectory_llm_as_judge(
 import {
   createTrajectoryLlmAsJudge,
   TRAJECTORY_ACCURACY_PROMPT_WITH_REFERENCE,
-} from "agentevals/trajectory/llm";
+} from 'agentevals/trajectory/llm';
 
 const evaluator = createTrajectoryLlmAsJudge({
   prompt: TRAJECTORY_ACCURACY_PROMPT_WITH_REFERENCE,
-  model: "openai:o3-mini",
+  model: 'openai:o3-mini',
 });
 ```
 
@@ -217,10 +230,15 @@ const evaluator = createTrajectoryLlmAsJudge({
 
 ## Run evaluator
 
-To run an evaluator, you will first need to create a [LangSmith dataset](https://docs.smith.langchain.com/evaluation/concepts#datasets). To use the prebuilt AgentEvals evaluators, you will need a dataset with the following schema:
+To run an evaluator, you will first need to create a
+[LangSmith dataset](https://docs.smith.langchain.com/evaluation/concepts#datasets).
+To use the prebuilt AgentEvals evaluators, you will need a dataset with the
+following schema:
 
 - **input**: `{"messages": [...]}` input messages to call the agent with.
-- **output**: `{"messages": [...]}` expected message history in the agent output. For trajectory evaluation, you can choose to keep only assistant messages.
+- **output**: `{"messages": [...]}` expected message history in the agent
+  output. For trajectory evaluation, you can choose to keep only assistant
+  messages.
 
 :::python
 

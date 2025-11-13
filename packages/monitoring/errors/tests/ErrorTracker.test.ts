@@ -12,7 +12,7 @@ describe('ErrorTracker', () => {
     tracker = new ErrorTracker({
       dsn: 'https://test@sentry.io/123',
       environment: 'test',
-      sampleRate: 0 // Disable actual sending in tests
+      sampleRate: 0, // Disable actual sending in tests
     });
   });
 
@@ -33,7 +33,7 @@ describe('ErrorTracker', () => {
       const error = new Error('Test error with context');
       const eventId = await tracker.captureError(error, {
         user: { id: '123', email: 'test@example.com' },
-        tags: { feature: 'test' }
+        tags: { feature: 'test' },
       });
 
       expect(eventId).toBeDefined();
@@ -59,10 +59,7 @@ describe('ErrorTracker', () => {
 
   describe('message capturing', () => {
     it('should capture messages', async () => {
-      const eventId = await tracker.captureMessage(
-        'Test message',
-        ErrorSeverity.INFO
-      );
+      const eventId = await tracker.captureMessage('Test message', ErrorSeverity.INFO);
 
       expect(eventId).toBeDefined();
     });
@@ -73,14 +70,11 @@ describe('ErrorTracker', () => {
         ErrorSeverity.INFO,
         ErrorSeverity.WARNING,
         ErrorSeverity.ERROR,
-        ErrorSeverity.FATAL
+        ErrorSeverity.FATAL,
       ];
 
       for (const severity of severities) {
-        const eventId = await tracker.captureMessage(
-          `Test ${severity}`,
-          severity
-        );
+        const eventId = await tracker.captureMessage(`Test ${severity}`, severity);
         expect(eventId).toBeDefined();
       }
     });
@@ -92,7 +86,7 @@ describe('ErrorTracker', () => {
         timestamp: new Date(),
         category: 'test',
         message: 'Test breadcrumb',
-        level: ErrorSeverity.INFO
+        level: ErrorSeverity.INFO,
       });
 
       // Breadcrumbs are added, no exception should be thrown
@@ -105,7 +99,7 @@ describe('ErrorTracker', () => {
         category: 'test',
         message: 'Test breadcrumb with data',
         level: ErrorSeverity.INFO,
-        data: { key: 'value' }
+        data: { key: 'value' },
       });
 
       expect(true).toBe(true);
@@ -117,7 +111,7 @@ describe('ErrorTracker', () => {
       tracker.setUser({
         id: '123',
         email: 'test@example.com',
-        username: 'testuser'
+        username: 'testuser',
       });
 
       expect(true).toBe(true);
@@ -126,7 +120,7 @@ describe('ErrorTracker', () => {
     it('should set tags', () => {
       tracker.setTags({
         environment: 'test',
-        version: '1.0.0'
+        version: '1.0.0',
       });
 
       expect(true).toBe(true);
@@ -153,11 +147,7 @@ describe('ErrorTracker', () => {
 
   describe('error grouping', () => {
     it('should add custom grouping rules', () => {
-      tracker.addGroupingRule(
-        'custom_rule',
-        /custom.*error/i,
-        ['custom', 'error']
-      );
+      tracker.addGroupingRule('custom_rule', /custom.*error/i, ['custom', 'error']);
 
       expect(true).toBe(true);
     });

@@ -1,0 +1,353 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS Variables for Theme Colors */
+@layer base {
+  :root {
+    /* Primary Colors */
+    --color-primary-50: 240 249 255;
+    --color-primary-100: 224 242 254;
+    --color-primary-200: 186 230 253;
+    --color-primary-300: 125 211 252;
+    --color-primary-400: 56 189 248;
+    --color-primary-500: 14 165 233;
+    --color-primary-600: 2 132 199;
+    --color-primary-700: 3 105 161;
+    --color-primary-800: 7 89 133;
+    --color-primary-900: 12 74 110;
+    --color-primary-950: 8 47 73;
+
+    /* Secondary Colors */
+    --color-secondary-50: 250 245 255;
+    --color-secondary-100: 243 232 255;
+    --color-secondary-200: 233 213 255;
+    --color-secondary-300: 216 180 254;
+    --color-secondary-400: 192 132 252;
+    --color-secondary-500: 168 85 247;
+    --color-secondary-600: 147 51 234;
+    --color-secondary-700: 126 34 206;
+    --color-secondary-800: 107 33 168;
+    --color-secondary-900: 88 28 135;
+    --color-secondary-950: 59 7 100;
+
+    /* Neutral Colors */
+    --color-neutral-50: 250 250 250;
+    --color-neutral-100: 245 245 245;
+    --color-neutral-200: 229 229 229;
+    --color-neutral-300: 212 212 212;
+    --color-neutral-400: 163 163 163;
+    --color-neutral-500: 115 115 115;
+    --color-neutral-600: 82 82 82;
+    --color-neutral-700: 64 64 64;
+    --color-neutral-800: 38 38 38;
+    --color-neutral-900: 23 23 23;
+    --color-neutral-950: 10 10 10;
+
+    /* Semantic Colors */
+    --color-background: 255 255 255;
+    --color-foreground: 23 23 23;
+    --color-card: 255 255 255;
+    --color-card-foreground: 23 23 23;
+    --color-border: 229 229 229;
+    --color-input: 229 229 229;
+    --color-ring: 14 165 233;
+    --color-muted: 245 245 245;
+    --color-muted-foreground: 115 115 115;
+    --color-accent: 245 245 245;
+    --color-accent-foreground: 23 23 23;
+    --color-popover: 255 255 255;
+    --color-popover-foreground: 23 23 23;
+
+    /* Radius */
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* Primary Colors (adjusted for dark mode) */
+    --color-primary-50: 8 47 73;
+    --color-primary-100: 12 74 110;
+    --color-primary-200: 7 89 133;
+    --color-primary-300: 3 105 161;
+    --color-primary-400: 2 132 199;
+    --color-primary-500: 14 165 233;
+    --color-primary-600: 56 189 248;
+    --color-primary-700: 125 211 252;
+    --color-primary-800: 186 230 253;
+    --color-primary-900: 224 242 254;
+    --color-primary-950: 240 249 255;
+
+    /* Secondary Colors (adjusted for dark mode) */
+    --color-secondary-50: 59 7 100;
+    --color-secondary-100: 88 28 135;
+    --color-secondary-200: 107 33 168;
+    --color-secondary-300: 126 34 206;
+    --color-secondary-400: 147 51 234;
+    --color-secondary-500: 168 85 247;
+    --color-secondary-600: 192 132 252;
+    --color-secondary-700: 216 180 254;
+    --color-secondary-800: 233 213 255;
+    --color-secondary-900: 243 232 255;
+    --color-secondary-950: 250 245 255;
+
+    /* Neutral Colors (adjusted for dark mode) */
+    --color-neutral-50: 10 10 10;
+    --color-neutral-100: 23 23 23;
+    --color-neutral-200: 38 38 38;
+    --color-neutral-300: 64 64 64;
+    --color-neutral-400: 82 82 82;
+    --color-neutral-500: 115 115 115;
+    --color-neutral-600: 163 163 163;
+    --color-neutral-700: 212 212 212;
+    --color-neutral-800: 229 229 229;
+    --color-neutral-900: 245 245 245;
+    --color-neutral-950: 250 250 250;
+
+    /* Semantic Colors (dark mode) */
+    --color-background: 10 10 10;
+    --color-foreground: 250 250 250;
+    --color-card: 23 23 23;
+    --color-card-foreground: 250 250 250;
+    --color-border: 38 38 38;
+    --color-input: 38 38 38;
+    --color-ring: 56 189 248;
+    --color-muted: 38 38 38;
+    --color-muted-foreground: 163 163 163;
+    --color-accent: 38 38 38;
+    --color-accent-foreground: 250 250 250;
+    --color-popover: 23 23 23;
+    --color-popover-foreground: 250 250 250;
+  }
+}
+
+/* Base Styles */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Focus visible for keyboard navigation */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+  }
+
+  /* Disable focus ring for mouse users */
+  *:focus:not(:focus-visible) {
+    @apply outline-none ring-0;
+  }
+
+  /* Typography defaults */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold tracking-tight;
+  }
+
+  h1 {
+    @apply text-4xl lg:text-5xl;
+  }
+
+  h2 {
+    @apply text-3xl lg:text-4xl;
+  }
+
+  h3 {
+    @apply text-2xl lg:text-3xl;
+  }
+
+  h4 {
+    @apply text-xl lg:text-2xl;
+  }
+
+  h5 {
+    @apply text-lg lg:text-xl;
+  }
+
+  h6 {
+    @apply text-base lg:text-lg;
+  }
+
+  p {
+    @apply leading-relaxed;
+  }
+
+  /* Links */
+  a {
+    @apply text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors;
+  }
+
+  /* Code blocks */
+  code {
+    @apply relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm;
+  }
+
+  pre {
+    @apply overflow-x-auto rounded-lg bg-neutral-900 p-4;
+  }
+
+  pre code {
+    @apply bg-transparent p-0;
+  }
+
+  /* Selection */
+  ::selection {
+    @apply bg-primary-500/20;
+  }
+}
+
+/* Component Utilities */
+@layer components {
+  /* Container variations */
+  .container-narrow {
+    @apply container max-w-4xl;
+  }
+
+  .container-wide {
+    @apply container max-w-7xl;
+  }
+
+  /* Card component base */
+  .card {
+    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+  }
+
+  /* Glass morphism effect */
+  .glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+  }
+
+  .dark .glass {
+    @apply bg-black/10 backdrop-blur-md border border-white/10;
+  }
+
+  /* Gradient backgrounds */
+  .gradient-primary {
+    @apply bg-gradient-to-br from-primary-500 to-primary-700;
+  }
+
+  .gradient-secondary {
+    @apply bg-gradient-to-br from-secondary-500 to-secondary-700;
+  }
+
+  .gradient-mesh {
+    background-image:
+      radial-gradient(at 40% 20%, rgb(14 165 233 / 0.3) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, rgb(168 85 247 / 0.3) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, rgb(34 197 94 / 0.3) 0px, transparent 50%);
+  }
+
+  /* Skeleton loader */
+  .skeleton {
+    @apply animate-pulse rounded-md bg-muted;
+  }
+
+  /* Loading shimmer effect */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.2) 20%,
+      rgba(255, 255, 255, 0.5) 60%,
+      rgba(255, 255, 255, 0)
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+  }
+}
+
+/* Utility Classes */
+@layer utilities {
+  /* Text gradients */
+  .text-gradient-primary {
+    @apply bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent;
+  }
+
+  .text-gradient-secondary {
+    @apply bg-gradient-to-r from-secondary-500 to-secondary-700 bg-clip-text text-transparent;
+  }
+
+  /* Scrollbar styling */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--color-neutral-400)) rgb(var(--color-neutral-100));
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: rgb(var(--color-neutral-100));
+    border-radius: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgb(var(--color-neutral-400));
+    border-radius: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: rgb(var(--color-neutral-500));
+  }
+
+  /* Hide scrollbar */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Truncate text utilities */
+  .truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .truncate-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* Print styles */
+@media print {
+  body {
+    @apply text-black bg-white;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

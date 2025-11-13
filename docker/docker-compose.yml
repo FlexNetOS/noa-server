@@ -17,7 +17,7 @@ services:
     container_name: noa-mcp
     restart: unless-stopped
     ports:
-      - "${MCP_PORT:-8001}:8001"
+      - '${MCP_PORT:-8001}:8001'
     environment:
       - NODE_ENV=${NODE_ENV:-production}
       - MCP_PORT=8001
@@ -31,7 +31,7 @@ services:
     networks:
       - noa-network
     healthcheck:
-      test: ["CMD", "/health-check.sh"]
+      test: ['CMD', '/health-check.sh']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -45,13 +45,13 @@ services:
           cpus: '0.5'
           memory: 256M
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
     labels:
-      com.noa.service: "mcp"
-      com.noa.version: "0.0.1"
+      com.noa.service: 'mcp'
+      com.noa.version: '0.0.1'
 
   # ================================
   # Claude Flow Service
@@ -64,7 +64,7 @@ services:
     container_name: noa-claude-flow
     restart: unless-stopped
     ports:
-      - "${CLAUDE_FLOW_PORT:-9100}:9100"
+      - '${CLAUDE_FLOW_PORT:-9100}:9100'
     environment:
       - NODE_ENV=${NODE_ENV:-production}
       - CLAUDE_FLOW_PORT=9100
@@ -82,7 +82,7 @@ services:
       mcp:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "/health-check.sh"]
+      test: ['CMD', '/health-check.sh']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -96,13 +96,13 @@ services:
           cpus: '1.0'
           memory: 512M
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
     labels:
-      com.noa.service: "claude-flow"
-      com.noa.version: "2.7.0"
+      com.noa.service: 'claude-flow'
+      com.noa.version: '2.7.0'
 
   # ================================
   # UI Dashboard Service
@@ -115,7 +115,7 @@ services:
     container_name: noa-ui-dashboard
     restart: unless-stopped
     ports:
-      - "${UI_PORT:-9200}:9200"
+      - '${UI_PORT:-9200}:9200'
     environment:
       - NODE_ENV=${NODE_ENV:-production}
       - UI_PORT=9200
@@ -134,7 +134,7 @@ services:
       claude-flow:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "/health-check.sh"]
+      test: ['CMD', '/health-check.sh']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -148,13 +148,13 @@ services:
           cpus: '0.5'
           memory: 384M
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
     labels:
-      com.noa.service: "ui-dashboard"
-      com.noa.version: "0.0.1"
+      com.noa.service: 'ui-dashboard'
+      com.noa.version: '0.0.1'
 
   # ================================
   # Llama.cpp Neural Service
@@ -167,7 +167,7 @@ services:
     container_name: noa-llama-cpp
     restart: unless-stopped
     ports:
-      - "${LLAMA_PORT:-9300}:9300"
+      - '${LLAMA_PORT:-9300}:9300'
     environment:
       - LLAMA_PORT=9300
       - MODEL_PATH=${LLM_MODEL_PATH:-/app/models/demo.gguf}
@@ -183,7 +183,7 @@ services:
     networks:
       - noa-network
     healthcheck:
-      test: ["CMD", "/health-check.sh"]
+      test: ['CMD', '/health-check.sh']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -203,13 +203,13 @@ services:
       #       count: 1
       #       capabilities: [gpu]
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
     labels:
-      com.noa.service: "llama-cpp"
-      com.noa.version: "0.0.1"
+      com.noa.service: 'llama-cpp'
+      com.noa.version: '0.0.1'
 
   # ================================
   # AgenticOS Service
@@ -222,7 +222,7 @@ services:
     container_name: noa-agenticos
     restart: unless-stopped
     ports:
-      - "${AGENTICOS_PORT:-9400}:9400"
+      - '${AGENTICOS_PORT:-9400}:9400'
     environment:
       - AGENTICOS_PORT=9400
       - MCP_URL=http://mcp:8001
@@ -239,7 +239,7 @@ services:
       mcp:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "/health-check.sh"]
+      test: ['CMD', '/health-check.sh']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -253,13 +253,13 @@ services:
           cpus: '1.0'
           memory: 512M
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
     labels:
-      com.noa.service: "agenticos"
-      com.noa.version: "0.0.1"
+      com.noa.service: 'agenticos'
+      com.noa.version: '0.0.1'
 
   # ================================
   # Redis Cache (Optional)
@@ -269,14 +269,14 @@ services:
     container_name: noa-redis
     restart: unless-stopped
     ports:
-      - "${REDIS_PORT:-6379}:6379"
+      - '${REDIS_PORT:-6379}:6379'
     command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-changeme}
     volumes:
       - redis-data:/data
     networks:
       - noa-network
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ['CMD', 'redis-cli', '--raw', 'incr', 'ping']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -289,10 +289,10 @@ services:
           cpus: '0.25'
           memory: 128M
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
   # ================================
   # PostgreSQL Database (Optional)
@@ -302,7 +302,7 @@ services:
     container_name: noa-postgres
     restart: unless-stopped
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - '${POSTGRES_PORT:-5432}:5432'
     environment:
       - POSTGRES_DB=${POSTGRES_DB:-noa}
       - POSTGRES_USER=${POSTGRES_USER:-noa}
@@ -314,7 +314,7 @@ services:
     networks:
       - noa-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-noa}"]
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-noa}']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -327,10 +327,10 @@ services:
           cpus: '0.5'
           memory: 256M
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
 # ================================
 # Networks

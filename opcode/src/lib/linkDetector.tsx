@@ -10,10 +10,12 @@ import React from 'react';
 // - localhost URLs with ports
 // - IP addresses with ports
 // - URLs with paths and query parameters
-const URL_REGEX = /(?:https?:\/\/)?(?:localhost|127\.0\.0\.1|0\.0\.0\.0|\[[0-9a-fA-F:]+\]|(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(?::[0-9]+)?(?:\/[^\s]*)?/gi;
+const URL_REGEX =
+  /(?:https?:\/\/)?(?:localhost|127\.0\.0\.1|0\.0\.0\.0|\[[0-9a-fA-F:]+\]|(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(?::[0-9]+)?(?:\/[^\s]*)?/gi;
 
 // More specific localhost pattern for better accuracy
-const LOCALHOST_REGEX = /(?:https?:\/\/)?(?:localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])(?::[0-9]+)?(?:\/[^\s]*)?/gi;
+const LOCALHOST_REGEX =
+  /(?:https?:\/\/)?(?:localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])(?::[0-9]+)?(?:\/[^\s]*)?/gi;
 
 export interface DetectedLink {
   url: string;
@@ -31,18 +33,18 @@ export interface DetectedLink {
 export function detectLinks(text: string): DetectedLink[] {
   const links: DetectedLink[] = [];
   const seenUrls = new Set<string>();
-  
+
   // Reset regex lastIndex
   URL_REGEX.lastIndex = 0;
-  
+
   let match;
   while ((match = URL_REGEX.exec(text)) !== null) {
     const url = match[0];
-    
+
     // Skip if we've already seen this URL
     if (seenUrls.has(url)) continue;
     seenUrls.add(url);
-    
+
     // Ensure the URL has a protocol
     let fullUrl = url;
     if (!url.match(/^https?:\/\//)) {
@@ -50,7 +52,7 @@ export function detectLinks(text: string): DetectedLink[] {
       const isLocalhost = LOCALHOST_REGEX.test(url);
       fullUrl = `${isLocalhost ? 'http' : 'https'}://${url}`;
     }
-    
+
     // Validate the URL
     try {
       new URL(fullUrl);
@@ -58,16 +60,16 @@ export function detectLinks(text: string): DetectedLink[] {
       // Invalid URL, skip
       continue;
     }
-    
+
     links.push({
       url,
       fullUrl,
       isLocalhost: LOCALHOST_REGEX.test(url),
       startIndex: match.index,
-      endIndex: match.index + url.length
+      endIndex: match.index + url.length,
     });
   }
-  
+
   return links;
 }
 
@@ -102,20 +104,20 @@ export function makeLinksClickable(
   onLinkClick: (url: string) => void
 ): React.ReactNode[] {
   const links = detectLinks(text);
-  
+
   if (links.length === 0) {
     return [text];
   }
-  
+
   const elements: React.ReactNode[] = [];
   let lastIndex = 0;
-  
+
   links.forEach((link, index) => {
     // Add text before the link
     if (link.startIndex > lastIndex) {
       elements.push(text.substring(lastIndex, link.startIndex));
     }
-    
+
     // Add the clickable link
     elements.push(
       <a
@@ -125,20 +127,20 @@ export function makeLinksClickable(
           e.preventDefault();
           onLinkClick(link.fullUrl);
         }}
-        className="text-primary underline hover:text-primary/80 cursor-pointer"
+        className="text-primary hover:text-primary/80 cursor-pointer underline"
         title={link.fullUrl}
       >
         {link.url}
       </a>
     );
-    
+
     lastIndex = link.endIndex;
   });
-  
+
   // Add remaining text
   if (lastIndex < text.length) {
     elements.push(text.substring(lastIndex));
   }
-  
+
   return elements;
-} 
+}

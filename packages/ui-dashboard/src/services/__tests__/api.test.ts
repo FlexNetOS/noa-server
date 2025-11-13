@@ -3,11 +3,7 @@
  * Tests REST API calls, WebSocket connections, and error handling
  */
 
-import {
-  mockTelemetryData,
-  mockAgents,
-  mockTasks,
-} from '../../../tests/fixtures/telemetryData';
+import { mockTelemetryData, mockAgents, mockTasks } from '../../../tests/fixtures/telemetryData';
 import { api } from '../api';
 
 // Mock fetch globally

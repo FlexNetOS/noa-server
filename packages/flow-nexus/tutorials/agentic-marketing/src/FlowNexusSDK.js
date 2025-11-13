@@ -15,7 +15,7 @@ class FlowNexusSDK extends EventEmitter {
     this.swarmId = null;
     this.agents = new Map();
     this.workflows = new Map();
-    
+
     // MCP function references - these will be injected by the application
     this.mcp = null;
     this.dbManager = null;
@@ -30,7 +30,7 @@ class FlowNexusSDK extends EventEmitter {
     if (!mcpTools) {
       throw new Error('MCP tools are required for Flow Nexus SDK initialization');
     }
-    
+
     this.mcp = mcpTools;
     this.dbManager = dbManager;
     this.initialized = true;
@@ -52,37 +52,37 @@ class FlowNexusSDK extends EventEmitter {
    */
   async register(email, password, fullName) {
     this.ensureInitialized();
-    
+
     try {
       const result = await this.mcp.user_register({
         email,
         password,
-        full_name: fullName || 'Agentic Marketing User'
+        full_name: fullName || 'Agentic Marketing User',
       });
 
       if (result.success) {
         this.authenticated = true;
         this.user = result.user;
         this.session = result.session;
-        
+
         // Save session to database if available
         if (this.dbManager) {
           await this.dbManager.saveSession({ user: this.user, session: this.session });
         }
-        
+
         this.emit('authenticated', { user: this.user, action: 'register' });
-        
+
         // Auto-initialize swarm after registration
         await this.autoInitializeInfrastructure();
-        
+
         return {
           success: true,
           user: this.user,
           credits: 256, // New user bonus
-          message: 'Registration successful! You have 256 free credits.'
+          message: 'Registration successful! You have 256 free credits.',
         };
       }
-      
+
       throw new Error(result.error || 'Registration failed');
     } catch (error) {
       this.emit('error', { type: 'authentication', error: error.message });
@@ -92,7 +92,7 @@ class FlowNexusSDK extends EventEmitter {
 
   async login(email, password) {
     this.ensureInitialized();
-    
+
     try {
       const result = await this.mcp.user_login({ email, password });
 
@@ -100,24 +100,24 @@ class FlowNexusSDK extends EventEmitter {
         this.authenticated = true;
         this.user = result.user || { email, id: 'mock-user-' + Date.now() };
         this.session = result.session || { access_token: 'mock-token' };
-        
+
         // Save session to database if available
         if (this.dbManager) {
           await this.dbManager.saveSession({ user: this.user, session: this.session });
         }
-        
+
         this.emit('authenticated', { user: this.user, action: 'login' });
-        
+
         // Auto-initialize swarm after login
         await this.autoInitializeInfrastructure();
-        
+
         return {
           success: true,
           user: this.user,
-          message: 'Login successful!'
+          message: 'Login successful!',
         };
       }
-      
+
       throw new Error(result.error || 'Login failed');
     } catch (error) {
       this.emit('error', { type: 'authentication', error: error.message });
@@ -133,21 +133,21 @@ class FlowNexusSDK extends EventEmitter {
     } catch (error) {
       // Ignore logout errors
     }
-    
+
     // Clear database session if available
     if (this.dbManager) {
       await this.dbManager.clearSession();
     }
-    
+
     this.authenticated = false;
     this.user = null;
     this.session = null;
     this.swarmId = null;
     this.agents.clear();
     this.workflows.clear();
-    
+
     this.emit('logout');
-    
+
     return { success: true, message: 'Logout successful' };
   }
 
@@ -158,10 +158,10 @@ class FlowNexusSDK extends EventEmitter {
     try {
       // Initialize swarm for media operations
       await this.initializeMediaSwarm();
-      
+
       // Create standard media workflows
       await this.createMediaWorkflows();
-      
+
       this.emit('infrastructure:ready');
     } catch (error) {
       console.error('Error auto-initializing infrastructure:', error.message);
@@ -176,35 +176,35 @@ class FlowNexusSDK extends EventEmitter {
     if (!this.authenticated) {
       throw new Error('Authentication required for swarm initialization');
     }
-    
+
     this.ensureInitialized();
-    
+
     try {
       // Initialize swarm with hierarchical topology for media operations
       const swarmResult = await this.mcp.swarm_init({
         topology: 'hierarchical',
         maxAgents: 8,
-        strategy: 'specialized'
+        strategy: 'specialized',
       });
-      
+
       this.swarmId = swarmResult.swarmId || `swarm-${Date.now()}`;
-      
+
       // Save swarm to database if available
       if (this.dbManager) {
         await this.dbManager.saveSwarm({
           swarmId: this.swarmId,
           topology: 'hierarchical',
           maxAgents: 8,
-          strategy: 'specialized'
+          strategy: 'specialized',
         });
       }
-      
+
       // Spawn specialized media agents
       const mediaAgents = [
         { type: 'researcher', capabilities: ['market-research', 'competitor-analysis'] },
         { type: 'analyst', capabilities: ['performance-analysis', 'anomaly-detection'] },
         { type: 'optimizer', capabilities: ['budget-optimization', 'bid-management'] },
-        { type: 'coordinator', capabilities: ['workflow-management', 'task-orchestration'] }
+        { type: 'coordinator', capabilities: ['workflow-management', 'task-orchestration'] },
       ];
 
       for (const agentConfig of mediaAgents) {
@@ -212,20 +212,20 @@ class FlowNexusSDK extends EventEmitter {
           const agent = await this.mcp.agent_spawn({
             type: agentConfig.type,
             capabilities: agentConfig.capabilities,
-            name: `media-${agentConfig.type}`
+            name: `media-${agentConfig.type}`,
           });
-          
+
           const agentData = {
             id: agent.agentId || `${agentConfig.type}-${Date.now()}`,
             swarmId: this.swarmId,
             type: agentConfig.type,
             name: `media-${agentConfig.type}`,
             capabilities: agentConfig.capabilities,
-            status: 'active'
+            status: 'active',
           };
-          
+
           this.agents.set(agentData.id, agentData);
-          
+
           // Save agent to database if available
           if (this.dbManager) {
             await this.dbManager.saveAgent(agentData);
@@ -234,16 +234,16 @@ class FlowNexusSDK extends EventEmitter {
           console.warn(`Failed to spawn ${agentConfig.type} agent:`, agentError.message);
         }
       }
-      
+
       this.emit('swarm:initialized', {
         swarmId: this.swarmId,
-        agents: Array.from(this.agents.values())
+        agents: Array.from(this.agents.values()),
       });
-      
+
       return {
         success: true,
         swarmId: this.swarmId,
-        agentCount: this.agents.size
+        agentCount: this.agents.size,
       };
     } catch (error) {
       this.emit('error', { type: 'swarm', error: error.message });
@@ -258,9 +258,9 @@ class FlowNexusSDK extends EventEmitter {
     if (!this.authenticated) {
       throw new Error('Authentication required for workflow creation');
     }
-    
+
     this.ensureInitialized();
-    
+
     try {
       // Campaign optimization workflow
       const optimizationWorkflow = await this.mcp.workflow_create({
@@ -270,22 +270,22 @@ class FlowNexusSDK extends EventEmitter {
           {
             name: 'performance-analysis',
             agent_type: 'analyst',
-            description: 'Analyze current campaign performance metrics'
+            description: 'Analyze current campaign performance metrics',
           },
           {
             name: 'optimization-recommendations',
             agent_type: 'optimizer',
-            description: 'Generate optimization recommendations'
+            description: 'Generate optimization recommendations',
           },
           {
             name: 'budget-reallocation',
             agent_type: 'optimizer',
-            description: 'Execute budget reallocation based on recommendations'
-          }
+            description: 'Execute budget reallocation based on recommendations',
+          },
         ],
-        triggers: ['daily', 'budget_threshold', 'performance_anomaly']
+        triggers: ['daily', 'budget_threshold', 'performance_anomaly'],
       });
-      
+
       // Anomaly detection workflow
       const anomalyWorkflow = await this.mcp.workflow_create({
         name: 'anomaly-detection',
@@ -294,38 +294,38 @@ class FlowNexusSDK extends EventEmitter {
           {
             name: 'data-collection',
             agent_type: 'researcher',
-            description: 'Collect latest spend and performance data'
+            description: 'Collect latest spend and performance data',
           },
           {
             name: 'anomaly-analysis',
             agent_type: 'analyst',
-            description: 'Detect spending anomalies using ML models'
+            description: 'Detect spending anomalies using ML models',
           },
           {
             name: 'alert-generation',
             agent_type: 'coordinator',
-            description: 'Generate alerts for detected anomalies'
-          }
+            description: 'Generate alerts for detected anomalies',
+          },
         ],
-        triggers: ['hourly', 'real_time']
+        triggers: ['hourly', 'real_time'],
       });
-      
+
       this.workflows.set('campaign-optimization', optimizationWorkflow);
       this.workflows.set('anomaly-detection', anomalyWorkflow);
-      
+
       // Save workflows to database if available
       if (this.dbManager) {
         await this.dbManager.saveWorkflow(optimizationWorkflow);
         await this.dbManager.saveWorkflow(anomalyWorkflow);
       }
-      
+
       this.emit('workflows:created', {
-        workflows: Array.from(this.workflows.keys())
+        workflows: Array.from(this.workflows.keys()),
       });
-      
+
       return {
         success: true,
-        workflows: Array.from(this.workflows.keys())
+        workflows: Array.from(this.workflows.keys()),
       };
     } catch (error) {
       this.emit('error', { type: 'workflow', error: error.message });
@@ -340,19 +340,19 @@ class FlowNexusSDK extends EventEmitter {
     if (!this.authenticated) {
       throw new Error('Authentication required for task orchestration');
     }
-    
+
     this.ensureInitialized();
-    
+
     try {
       const result = await this.mcp.task_orchestrate({
         task,
         strategy: options.strategy || 'adaptive',
         priority: options.priority || 'medium',
-        maxAgents: options.maxAgents || 3
+        maxAgents: options.maxAgents || 3,
       });
-      
+
       this.emit('task:started', { taskId: result.taskId, task });
-      
+
       return result;
     } catch (error) {
       this.emit('error', { type: 'task', error: error.message });
@@ -367,23 +367,23 @@ class FlowNexusSDK extends EventEmitter {
     if (!this.authenticated) {
       throw new Error('Authentication required for workflow execution');
     }
-    
+
     if (!this.workflows.has(workflowName)) {
       throw new Error(`Workflow '${workflowName}' not found`);
     }
-    
+
     this.ensureInitialized();
-    
+
     try {
       const workflow = this.workflows.get(workflowName);
       const result = await this.mcp.workflow_execute({
         workflow_id: workflow.id || workflowName,
         input_data: inputData,
-        async: true
+        async: true,
       });
-      
+
       this.emit('workflow:started', { workflowName, executionId: result.executionId });
-      
+
       return result;
     } catch (error) {
       this.emit('error', { type: 'workflow', error: error.message });
@@ -410,7 +410,7 @@ class FlowNexusSDK extends EventEmitter {
     return {
       swarmId: this.swarmId,
       agents: Array.from(this.agents.values()),
-      workflows: Array.from(this.workflows.keys())
+      workflows: Array.from(this.workflows.keys()),
     };
   }
 
@@ -418,16 +418,18 @@ class FlowNexusSDK extends EventEmitter {
     return {
       initialized: this.initialized,
       authenticated: this.authenticated,
-      user: this.user ? {
-        id: this.user.id,
-        email: this.user.email
-      } : null,
+      user: this.user
+        ? {
+            id: this.user.id,
+            email: this.user.email,
+          }
+        : null,
       swarm: {
         id: this.swarmId,
         active: this.hasActiveSwarm(),
-        agentCount: this.agents.size
+        agentCount: this.agents.size,
       },
-      workflows: Array.from(this.workflows.keys())
+      workflows: Array.from(this.workflows.keys()),
     };
   }
 }

@@ -68,9 +68,11 @@ describe('DashboardStore', () => {
     });
 
     it('should set loading state during fetch', async () => {
-      jest.spyOn(api, 'getTelemetry').mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve(mockTelemetryData), 100))
-      );
+      jest
+        .spyOn(api, 'getTelemetry')
+        .mockImplementation(
+          () => new Promise((resolve) => setTimeout(() => resolve(mockTelemetryData), 100))
+        );
 
       const { result } = renderHook(() => useDashboardStore());
 

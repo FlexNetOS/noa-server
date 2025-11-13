@@ -1,6 +1,7 @@
 # Workflow Orchestration
 
-Advanced workflow management with event-driven processing, message queues, and intelligent agent coordination.
+Advanced workflow management with event-driven processing, message queues, and
+intelligent agent coordination.
 
 ## MCP Tools for Workflow Management
 
@@ -30,34 +31,35 @@ const workflow = await client.workflows.create({
       name: 'data_extraction',
       type: 'agent',
       agent_type: 'researcher',
-      description: 'Extract data from multiple sources'
+      description: 'Extract data from multiple sources',
     },
     {
-      name: 'data_processing', 
+      name: 'data_processing',
       type: 'agent',
       agent_type: 'analyst',
-      description: 'Clean and process extracted data'
+      description: 'Clean and process extracted data',
     },
     {
       name: 'report_generation',
       type: 'agent',
       agent_type: 'coder',
-      description: 'Generate comprehensive reports'
-    }
+      description: 'Generate comprehensive reports',
+    },
   ],
   triggers: [
     {
       type: 'schedule',
-      cron: '0 9 * * 1' // Every Monday at 9 AM
-    }
+      cron: '0 9 * * 1', // Every Monday at 9 AM
+    },
   ],
-  priority: 5
+  priority: 5,
 });
 
 console.log('Workflow created:', workflow);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -68,7 +70,7 @@ console.log('Workflow created:', workflow);
   priority: 5,
   features: [
     'message_queues',
-    'audit_trail', 
+    'audit_trail',
     'agent_assignment',
     'real_time_monitoring'
   ],
@@ -90,7 +92,7 @@ const advancedWorkflow = await client.workflows.create({
       type: 'agent',
       agent_type: 'researcher',
       timeout: 1800,
-      retry_attempts: 3
+      retry_attempts: 3,
     },
     {
       name: 'model_training',
@@ -98,39 +100,39 @@ const advancedWorkflow = await client.workflows.create({
       depends_on: ['data_preparation'],
       config: {
         architecture: 'transformer',
-        epochs: 50
-      }
+        epochs: 50,
+      },
     },
     {
       name: 'model_validation',
       type: 'agent',
       agent_type: 'tester',
       depends_on: ['model_training'],
-      validation_threshold: 0.85
+      validation_threshold: 0.85,
     },
     {
       name: 'deployment',
       type: 'sandbox',
       depends_on: ['model_validation'],
-      template: 'production-api'
-    }
+      template: 'production-api',
+    },
   ],
   triggers: [
     {
       type: 'webhook',
       url: '/api/trigger/training',
-      auth_required: true
+      auth_required: true,
     },
     {
       type: 'file_upload',
-      path: '/data/training/*'
-    }
+      path: '/data/training/*',
+    },
   ],
   metadata: {
     team: 'ml-engineering',
     project: 'customer-ai',
-    environment: 'production'
-  }
+    environment: 'production',
+  },
 });
 ```
 
@@ -147,16 +149,17 @@ const execution = await client.workflows.execute({
   input_data: {
     dataset: 'customer_analytics',
     date_range: '2024-Q1',
-    output_format: 'pdf'
+    output_format: 'pdf',
   },
   async: true, // Execute via message queue
-  priority: 'high'
+  priority: 'high',
 });
 
 console.log('Execution started:', execution);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -181,7 +184,7 @@ const result = await client.workflows.execute({
   workflow_id: 'workflow_abc123',
   input_data: { dataset: 'small_sample' },
   async: false, // Synchronous execution
-  timeout: 300000 // 5 minutes
+  timeout: 300000, // 5 minutes
 });
 
 console.log('Workflow completed:', result);
@@ -197,13 +200,14 @@ Monitor workflow progress in real-time:
 // Get detailed execution status
 const status = await client.workflows.getStatus({
   execution_id: 'exec_def456',
-  include_metrics: true
+  include_metrics: true,
 });
 
 console.log('Execution status:', status);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -252,13 +256,14 @@ const workflows = await client.workflows.list({
   limit: 20,
   offset: 0,
   sort_by: 'created_at',
-  order: 'desc'
+  order: 'desc',
 });
 
 console.log('Available workflows:', workflows);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -304,14 +309,15 @@ const assignment = await client.workflows.assignAgent({
   requirements: {
     skills: ['data_analysis', 'web_scraping'],
     experience_level: 'intermediate',
-    availability: 'immediate'
-  }
+    availability: 'immediate',
+  },
 });
 
 console.log('Agent assigned:', assignment);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -322,7 +328,7 @@ console.log('Agent assigned:', assignment);
     name: 'DataAnalyzer-Pro',
     capabilities: [
       'data_analysis',
-      'web_scraping', 
+      'web_scraping',
       'report_generation',
       'statistical_modeling'
     ],
@@ -348,7 +354,7 @@ console.log('Agent assigned:', assignment);
 const manualAssignment = await client.workflows.assignAgent({
   task_id: 'task_ghi789',
   agent_id: 'agent_specialist_123',
-  force: true // Override automatic selection
+  force: true, // Override automatic selection
 });
 ```
 
@@ -362,13 +368,14 @@ Monitor workflow message queues:
 // Get queue status and pending messages
 const queueStatus = await client.workflows.getQueueStatus({
   queue_name: 'workflow_executions', // Optional specific queue
-  include_messages: true
+  include_messages: true,
 });
 
 console.log('Queue status:', queueStatus);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -404,7 +411,7 @@ console.log('Queue status:', queueStatus);
 // Get detailed queue analytics
 const queueMetrics = await client.workflows.getQueueMetrics({
   timeframe: '24h',
-  include_breakdown: true
+  include_breakdown: true,
 });
 
 console.log('Queue performance:', queueMetrics);
@@ -422,13 +429,14 @@ const auditTrail = await client.workflows.getAuditTrail({
   workflow_id: 'workflow_abc123',
   limit: 50,
   start_time: '2024-12-01T00:00:00Z',
-  include_details: true
+  include_details: true,
 });
 
 console.log('Audit trail:', auditTrail);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -488,13 +496,14 @@ console.log('Audit trail:', auditTrail);
 // List available workflow templates
 const templates = await client.workflows.listTemplates({
   category: 'data-processing',
-  featured: true
+  featured: true,
 });
 
 console.log('Workflow templates:', templates);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -537,8 +546,8 @@ const workflowFromTemplate = await client.workflows.createFromTemplate({
   customizations: {
     data_source: 'customer_database',
     output_format: 'dashboard',
-    schedule: '0 8 * * 1-5' // Weekdays at 8 AM
-  }
+    schedule: '0 8 * * 1-5', // Weekdays at 8 AM
+  },
 });
 ```
 
@@ -587,20 +596,20 @@ const resilientWorkflow = {
       type: 'agent',
       retry_attempts: 3,
       timeout: 1800,
-      fallback_agent_type: 'researcher'
+      fallback_agent_type: 'researcher',
     },
     {
       name: 'data_validation',
       type: 'validation',
       required: true,
-      validation_rules: ['not_empty', 'format_check']
-    }
+      validation_rules: ['not_empty', 'format_check'],
+    },
   ],
   error_handling: {
     on_failure: 'retry_with_different_agent',
     max_retries: 2,
-    notification: true
-  }
+    notification: true,
+  },
 };
 ```
 
@@ -611,15 +620,15 @@ const resilientWorkflow = {
 async function optimizeWorkflowExecution(workflowId) {
   // Check current performance
   const metrics = await client.workflows.getMetrics(workflowId);
-  
+
   if (metrics.average_duration > 3600) {
     // Parallelize steps where possible
     await client.workflows.updateConfiguration(workflowId, {
       parallel_execution: true,
-      max_concurrent_steps: 3
+      max_concurrent_steps: 3,
     });
   }
-  
+
   if (metrics.agent_utilization < 0.7) {
     // Optimize agent assignments
     await client.workflows.enableAutoOptimization(workflowId);
@@ -634,16 +643,16 @@ async function optimizeWorkflowExecution(workflowId) {
 async function monitorWorkflowCosts(workflowId) {
   const costAnalysis = await client.workflows.getCostAnalysis({
     workflow_id: workflowId,
-    timeframe: '30d'
+    timeframe: '30d',
   });
-  
+
   if (costAnalysis.average_cost_per_execution > 50) {
     console.warn('High execution costs detected');
-    
+
     // Implement cost optimization
     await client.workflows.updateConfiguration(workflowId, {
       agent_tier_preference: 'cost_optimized',
-      timeout_optimization: true
+      timeout_optimization: true,
     });
   }
 }
@@ -658,16 +667,16 @@ class WorkflowMonitor {
     this.workflowId = workflowId;
     this.setupRealTimeMonitoring();
   }
-  
+
   async setupRealTimeMonitoring() {
     // Subscribe to workflow events
     await client.workflows.subscribe({
       workflow_id: this.workflowId,
       events: ['step_completed', 'execution_failed', 'agent_assigned'],
-      callback: this.handleWorkflowEvent.bind(this)
+      callback: this.handleWorkflowEvent.bind(this),
     });
   }
-  
+
   handleWorkflowEvent(event) {
     switch (event.type) {
       case 'execution_failed':
@@ -693,7 +702,7 @@ const conditionalWorkflow = await client.workflows.create({
     {
       name: 'data_assessment',
       type: 'agent',
-      agent_type: 'researcher'
+      agent_type: 'researcher',
     },
     {
       name: 'processing_branch',
@@ -702,11 +711,11 @@ const conditionalWorkflow = await client.workflows.create({
         {
           if: 'data_size > 100MB',
           then: 'heavy_processing_path',
-          else: 'light_processing_path'
-        }
-      ]
-    }
-  ]
+          else: 'light_processing_path',
+        },
+      ],
+    },
+  ],
 });
 ```
 
@@ -717,21 +726,22 @@ const conditionalWorkflow = await client.workflows.create({
 const parallelExecutions = await Promise.all([
   client.workflows.execute({
     workflow_id: 'workflow_1',
-    input_data: { batch: 'A' }
+    input_data: { batch: 'A' },
   }),
   client.workflows.execute({
-    workflow_id: 'workflow_2', 
-    input_data: { batch: 'B' }
+    workflow_id: 'workflow_2',
+    input_data: { batch: 'B' },
   }),
   client.workflows.execute({
     workflow_id: 'workflow_3',
-    input_data: { batch: 'C' }
-  })
+    input_data: { batch: 'C' },
+  }),
 ]);
 ```
 
 ## Next Steps
 
-- [Sandbox Execution](../sandbox/sandbox-execution.md) - Code execution environments
+- [Sandbox Execution](../sandbox/sandbox-execution.md) - Code execution
+  environments
 - [GitHub Integration](../github/github-automation.md) - Repository workflows
 - [Neural Networks](../neural/neural-training.md) - AI workflows

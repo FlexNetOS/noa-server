@@ -14,7 +14,7 @@ async function testPromptOptimization() {
     method: 'POST',
     body: { prompt: 'Write a hello world program' },
     headers: { 'Content-Type': 'application/json' },
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
 
   try {
@@ -35,7 +35,7 @@ async function testPromptOptimization() {
   const noPromptRequest = {
     endpoint: '/api/status',
     method: 'GET',
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
 
   try {

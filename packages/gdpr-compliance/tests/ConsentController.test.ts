@@ -52,8 +52,7 @@ describe('ConsentController', () => {
       } as any;
 
       // Mock the cookieConsent.recordCookieConsent method
-      vi.spyOn(controller['cookieConsent'], 'recordCookieConsent')
-        .mockResolvedValue();
+      vi.spyOn(controller['cookieConsent'], 'recordCookieConsent').mockResolvedValue();
 
       await controller.recordCookieConsent(mockReq, mockRes);
 
@@ -104,10 +103,9 @@ describe('ConsentController', () => {
 
       await controller.getCookiePreferences(mockReq, mockRes);
 
-      expect(mockPool.query).toHaveBeenCalledWith(
-        expect.stringContaining('SELECT preferences'),
-        ['user-123']
-      );
+      expect(mockPool.query).toHaveBeenCalledWith(expect.stringContaining('SELECT preferences'), [
+        'user-123',
+      ]);
       expect(mockRes.json).toHaveBeenCalledWith({
         success: true,
         data: mockPreferences,

@@ -1,28 +1,42 @@
 # Build multi-agent systems
 
-A single agent might struggle if it needs to specialize in multiple domains or manage many tools. To tackle this, you can break your agent into smaller, independent agents and composing them into a [multi-agent system](../concepts/multi_agent.md).
+A single agent might struggle if it needs to specialize in multiple domains or
+manage many tools. To tackle this, you can break your agent into smaller,
+independent agents and composing them into a
+[multi-agent system](../concepts/multi_agent.md).
 
-In multi-agent systems, agents need to communicate between each other. They do so via [handoffs](#handoffs) — a primitive that describes which agent to hand control to and the payload to send to that agent.
+In multi-agent systems, agents need to communicate between each other. They do
+so via [handoffs](#handoffs) — a primitive that describes which agent to hand
+control to and the payload to send to that agent.
 
 This guide covers the following:
 
-* implementing [handoffs](#handoffs) between agents
-* using handoffs and the prebuilt [agent](../agents/agents.md) to [build a custom multi-agent system](#build-a-multi-agent-system)
+- implementing [handoffs](#handoffs) between agents
+- using handoffs and the prebuilt [agent](../agents/agents.md) to
+  [build a custom multi-agent system](#build-a-multi-agent-system)
 
-To get started with building multi-agent systems, check out LangGraph [prebuilt implementations](#prebuilt-implementations) of two of the most popular multi-agent architectures — [supervisor](../agents/multi-agent.md#supervisor) and [swarm](../agents/multi-agent.md#swarm).
+To get started with building multi-agent systems, check out LangGraph
+[prebuilt implementations](#prebuilt-implementations) of two of the most popular
+multi-agent architectures — [supervisor](../agents/multi-agent.md#supervisor)
+and [swarm](../agents/multi-agent.md#swarm).
 
 ## Handoffs
 
-To set up communication between the agents in a multi-agent system you can use [**handoffs**](../concepts/multi_agent.md#handoffs) — a pattern where one agent *hands off* control to another. Handoffs allow you to specify:
+To set up communication between the agents in a multi-agent system you can use
+[**handoffs**](../concepts/multi_agent.md#handoffs) — a pattern where one agent
+_hands off_ control to another. Handoffs allow you to specify:
 
-- **destination**: target agent to navigate to (e.g., name of the LangGraph node to go to)
+- **destination**: target agent to navigate to (e.g., name of the LangGraph node
+  to go to)
 - **payload**: information to pass to that agent (e.g., state update)
 
 ### Create handoffs
 
-To implement handoffs, you can return `Command` objects from your agent nodes or tools:
+To implement handoffs, you can return `Command` objects from your agent nodes or
+tools:
 
 :::python
+
 ```python
 from typing import Annotated
 from langchain_core.tools import tool, InjectedToolCallId
@@ -58,29 +72,35 @@ def create_handoff_tool(*, agent_name: str, description: str | None = None):
     return handoff_tool
 ```
 
-1. Access the [state](../concepts/low_level.md#state) of the agent that is calling the handoff tool using the @[InjectedState] annotation. 
-2. The `Command` primitive allows specifying a state update and a node transition as a single operation, making it useful for implementing handoffs.
+1. Access the [state](../concepts/low_level.md#state) of the agent that is
+   calling the handoff tool using the @[InjectedState] annotation.
+2. The `Command` primitive allows specifying a state update and a node
+   transition as a single operation, making it useful for implementing handoffs.
 3. Name of the agent or node to hand off to.
-4. Take the agent's messages and **add** them to the parent's **state** as part of the handoff. The next agent will see the parent state.
-5. Indicate to LangGraph that we need to navigate to agent node in a **parent** multi-agent graph.
+4. Take the agent's messages and **add** them to the parent's **state** as part
+   of the handoff. The next agent will see the parent state.
+5. Indicate to LangGraph that we need to navigate to agent node in a **parent**
+   multi-agent graph.
 
 !!! tip
 
     If you want to use tools that return `Command`, you can either use prebuilt @[`create_react_agent`][create_react_agent] / @[`ToolNode`][ToolNode] components, or implement your own tool-executing node that collects `Command` objects returned by the tools and returns a list of them, e.g.:
-    
+
     ```python
     def call_tools(state):
         ...
         commands = [tools_by_name[tool_call["name"]].invoke(tool_call) for tool_call in tool_calls]
         return commands
     ```
+
 :::
 
 :::js
+
 ```typescript
-import { tool } from "@langchain/core/tools";
-import { Command, MessagesZodState } from "@langchain/langgraph";
-import { z } from "zod";
+import { tool } from '@langchain/core/tools';
+import { Command, MessagesZodState } from '@langchain/langgraph';
+import { z } from 'zod';
 
 function createHandoffTool({
   agentName,
@@ -99,7 +119,7 @@ function createHandoffTool({
       const toolCallId = config.toolCall.id;
 
       const toolMessage = {
-        role: "tool" as const,
+        role: 'tool' as const,
         content: `Successfully transferred to ${agentName}`,
         name: name,
         tool_call_id: toolCallId,
@@ -123,16 +143,20 @@ function createHandoffTool({
 }
 ```
 
-1. Access the [state](../concepts/low_level.md#state) of the agent that is calling the handoff tool through the `config` parameter.
-2. The `Command` primitive allows specifying a state update and a node transition as a single operation, making it useful for implementing handoffs.
+1. Access the [state](../concepts/low_level.md#state) of the agent that is
+   calling the handoff tool through the `config` parameter.
+2. The `Command` primitive allows specifying a state update and a node
+   transition as a single operation, making it useful for implementing handoffs.
 3. Name of the agent or node to hand off to.
-4. Take the agent's messages and **add** them to the parent's **state** as part of the handoff. The next agent will see the parent state.
-5. Indicate to LangGraph that we need to navigate to agent node in a **parent** multi-agent graph.
+4. Take the agent's messages and **add** them to the parent's **state** as part
+   of the handoff. The next agent will see the parent state.
+5. Indicate to LangGraph that we need to navigate to agent node in a **parent**
+   multi-agent graph.
 
 !!! tip
 
     If you want to use tools that return `Command`, you can either use prebuilt @[`create_react_agent`][create_react_agent] / @[`ToolNode`][ToolNode] components, or implement your own tool-executing node that collects `Command` objects returned by the tools and returns a list of them, e.g.:
-    
+
     ```typescript
     const callTools = async (state) => {
       // ...
@@ -142,12 +166,13 @@ function createHandoffTool({
       return commands;
     };
     ```
+
 :::
 
 !!! Important
 
     This handoff implementation assumes that:
-    
+
     - each agent receives overall message history (across all agents) in the multi-agent system as its input. If you want more control over agent inputs, see [this section](#control-agent-inputs)
     - each agent outputs its internal messages history to the overall message history of the multi-agent system. If you want more control over **how agent outputs are added**, wrap the agent in a separate node function:
 
@@ -176,8 +201,9 @@ function createHandoffTool({
 
 ### Control agent inputs
 
-:::python
-You can use the @[`Send()`][Send] primitive to directly send data to the worker agents during the handoff. For example, you can request that the calling agent populate a task description for the next agent:
+:::python You can use the @[`Send()`][Send] primitive to directly send data to
+the worker agents during the handoff. For example, you can request that the
+calling agent populate a task description for the next agent:
 
 ```python
 
@@ -214,15 +240,17 @@ def create_task_description_handoff_tool(
 
     return handoff_tool
 ```
+
 :::
 
-:::js
-You can use the @[`Send()`][Send] primitive to directly send data to the worker agents during the handoff. For example, you can request that the calling agent populate a task description for the next agent:
+:::js You can use the @[`Send()`][Send] primitive to directly send data to the
+worker agents during the handoff. For example, you can request that the calling
+agent populate a task description for the next agent:
 
 ```typescript
-import { tool } from "@langchain/core/tools";
-import { Command, Send, MessagesZodState } from "@langchain/langgraph";
-import { z } from "zod";
+import { tool } from '@langchain/core/tools';
+import { Command, Send, MessagesZodState } from '@langchain/langgraph';
+import { z } from 'zod';
 
 function createTaskDescriptionHandoffTool({
   agentName,
@@ -235,21 +263,18 @@ function createTaskDescriptionHandoffTool({
   const toolDescription = description || `Ask ${agentName} for help.`;
 
   return tool(
-    async (
-      { taskDescription },
-      config
-    ) => {
+    async ({ taskDescription }, config) => {
       const state = config.state;
-      
+
       const taskDescriptionMessage = {
-        role: "user" as const,
+        role: 'user' as const,
         content: taskDescription,
       };
       const agentInput = {
         ...state,
         messages: [taskDescriptionMessage],
       };
-      
+
       return new Command({
         // highlight-next-line
         goto: [new Send(agentName, agentInput)],
@@ -263,22 +288,30 @@ function createTaskDescriptionHandoffTool({
         taskDescription: z
           .string()
           .describe(
-            "Description of what the next agent should do, including all of the relevant context."
+            'Description of what the next agent should do, including all of the relevant context.'
           ),
       }),
     }
   );
 }
 ```
+
 :::
 
-See the multi-agent [supervisor](../tutorials/multi_agent/agent_supervisor.md#4-create-delegation-tasks) example for a full example of using @[`Send()`][Send] in handoffs.
+See the multi-agent
+[supervisor](../tutorials/multi_agent/agent_supervisor.md#4-create-delegation-tasks)
+example for a full example of using @[`Send()`][Send] in handoffs.
 
 ## Build a multi-agent system
 
-You can use handoffs in any agents built with LangGraph. We recommend using the prebuilt [agent](../agents/overview.md) or [`ToolNode`](./tool-calling.md#toolnode), as they natively support handoffs tools returning `Command`. Below is an example of how you can implement a multi-agent system for booking travel using handoffs:
+You can use handoffs in any agents built with LangGraph. We recommend using the
+prebuilt [agent](../agents/overview.md) or
+[`ToolNode`](./tool-calling.md#toolnode), as they natively support handoffs
+tools returning `Command`. Below is an example of how you can implement a
+multi-agent system for booking travel using handoffs:
 
 :::python
+
 ```python
 from langgraph.prebuilt import create_react_agent
 from langgraph.graph import StateGraph, START, MessagesState
@@ -319,13 +352,15 @@ multi_agent_graph = (
     .compile()
 )
 ```
+
 :::
 
 :::js
+
 ```typescript
-import { createReactAgent } from "@langchain/langgraph/prebuilt";
-import { StateGraph, START, MessagesZodState } from "@langchain/langgraph";
-import { z } from "zod";
+import { createReactAgent } from '@langchain/langgraph/prebuilt';
+import { StateGraph, START, MessagesZodState } from '@langchain/langgraph';
+import { z } from 'zod';
 
 function createHandoffTool({
   agentName,
@@ -341,38 +376,39 @@ function createHandoffTool({
 
 // Handoffs
 const transferToHotelAssistant = createHandoffTool({
-  agentName: "hotel_assistant",
+  agentName: 'hotel_assistant',
 });
 const transferToFlightAssistant = createHandoffTool({
-  agentName: "flight_assistant",
+  agentName: 'flight_assistant',
 });
 
 // Define agents
 const flightAssistant = createReactAgent({
   llm: model,
   // highlight-next-line
-  tools: [/* ... */, transferToHotelAssistant],
+  tools: [, /* ... */ transferToHotelAssistant],
   // highlight-next-line
-  name: "flight_assistant",
+  name: 'flight_assistant',
 });
 
 const hotelAssistant = createReactAgent({
   llm: model,
   // highlight-next-line
-  tools: [/* ... */, transferToFlightAssistant],
+  tools: [, /* ... */ transferToFlightAssistant],
   // highlight-next-line
-  name: "hotel_assistant",
+  name: 'hotel_assistant',
 });
 
 // Define multi-agent graph
 const multiAgentGraph = new StateGraph(MessagesZodState)
   // highlight-next-line
-  .addNode("flight_assistant", flightAssistant)
+  .addNode('flight_assistant', flightAssistant)
   // highlight-next-line
-  .addNode("hotel_assistant", hotelAssistant)
-  .addEdge(START, "flight_assistant")
+  .addNode('hotel_assistant', hotelAssistant)
+  .addEdge(START, 'flight_assistant')
   .compile();
 ```
+
 :::
 
 ??? example "Full example: Multi-agent system for booking travel"
@@ -385,19 +421,19 @@ const multiAgentGraph = new StateGraph(MessagesZodState)
     from langgraph.prebuilt import create_react_agent, InjectedState
     from langgraph.graph import StateGraph, START, MessagesState
     from langgraph.types import Command
-    
+
     # We'll use `pretty_print_messages` helper to render the streamed agent outputs nicely
-    
+
     def pretty_print_message(message, indent=False):
         pretty_message = message.pretty_repr(html=True)
         if not indent:
             print(pretty_message)
             return
-    
+
         indented = "\n".join("\t" + c for c in pretty_message.split("\n"))
         print(indented)
-    
-    
+
+
     def pretty_print_messages(update, last_message=False):
         is_subgraph = False
         if isinstance(update, tuple):
@@ -405,24 +441,24 @@ const multiAgentGraph = new StateGraph(MessagesZodState)
             # skip parent graph updates in the printouts
             if len(ns) == 0:
                 return
-    
+
             graph_id = ns[-1].split(":")[0]
             print(f"Update from subgraph {graph_id}:")
             print("\n")
             is_subgraph = True
-    
+
         for node_name, node_update in update.items():
             update_label = f"Update from node {node_name}:"
             if is_subgraph:
                 update_label = "\t" + update_label
-    
+
             print(update_label)
             print("\n")
-    
+
             messages = convert_to_messages(node_update["messages"])
             if last_message:
                 messages = messages[-1:]
-    
+
             for m in messages:
                 pretty_print_message(m, indent=is_subgraph)
             print("\n")
@@ -431,7 +467,7 @@ const multiAgentGraph = new StateGraph(MessagesZodState)
     def create_handoff_tool(*, agent_name: str, description: str | None = None):
         name = f"transfer_to_{agent_name}"
         description = description or f"Transfer to {agent_name}"
-    
+
         @tool(name, description=description)
         def handoff_tool(
             # highlight-next-line
@@ -454,7 +490,7 @@ const multiAgentGraph = new StateGraph(MessagesZodState)
                 graph=Command.PARENT,  # (5)!
             )
         return handoff_tool
-    
+
     # Handoffs
     transfer_to_hotel_assistant = create_handoff_tool(
         agent_name="hotel_assistant",
@@ -464,16 +500,16 @@ const multiAgentGraph = new StateGraph(MessagesZodState)
         agent_name="flight_assistant",
         description="Transfer user to the flight-booking assistant.",
     )
-    
+
     # Simple agent tools
     def book_hotel(hotel_name: str):
         """Book a hotel"""
         return f"Successfully booked a stay at {hotel_name}."
-    
+
     def book_flight(from_airport: str, to_airport: str):
         """Book a flight"""
         return f"Successfully booked a flight from {from_airport} to {to_airport}."
-    
+
     # Define agents
     flight_assistant = create_react_agent(
         model="anthropic:claude-3-5-sonnet-latest",
@@ -491,7 +527,7 @@ const multiAgentGraph = new StateGraph(MessagesZodState)
         # highlight-next-line
         name="hotel_assistant"
     )
-    
+
     # Define multi-agent graph
     multi_agent_graph = (
         StateGraph(MessagesState)
@@ -500,7 +536,7 @@ const multiAgentGraph = new StateGraph(MessagesZodState)
         .add_edge(START, "flight_assistant")
         .compile()
     )
-    
+
     # Run the multi-agent graph
     for chunk in multi_agent_graph.stream(
         {
@@ -702,14 +738,20 @@ const multiAgentGraph = new StateGraph(MessagesZodState)
 
 ## Multi-turn conversation
 
-Users might want to engage in a *multi-turn conversation* with one or more agents. To build a system that can handle this, you can create a node that uses an @[`interrupt`][interrupt] to collect user input and routes back to the **active** agent.
+Users might want to engage in a _multi-turn conversation_ with one or more
+agents. To build a system that can handle this, you can create a node that uses
+an @[`interrupt`][interrupt] to collect user input and routes back to the
+**active** agent.
 
-The agents can then be implemented as nodes in a graph that executes agent steps and determines the next action:
+The agents can then be implemented as nodes in a graph that executes agent steps
+and determines the next action:
 
-1. **Wait for user input** to continue the conversation, or  
-2. **Route to another agent** (or back to itself, such as in a loop) via a [handoff](#handoffs)
+1. **Wait for user input** to continue the conversation, or
+2. **Route to another agent** (or back to itself, such as in a loop) via a
+   [handoff](#handoffs)
 
 :::python
+
 ```python
 def human(state) -> Command[Literal["agent", "another_agent"]]:
     """A node for collecting user input."""
@@ -737,9 +779,11 @@ def agent(state) -> Command[Literal["agent", "another_agent", "human"]]:
     else:
         return Command(goto="human") # Go to human node
 ```
+
 :::
 
 :::js
+
 ```typescript
 import { interrupt, Command } from "@langchain/langgraph";
 
@@ -774,14 +818,15 @@ function agent(state: MessagesState): Command {
   return new Command({ goto: "human" });
 }
 ```
+
 :::
 
 ??? example "Full example: multi-agent system for travel recommendations"
 
     In this example, we will build a team of travel assistant agents that can communicate with each other via handoffs.
-    
+
     We will create 2 agents:
-    
+
     * travel_advisor: can help with travel destination recommendations. Can ask hotel_advisor for help.
     * hotel_advisor: can help with hotel recommendations. Can ask travel_advisor for help.
 
@@ -792,14 +837,14 @@ function agent(state: MessagesState): Command {
     from langgraph.prebuilt import create_react_agent, InjectedState
     from langgraph.types import Command, interrupt
     from langgraph.checkpoint.memory import InMemorySaver
-    
-    
+
+
     model = ChatAnthropic(model="claude-3-5-sonnet-latest")
 
     class MultiAgentState(MessagesState):
         last_active_agent: str
-    
-    
+
+
     # Define travel advisor tools and ReAct agent
     travel_advisor_tools = [
         get_travel_recommendations,
@@ -814,8 +859,8 @@ function agent(state: MessagesState): Command {
             "You MUST include human-readable response before transferring to another agent."
         ),
     )
-    
-    
+
+
     def call_travel_advisor(
         state: MultiAgentState,
     ) -> Command[Literal["hotel_advisor", "human"]]:
@@ -824,8 +869,8 @@ function agent(state: MessagesState): Command {
         response = travel_advisor.invoke(state)
         update = {**response, "last_active_agent": "travel_advisor"}
         return Command(update=update, goto="human")
-    
-    
+
+
     # Define hotel advisor tools and ReAct agent
     hotel_advisor_tools = [
         get_hotel_recommendations,
@@ -840,24 +885,24 @@ function agent(state: MessagesState): Command {
             "You MUST include human-readable response before transferring to another agent."
         ),
     )
-    
-    
+
+
     def call_hotel_advisor(
         state: MultiAgentState,
     ) -> Command[Literal["travel_advisor", "human"]]:
         response = hotel_advisor.invoke(state)
         update = {**response, "last_active_agent": "hotel_advisor"}
         return Command(update=update, goto="human")
-    
-    
+
+
     def human_node(
         state: MultiAgentState, config
     ) -> Command[Literal["hotel_advisor", "travel_advisor", "human"]]:
         """A node for collecting user input."""
-    
+
         user_input = interrupt(value="Ready for user input.")
         active_agent = state["last_active_agent"]
-    
+
         return Command(
             update={
                 "messages": [
@@ -869,31 +914,31 @@ function agent(state: MessagesState): Command {
             },
             goto=active_agent,
         )
-    
-    
+
+
     builder = StateGraph(MultiAgentState)
     builder.add_node("travel_advisor", call_travel_advisor)
     builder.add_node("hotel_advisor", call_hotel_advisor)
-    
+
     # This adds a node to collect human input, which will route
     # back to the active agent.
     builder.add_node("human", human_node)
-    
+
     # We'll always start with a general travel advisor.
     builder.add_edge(START, "travel_advisor")
-    
-    
+
+
     checkpointer = InMemorySaver()
     graph = builder.compile(checkpointer=checkpointer)
     ```
-    
+
     Let's test a multi turn conversation with this application.
 
     ```python
     import uuid
-    
+
     thread_config = {"configurable": {"thread_id": str(uuid.uuid4())}}
-    
+
     inputs = [
         # 1st round of conversation,
         {
@@ -911,7 +956,7 @@ function agent(state: MessagesState): Command {
             resume="i like the first one. could you recommend something to do near the hotel?"
         ),
     ]
-    
+
     for idx, user_input in enumerate(inputs):
         print()
         print(f"--- Conversation Turn {idx + 1} ---")
@@ -930,12 +975,12 @@ function agent(state: MessagesState): Command {
                         continue
                     print(f"{node_id}: {last_message.content}")
     ```
-    
+
     ```
     --- Conversation Turn 1 ---
-    
+
     User: {'messages': [{'role': 'user', 'content': 'i wanna go somewhere warm in the caribbean'}]}
-    
+
     travel_advisor: Based on the recommendations, Aruba would be an excellent choice for your Caribbean getaway! Aruba is known as "One Happy Island" and offers:
     - Year-round warm weather with consistent temperatures around 82°F (28°C)
     - Beautiful white sand beaches like Eagle Beach and Palm Beach
@@ -944,37 +989,37 @@ function agent(state: MessagesState): Command {
     - A blend of Caribbean and Dutch culture
     - Great dining options and nightlife
     - Various water sports and activities
-    
+
     Would you like me to get some specific hotel recommendations in Aruba for your stay? I can transfer you to our hotel advisor who can help with accommodations.
-    
+
     --- Conversation Turn 2 ---
-    
+
     User: Command(resume='could you recommend a nice hotel in one of the areas and tell me which area it is.')
-    
+
     hotel_advisor: Based on the recommendations, I can suggest two excellent options:
-    
+
     1. The Ritz-Carlton, Aruba - Located in Palm Beach
     - This luxury resort is situated in the vibrant Palm Beach area
     - Known for its exceptional service and amenities
     - Perfect if you want to be close to dining, shopping, and entertainment
     - Features multiple restaurants, a casino, and a world-class spa
     - Located on a pristine stretch of Palm Beach
-    
+
     2. Bucuti & Tara Beach Resort - Located in Eagle Beach
     - An adults-only boutique resort on Eagle Beach
     - Known for being more intimate and peaceful
     - Award-winning for its sustainability practices
     - Perfect for a romantic getaway or peaceful vacation
     - Located on one of the most beautiful beaches in the Caribbean
-    
+
     Would you like more specific information about either of these properties or their locations?
-    
+
     --- Conversation Turn 3 ---
-    
+
     User: Command(resume='i like the first one. could you recommend something to do near the hotel?')
-    
+
     travel_advisor: Near the Ritz-Carlton in Palm Beach, here are some highly recommended activities:
-    
+
     1. Visit the Palm Beach Plaza Mall - Just a short walk from the hotel, featuring shopping, dining, and entertainment
     2. Try your luck at the Stellaris Casino - It's right in the Ritz-Carlton
     3. Take a sunset sailing cruise - Many depart from the nearby pier
@@ -984,7 +1029,7 @@ function agent(state: MessagesState): Command {
        - Parasailing
        - Snorkeling
        - Stand-up paddleboarding
-    
+
     Would you like more specific information about any of these activities or would you like to know about other options in the area?
     ```
     :::
@@ -1130,7 +1175,7 @@ function agent(state: MessagesState): Command {
     const checkpointer = new MemorySaver();
     const graph = builder.compile({ checkpointer });
     ```
-    
+
     Let's test a multi turn conversation with this application.
 
     ```typescript
@@ -1163,7 +1208,7 @@ function agent(state: MessagesState): Command {
       console.log();
       console.log(`User: ${JSON.stringify(userInput)}`);
       console.log();
-      
+
       for await (const update of await graph.stream(
         userInput,
         { ...threadConfig, streamMode: "updates" }
@@ -1179,12 +1224,12 @@ function agent(state: MessagesState): Command {
       }
     }
     ```
-    
+
     ```
     --- Conversation Turn 1 ---
-    
+
     User: {"messages":[{"role":"user","content":"i wanna go somewhere warm in the caribbean"}]}
-    
+
     travel_advisor: Based on the recommendations, Aruba would be an excellent choice for your Caribbean getaway! Aruba is known as "One Happy Island" and offers:
     - Year-round warm weather with consistent temperatures around 82°F (28°C)
     - Beautiful white sand beaches like Eagle Beach and Palm Beach
@@ -1193,37 +1238,37 @@ function agent(state: MessagesState): Command {
     - A blend of Caribbean and Dutch culture
     - Great dining options and nightlife
     - Various water sports and activities
-    
+
     Would you like me to get some specific hotel recommendations in Aruba for your stay? I can transfer you to our hotel advisor who can help with accommodations.
-    
+
     --- Conversation Turn 2 ---
-    
+
     User: Command { resume: 'could you recommend a nice hotel in one of the areas and tell me which area it is.' }
-    
+
     hotel_advisor: Based on the recommendations, I can suggest two excellent options:
-    
+
     1. The Ritz-Carlton, Aruba - Located in Palm Beach
     - This luxury resort is situated in the vibrant Palm Beach area
     - Known for its exceptional service and amenities
     - Perfect if you want to be close to dining, shopping, and entertainment
     - Features multiple restaurants, a casino, and a world-class spa
     - Located on a pristine stretch of Palm Beach
-    
+
     2. Bucuti & Tara Beach Resort - Located in Eagle Beach
     - An adults-only boutique resort on Eagle Beach
     - Known for being more intimate and peaceful
     - Award-winning for its sustainability practices
     - Perfect for a romantic getaway or peaceful vacation
     - Located on one of the most beautiful beaches in the Caribbean
-    
+
     Would you like more specific information about either of these properties or their locations?
-    
+
     --- Conversation Turn 3 ---
-    
+
     User: Command { resume: 'i like the first one. could you recommend something to do near the hotel?' }
-    
+
     travel_advisor: Near the Ritz-Carlton in Palm Beach, here are some highly recommended activities:
-    
+
     1. Visit the Palm Beach Plaza Mall - Just a short walk from the hotel, featuring shopping, dining, and entertainment
     2. Try your luck at the Stellaris Casino - It's right in the Ritz-Carlton
     3. Take a sunset sailing cruise - Many depart from the nearby pier
@@ -1233,21 +1278,42 @@ function agent(state: MessagesState): Command {
        - Parasailing
        - Snorkeling
        - Stand-up paddleboarding
-    
+
     Would you like more specific information about any of these activities or would you like to know about other options in the area?
     ```
     :::
 
 ## Prebuilt implementations
 
-LangGraph comes with prebuilt implementations of two of the most popular multi-agent architectures:
+LangGraph comes with prebuilt implementations of two of the most popular
+multi-agent architectures:
 
 :::python
-- [supervisor](../agents/multi-agent.md#supervisor) — individual agents are coordinated by a central supervisor agent. The supervisor controls all communication flow and task delegation, making decisions about which agent to invoke based on the current context and task requirements. You can use [`langgraph-supervisor`](https://github.com/langchain-ai/langgraph-supervisor-py) library to create a supervisor multi-agent systems.
-- [swarm](../agents/multi-agent.md#supervisor) — agents dynamically hand off control to one another based on their specializations. The system remembers which agent was last active, ensuring that on subsequent interactions, the conversation resumes with that agent. You can use [`langgraph-swarm`](https://github.com/langchain-ai/langgraph-swarm-py) library to create a swarm multi-agent systems.
-:::
+
+- [supervisor](../agents/multi-agent.md#supervisor) — individual agents are
+  coordinated by a central supervisor agent. The supervisor controls all
+  communication flow and task delegation, making decisions about which agent to
+  invoke based on the current context and task requirements. You can use
+  [`langgraph-supervisor`](https://github.com/langchain-ai/langgraph-supervisor-py)
+  library to create a supervisor multi-agent systems.
+- [swarm](../agents/multi-agent.md#supervisor) — agents dynamically hand off
+  control to one another based on their specializations. The system remembers
+  which agent was last active, ensuring that on subsequent interactions, the
+  conversation resumes with that agent. You can use
+  [`langgraph-swarm`](https://github.com/langchain-ai/langgraph-swarm-py)
+  library to create a swarm multi-agent systems. :::
 
 :::js
-- [supervisor](../agents/multi-agent.md#supervisor) — individual agents are coordinated by a central supervisor agent. The supervisor controls all communication flow and task delegation, making decisions about which agent to invoke based on the current context and task requirements. You can use [`langgraph-supervisor`](https://github.com/langchain-ai/langgraph-supervisor-js) library to create a supervisor multi-agent systems.
-- [swarm](../agents/multi-agent.md#supervisor) — agents dynamically hand off control to one another based on their specializations. The system remembers which agent was last active, ensuring that on subsequent interactions, the conversation resumes with that agent. You can use [`langgraph-swarm`](https://github.com/langchain-ai/langgraph-swarm-js) library to create a swarm multi-agent systems.
-:::
+
+- [supervisor](../agents/multi-agent.md#supervisor) — individual agents are
+  coordinated by a central supervisor agent. The supervisor controls all
+  communication flow and task delegation, making decisions about which agent to
+  invoke based on the current context and task requirements. You can use
+  [`langgraph-supervisor`](https://github.com/langchain-ai/langgraph-supervisor-js)
+  library to create a supervisor multi-agent systems.
+- [swarm](../agents/multi-agent.md#supervisor) — agents dynamically hand off
+  control to one another based on their specializations. The system remembers
+  which agent was last active, ensuring that on subsequent interactions, the
+  conversation resumes with that agent. You can use
+  [`langgraph-swarm`](https://github.com/langchain-ai/langgraph-swarm-js)
+  library to create a swarm multi-agent systems. :::

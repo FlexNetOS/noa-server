@@ -1,6 +1,7 @@
 # Agent Swarm
 
-Multi-agent swarm coordination with consensus algorithms, inter-agent communication, and distributed task execution.
+Multi-agent swarm coordination with consensus algorithms, inter-agent
+communication, and distributed task execution.
 
 ## Features
 
@@ -23,7 +24,11 @@ npm install @noa/agent-swarm @noa/claude-flow-integration
 ### Create and Initialize Swarm
 
 ```typescript
-import { SwarmCoordinator, ConsensusAlgorithm, AgentFactory } from '@noa/agent-swarm';
+import {
+  SwarmCoordinator,
+  ConsensusAlgorithm,
+  AgentFactory,
+} from '@noa/agent-swarm';
 import { ClaudeFlowClient, SwarmTopology } from '@noa/claude-flow-integration';
 
 // Initialize client
@@ -36,11 +41,11 @@ const coordinator = new SwarmCoordinator(client, {
     topology: SwarmTopology.MESH,
     maxAgents: 10,
     memoryEnabled: true,
-    autoHealing: true
+    autoHealing: true,
   },
   consensusAlgorithm: ConsensusAlgorithm.MAJORITY_VOTE,
   enableCommunication: true,
-  loadBalancing: 'least-loaded'
+  loadBalancing: 'least-loaded',
 });
 
 // Initialize swarm
@@ -60,7 +65,7 @@ const agents = AgentFactory.createSwarm([
   { type: AgentType.CODER, count: 3 },
   { type: AgentType.TESTER, count: 2 },
   { type: AgentType.REVIEWER, count: 1 },
-  { type: AgentType.PLANNER, count: 1 }
+  { type: AgentType.PLANNER, count: 1 },
 ]);
 
 for (const agentConfig of agents) {
@@ -74,14 +79,14 @@ for (const agentConfig of agents) {
 // Assign task with required capabilities
 const taskId = await coordinator.assignTask({
   description: 'Implement user authentication',
-  requiredCapabilities: ['backend-development', 'authentication']
+  requiredCapabilities: ['backend-development', 'authentication'],
 });
 
 // Complete task
 await coordinator.completeTask(taskId, {
   success: true,
   files: ['auth.ts', 'middleware.ts'],
-  tests: ['auth.test.ts']
+  tests: ['auth.test.ts'],
 });
 ```
 
@@ -98,7 +103,12 @@ const proposalId = await coordinator.proposeAction(
 // Agents vote
 await coordinator.vote(proposalId, coderAgent.id, true, 'Better type safety');
 await coordinator.vote(proposalId, testerAgent.id, true, 'Easier to test');
-await coordinator.vote(proposalId, reviewerAgent.id, false, 'Migration cost too high');
+await coordinator.vote(
+  proposalId,
+  reviewerAgent.id,
+  false,
+  'Migration cost too high'
+);
 
 // Wait for consensus
 const decision = await coordinator.waitForConsensus(proposalId);
@@ -111,19 +121,24 @@ console.log('Decision:', decision);
 // Broadcast to all agents
 coordinator.broadcast('coordinator', {
   type: 'announcement',
-  message: 'New deployment starting in 5 minutes'
+  message: 'New deployment starting in 5 minutes',
 });
 
 // Send to specific agent
 coordinator.sendMessage('agent-1', 'agent-2', {
   type: 'request-review',
-  files: ['feature.ts']
+  files: ['feature.ts'],
 });
 
 // Request-response pattern
-const response = await coordinator.request('agent-1', 'agent-2', {
-  type: 'get-status'
-}, 5000);
+const response = await coordinator.request(
+  'agent-1',
+  'agent-2',
+  {
+    type: 'get-status',
+  },
+  5000
+);
 console.log('Agent status:', response);
 ```
 
@@ -134,7 +149,7 @@ console.log('Agent status:', response);
 ```typescript
 const coordinator = new SwarmCoordinator(client, {
   swarmConfig: { topology: SwarmTopology.MESH, maxAgents: 10 },
-  consensusAlgorithm: ConsensusAlgorithm.MAJORITY_VOTE
+  consensusAlgorithm: ConsensusAlgorithm.MAJORITY_VOTE,
 });
 
 // Requires 51% approval by default
@@ -145,7 +160,7 @@ const coordinator = new SwarmCoordinator(client, {
 ```typescript
 const coordinator = new SwarmCoordinator(client, {
   swarmConfig: { topology: SwarmTopology.MESH, maxAgents: 10 },
-  consensusAlgorithm: ConsensusAlgorithm.UNANIMOUS
+  consensusAlgorithm: ConsensusAlgorithm.UNANIMOUS,
 });
 
 // Requires all agents to approve
@@ -156,7 +171,7 @@ const coordinator = new SwarmCoordinator(client, {
 ```typescript
 const coordinator = new SwarmCoordinator(client, {
   swarmConfig: { topology: SwarmTopology.MESH, maxAgents: 10 },
-  consensusAlgorithm: ConsensusAlgorithm.WEIGHTED_VOTE
+  consensusAlgorithm: ConsensusAlgorithm.WEIGHTED_VOTE,
 });
 
 // Vote with weights
@@ -168,7 +183,7 @@ await coordinator.vote(proposalId, agentId, true, 'Good idea', 10);
 ```typescript
 const coordinator = new SwarmCoordinator(client, {
   swarmConfig: { topology: SwarmTopology.MESH, maxAgents: 10 },
-  consensusAlgorithm: ConsensusAlgorithm.BYZANTINE
+  consensusAlgorithm: ConsensusAlgorithm.BYZANTINE,
 });
 
 // Tolerates f faulty nodes in 3f+1 system
@@ -179,7 +194,7 @@ const coordinator = new SwarmCoordinator(client, {
 ```typescript
 const coordinator = new SwarmCoordinator(client, {
   swarmConfig: { topology: SwarmTopology.HIERARCHICAL, maxAgents: 10 },
-  consensusAlgorithm: ConsensusAlgorithm.RAFT
+  consensusAlgorithm: ConsensusAlgorithm.RAFT,
 });
 
 // Leader-based consensus
@@ -192,7 +207,7 @@ const coordinator = new SwarmCoordinator(client, {
 ```typescript
 const coordinator = new SwarmCoordinator(client, {
   swarmConfig: { topology: SwarmTopology.MESH, maxAgents: 10 },
-  loadBalancing: 'least-loaded'
+  loadBalancing: 'least-loaded',
 });
 
 // Assigns tasks to agents with lowest load
@@ -203,7 +218,7 @@ const coordinator = new SwarmCoordinator(client, {
 ```typescript
 const coordinator = new SwarmCoordinator(client, {
   swarmConfig: { topology: SwarmTopology.MESH, maxAgents: 10 },
-  loadBalancing: 'round-robin'
+  loadBalancing: 'round-robin',
 });
 
 // Distributes tasks evenly in rotation
@@ -214,7 +229,7 @@ const coordinator = new SwarmCoordinator(client, {
 ```typescript
 const coordinator = new SwarmCoordinator(client, {
   swarmConfig: { topology: SwarmTopology.MESH, maxAgents: 10 },
-  loadBalancing: 'capability-based'
+  loadBalancing: 'capability-based',
 });
 
 // Prefers agents with more matching capabilities
@@ -266,7 +281,7 @@ const customAgent = AgentFactory.custom(
   ['rust', 'systems-programming', 'performance-optimization'],
   {
     maxConcurrency: 3,
-    timeoutMs: 60000
+    timeoutMs: 60000,
   }
 );
 ```
@@ -278,7 +293,7 @@ const swarmAgents = AgentFactory.createSwarm([
   { type: AgentType.CODER, count: 5 },
   { type: AgentType.TESTER, count: 3 },
   { type: AgentType.REVIEWER, count: 2 },
-  { type: AgentType.SYSTEM_ARCHITECT, count: 1 }
+  { type: AgentType.SYSTEM_ARCHITECT, count: 1 },
 ]);
 ```
 
@@ -328,7 +343,7 @@ console.log('Swarm stats:', {
   idleAgents: stats.idleAgents,
   averageLoad: stats.averageLoad,
   activeTasks: stats.activeTasks,
-  completedTasks: stats.completedTasks
+  completedTasks: stats.completedTasks,
 });
 
 // Get specific agent
@@ -351,7 +366,7 @@ const allTasks = coordinator.getTasks();
 // Automatic health checks every 30 seconds (default)
 const coordinator = new SwarmCoordinator(client, {
   swarmConfig: { topology: SwarmTopology.MESH, maxAgents: 10 },
-  healthCheckInterval: 30000
+  healthCheckInterval: 30000,
 });
 
 // Listen for timeout events
@@ -410,6 +425,7 @@ consensus.clearResults();
 ## Examples
 
 See [examples/](./examples/) for more detailed examples:
+
 - Full-stack development swarm
 - Distributed code review
 - Consensus-based architecture decisions

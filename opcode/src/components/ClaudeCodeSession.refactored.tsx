@@ -1,26 +1,33 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { api, type Session } from "@/lib/api";
-import { cn } from "@/lib/utils";
-import { open } from "@tauri-apps/plugin-dialog";
-import { FloatingPromptInput, type FloatingPromptInputRef } from "./FloatingPromptInput";
-import { ErrorBoundary } from "./ErrorBoundary";
-import { TimelineNavigator } from "./TimelineNavigator";
-import { CheckpointSettings } from "./CheckpointSettings";
-import { SlashCommandsManager } from "./SlashCommandsManager";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { SplitPane } from "@/components/ui/split-pane";
-import { WebviewPreview } from "./WebviewPreview";
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { api, type Session } from '@/lib/api';
+import { cn } from '@/lib/utils';
+import { open } from '@tauri-apps/plugin-dialog';
+import { FloatingPromptInput, type FloatingPromptInputRef } from './FloatingPromptInput';
+import { ErrorBoundary } from './ErrorBoundary';
+import { TimelineNavigator } from './TimelineNavigator';
+import { CheckpointSettings } from './CheckpointSettings';
+import { SlashCommandsManager } from './SlashCommandsManager';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { SplitPane } from '@/components/ui/split-pane';
+import { WebviewPreview } from './WebviewPreview';
 
 // Import refactored components and hooks
-import { useClaudeMessages } from "./claude-code-session/useClaudeMessages";
-import { useCheckpoints } from "./claude-code-session/useCheckpoints";
-import { SessionHeader } from "./claude-code-session/SessionHeader";
-import { MessageList } from "./claude-code-session/MessageList";
-import { PromptQueue } from "./claude-code-session/PromptQueue";
+import { useClaudeMessages } from './claude-code-session/useClaudeMessages';
+import { useCheckpoints } from './claude-code-session/useCheckpoints';
+import { SessionHeader } from './claude-code-session/SessionHeader';
+import { MessageList } from './claude-code-session/MessageList';
+import { PromptQueue } from './claude-code-session/PromptQueue';
 
 interface ClaudeCodeSessionProps {
   session?: Session;
@@ -33,13 +40,13 @@ interface ClaudeCodeSessionProps {
 
 export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
   session,
-  initialProjectPath = "",
+  initialProjectPath = '',
   onBack,
   onProjectSettings,
   className,
   onStreamingChange,
 }) => {
-  const [projectPath, setProjectPath] = useState(initialProjectPath || session?.project_path || "");
+  const [projectPath, setProjectPath] = useState(initialProjectPath || session?.project_path || '');
   const [error, setError] = useState<string | null>(null);
   const [copyPopoverOpen, setCopyPopoverOpen] = useState(false);
   const [isFirstPrompt, setIsFirstPrompt] = useState(!session);
@@ -50,8 +57,10 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
   const [showForkDialog, setShowForkDialog] = useState(false);
   const [showSlashCommandsSettings, setShowSlashCommandsSettings] = useState(false);
   const [forkCheckpointId, setForkCheckpointId] = useState<string | null>(null);
-  const [forkSessionName, setForkSessionName] = useState("");
-  const [queuedPrompts, setQueuedPrompts] = useState<Array<{ id: string; prompt: string; model: "sonnet" | "opus" }>>([]);
+  const [forkSessionName, setForkSessionName] = useState('');
+  const [queuedPrompts, setQueuedPrompts] = useState<
+    Array<{ id: string; prompt: string; model: 'sonnet' | 'opus' }>
+  >([]);
   const [showPreview, setShowPreview] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isPreviewMaximized, setIsPreviewMaximized] = useState(false);
@@ -65,13 +74,13 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
     isStreaming,
     currentSessionId: _currentSessionId,
     clearMessages,
-    loadMessages
+    loadMessages,
   } = useClaudeMessages({
     onSessionInfo: (info) => {
       setClaudeSessionId(info.sessionId);
     },
     onTokenUpdate: setTotalTokens,
-    onStreamingChange
+    onStreamingChange,
   });
 
   const {
@@ -80,14 +89,14 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
     loadCheckpoints,
     createCheckpoint: _createCheckpoint,
     restoreCheckpoint,
-    forkCheckpoint
+    forkCheckpoint,
   } = useCheckpoints({
     sessionId: claudeSessionId,
     projectId: session?.project_id || '',
     projectPath: projectPath,
     onToast: (message: string, type: 'success' | 'error') => {
       console.log(`Toast: ${type} - ${message}`);
-    }
+    },
   });
 
   // Handle path selection
@@ -95,9 +104,9 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
     const selected = await open({
       directory: true,
       multiple: false,
-      title: "Select Project Directory"
+      title: 'Select Project Directory',
     });
-    
+
     if (selected && typeof selected === 'string') {
       setProjectPath(selected);
       setError(null);
@@ -106,57 +115,60 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
   };
 
   // Handle sending prompts
-  const handleSendPrompt = useCallback(async (prompt: string, model: "sonnet" | "opus") => {
-    console.log('[TRACE] handleSendPrompt called:');
-    console.log('[TRACE]   prompt length:', prompt.length);
-    console.log('[TRACE]   model:', model);
-    console.log('[TRACE]   projectPath:', projectPath);
-    console.log('[TRACE]   isStreaming:', isStreaming);
-    console.log('[TRACE]   isFirstPrompt:', isFirstPrompt);
-    console.log('[TRACE]   claudeSessionId:', claudeSessionId);
-    
-    if (!projectPath || !prompt.trim()) {
-      console.log('[TRACE] Aborting - no project path or empty prompt');
-      return;
-    }
+  const handleSendPrompt = useCallback(
+    async (prompt: string, model: 'sonnet' | 'opus') => {
+      console.log('[TRACE] handleSendPrompt called:');
+      console.log('[TRACE]   prompt length:', prompt.length);
+      console.log('[TRACE]   model:', model);
+      console.log('[TRACE]   projectPath:', projectPath);
+      console.log('[TRACE]   isStreaming:', isStreaming);
+      console.log('[TRACE]   isFirstPrompt:', isFirstPrompt);
+      console.log('[TRACE]   claudeSessionId:', claudeSessionId);
 
-    // Add to queue if streaming
-    if (isStreaming) {
-      console.log('[TRACE] Currently streaming - adding to queue');
-      const id = Date.now().toString();
-      setQueuedPrompts(prev => [...prev, { id, prompt, model }]);
-      return;
-    }
-
-    try {
-      console.log('[TRACE] Clearing error and starting prompt execution');
-      setError(null);
-      
-      if (isFirstPrompt) {
-        console.log('[TRACE] First prompt - calling api.executeClaudeCode');
-        await api.executeClaudeCode(projectPath, prompt, model);
-        setIsFirstPrompt(false);
-        console.log('[TRACE] executeClaudeCode completed');
-      } else if (claudeSessionId) {
-        console.log('[TRACE] Continue prompt - calling api.continueClaudeCode');
-        await api.continueClaudeCode(projectPath, prompt, model);
-        console.log('[TRACE] continueClaudeCode completed');
-      } else {
-        console.log('[TRACE] No claude session ID for continue');
+      if (!projectPath || !prompt.trim()) {
+        console.log('[TRACE] Aborting - no project path or empty prompt');
+        return;
       }
-    } catch (error) {
-      console.error("[TRACE] Failed to send prompt:", error);
-      setError(error instanceof Error ? error.message : "Failed to send prompt");
-    }
-  }, [projectPath, isStreaming, isFirstPrompt, claudeSessionId]);
+
+      // Add to queue if streaming
+      if (isStreaming) {
+        console.log('[TRACE] Currently streaming - adding to queue');
+        const id = Date.now().toString();
+        setQueuedPrompts((prev) => [...prev, { id, prompt, model }]);
+        return;
+      }
+
+      try {
+        console.log('[TRACE] Clearing error and starting prompt execution');
+        setError(null);
+
+        if (isFirstPrompt) {
+          console.log('[TRACE] First prompt - calling api.executeClaudeCode');
+          await api.executeClaudeCode(projectPath, prompt, model);
+          setIsFirstPrompt(false);
+          console.log('[TRACE] executeClaudeCode completed');
+        } else if (claudeSessionId) {
+          console.log('[TRACE] Continue prompt - calling api.continueClaudeCode');
+          await api.continueClaudeCode(projectPath, prompt, model);
+          console.log('[TRACE] continueClaudeCode completed');
+        } else {
+          console.log('[TRACE] No claude session ID for continue');
+        }
+      } catch (error) {
+        console.error('[TRACE] Failed to send prompt:', error);
+        setError(error instanceof Error ? error.message : 'Failed to send prompt');
+      }
+    },
+    [projectPath, isStreaming, isFirstPrompt, claudeSessionId]
+  );
 
   // Process queued prompts
   const processQueuedPrompts = useCallback(async () => {
     if (queuedPrompts.length === 0 || isStreaming) return;
 
     const nextPrompt = queuedPrompts[0];
-    setQueuedPrompts(prev => prev.slice(1));
-    
+    setQueuedPrompts((prev) => prev.slice(1));
+
     await handleSendPrompt(nextPrompt.prompt, nextPrompt.model);
   }, [queuedPrompts, isStreaming, handleSendPrompt]);
 
@@ -165,7 +177,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
     if (!isStreaming && queuedPrompts.length > 0) {
       processQueueTimeoutRef.current = setTimeout(processQueuedPrompts, 500);
     }
-    
+
     return () => {
       if (processQueueTimeoutRef.current) {
         clearTimeout(processQueueTimeoutRef.current);
@@ -178,26 +190,29 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
     try {
       await navigator.clipboard.writeText(rawJsonlOutput.join('\n'));
       setCopyPopoverOpen(false);
-      console.log("Session output copied as JSONL");
+      console.log('Session output copied as JSONL');
     } catch (error) {
-      console.error("Failed to copy:", error);
+      console.error('Failed to copy:', error);
     }
   };
 
   const handleCopyAsMarkdown = async () => {
     try {
       const markdown = messages
-        .filter(msg => msg.type === 'user' || msg.type === 'assistant')
-        .map(msg => {
+        .filter((msg) => msg.type === 'user' || msg.type === 'assistant')
+        .map((msg) => {
           if (msg.type === 'user') {
             return `## User\n\n${msg.message || ''}`;
           } else if (msg.type === 'assistant' && msg.message?.content) {
-            const content = Array.isArray(msg.message.content) 
-              ? msg.message.content.map((item: any) => {
-                  if (typeof item === 'string') return item;
-                  if (item.type === 'text') return item.text;
-                  return '';
-                }).filter(Boolean).join('')
+            const content = Array.isArray(msg.message.content)
+              ? msg.message.content
+                  .map((item: any) => {
+                    if (typeof item === 'string') return item;
+                    if (item.type === 'text') return item.text;
+                    return '';
+                  })
+                  .filter(Boolean)
+                  .join('')
               : msg.message.content;
             return `## Assistant\n\n${content}`;
           }
@@ -205,19 +220,19 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
         })
         .filter(Boolean)
         .join('\n\n---\n\n');
-      
+
       await navigator.clipboard.writeText(markdown);
       setCopyPopoverOpen(false);
-      console.log("Session output copied as Markdown");
+      console.log('Session output copied as Markdown');
     } catch (error) {
-      console.error("Failed to copy:", error);
+      console.error('Failed to copy:', error);
     }
   };
 
   // Fork dialog handlers
   const handleFork = (checkpointId: string) => {
     setForkCheckpointId(checkpointId);
-    setForkSessionName("");
+    setForkSessionName('');
     setShowForkDialog(true);
   };
 
@@ -252,7 +267,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
 
   return (
     <ErrorBoundary>
-      <div className={cn("flex flex-col h-screen bg-background", className)}>
+      <div className={cn('bg-background flex h-screen flex-col', className)}>
         {/* Header */}
         <SessionHeader
           projectPath={projectPath}
@@ -273,11 +288,11 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
         />
 
         {/* Main content area */}
-        <div className="flex-1 flex">
+        <div className="flex flex-1">
           {showPreview ? (
             <SplitPane
               left={
-                <div className="flex flex-col h-full">
+                <div className="flex h-full flex-col">
                   <MessageList
                     messages={messages}
                     projectPath={projectPath}
@@ -287,13 +302,13 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
                   />
                   <PromptQueue
                     queuedPrompts={queuedPrompts}
-                    onRemove={(id) => setQueuedPrompts(prev => prev.filter(p => p.id !== id))}
+                    onRemove={(id) => setQueuedPrompts((prev) => prev.filter((p) => p.id !== id))}
                   />
                 </div>
               }
               right={
                 <WebviewPreview
-                  initialUrl={previewUrl || ""}
+                  initialUrl={previewUrl || ''}
                   isMaximized={isPreviewMaximized}
                   onClose={() => setShowPreview(false)}
                   onUrlChange={setPreviewUrl}
@@ -303,7 +318,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
               initialSplit={60}
             />
           ) : (
-            <div className="flex flex-col flex-1">
+            <div className="flex flex-1 flex-col">
               <MessageList
                 messages={messages}
                 projectPath={projectPath}
@@ -313,7 +328,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
               />
               <PromptQueue
                 queuedPrompts={queuedPrompts}
-                onRemove={(id) => setQueuedPrompts(prev => prev.filter(p => p.id !== id))}
+                onRemove={(id) => setQueuedPrompts((prev) => prev.filter((p) => p.id !== id))}
               />
             </div>
           )}
@@ -324,9 +339,9 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mx-4 mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-md"
+            className="bg-destructive/10 border-destructive/20 mx-4 mb-4 rounded-md border p-3"
           >
-            <p className="text-sm text-destructive">{error}</p>
+            <p className="text-destructive text-sm">{error}</p>
           </motion.div>
         )}
 
@@ -375,9 +390,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
         )}
 
         {showSlashCommandsSettings && projectPath && (
-          <SlashCommandsManager
-            projectPath={projectPath}
-          />
+          <SlashCommandsManager projectPath={projectPath} />
         )}
 
         {/* Fork dialog */}
@@ -386,7 +399,8 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
             <DialogHeader>
               <DialogTitle>Fork Session from Checkpoint</DialogTitle>
               <DialogDescription>
-                Create a new session branching from this checkpoint. The original session will remain unchanged.
+                Create a new session branching from this checkpoint. The original session will
+                remain unchanged.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
@@ -405,10 +419,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
               <Button variant="outline" onClick={() => setShowForkDialog(false)}>
                 Cancel
               </Button>
-              <Button 
-                onClick={handleConfirmFork}
-                disabled={!forkSessionName.trim()}
-              >
+              <Button onClick={handleConfirmFork} disabled={!forkSessionName.trim()}>
                 Fork Session
               </Button>
             </DialogFooter>

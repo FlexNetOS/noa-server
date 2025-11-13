@@ -71,14 +71,14 @@ export function PerformanceCharts() {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       {/* Response Time Chart */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-brand-card border border-brand-border rounded-lg p-6"
+        className="rounded-lg border border-brand-border bg-brand-card p-6"
       >
-        <h3 className="text-lg font-semibold text-white mb-4">Response Time (ms)</h3>
+        <h3 className="mb-4 text-lg font-semibold text-white">Response Time (ms)</h3>
         <ResponsiveContainer width="100%" height={250}>
           <AreaChart data={responseTimeData}>
             <defs>
@@ -114,9 +114,9 @@ export function PerformanceCharts() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="bg-brand-card border border-brand-border rounded-lg p-6"
+        className="rounded-lg border border-brand-border bg-brand-card p-6"
       >
-        <h3 className="text-lg font-semibold text-white mb-4">Throughput (tasks/sec)</h3>
+        <h3 className="mb-4 text-lg font-semibold text-white">Throughput (tasks/sec)</h3>
         <ResponsiveContainer width="100%" height={250}>
           <LineChart data={throughputData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#334155" />

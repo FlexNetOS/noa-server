@@ -2,7 +2,8 @@
 
 ## Overview
 
-This document provides comprehensive guidance on GDPR compliance implementation in the Noa Server platform.
+This document provides comprehensive guidance on GDPR compliance implementation
+in the Noa Server platform.
 
 ## Table of Contents
 
@@ -16,31 +17,38 @@ This document provides comprehensive guidance on GDPR compliance implementation 
 ## GDPR Principles
 
 ### 1. Lawfulness, Fairness, and Transparency
+
 - All data processing must have a valid legal basis
 - Users must be informed about data processing in clear language
 - Privacy notices must be easily accessible
 
 ### 2. Purpose Limitation
+
 - Data collected for specific, explicit, and legitimate purposes
 - Cannot be processed in ways incompatible with original purposes
 
 ### 3. Data Minimization
+
 - Only collect data that is necessary for the specified purpose
 - Avoid collecting "nice to have" data
 
 ### 4. Accuracy
+
 - Personal data must be accurate and kept up to date
 - Inaccurate data must be rectified or erased without delay
 
 ### 5. Storage Limitation
+
 - Data kept only as long as necessary for the purpose
 - Retention periods must be documented and enforced
 
 ### 6. Integrity and Confidentiality
+
 - Appropriate security measures to protect personal data
 - Protection against unauthorized access, loss, or damage
 
 ### 7. Accountability
+
 - Organization must demonstrate compliance
 - Maintain records of processing activities (ROPA)
 
@@ -51,6 +59,7 @@ This document provides comprehensive guidance on GDPR compliance implementation 
 **What**: Users can request access to their personal data
 
 **Implementation**:
+
 ```typescript
 // Create access request
 POST /api/gdpr/dsr/access
@@ -65,6 +74,7 @@ GET /api/gdpr/dsr/export?format=json
 **Response Time**: Within 1 month (extendable to 3 months for complex requests)
 
 **Data Included**:
+
 - Personal profile information
 - Consent history
 - Processing activities
@@ -75,9 +85,11 @@ GET /api/gdpr/dsr/export?format=json
 
 ### Right to Erasure (Article 17)
 
-**What**: Users can request deletion of their personal data ("Right to be Forgotten")
+**What**: Users can request deletion of their personal data ("Right to be
+Forgotten")
 
 **Implementation**:
+
 ```typescript
 POST /api/gdpr/dsr/erasure
 {
@@ -87,6 +99,7 @@ POST /api/gdpr/dsr/erasure
 ```
 
 **Exceptions** (when erasure cannot be honored):
+
 - Legal obligation to retain data
 - Active contract requiring the data
 - Legal claims (defense or establishment)
@@ -94,6 +107,7 @@ POST /api/gdpr/dsr/erasure
 - Legal hold
 
 **Process**:
+
 1. Verify user identity
 2. Check for exceptions
 3. Execute multi-step deletion:
@@ -109,6 +123,7 @@ POST /api/gdpr/dsr/erasure
 **What**: Users can request correction of inaccurate data
 
 **Implementation**:
+
 ```typescript
 POST /api/gdpr/dsr/rectification
 {
@@ -121,11 +136,13 @@ POST /api/gdpr/dsr/rectification
 ```
 
 **Allowed Fields**:
+
 - Contact information (email, phone)
 - Personal details (name, address)
 - Demographic information
 
 **Not Allowed**:
+
 - System-generated data
 - Historical records
 - Audit logs
@@ -135,6 +152,7 @@ POST /api/gdpr/dsr/rectification
 **What**: Users can receive their data in machine-readable format
 
 **Implementation**:
+
 ```typescript
 POST /api/gdpr/dsr/portability
 {
@@ -144,11 +162,13 @@ POST /api/gdpr/dsr/portability
 ```
 
 **Formats Supported**:
+
 - JSON (recommended)
 - CSV
 - XML
 
 **Data Included**:
+
 - Only user-provided data
 - Excludes derived/inferred data
 
@@ -157,6 +177,7 @@ POST /api/gdpr/dsr/portability
 **What**: Users can request restriction of processing
 
 **Implementation**:
+
 ```typescript
 POST /api/gdpr/dsr/restriction
 {
@@ -166,12 +187,14 @@ POST /api/gdpr/dsr/restriction
 ```
 
 **Grounds for Restriction**:
+
 1. Accuracy contested (while verification occurs)
 2. Processing is unlawful (but user doesn't want erasure)
 3. No longer needed (but user needs for legal claim)
 4. Objection pending (while assessing grounds)
 
 **Effect**:
+
 - Data can be stored but not processed
 - Processing only with user consent or for legal claims
 
@@ -180,6 +203,7 @@ POST /api/gdpr/dsr/restriction
 **What**: Users can object to certain types of processing
 
 **Implementation**:
+
 ```typescript
 POST /api/gdpr/dsr/objection
 {
@@ -189,6 +213,7 @@ POST /api/gdpr/dsr/objection
 ```
 
 **Types**:
+
 1. **Direct Marketing**: Must always be honored
 2. **Profiling**: Must be honored unless compelling grounds
 3. **Legitimate Interests**: Must be honored unless compelling grounds
@@ -199,6 +224,7 @@ POST /api/gdpr/dsr/objection
 ### Consent Requirements
 
 Valid consent must be:
+
 - **Freely given**: No coercion or bundling
 - **Specific**: Separate consent for different purposes
 - **Informed**: Clear information about processing
@@ -217,7 +243,7 @@ enum ConsentType {
   COOKIES_ESSENTIAL = 'cookies_essential',
   COOKIES_FUNCTIONAL = 'cookies_functional',
   COOKIES_ANALYTICS = 'cookies_analytics',
-  COOKIES_MARKETING = 'cookies_marketing'
+  COOKIES_MARKETING = 'cookies_marketing',
 }
 ```
 
@@ -263,6 +289,7 @@ POST /api/gdpr/cookies/consent
 Article 30 requires maintaining a record of all processing activities.
 
 **Required Information**:
+
 - Name and purpose of processing
 - Categories of data subjects
 - Categories of personal data
@@ -272,6 +299,7 @@ Article 30 requires maintaining a record of all processing activities.
 - Security measures
 
 **Example**:
+
 ```typescript
 {
   "name": "User Registration Processing",
@@ -290,9 +318,11 @@ Article 30 requires maintaining a record of all processing activities.
 
 ### 72-Hour Notification Requirement
 
-**Article 33**: Notify supervisory authority within 72 hours of becoming aware of a breach
+**Article 33**: Notify supervisory authority within 72 hours of becoming aware
+of a breach
 
 **Process**:
+
 1. **Detection** (0-4 hours)
    - Automated monitoring
    - Security alerts
@@ -374,17 +404,17 @@ export const GDPRConfig = {
   dpo: {
     name: 'John Doe',
     email: 'dpo@example.com',
-    phone: '+1-555-0100'
+    phone: '+1-555-0100',
   },
   supervisoryAuthority: {
     name: 'Data Protection Commission',
     email: 'authority@example.com',
-    country: 'IE'
+    country: 'IE',
   },
   notificationDeadlineHours: 72,
   sarResponseDays: 30,
   enableAutomatedDeletion: true,
-  enableBreachDetection: true
+  enableBreachDetection: true,
 };
 ```
 
@@ -433,11 +463,13 @@ if (hasConsent) {
 ## Contact Information
 
 **Data Protection Officer**
+
 - Email: dpo@example.com
 - Phone: +1-555-0100
 - Address: [Company Address]
 
 **Supervisory Authority**
+
 - Name: [Authority Name]
 - Website: [Authority Website]
 - Phone: [Authority Phone]
@@ -450,5 +482,4 @@ if (hasConsent) {
 
 ---
 
-*Last Updated: October 2025*
-*Version: 1.0*
+_Last Updated: October 2025_ _Version: 1.0_

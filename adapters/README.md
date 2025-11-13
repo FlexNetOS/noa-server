@@ -1,16 +1,22 @@
 # LangChain MCP Adapters
 
-This library provides a lightweight wrapper that makes [Anthropic Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) tools compatible with [LangChain](https://github.com/langchain-ai/langchain) and [LangGraph](https://github.com/langchain-ai/langgraph).
+This library provides a lightweight wrapper that makes
+[Anthropic Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction)
+tools compatible with [LangChain](https://github.com/langchain-ai/langchain) and
+[LangGraph](https://github.com/langchain-ai/langgraph).
 
 ![MCP](static/img/mcp.png)
 
-> [!note]
-> A JavaScript/TypeScript version of this library is also available at [langchainjs](https://github.com/langchain-ai/langchainjs/tree/main/libs/langchain-mcp-adapters/).
+> [!note] A JavaScript/TypeScript version of this library is also available at
+> [langchainjs](https://github.com/langchain-ai/langchainjs/tree/main/libs/langchain-mcp-adapters/).
 
 ## Features
 
-- 🛠️ Convert MCP tools into [LangChain tools](https://python.langchain.com/docs/concepts/tools/) that can be used with [LangGraph](https://github.com/langchain-ai/langgraph) agents
-- 📦 A client implementation that allows you to connect to multiple MCP servers and load tools from them
+- 🛠️ Convert MCP tools into
+  [LangChain tools](https://python.langchain.com/docs/concepts/tools/) that can
+  be used with [LangGraph](https://github.com/langchain-ai/langgraph) agents
+- 📦 A client implementation that allows you to connect to multiple MCP servers
+  and load tools from them
 
 ## Installation
 
@@ -83,7 +89,8 @@ async with stdio_client(server_params) as (read, write):
 
 ## Multiple MCP Servers
 
-The library also allows you to connect to multiple MCP servers and load tools from them:
+The library also allows you to connect to multiple MCP servers and load tools
+from them:
 
 ### Server
 
@@ -137,8 +144,9 @@ math_response = await agent.ainvoke({"messages": "what's (3 + 5) x 12?"})
 weather_response = await agent.ainvoke({"messages": "what is the weather in nyc?"})
 ```
 
-> [!note]
-> Example above will start a new MCP `ClientSession` for each tool invocation. If you would like to explicitly start a session for a given server, you can do:
+> [!note] Example above will start a new MCP `ClientSession` for each tool
+> invocation. If you would like to explicitly start a session for a given
+> server, you can do:
 >
 > ```python
 > from langchain_mcp_adapters.tools import load_mcp_tools
@@ -150,9 +158,12 @@ weather_response = await agent.ainvoke({"messages": "what is the weather in nyc?
 
 ## Streamable HTTP
 
-MCP now supports [streamable HTTP](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http) transport.
+MCP now supports
+[streamable HTTP](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http)
+transport.
 
-To start an [example](examples/servers/streamable-http-stateless/) streamable HTTP server, run the following:
+To start an [example](examples/servers/streamable-http-stateless/) streamable
+HTTP server, run the following:
 
 ```bash
 cd examples/servers/streamable-http-stateless/
@@ -205,7 +216,9 @@ math_response = await agent.ainvoke({"messages": "what's (3 + 5) x 12?"})
 
 ## Passing runtime headers
 
-When connecting to MCP servers, you can include custom headers (e.g., for authentication or tracing) using the `headers` field in the connection configuration. This is supported for the following transports:
+When connecting to MCP servers, you can include custom headers (e.g., for
+authentication or tracing) using the `headers` field in the connection
+configuration. This is supported for the following transports:
 
 - `sse`
 - `streamable_http`
@@ -233,7 +246,8 @@ agent = create_react_agent("openai:gpt-4.1", tools)
 response = await agent.ainvoke({"messages": "what is the weather in nyc?"})
 ```
 
-> Only `sse` and `streamable_http` transports support runtime headers. These headers are passed with every HTTP request to the MCP server.
+> Only `sse` and `streamable_http` transports support runtime headers. These
+> headers are passed with every HTTP request to the MCP server.
 
 ## Using with LangGraph StateGraph
 
@@ -282,10 +296,12 @@ weather_response = await graph.ainvoke({"messages": "what is the weather in nyc?
 
 ## Using with LangGraph API Server
 
-> [!TIP]
-> Check out [this guide](https://langchain-ai.github.io/langgraph/tutorials/langgraph-platform/local-server/) on getting started with LangGraph API server.
+> [!TIP] Check out
+> [this guide](https://langchain-ai.github.io/langgraph/tutorials/langgraph-platform/local-server/)
+> on getting started with LangGraph API server.
 
-If you want to run a LangGraph agent that uses MCP tools in a LangGraph API server, you can use the following setup:
+If you want to run a LangGraph agent that uses MCP tools in a LangGraph API
+server, you can use the following setup:
 
 ```python
 # graph.py
@@ -314,7 +330,9 @@ async def make_graph():
     return agent
 ```
 
-In your [`langgraph.json`](https://langchain-ai.github.io/langgraph/cloud/reference/cli/#configuration-file) make sure to specify `make_graph` as your graph entrypoint:
+In your
+[`langgraph.json`](https://langchain-ai.github.io/langgraph/cloud/reference/cli/#configuration-file)
+make sure to specify `make_graph` as your graph entrypoint:
 
 ```json
 {
@@ -327,10 +345,10 @@ In your [`langgraph.json`](https://langchain-ai.github.io/langgraph/cloud/refere
 
 ## Add LangChain tools to a FastMCP server
 
-Use `to_fastmcp` to convert LangChain tools to FastMCP, and then add them to the `FastMCP` server via the initializer:
+Use `to_fastmcp` to convert LangChain tools to FastMCP, and then add them to the
+`FastMCP` server via the initializer:
 
-> [!NOTE]
-> `tools` argument is only available in FastMCP as of `mcp >= 1.9.1`
+> [!NOTE] `tools` argument is only available in FastMCP as of `mcp >= 1.9.1`
 
 ```python
 from langchain_core.tools import tool

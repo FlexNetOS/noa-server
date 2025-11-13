@@ -23,17 +23,17 @@ describe('SelfHealingSystem', () => {
             serviceRestart: { enabled: true, cooldown: 30000 },
             dependencyCheck: { enabled: true, checkInterval: 60000 },
             rollback: { enabled: true, automatic: false, approvalRequired: true },
-            gracefulDegradation: { enabled: true, fallbackMode: 'read-only' }
-          }
+            gracefulDegradation: { enabled: true, fallbackMode: 'read-only' },
+          },
         },
         alerting: {
           enabled: true,
           channels: {
             console: { enabled: true },
-            file: { enabled: false }
-          }
-        }
-      }
+            file: { enabled: false },
+          },
+        },
+      },
     };
 
     healer = new SelfHealingSystem(mockConfig);
@@ -121,7 +121,7 @@ describe('SelfHealingSystem', () => {
         issue: { type: 'service-down', service: 'test' },
         strategy: 'service-restart',
         result: { success: true },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
 
       // This would require mocking fs operations
@@ -134,7 +134,7 @@ describe('SelfHealingSystem', () => {
       const issue = {
         type: 'service-down',
         service: 'test-service',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
 
       // This would require extensive mocking

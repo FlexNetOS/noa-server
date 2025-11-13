@@ -2,8 +2,7 @@
 
 ## Overview
 
-**Severity**: SEV2-SEV3 (High to Medium)
-**Estimated Duration**: 15-30 minutes
+**Severity**: SEV2-SEV3 (High to Medium) **Estimated Duration**: 15-30 minutes
 **Prerequisites**: kubectl access, monitoring access
 
 ## Symptoms
@@ -26,6 +25,7 @@
 ### Step 1: Assess Scope (3 minutes)
 
 **Check Metrics**:
+
 ```bash
 # Check error rate by endpoint
 kubectl exec -n production api-0 -- curl -s localhost:9090/metrics | \
@@ -40,6 +40,7 @@ kubectl logs -n production -l app=api --tail=100 | grep ERROR
 ```
 
 **Identify Pattern**:
+
 - Which endpoints are affected?
 - Which users are affected?
 - What percentage of requests failing?
@@ -48,6 +49,7 @@ kubectl logs -n production -l app=api --tail=100 | grep ERROR
 ### Step 2: Check Recent Changes (5 minutes)
 
 **Review Deployments**:
+
 ```bash
 # Check recent deployments
 kubectl rollout history deployment/api -n production
@@ -63,12 +65,14 @@ git log --oneline --since="2 hours ago"
 ```
 
 **Decision Point**:
+
 - If recent deployment → Go to Step 3 (Rollback)
 - If no recent changes → Go to Step 4 (Resource Check)
 
 ### Step 3: Rollback Recent Deployment (5 minutes)
 
 **Rollback Procedure**:
+
 ```bash
 # View deployment history
 kubectl rollout history deployment/api -n production
@@ -88,6 +92,7 @@ curl https://api.noaserver.com/health
 ```
 
 **Verify Improvement**:
+
 ```bash
 # Check error rate
 watch 'kubectl exec -n production api-0 -- curl -s localhost:9090/metrics | grep error'
@@ -101,6 +106,7 @@ kubectl logs -f -n production -l app=api | grep ERROR
 ### Step 4: Check Resource Constraints (5 minutes)
 
 **Commands**:
+
 ```bash
 # Check pod resources
 kubectl top pods -n production
@@ -121,6 +127,7 @@ kubectl exec -n production api-0 -- df -h
 **Common Issues & Fixes**:
 
 **Memory Issues**:
+
 ```bash
 # Increase memory limit
 kubectl set resources deployment api -n production \
@@ -131,6 +138,7 @@ kubectl rollout restart deployment/api -n production
 ```
 
 **CPU Throttling**:
+
 ```bash
 # Increase CPU limit
 kubectl set resources deployment api -n production \
@@ -138,6 +146,7 @@ kubectl set resources deployment api -n production \
 ```
 
 **Disk Full**:
+
 ```bash
 # Clean up old logs
 kubectl exec -n production api-0 -- sh -c "find /var/log -type f -mtime +7 -delete"
@@ -149,6 +158,7 @@ kubectl edit pvc api-storage -n production
 ### Step 5: Check Dependencies (5 minutes)
 
 **Database Check**:
+
 ```bash
 # Test database connectivity
 kubectl exec -n production api-0 -- curl -s http://localhost:8080/admin/db-health
@@ -163,6 +173,7 @@ kubectl exec -n production api-0 -- curl -s localhost:9090/metrics | \
 ```
 
 **Cache Check**:
+
 ```bash
 # Test Redis connectivity
 kubectl exec -n cache redis-0 -- redis-cli ping
@@ -175,6 +186,7 @@ kubectl exec -n cache redis-0 -- redis-cli info stats | grep keyspace
 ```
 
 **External APIs**:
+
 ```bash
 # Test external API endpoints
 curl -w '%{http_code} %{time_total}s\n' -o /dev/null -s https://api.external.com/health
@@ -186,6 +198,7 @@ kubectl exec -n production api-0 -- curl -s http://localhost:8080/admin/circuit-
 ### Step 6: Isolate Failing Component (5 minutes)
 
 **Identify Problem Pods**:
+
 ```bash
 # Check error logs per pod
 for pod in $(kubectl get pods -n production -l app=api -o name); do
@@ -201,6 +214,7 @@ done
 ```
 
 **Remove Problem Pod from Service**:
+
 ```bash
 # Label pod to exclude from service
 kubectl label pod <problem-pod> -n production unhealthy=true
@@ -216,6 +230,7 @@ kubectl delete pod <problem-pod> -n production
 ### Step 7: Apply Circuit Breakers (3 minutes)
 
 **Enable Circuit Breakers**:
+
 ```bash
 # Enable circuit breaker for failing external API
 kubectl exec -n production api-0 -- curl -X POST \
@@ -233,6 +248,7 @@ kubectl rollout restart deployment/api -n production
 ## Communication Template
 
 ### Initial Alert
+
 ```
 [SEV2 INCIDENT] Service Degradation
 Status: Investigating
@@ -243,6 +259,7 @@ Next Update: 10 minutes
 ```
 
 ### Update
+
 ```
 [SEV2 UPDATE] Service Degradation
 Status: Identified - [Component] causing intermittent failures
@@ -253,6 +270,7 @@ Next Update: 10 minutes
 ```
 
 ### Resolution
+
 ```
 [SEV2 RESOLVED] Service Degradation
 Status: Resolved

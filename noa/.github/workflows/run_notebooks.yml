@@ -7,9 +7,9 @@ on:
       changed-files:
         required: false
         type: string
-        description: "JSON string of changed files"
+        description: 'JSON string of changed files'
   schedule:
-    - cron: "0 13 * * *"
+    - cron: '0 13 * * *'
 
 permissions:
   contents: read
@@ -24,17 +24,17 @@ jobs:
     strategy:
       matrix:
         lib-version:
-          - "development"
-          - "latest"
+          - 'development'
+          - 'latest'
 
     steps:
       - uses: actions/checkout@v5
       - name: Set up Python + Poetry
         uses: astral-sh/setup-uv@v6
         with:
-          python-version: "3.11"
+          python-version: '3.11'
           enable-cache: true
-          cache-suffix: "test-langgraph-notebooks"
+          cache-suffix: 'test-langgraph-notebooks'
 
       - name: Install dependencies
         run: |
@@ -60,13 +60,13 @@ jobs:
         env:
           # these won't actually be used because of the VCR cassettes
           # but need to set them to avoid triggering getpass()
-          OPENAI_API_KEY: "very-secret-key"
-          ANTHROPIC_API_KEY: "very-secret-key"
-          TAVILY_API_KEY: "very-secret-key"
-          LANGSMITH_API_KEY: "very-secret-key"
-          NOMIC_API_KEY: "very-secret-key"
-          COHERE_API_KEY: "very-secret-key"
-          FIREWORKS_API_KEY: "very-secret-key"
+          OPENAI_API_KEY: 'very-secret-key'
+          ANTHROPIC_API_KEY: 'very-secret-key'
+          TAVILY_API_KEY: 'very-secret-key'
+          LANGSMITH_API_KEY: 'very-secret-key'
+          NOMIC_API_KEY: 'very-secret-key'
+          COHERE_API_KEY: 'very-secret-key'
+          FIREWORKS_API_KEY: 'very-secret-key'
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ github.event_name }}" = "schedule" ]; then
             echo "Running all notebooks"

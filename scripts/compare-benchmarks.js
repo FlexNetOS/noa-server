@@ -15,7 +15,7 @@ const options = {
   current: null,
   baseline: null,
   threshold: 10, // Default: 10% regression allowed
-  format: 'text' // or 'json'
+  format: 'text', // or 'json'
 };
 
 for (let i = 0; i < args.length; i++) {
@@ -76,8 +76,8 @@ function compareBenchmarks(current, baseline, threshold) {
       improved: 0,
       regressed: 0,
       unchanged: 0,
-      failed: 0
-    }
+      failed: 0,
+    },
   };
 
   // Ensure both results are arrays
@@ -86,12 +86,12 @@ function compareBenchmarks(current, baseline, threshold) {
 
   // Create baseline map for easy lookup
   const baselineMap = new Map();
-  baselineBenches.forEach(bench => {
+  baselineBenches.forEach((bench) => {
     baselineMap.set(bench.name, bench);
   });
 
   // Compare each benchmark
-  currentBenches.forEach(currBench => {
+  currentBenches.forEach((currBench) => {
     const baseBench = baselineMap.get(currBench.name);
 
     if (!baseBench) {
@@ -102,7 +102,7 @@ function compareBenchmarks(current, baseline, threshold) {
         current: currBench.duration,
         baseline: null,
         change: null,
-        changePercent: null
+        changePercent: null,
       });
       results.summary.total++;
       return;
@@ -134,7 +134,7 @@ function compareBenchmarks(current, baseline, threshold) {
       baseline: baseBench.duration,
       change: change,
       changePercent: changePercent,
-      acceptable: acceptable
+      acceptable: acceptable,
     });
 
     results.summary.total++;
@@ -168,13 +168,13 @@ function formatOutput(results, format) {
     output.push('Detailed Results:');
     output.push('─────────────────\n');
 
-    results.comparisons.forEach(comp => {
+    results.comparisons.forEach((comp) => {
       const icon = {
-        'new': '🆕',
-        'improved': '✅',
-        'regressed': '⚠️',
-        'failed': '❌',
-        'unchanged': '⚪'
+        new: '🆕',
+        improved: '✅',
+        regressed: '⚠️',
+        failed: '❌',
+        unchanged: '⚪',
       }[comp.status];
 
       output.push(`${icon} ${comp.name}`);
@@ -182,7 +182,9 @@ function formatOutput(results, format) {
       if (comp.baseline !== null) {
         output.push(`   Current:  ${formatDuration(comp.current)}`);
         output.push(`   Baseline: ${formatDuration(comp.baseline)}`);
-        output.push(`   Change:   ${comp.changePercent >= 0 ? '+' : ''}${comp.changePercent.toFixed(2)}% (${comp.change >= 0 ? '+' : ''}${formatDuration(comp.change)})`);
+        output.push(
+          `   Change:   ${comp.changePercent >= 0 ? '+' : ''}${comp.changePercent.toFixed(2)}% (${comp.change >= 0 ? '+' : ''}${formatDuration(comp.change)})`
+        );
 
         if (comp.status === 'failed') {
           output.push(`   ⚠️ Regression exceeds ${results.threshold}% threshold!`);
@@ -199,9 +201,13 @@ function formatOutput(results, format) {
   // Overall status
   output.push('─────────────────');
   if (results.summary.failed > 0) {
-    output.push(`\n❌ FAILED: ${results.summary.failed} benchmark(s) regressed beyond ${results.threshold}% threshold`);
+    output.push(
+      `\n❌ FAILED: ${results.summary.failed} benchmark(s) regressed beyond ${results.threshold}% threshold`
+    );
   } else if (results.summary.regressed > 0) {
-    output.push(`\n⚠️  WARNING: ${results.summary.regressed} benchmark(s) regressed but within ${results.threshold}% threshold`);
+    output.push(
+      `\n⚠️  WARNING: ${results.summary.regressed} benchmark(s) regressed but within ${results.threshold}% threshold`
+    );
   } else {
     output.push('\n✅ PASSED: All benchmarks within acceptable range');
   }
@@ -230,8 +236,10 @@ try {
     console.log('ℹ️  No baseline available for comparison');
     console.log('Current benchmark results:');
 
-    const benches = Array.isArray(currentResults) ? currentResults : currentResults.benchmarks || [];
-    benches.forEach(bench => {
+    const benches = Array.isArray(currentResults)
+      ? currentResults
+      : currentResults.benchmarks || [];
+    benches.forEach((bench) => {
       console.log(`  ${bench.name}: ${formatDuration(bench.duration)}`);
     });
 
@@ -267,7 +275,6 @@ try {
   } else {
     process.exit(0);
   }
-
 } catch (error) {
   console.error('Error:', error.message);
   process.exit(1);

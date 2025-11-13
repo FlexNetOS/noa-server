@@ -124,16 +124,16 @@ export function WorkflowBuilder({ workflowId }: WorkflowBuilderProps) {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
+    <div className="flex h-screen flex-col bg-gray-50 dark:bg-gray-900">
       {/* Toolbar */}
-      <div className="flex-none flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+      <div className="flex flex-none items-center justify-between border-b border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
         <div className="flex items-center gap-4">
           <button
             onClick={() => (window.location.href = '/workflows')}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+            className="rounded-lg p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
             aria-label="Back to workflows"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -147,7 +147,7 @@ export function WorkflowBuilder({ workflowId }: WorkflowBuilderProps) {
             type="text"
             value={workflow?.name || 'Untitled Workflow'}
             onChange={(e) => setWorkflow((prev) => ({ ...prev!, name: e.target.value }))}
-            className="text-xl font-semibold bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-2 py-1 text-gray-900 dark:text-white"
+            className="rounded border-none bg-transparent px-2 py-1 text-xl font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
             aria-label="Workflow name"
           />
         </div>
@@ -155,18 +155,18 @@ export function WorkflowBuilder({ workflowId }: WorkflowBuilderProps) {
         <div className="flex items-center gap-3">
           <button
             onClick={handleSave}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             Save
           </button>
         </div>
       </div>
 
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex flex-1 overflow-hidden">
         {/* Node Palette */}
-        <div className="flex-none w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto">
+        <div className="w-64 flex-none overflow-y-auto border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
           <div className="p-4">
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Nodes</h3>
+            <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">Nodes</h3>
             <div className="space-y-2">
               {nodeTypes.map((nodeType) => (
                 <motion.div
@@ -174,7 +174,7 @@ export function WorkflowBuilder({ workflowId }: WorkflowBuilderProps) {
                   draggable
                   onDragStart={() => handleDragStart(nodeType.type, nodeType.label)}
                   whileHover={{ scale: 1.02 }}
-                  className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg cursor-move hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                  className="cursor-move rounded-lg bg-gray-50 p-3 transition-colors hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600"
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-2xl">{nodeType.icon}</span>
@@ -189,19 +189,19 @@ export function WorkflowBuilder({ workflowId }: WorkflowBuilderProps) {
         </div>
 
         {/* Canvas */}
-        <div className="flex-1 relative overflow-auto">
+        <div className="relative flex-1 overflow-auto">
           <div
             ref={canvasRef}
             onDrop={handleDrop}
             onDragOver={(e) => e.preventDefault()}
-            className="min-w-full min-h-full bg-gray-50 dark:bg-gray-900"
+            className="min-h-full min-w-full bg-gray-50 dark:bg-gray-900"
             style={{
               backgroundImage: `radial-gradient(circle, #cbd5e1 1px, transparent 1px)`,
               backgroundSize: '20px 20px',
             }}
           >
             {/* Render edges */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none">
+            <svg className="pointer-events-none absolute inset-0 h-full w-full">
               {edges.map((edge) => {
                 const sourceNode = nodes.find((n) => n.id === edge.source);
                 const targetNode = nodes.find((n) => n.id === edge.target);
@@ -256,16 +256,16 @@ export function WorkflowBuilder({ workflowId }: WorkflowBuilderProps) {
                   left: node.position.x,
                   top: node.position.y,
                 }}
-                className={`w-28 p-3 bg-white dark:bg-gray-800 border-2 rounded-lg shadow-lg cursor-pointer transition-colors ${
+                className={`w-28 cursor-pointer rounded-lg border-2 bg-white p-3 shadow-lg transition-colors dark:bg-gray-800 ${
                   selectedNode?.id === node.id
                     ? 'border-blue-500'
                     : 'border-gray-200 dark:border-gray-700'
                 }`}
               >
-                <div className="text-sm font-medium text-gray-900 dark:text-white text-center">
+                <div className="text-center text-sm font-medium text-gray-900 dark:text-white">
                   {node.label}
                 </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 text-center mt-1">
+                <div className="mt-1 text-center text-xs text-gray-500 dark:text-gray-400">
                   {node.type}
                 </div>
               </motion.div>
@@ -275,18 +275,18 @@ export function WorkflowBuilder({ workflowId }: WorkflowBuilderProps) {
 
         {/* Properties Panel */}
         {selectedNode && (
-          <div className="flex-none w-80 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 overflow-y-auto">
+          <div className="w-80 flex-none overflow-y-auto border-l border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
             <div className="p-4">
-              <div className="flex items-center justify-between mb-4">
+              <div className="mb-4 flex items-center justify-between">
                 <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
                   Node Properties
                 </h3>
                 <button
                   onClick={() => setSelectedNode(null)}
-                  className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                  className="rounded p-1 hover:bg-gray-100 dark:hover:bg-gray-700"
                   aria-label="Close properties"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -299,20 +299,20 @@ export function WorkflowBuilder({ workflowId }: WorkflowBuilderProps) {
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Label
                   </label>
                   <input
                     type="text"
                     value={selectedNode.label}
                     onChange={(e) => handleNodeUpdate({ label: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   />
                 </div>
 
                 {selectedNode.type === 'agent' && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Agent Type
                     </label>
                     <select
@@ -322,7 +322,7 @@ export function WorkflowBuilder({ workflowId }: WorkflowBuilderProps) {
                           data: { ...selectedNode.data, agentType: e.target.value },
                         })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     >
                       <option value="">Select agent type...</option>
                       <option value="coder">Coder</option>
@@ -335,7 +335,7 @@ export function WorkflowBuilder({ workflowId }: WorkflowBuilderProps) {
 
                 {selectedNode.type === 'task' && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Task Description
                     </label>
                     <textarea
@@ -346,7 +346,7 @@ export function WorkflowBuilder({ workflowId }: WorkflowBuilderProps) {
                         })
                       }
                       rows={4}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     />
                   </div>
                 )}

@@ -1,22 +1,22 @@
 import {
-    CreateSecretCommand,
-    DeleteSecretCommand,
-    DescribeSecretCommand,
-    GetSecretValueCommand,
-    ListSecretsCommand,
-    RotateSecretCommand,
-    SecretsManagerClient,
-    UpdateSecretCommand,
+  CreateSecretCommand,
+  DeleteSecretCommand,
+  DescribeSecretCommand,
+  GetSecretValueCommand,
+  ListSecretsCommand,
+  RotateSecretCommand,
+  SecretsManagerClient,
+  UpdateSecretCommand,
 } from '@aws-sdk/client-secrets-manager';
 
 import {
-    AWSConfig,
-    ISecretProvider,
-    ProviderError,
-    RotationError,
-    Secret,
-    SecretMetadata,
-    SecretNotFoundError,
+  AWSConfig,
+  ISecretProvider,
+  ProviderError,
+  RotationError,
+  Secret,
+  SecretMetadata,
+  SecretNotFoundError,
 } from '../types';
 
 /**

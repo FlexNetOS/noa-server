@@ -132,12 +132,7 @@ export class BenchmarkRunner {
     }>
   ): Promise<BenchmarkResult[]> {
     for (const benchmark of benchmarks) {
-      await this.runBenchmark(
-        benchmark.name,
-        benchmark.category,
-        benchmark.fn,
-        benchmark.options
-      );
+      await this.runBenchmark(benchmark.name, benchmark.category, benchmark.fn, benchmark.options);
     }
     return this.results;
   }
@@ -163,12 +158,19 @@ export class BenchmarkRunner {
         }
 
         const diffPercent = ((current.metrics.p95 - base.metrics.p95) / base.metrics.p95) * 100;
-        const status = diffPercent > 10 ? '🔴 REGRESSION' : diffPercent < -10 ? '🟢 IMPROVEMENT' : '⚪ NO CHANGE';
+        const status =
+          diffPercent > 10
+            ? '🔴 REGRESSION'
+            : diffPercent < -10
+              ? '🟢 IMPROVEMENT'
+              : '⚪ NO CHANGE';
 
         console.log(`\n${current.name}:`);
         console.log(`  Baseline p95: ${base.metrics.p95.toFixed(2)}ms`);
         console.log(`  Current p95:  ${current.metrics.p95.toFixed(2)}ms`);
-        console.log(`  Difference:   ${diffPercent > 0 ? '+' : ''}${diffPercent.toFixed(1)}% ${status}`);
+        console.log(
+          `  Difference:   ${diffPercent > 0 ? '+' : ''}${diffPercent.toFixed(1)}% ${status}`
+        );
       }
     } catch (error) {
       console.warn('No baseline found for comparison:', (error as Error).message);
@@ -397,11 +399,7 @@ export async function exampleBenchmark() {
       name: 'Promise.all parallel',
       category: 'Async Operations',
       fn: async () => {
-        await Promise.all([
-          Promise.resolve(1),
-          Promise.resolve(2),
-          Promise.resolve(3),
-        ]);
+        await Promise.all([Promise.resolve(1), Promise.resolve(2), Promise.resolve(3)]);
       },
     },
   ]);

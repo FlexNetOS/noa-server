@@ -77,26 +77,26 @@ export function RoleManagement() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      <div className="flex h-full items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-500" />
       </div>
     );
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="flex h-full flex-col">
       {/* Header */}
-      <div className="flex-none flex items-center justify-between mb-6">
+      <div className="mb-6 flex flex-none items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Role Management</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Manage user roles and permissions
           </p>
         </div>
 
         <button
           onClick={() => setShowCreateModal(true)}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           + Add Role
         </button>
@@ -104,57 +104,57 @@ export function RoleManagement() {
 
       {/* Roles Grid */}
       <div className="flex-1 overflow-y-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {roles.map((role, index) => (
             <motion.div
               key={role.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
+              className="overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
             >
               <div className="p-6">
-                <div className="flex items-start justify-between mb-3">
+                <div className="mb-3 flex items-start justify-between">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                       {role.name}
                     </h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                       {role.description}
                     </p>
                   </div>
 
                   {role.isSystem && (
-                    <span className="px-2 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded">
+                    <span className="rounded bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200">
                       System
                     </span>
                   )}
                 </div>
 
                 <div className="mb-4">
-                  <div className="flex items-center justify-between text-sm mb-2">
+                  <div className="mb-2 flex items-center justify-between text-sm">
                     <span className="text-gray-500 dark:text-gray-400">Permission Level</span>
                     <span className="font-semibold text-gray-900 dark:text-white">
                       {role.level}
                     </span>
                   </div>
-                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <div className="h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700">
                     <div
-                      className="bg-blue-600 h-2 rounded-full"
+                      className="h-2 rounded-full bg-blue-600"
                       style={{ width: `${(role.level / 100) * 100}%` }}
                     />
                   </div>
                 </div>
 
                 <div className="mb-4">
-                  <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
+                  <div className="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">
                     Permissions ({role.permissions.length})
                   </div>
                   <div className="flex flex-wrap gap-1">
                     {role.permissions.slice(0, 6).map((permission) => (
                       <span
                         key={permission.id}
-                        className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded"
+                        className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 dark:bg-gray-700 dark:text-gray-300"
                       >
                         {permission.resource}:{permission.action}
                       </span>
@@ -170,17 +170,17 @@ export function RoleManagement() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleEdit(role)}
-                    className="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="flex-1 rounded bg-blue-600 px-3 py-2 text-sm text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(role.id)}
                     disabled={role.isSystem}
-                    className="px-3 py-2 bg-red-100 hover:bg-red-200 dark:bg-red-900 dark:hover:bg-red-800 text-red-700 dark:text-red-300 text-sm rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-red-500"
+                    className="rounded bg-red-100 px-3 py-2 text-sm text-red-700 transition-colors hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-red-900 dark:text-red-300 dark:hover:bg-red-800"
                     aria-label="Delete role"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -203,7 +203,7 @@ export function RoleManagement() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
             onClick={() => {
               setShowEditModal(false);
               setShowCreateModal(false);
@@ -214,37 +214,37 @@ export function RoleManagement() {
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+              className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-lg bg-white p-6 dark:bg-gray-800"
             >
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
                 {showEditModal ? 'Edit Role' : 'Create Role'}
               </h3>
 
-              <div className="space-y-4 mb-6">
+              <div className="mb-6 space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Role Name
                   </label>
                   <input
                     type="text"
                     defaultValue={selectedRole?.name}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Description
                   </label>
                   <textarea
                     defaultValue={selectedRole?.description}
                     rows={2}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Permission Level (0-100)
                   </label>
                   <input
@@ -252,18 +252,18 @@ export function RoleManagement() {
                     defaultValue={selectedRole?.level}
                     min="0"
                     max="100"
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                  <label className="mb-3 block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Permissions
                   </label>
-                  <div className="border border-gray-300 dark:border-gray-600 rounded-lg p-4 max-h-96 overflow-y-auto">
+                  <div className="max-h-96 overflow-y-auto rounded-lg border border-gray-300 p-4 dark:border-gray-600">
                     {Object.entries(groupedPermissions).map(([resource, permissions]) => (
                       <div key={resource} className="mb-4 last:mb-0">
-                        <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                        <h4 className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
                           {resource.charAt(0).toUpperCase() + resource.slice(1)}
                         </h4>
                         <div className="space-y-2 pl-4">
@@ -295,11 +295,11 @@ export function RoleManagement() {
                     setShowEditModal(false);
                     setShowCreateModal(false);
                   }}
-                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors"
+                  className="rounded-lg bg-gray-100 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
                 >
                   Cancel
                 </button>
-                <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                <button className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700">
                   {showEditModal ? 'Save Changes' : 'Create Role'}
                 </button>
               </div>

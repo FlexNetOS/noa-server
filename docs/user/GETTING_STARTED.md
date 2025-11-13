@@ -1,6 +1,7 @@
 # Getting Started with Noa Server
 
-Welcome to Noa Server! This guide will help you get up and running quickly with the platform.
+Welcome to Noa Server! This guide will help you get up and running quickly with
+the platform.
 
 ## 📋 Table of Contents
 
@@ -24,11 +25,13 @@ Before installing Noa Server, ensure you have:
 ### System Requirements
 
 **Minimum**:
+
 - 4GB RAM
 - 10GB disk space
 - 2 CPU cores
 
 **Recommended**:
+
 - 8GB+ RAM
 - 50GB+ disk space
 - 4+ CPU cores
@@ -85,7 +88,8 @@ docker run -p 3000:3000 noa-server
 
 ### Method 3: Development Setup
 
-For development work, see the [Development Setup Guide](../developer/DEVELOPMENT_SETUP.md).
+For development work, see the
+[Development Setup Guide](../developer/DEVELOPMENT_SETUP.md).
 
 ## Quick Start
 
@@ -113,7 +117,8 @@ curl http://localhost:3000/health
 
 ### 3. Configure MCP Servers
 
-Noa Server integrates with Model Context Protocol (MCP) servers for enhanced capabilities:
+Noa Server integrates with Model Context Protocol (MCP) servers for enhanced
+capabilities:
 
 ```bash
 # Add Claude Flow MCP server (required)
@@ -229,6 +234,7 @@ npx claude-flow@alpha swarm status
 ### Example Output
 
 The swarm will coordinate agents to:
+
 1. Generate a Hello World function
 2. Create comprehensive tests
 3. Review code quality
@@ -293,23 +299,33 @@ config/production.json
 Now that you have Noa Server running, explore these resources:
 
 ### Tutorials
-- **[First Workflow](tutorials/first-workflow.md)** - Complete workflow walkthrough
-- **[Agent Swarm Basics](tutorials/agent-swarm-basics.md)** - Understanding agent coordination
-- **[MCP Tools Usage](tutorials/mcp-tools-usage.md)** - Leveraging MCP capabilities
+
+- **[First Workflow](tutorials/first-workflow.md)** - Complete workflow
+  walkthrough
+- **[Agent Swarm Basics](tutorials/agent-swarm-basics.md)** - Understanding
+  agent coordination
+- **[MCP Tools Usage](tutorials/mcp-tools-usage.md)** - Leveraging MCP
+  capabilities
 
 ### User Guides
+
 - **[User Guide](USER_GUIDE.md)** - Comprehensive platform documentation
 - **[Features](FEATURES.md)** - Detailed feature documentation
 - **[Troubleshooting](TROUBLESHOOTING.md)** - Common issues and solutions
 
 ### Developer Resources
-- **[Development Setup](../developer/DEVELOPMENT_SETUP.md)** - Set up development environment
+
+- **[Development Setup](../developer/DEVELOPMENT_SETUP.md)** - Set up
+  development environment
 - **[Contributing](../developer/CONTRIBUTING.md)** - Contribute to the project
 - **[API Documentation](#)** - API reference
 
 ### Architecture
-- **[Architecture Overview](../architecture/ARCHITECTURE_OVERVIEW.md)** - System architecture
-- **[Technology Stack](../architecture/TECHNOLOGY_STACK.md)** - Technologies used
+
+- **[Architecture Overview](../architecture/ARCHITECTURE_OVERVIEW.md)** - System
+  architecture
+- **[Technology Stack](../architecture/TECHNOLOGY_STACK.md)** - Technologies
+  used
 
 ## Getting Help
 
@@ -317,7 +333,8 @@ Need assistance?
 
 - **Documentation**: Browse the [documentation index](../README.md)
 - **FAQ**: Check the [Frequently Asked Questions](FAQ.md)
-- **Issues**: Report bugs on [GitHub Issues](https://github.com/your-org/noa-server/issues)
+- **Issues**: Report bugs on
+  [GitHub Issues](https://github.com/your-org/noa-server/issues)
 - **Community**: Join our [Discord server](#)
 - **Support**: Email support@noa-server.com
 
@@ -365,6 +382,8 @@ noa-server/
 
 ---
 
-**Congratulations!** You've successfully set up Noa Server. Start exploring the platform and building amazing workflows!
+**Congratulations!** You've successfully set up Noa Server. Start exploring the
+platform and building amazing workflows!
 
-**Next**: Try the [First Workflow Tutorial](tutorials/first-workflow.md) to learn more.
+**Next**: Try the [First Workflow Tutorial](tutorials/first-workflow.md) to
+learn more.

@@ -9,13 +9,12 @@ apiVersion: agentic.os/v1alpha1
 kind: AgentRoleDefinition
 
 roles:
-
   # ============================================
   # Platform Engineer Agent
   # ============================================
   - name: platform-engineer
     tier: specialist
-    description: "Expert in building developer platforms, CI/CD systems, and cloud infrastructure"
+    description: 'Expert in building developer platforms, CI/CD systems, and cloud infrastructure'
 
     capabilities:
       - ci-cd-pipeline-design
@@ -42,15 +41,15 @@ roles:
       - git
 
     resources:
-      cpu: "1000m"
-      memory: "2Gi"
+      cpu: '1000m'
+      memory: '2Gi'
 
   # ============================================
   # Security Analyst Agent
   # ============================================
   - name: security-analyst
     tier: specialist
-    description: "Expert in security assessment, vulnerability analysis, and compliance"
+    description: 'Expert in security assessment, vulnerability analysis, and compliance'
 
     capabilities:
       - security-auditing
@@ -76,15 +75,15 @@ roles:
       - vault
 
     resources:
-      cpu: "500m"
-      memory: "1Gi"
+      cpu: '500m'
+      memory: '1Gi'
 
   # ============================================
   # DevOps Engineer Agent
   # ============================================
   - name: devops-engineer
     tier: specialist
-    description: "Expert in deployment automation, monitoring, and operational excellence"
+    description: 'Expert in deployment automation, monitoring, and operational excellence'
 
     capabilities:
       - deployment-automation
@@ -110,15 +109,15 @@ roles:
       - telepresence
 
     resources:
-      cpu: "500m"
-      memory: "1Gi"
+      cpu: '500m'
+      memory: '1Gi'
 
   # ============================================
   # Data Scientist Agent
   # ============================================
   - name: data-scientist
     tier: specialist
-    description: "Expert in data analysis, machine learning, and statistical modeling"
+    description: 'Expert in data analysis, machine learning, and statistical modeling'
 
     capabilities:
       - data-analysis
@@ -144,16 +143,16 @@ roles:
       - dvc
 
     resources:
-      cpu: "2000m"
-      memory: "4Gi"
-      gpu: "1"
+      cpu: '2000m'
+      memory: '4Gi'
+      gpu: '1'
 
   # ============================================
   # QA Engineer Agent
   # ============================================
   - name: qa-engineer
     tier: specialist
-    description: "Expert in testing strategies, quality assurance, and test automation"
+    description: 'Expert in testing strategies, quality assurance, and test automation'
 
     capabilities:
       - test-strategy-design
@@ -179,15 +178,15 @@ roles:
       - cypress
 
     resources:
-      cpu: "500m"
-      memory: "1Gi"
+      cpu: '500m'
+      memory: '1Gi'
 
   # ============================================
   # Code Generator Agent
   # ============================================
   - name: code-generator
     tier: executor
-    description: "Specialized in generating high-quality, production-ready code"
+    description: 'Specialized in generating high-quality, production-ready code'
 
     capabilities:
       - code-generation
@@ -204,15 +203,15 @@ roles:
       - Documentation standards
 
     resources:
-      cpu: "500m"
-      memory: "1Gi"
+      cpu: '500m'
+      memory: '1Gi'
 
   # ============================================
   # Code Analyzer Agent
   # ============================================
   - name: code-analyzer
     tier: executor
-    description: "Specialized in code review, static analysis, and quality assessment"
+    description: 'Specialized in code review, static analysis, and quality assessment'
 
     capabilities:
       - code-review
@@ -235,15 +234,15 @@ roles:
       - semgrep
 
     resources:
-      cpu: "500m"
-      memory: "1Gi"
+      cpu: '500m'
+      memory: '1Gi'
 
   # ============================================
   # Documentation Agent
   # ============================================
   - name: documentation-specialist
     tier: executor
-    description: "Specialized in creating comprehensive technical documentation"
+    description: 'Specialized in creating comprehensive technical documentation'
 
     capabilities:
       - api-documentation
@@ -260,15 +259,15 @@ roles:
       - Technical writing
 
     resources:
-      cpu: "250m"
-      memory: "512Mi"
+      cpu: '250m'
+      memory: '512Mi'
 
   # ============================================
   # Coordinator Agent
   # ============================================
   - name: coordinator
     tier: control-plane
-    description: "Orchestrates agent swarm and manages task distribution"
+    description: 'Orchestrates agent swarm and manages task distribution'
 
     capabilities:
       - task-distribution
@@ -288,15 +287,15 @@ roles:
       - Handle failures and retries
 
     resources:
-      cpu: "1000m"
-      memory: "2Gi"
+      cpu: '1000m'
+      memory: '2Gi'
 
   # ============================================
   # Memory Manager Agent
   # ============================================
   - name: memory-manager
     tier: storage-plane
-    description: "Manages distributed memory, context, and knowledge base"
+    description: 'Manages distributed memory, context, and knowledge base'
 
     capabilities:
       - context-storage
@@ -315,37 +314,36 @@ roles:
       - Ensure data consistency
 
     resources:
-      cpu: "500m"
-      memory: "4Gi"
-      storage: "20Gi"
+      cpu: '500m'
+      memory: '4Gi'
+      storage: '20Gi'
 
 # ============================================
 # Role Assignment Strategies
 # ============================================
 
 assignmentStrategies:
-
   # Skill-based routing
   - name: skill-match
-    description: "Route tasks to agents based on required skills"
+    description: 'Route tasks to agents based on required skills'
     priority: 1
     algorithm: best-match
 
   # Load-based routing
   - name: load-balance
-    description: "Distribute tasks evenly across available agents"
+    description: 'Distribute tasks evenly across available agents'
     priority: 2
     algorithm: least-loaded
 
   # Affinity-based routing
   - name: affinity
-    description: "Route related tasks to same agent for context preservation"
+    description: 'Route related tasks to same agent for context preservation'
     priority: 3
     algorithm: session-affinity
 
   # Priority-based routing
   - name: priority
-    description: "Route high-priority tasks to most capable agents"
+    description: 'Route high-priority tasks to most capable agents'
     priority: 4
     algorithm: priority-queue
 
@@ -354,9 +352,8 @@ assignmentStrategies:
 # ============================================
 
 collaborationPatterns:
-
   - name: platform-deployment
-    description: "Full platform deployment workflow"
+    description: 'Full platform deployment workflow'
     participants:
       - platform-engineer
       - security-analyst
@@ -375,7 +372,7 @@ collaborationPatterns:
         owner: devops-engineer
 
   - name: code-review
-    description: "Comprehensive code review process"
+    description: 'Comprehensive code review process'
     participants:
       - code-analyzer
       - security-analyst
@@ -389,7 +386,7 @@ collaborationPatterns:
         owner: qa-engineer
 
   - name: data-pipeline
-    description: "Data pipeline development and deployment"
+    description: 'Data pipeline development and deployment'
     participants:
       - data-scientist
       - platform-engineer

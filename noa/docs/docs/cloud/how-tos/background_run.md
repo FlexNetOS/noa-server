@@ -1,8 +1,7 @@
 # How to kick off background runs
- 
 
-This guide covers how to kick off background runs for your agent.
-This can be useful for long running jobs.
+This guide covers how to kick off background runs for your agent. This can be
+useful for long running jobs.
 
 ## Setup
 
@@ -178,8 +177,6 @@ Output:
             "multitask_strategy": "reject"
         }
 
-
-
 Now we can join the run, wait for it to finish and check that status again:
 
 === "Python"
@@ -249,8 +246,8 @@ Output:
         "multitask_strategy": "reject"
     }
 
-
-Perfect! The run succeeded as we would expect. We can double check that the run worked as expected by printing out the final state:
+Perfect! The run succeeded as we would expect. We can double check that the run
+worked as expected by printing out the final state:
 
 === "Python"
 

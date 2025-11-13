@@ -115,27 +115,27 @@ export function Logs() {
   const sources = Array.from(new Set(logs.map((log) => log.source)));
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="flex h-full flex-col">
       {/* Controls */}
-      <div className="flex-none space-y-4 mb-6">
+      <div className="mb-6 flex-none space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">System Logs</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
               Real-time system logs and diagnostics
             </p>
           </div>
 
           <div className="flex items-center gap-3">
             <span
-              className={`inline-flex items-center gap-2 px-3 py-1 text-sm font-medium rounded-full ${
+              className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium ${
                 isConnected
                   ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                   : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
               }`}
             >
               <span
-                className={`inline-block w-2 h-2 rounded-full animate-pulse ${
+                className={`inline-block h-2 w-2 animate-pulse rounded-full ${
                   isConnected ? 'bg-green-500' : 'bg-red-500'
                 }`}
               />
@@ -144,14 +144,14 @@ export function Logs() {
 
             <button
               onClick={handleExport}
-              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="rounded-lg bg-gray-100 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
             >
               Export
             </button>
 
             <button
               onClick={handleClearLogs}
-              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="rounded-lg bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
             >
               Clear Logs
             </button>
@@ -160,13 +160,13 @@ export function Logs() {
 
         {/* Filters */}
         <div className="flex items-center gap-4">
-          <div className="flex-1 relative">
+          <div className="relative flex-1">
             <input
               type="text"
               placeholder="Search logs..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pl-10 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
               aria-label="Search logs"
             />
             <svg
@@ -188,7 +188,7 @@ export function Logs() {
           <select
             value={levelFilter}
             onChange={(e) => setLevelFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
             aria-label="Filter by level"
           >
             <option value="all">All Levels</option>
@@ -202,7 +202,7 @@ export function Logs() {
           <select
             value={sourceFilter}
             onChange={(e) => setSourceFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
             aria-label="Filter by source"
           >
             <option value="all">All Sources</option>
@@ -226,9 +226,9 @@ export function Logs() {
       </div>
 
       {/* Logs Display */}
-      <div className="flex-1 overflow-y-auto bg-gray-900 rounded-lg p-4 font-mono text-sm">
+      <div className="flex-1 overflow-y-auto rounded-lg bg-gray-900 p-4 font-mono text-sm">
         {filteredLogs.length === 0 ? (
-          <div className="flex items-center justify-center h-full text-gray-500">
+          <div className="flex h-full items-center justify-center text-gray-500">
             No logs to display
           </div>
         ) : (
@@ -238,16 +238,16 @@ export function Logs() {
                 key={log.id}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="flex gap-3 hover:bg-gray-800 px-2 py-1 rounded group"
+                className="group flex gap-3 rounded px-2 py-1 hover:bg-gray-800"
               >
-                <span className="text-gray-500 flex-none">
+                <span className="flex-none text-gray-500">
                   {format(new Date(log.timestamp), 'HH:mm:ss.SSS')}
                 </span>
                 <span className={`flex-none font-semibold ${getLevelColor(log.level)}`}>
                   [{log.level.toUpperCase().padEnd(5)}]
                 </span>
-                <span className="text-purple-400 flex-none">[{log.source}]</span>
-                <span className="text-gray-300 flex-1">{log.message}</span>
+                <span className="flex-none text-purple-400">[{log.source}]</span>
+                <span className="flex-1 text-gray-300">{log.message}</span>
 
                 {/* Expandable details */}
                 {log.details && (
@@ -256,10 +256,10 @@ export function Logs() {
                       const details = e.currentTarget.nextElementSibling as HTMLElement;
                       details.classList.toggle('hidden');
                     }}
-                    className="text-gray-500 hover:text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="text-gray-500 opacity-0 transition-opacity hover:text-gray-300 group-hover:opacity-100"
                     aria-label="Toggle details"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -277,13 +277,13 @@ export function Logs() {
       </div>
 
       {/* Stats */}
-      <div className="flex-none mt-4 grid grid-cols-5 gap-4">
+      <div className="mt-4 grid flex-none grid-cols-5 gap-4">
         {['fatal', 'error', 'warn', 'info', 'debug'].map((level) => {
           const count = logs.filter((log) => log.level === level).length;
           return (
             <div
               key={level}
-              className="p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+              className="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800"
             >
               <div className={`text-xs font-medium ${getLevelColor(level)} mb-1`}>
                 {level.toUpperCase()}

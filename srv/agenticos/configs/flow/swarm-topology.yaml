@@ -31,7 +31,6 @@ spec:
   # Agent Roles and Specialization
   # ============================================
   agents:
-
     # Coordinator Agents
     - role: coordinator
       count: 3
@@ -42,8 +41,8 @@ spec:
         - health-monitoring
         - conflict-resolution
       resources:
-        cpu: "1000m"
-        memory: "2Gi"
+        cpu: '1000m'
+        memory: '2Gi'
       affinity:
         podAntiAffinity: true
 
@@ -62,8 +61,8 @@ spec:
         - result-caching
         - state-persistence
       resources:
-        cpu: "500m"
-        memory: "1Gi"
+        cpu: '500m'
+        memory: '1Gi'
       scaling:
         enabled: true
         minReplicas: 5
@@ -86,8 +85,8 @@ spec:
         - advanced-reasoning
         - complex-problem-solving
       resources:
-        cpu: "1000m"
-        memory: "2Gi"
+        cpu: '1000m'
+        memory: '2Gi'
 
     # Memory Manager Agents
     - role: memory-manager
@@ -99,15 +98,14 @@ spec:
         - semantic-search
         - memory-compression
       resources:
-        cpu: "500m"
-        memory: "4Gi"
-        storage: "20Gi"
+        cpu: '500m'
+        memory: '4Gi'
+        storage: '20Gi'
 
   # ============================================
   # Communication Patterns
   # ============================================
   communication:
-
     # Inter-agent messaging
     messaging:
       protocol: grpc
@@ -137,7 +135,6 @@ spec:
   # Coordination Strategies
   # ============================================
   coordination:
-
     # Task distribution
     taskDistribution:
       strategy: dynamic-load-balancing
@@ -162,7 +159,6 @@ spec:
   # Fault Tolerance
   # ============================================
   faultTolerance:
-
     # Health monitoring
     healthCheck:
       enabled: true
@@ -191,7 +187,6 @@ spec:
   # Performance Optimization
   # ============================================
   performance:
-
     # Caching strategy
     caching:
       enabled: true
@@ -225,7 +220,6 @@ spec:
   # Security Policies
   # ============================================
   security:
-
     # Agent authentication
     authentication:
       provider: keycloak
@@ -252,28 +246,27 @@ spec:
             - podSelector: {}
           ports:
             - protocol: TCP
-              port: 6379  # Redis
+              port: 6379 # Redis
             - protocol: TCP
-              port: 5432  # PostgreSQL
+              port: 5432 # PostgreSQL
 
   # ============================================
   # Observability
   # ============================================
   observability:
-
     # Metrics collection
     metrics:
       enabled: true
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "9090"
-        prometheus.io/path: "/metrics"
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '9090'
+        prometheus.io/path: '/metrics'
 
     # Distributed tracing
     tracing:
       enabled: true
       samplingRate: 0.1
-      jaegerEndpoint: "http://jaeger-collector:14268/api/traces"
+      jaegerEndpoint: 'http://jaeger-collector:14268/api/traces'
 
     # Logging
     logging:
@@ -286,19 +279,18 @@ spec:
   # ============================================
   resourceQuotas:
     limits:
-      cpu: "20"
-      memory: "40Gi"
-      storage: "100Gi"
+      cpu: '20'
+      memory: '40Gi'
+      storage: '100Gi'
     requests:
-      cpu: "10"
-      memory: "20Gi"
-      storage: "50Gi"
+      cpu: '10'
+      memory: '20Gi'
+      storage: '50Gi'
 
   # ============================================
   # Lifecycle Management
   # ============================================
   lifecycle:
-
     # Startup behavior
     startup:
       initialDelaySeconds: 10
@@ -331,13 +323,13 @@ kind: SwarmPreset
 metadata:
   name: high-performance
 spec:
-  description: "Optimized for maximum throughput and low latency"
+  description: 'Optimized for maximum throughput and low latency'
   agents:
     executor:
       count: 20
       resources:
-        cpu: "1000m"
-        memory: "2Gi"
+        cpu: '1000m'
+        memory: '2Gi'
   performance:
     caching:
       enabled: true
@@ -351,13 +343,13 @@ kind: SwarmPreset
 metadata:
   name: resource-efficient
 spec:
-  description: "Optimized for minimal resource consumption"
+  description: 'Optimized for minimal resource consumption'
   agents:
     executor:
       count: 5
       resources:
-        cpu: "250m"
-        memory: "512Mi"
+        cpu: '250m'
+        memory: '512Mi'
   performance:
     caching:
       enabled: true
@@ -369,7 +361,7 @@ kind: SwarmPreset
 metadata:
   name: high-availability
 spec:
-  description: "Optimized for fault tolerance and reliability"
+  description: 'Optimized for fault tolerance and reliability'
   agents:
     coordinator:
       count: 5

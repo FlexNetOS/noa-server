@@ -5,6 +5,7 @@ Audit a specific task by ID with comprehensive verification.
 ## What This Command Does
 
 Runs focused audit on a completed or in-progress task:
+
 - Verifies task completion claims
 - Checks file system changes
 - Analyzes code quality
@@ -45,6 +46,7 @@ node hooks/run-audit.js \
 Results saved to: `.claude/audit-history/<task-id>/reports/`
 
 Files created:
+
 - `audit-result.json` - Detailed audit results
 - `audit-report.json` - Human-readable report
 - `evidence/` - Evidence files and hashes
@@ -55,4 +57,5 @@ Files created:
 /audit-task task-123 --description "Phase 5 implementation" --claims '{"filesCreated":89,"linesOfCode":10750}'
 ```
 
-This will verify the claims against actual file system state and generate a comprehensive discrepancy report.
+This will verify the claims against actual file system state and generate a
+comprehensive discrepancy report.

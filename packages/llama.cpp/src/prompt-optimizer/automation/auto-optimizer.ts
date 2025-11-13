@@ -32,7 +32,7 @@ export class MandatoryOptimizer {
     this.agent = new PromptOptimizationAgent({
       verboseOutput: false,
       enableLearning: true,
-      enableMultiModal: true
+      enableMultiModal: true,
     });
 
     this.cache = PromptCache.getInstance();
@@ -89,18 +89,16 @@ export class MandatoryOptimizer {
       // Validate quality if required
       if (this.config.quality.blockBelowThreshold) {
         if (!this.meetsQualityThreshold(optimized)) {
-          this.logger.warn(`Prompt below quality threshold: ${optimized.diagnoseResult.overallQualityScore}`);
+          this.logger.warn(
+            `Prompt below quality threshold: ${optimized.diagnoseResult.overallQualityScore}`
+          );
 
           if (this.config.quality.autoRetryOnFailure) {
             // Retry optimization
             return await this.retryOptimization(prompt, startTime);
           }
 
-          return this.createPassthroughResult(
-            prompt,
-            'Below quality threshold',
-            startTime
-          );
+          return this.createPassthroughResult(prompt, 'Below quality threshold', startTime);
         }
       }
 
@@ -121,9 +119,8 @@ export class MandatoryOptimizer {
         bypassed: false,
         cached: false,
         processingTime,
-        qualityScore: optimized.diagnoseResult.overallQualityScore
+        qualityScore: optimized.diagnoseResult.overallQualityScore,
       };
-
     } catch (error) {
       this.logger.error('Optimization failed:', error);
       this.monitor.recordFailure();
@@ -147,7 +144,7 @@ export class MandatoryOptimizer {
       this.agent.optimize(prompt),
       new Promise<OptimizationResult>((_, reject) =>
         setTimeout(() => reject(new Error('Optimization timeout')), timeout)
-      )
+      ),
     ]);
   }
 
@@ -182,7 +179,7 @@ export class MandatoryOptimizer {
           bypassed: false,
           cached: false,
           processingTime,
-          qualityScore: optimized.diagnoseResult.overallQualityScore
+          qualityScore: optimized.diagnoseResult.overallQualityScore,
         };
       }
 
@@ -212,9 +209,7 @@ export class MandatoryOptimizer {
   private shouldBypass(prompt: string): boolean {
     if (!this.config.bypass.enabled) return false;
 
-    return this.config.bypass.prefixes.some(prefix =>
-      prompt.trim().startsWith(prefix)
-    );
+    return this.config.bypass.prefixes.some((prefix) => prompt.trim().startsWith(prefix));
   }
 
   /**
@@ -246,17 +241,14 @@ export class MandatoryOptimizer {
       optimized: prompt,
       bypassed: true,
       cached: false,
-      processingTime
+      processingTime,
     };
   }
 
   /**
    * Create bypass result
    */
-  private createBypassResult(
-    cleanedPrompt: string,
-    startTime: number
-  ): InterceptionResult {
+  private createBypassResult(cleanedPrompt: string, startTime: number): InterceptionResult {
     const processingTime = Date.now() - startTime;
 
     return {
@@ -264,7 +256,7 @@ export class MandatoryOptimizer {
       optimized: cleanedPrompt,
       bypassed: true,
       cached: false,
-      processingTime
+      processingTime,
     };
   }
 
@@ -283,18 +275,14 @@ export class MandatoryOptimizer {
       optimized: cached,
       bypassed: false,
       cached: true,
-      processingTime
+      processingTime,
     };
   }
 
   /**
    * Create error result
    */
-  private createErrorResult(
-    prompt: string,
-    error: any,
-    startTime: number
-  ): InterceptionResult {
+  private createErrorResult(prompt: string, error: any, startTime: number): InterceptionResult {
     const processingTime = Date.now() - startTime;
     const timeoutAction = this.config.performance.timeoutAction;
 
@@ -305,7 +293,7 @@ export class MandatoryOptimizer {
         bypassed: true,
         cached: false,
         processingTime,
-        error: error.message
+        error: error.message,
       };
     }
 
@@ -328,11 +316,11 @@ export class MandatoryOptimizer {
             clarity: result.metrics.clarityImprovement,
             specificity: result.metrics.specificityImprovement,
             completeness: result.metrics.completenessImprovement,
-            qualityScore: result.diagnoseResult.overallQualityScore
+            qualityScore: result.diagnoseResult.overallQualityScore,
           }
         : undefined,
       strategy: result.developResult.strategySelection.primaryType,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   }
 
@@ -343,7 +331,7 @@ export class MandatoryOptimizer {
     return {
       monitor: this.monitor.getStats(),
       cache: this.cache.getStats(),
-      agent: this.agent.getStats()
+      agent: this.agent.getStats(),
     };
   }
 

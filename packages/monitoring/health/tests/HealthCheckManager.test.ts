@@ -98,7 +98,7 @@ describe('HealthCheckManager', () => {
     it('should start auto-refresh', () => {
       const autoManager = new HealthCheckManager({
         enableAutoRefresh: true,
-        refreshInterval: 1000
+        refreshInterval: 1000,
       });
 
       expect(autoManager['refreshTimer']).toBeDefined();
@@ -108,7 +108,7 @@ describe('HealthCheckManager', () => {
     it('should stop auto-refresh', () => {
       const autoManager = new HealthCheckManager({
         enableAutoRefresh: true,
-        refreshInterval: 1000
+        refreshInterval: 1000,
       });
 
       autoManager.stopAutoRefresh();

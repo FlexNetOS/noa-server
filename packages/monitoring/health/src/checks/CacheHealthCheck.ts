@@ -29,7 +29,7 @@ export class CacheHealthCheck extends BaseHealthCheck {
       enabled: true,
       critical: false,
       checkTypes: ['readiness'],
-      retries: 2
+      retries: 2,
     });
 
     this.client = options.client;
@@ -71,7 +71,9 @@ export class CacheHealthCheck extends BaseHealthCheck {
       }
 
       // Collect metrics
-      const metrics = await this.collectMetrics(Math.max(pingDuration, readDuration, writeDuration));
+      const metrics = await this.collectMetrics(
+        Math.max(pingDuration, readDuration, writeDuration)
+      );
       const totalDuration = Date.now() - startTime;
 
       // Determine health status
@@ -94,11 +96,11 @@ export class CacheHealthCheck extends BaseHealthCheck {
         );
       }
 
-      return this.createSuccessResult(
-        totalDuration,
-        'Cache connection healthy',
-        { metrics, avgLatency, hitRate }
-      );
+      return this.createSuccessResult(totalDuration, 'Cache connection healthy', {
+        metrics,
+        avgLatency,
+        hitRate,
+      });
     } catch (error) {
       return this.createErrorResult(error as Error, Date.now() - startTime);
     }
@@ -127,7 +129,7 @@ export class CacheHealthCheck extends BaseHealthCheck {
         memoryUsage: parseInt(memStats.used_memory || '0', 10),
         keyCount: parseInt(stats.keys || '0', 10),
         evictions: parseInt(stats.evicted_keys || '0', 10),
-        latency
+        latency,
       };
     } catch (error) {
       return {
@@ -136,7 +138,7 @@ export class CacheHealthCheck extends BaseHealthCheck {
         memoryUsage: 0,
         keyCount: 0,
         evictions: 0,
-        latency
+        latency,
       };
     }
   }

@@ -9,7 +9,11 @@ hide:
 
 # Running agents
 
-Agents support both synchronous and asynchronous execution using either `.invoke()` / `await .ainvoke()` for full responses, or `.stream()` / `.astream()` for **incremental** [streaming](../how-tos/streaming.md) output. This section explains how to provide input, interpret output, enable streaming, and control execution limits.
+Agents support both synchronous and asynchronous execution using either
+`.invoke()` / `await .ainvoke()` for full responses, or `.stream()` /
+`.astream()` for **incremental** [streaming](../how-tos/streaming.md) output.
+This section explains how to provide input, interpret output, enable streaming,
+and control execution limits.
 
 ## Basic usage
 
@@ -18,17 +22,14 @@ Agents can be executed in two primary modes:
 :::python
 
 - **Synchronous** using `.invoke()` or `.stream()`
-- **Asynchronous** using `await .ainvoke()` or `async for` with `.astream()`
-  :::
+- **Asynchronous** using `await .ainvoke()` or `async for` with `.astream()` :::
 
 :::js
 
 - **Synchronous** using `.invoke()` or `.stream()`
-- **Asynchronous** using `await .invoke()` or `for await` with `.stream()`
-  :::
+- **Asynchronous** using `await .invoke()` or `for await` with `.stream()` :::
 
-:::python
-=== "Sync invocation"
+:::python === "Sync invocation"
 
     ```python
     from langgraph.prebuilt import create_react_agent
@@ -69,39 +70,46 @@ const response = await agent.invoke({
 
 ## Inputs and outputs
 
-Agents use a language model that expects a list of `messages` as an input. Therefore, agent inputs and outputs are stored as a list of `messages` under the `messages` key in the agent [state](../concepts/low_level.md#working-with-messages-in-graph-state).
+Agents use a language model that expects a list of `messages` as an input.
+Therefore, agent inputs and outputs are stored as a list of `messages` under the
+`messages` key in the agent
+[state](../concepts/low_level.md#working-with-messages-in-graph-state).
 
 ## Input format
 
 Agent input must be a dictionary with a `messages` key. Supported formats are:
 
-:::python
-| Format | Example |
-|--------------------|-------------------------------------------------------------------------------------------------------------------------------|
-| String | `{"messages": "Hello"}` — Interpreted as a [HumanMessage](https://python.langchain.com/docs/concepts/messages/#humanmessage) |
-| Message dictionary | `{"messages": {"role": "user", "content": "Hello"}}` |
-| List of messages | `{"messages": [{"role": "user", "content": "Hello"}]}` |
-| With custom state | `{"messages": [{"role": "user", "content": "Hello"}], "user_name": "Alice"}` — If using a custom `state_schema` |
-:::
+| :::python | Format                                     | Example |
+| --------- | ------------------------------------------ | ------- |
+| String    | `{"messages": "Hello"}` — Interpreted as a |
 
-:::js
-| Format | Example |
-|--------------------|-------------------------------------------------------------------------------------------------------------------------------|
-| String | `{"messages": "Hello"}` — Interpreted as a [HumanMessage](https://js.langchain.com/docs/concepts/messages/#humanmessage) |
-| Message dictionary | `{"messages": {"role": "user", "content": "Hello"}}` |
-| List of messages | `{"messages": [{"role": "user", "content": "Hello"}]}` |
-| With custom state | `{"messages": [{"role": "user", "content": "Hello"}], "user_name": "Alice"}` — If using a custom state definition |
-:::
+[HumanMessage](https://python.langchain.com/docs/concepts/messages/#humanmessage)
+| | Message dictionary | `{"messages": {"role": "user", "content": "Hello"}}` |
+| List of messages | `{"messages": [{"role": "user", "content": "Hello"}]}` | |
+With custom state |
+`{"messages": [{"role": "user", "content": "Hello"}], "user_name": "Alice"}` —
+If using a custom `state_schema` | :::
 
-:::python
-Messages are automatically converted into LangChain's internal message format. You can read
-more about [LangChain messages](https://python.langchain.com/docs/concepts/messages/#langchain-messages) in the LangChain documentation.
-:::
+| :::js                                                                         | Format                                                 | Example |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------ | ------- |
+| String                                                                        | `{"messages": "Hello"}` — Interpreted as a             |
+| [HumanMessage](https://js.langchain.com/docs/concepts/messages/#humanmessage) |
+| Message dictionary                                                            | `{"messages": {"role": "user", "content": "Hello"}}`   |         |
+| List of messages                                                              | `{"messages": [{"role": "user", "content": "Hello"}]}` |         |
+| With custom state                                                             |
 
-:::js
-Messages are automatically converted into LangChain's internal message format. You can read
-more about [LangChain messages](https://js.langchain.com/docs/concepts/messages/#langchain-messages) in the LangChain documentation.
-:::
+`{"messages": [{"role": "user", "content": "Hello"}], "user_name": "Alice"}` —
+If using a custom state definition | :::
+
+:::python Messages are automatically converted into LangChain's internal message
+format. You can read more about
+[LangChain messages](https://python.langchain.com/docs/concepts/messages/#langchain-messages)
+in the LangChain documentation. :::
+
+:::js Messages are automatically converted into LangChain's internal message
+format. You can read more about
+[LangChain messages](https://js.langchain.com/docs/concepts/messages/#langchain-messages)
+in the LangChain documentation. :::
 
 !!! tip "Using custom agent state"
 
@@ -127,27 +135,33 @@ more about [LangChain messages](https://js.langchain.com/docs/concepts/messages/
 
 ## Output format
 
-:::python
-Agent output is a dictionary containing:
+:::python Agent output is a dictionary containing:
 
-- `messages`: A list of all messages exchanged during execution (user input, assistant replies, tool invocations).
-- Optionally, `structured_response` if [structured output](./agents.md#6-configure-structured-output) is configured.
-- If using a custom `state_schema`, additional keys corresponding to your defined fields may also be present in the output. These can hold updated state values from tool execution or prompt logic.
-:::
+- `messages`: A list of all messages exchanged during execution (user input,
+  assistant replies, tool invocations).
+- Optionally, `structured_response` if
+  [structured output](./agents.md#6-configure-structured-output) is configured.
+- If using a custom `state_schema`, additional keys corresponding to your
+  defined fields may also be present in the output. These can hold updated state
+  values from tool execution or prompt logic. :::
 
-:::js
-Agent output is a dictionary containing:
+:::js Agent output is a dictionary containing:
 
-- `messages`: A list of all messages exchanged during execution (user input, assistant replies, tool invocations).
-- Optionally, `structuredResponse` if [structured output](./agents.md#6-configure-structured-output) is configured.
-- If using a custom state definition, additional keys corresponding to your defined fields may also be present in the output. These can hold updated state values from tool execution or prompt logic.
-:::
+- `messages`: A list of all messages exchanged during execution (user input,
+  assistant replies, tool invocations).
+- Optionally, `structuredResponse` if
+  [structured output](./agents.md#6-configure-structured-output) is configured.
+- If using a custom state definition, additional keys corresponding to your
+  defined fields may also be present in the output. These can hold updated state
+  values from tool execution or prompt logic. :::
 
-See the [context guide](./context.md) for more details on working with custom state schemas and accessing context.
+See the [context guide](./context.md) for more details on working with custom
+state schemas and accessing context.
 
 ## Streaming output
 
-Agents support streaming responses for more responsive applications. This includes:
+Agents support streaming responses for more responsive applications. This
+includes:
 
 - **Progress updates** after each step
 - **LLM tokens** as they're generated
@@ -155,8 +169,7 @@ Agents support streaming responses for more responsive applications. This includ
 
 Streaming is available in both sync and async modes:
 
-:::python
-=== "Sync streaming"
+:::python === "Sync streaming"
 
     ```python
     for chunk in agent.stream(
@@ -182,8 +195,8 @@ Streaming is available in both sync and async modes:
 
 ```typescript
 for await (const chunk of agent.stream(
-  { messages: [{ role: "user", content: "what is the weather in sf" }] },
-  { streamMode: "updates" }
+  { messages: [{ role: 'user', content: 'what is the weather in sf' }] },
+  { streamMode: 'updates' }
 )) {
   console.log(chunk);
 }
@@ -197,16 +210,17 @@ for await (const chunk of agent.stream(
 
 ## Max iterations
 
-:::python
-To control agent execution and avoid infinite loops, set a recursion limit. This defines the maximum number of steps the agent can take before raising a `GraphRecursionError`. You can configure `recursion_limit` at runtime or when defining agent via `.with_config()`:
-:::
+:::python To control agent execution and avoid infinite loops, set a recursion
+limit. This defines the maximum number of steps the agent can take before
+raising a `GraphRecursionError`. You can configure `recursion_limit` at runtime
+or when defining agent via `.with_config()`: :::
 
-:::js
-To control agent execution and avoid infinite loops, set a recursion limit. This defines the maximum number of steps the agent can take before raising a `GraphRecursionError`. You can configure `recursionLimit` at runtime or when defining agent via `.withConfig()`:
-:::
+:::js To control agent execution and avoid infinite loops, set a recursion
+limit. This defines the maximum number of steps the agent can take before
+raising a `GraphRecursionError`. You can configure `recursionLimit` at runtime
+or when defining agent via `.withConfig()`: :::
 
-:::python
-=== "Runtime"
+:::python === "Runtime"
 
     ```python
     from langgraph.errors import GraphRecursionError
@@ -256,8 +270,7 @@ To control agent execution and avoid infinite loops, set a recursion limit. This
 
 :::
 
-:::js
-=== "Runtime"
+:::js === "Runtime"
 
     ```typescript
     import { GraphRecursionError } from "@langchain/langgraph";

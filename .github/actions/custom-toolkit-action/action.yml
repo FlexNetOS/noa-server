@@ -1,0 +1,21 @@
+name: "Custom Toolkit Action"
+description: "Advanced action using @actions/toolkit for monorepo operations"
+author: "DEFLEX Automation"
+inputs:
+  operation:
+    description: "Operation to perform"
+    required: true
+    default: "status"
+  package:
+    description: "Target package name"
+    required: false
+  environment:
+    description: "Target environment"
+    required: false
+    default: "development"
+runs:
+  using: "node20"
+  main: "dist/index.js"
+branding:
+  icon: "settings"
+  color: "blue"

@@ -1,4 +1,4 @@
-version: "3.9"
+version: '3.9'
 
 # Docker Swarm Stack Configuration for Noa Server
 # Deploy with: docker stack deploy -c docker-compose.swarm.yml noa
@@ -75,7 +75,7 @@ services:
       - source: nginx_config
         target: /etc/nginx/nginx.conf
     deploy:
-      mode: global  # Deploy on all nodes
+      mode: global # Deploy on all nodes
       placement:
         constraints:
           - node.role == manager
@@ -130,11 +130,11 @@ services:
           cpus: '0.5'
           memory: 512M
       labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.noa-server.rule=Host(`noa-server.io`)"
-        - "traefik.http.services.noa-server.loadbalancer.server.port=3000"
+        - 'traefik.enable=true'
+        - 'traefik.http.routers.noa-server.rule=Host(`noa-server.io`)'
+        - 'traefik.http.services.noa-server.loadbalancer.server.port=3000'
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -169,7 +169,7 @@ services:
           cpus: '0.5'
           memory: 512M
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -235,7 +235,7 @@ services:
           cpus: '1.0'
           memory: 2G
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -264,7 +264,7 @@ services:
           cpus: '0.25'
           memory: 512M
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -295,7 +295,7 @@ services:
           cpus: '0.5'
           memory: 512M
     healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      test: ['CMD', 'rabbitmq-diagnostics', 'ping']
       interval: 30s
       timeout: 10s
       retries: 5
@@ -350,9 +350,9 @@ services:
       restart_policy:
         condition: on-failure
       labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.grafana.rule=Host(`grafana.noa-server.io`)"
-        - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+        - 'traefik.enable=true'
+        - 'traefik.http.routers.grafana.rule=Host(`grafana.noa-server.io`)'
+        - 'traefik.http.services.grafana.loadbalancer.server.port=3000'
 
   # Node Exporter (Global service on all nodes)
   node-exporter:

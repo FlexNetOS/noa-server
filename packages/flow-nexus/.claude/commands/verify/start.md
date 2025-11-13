@@ -1,14 +1,17 @@
 # 🔍 Verification Commands
 
-Truth verification system for ensuring code quality and correctness with a 0.95 accuracy threshold.
+Truth verification system for ensuring code quality and correctness with a 0.95
+accuracy threshold.
 
 ## Overview
 
-The verification system provides real-time truth checking and validation for all agent tasks, ensuring high-quality outputs and automatic rollback on failures.
+The verification system provides real-time truth checking and validation for all
+agent tasks, ensuring high-quality outputs and automatic rollback on failures.
 
 ## Subcommands
 
 ### `verify check`
+
 Run verification checks on current code or agent outputs.
 
 ```bash
@@ -18,6 +21,7 @@ claude-flow verify check --threshold 0.98
 ```
 
 ### `verify rollback`
+
 Automatically rollback changes that fail verification.
 
 ```bash
@@ -27,6 +31,7 @@ claude-flow verify rollback --interactive
 ```
 
 ### `verify report`
+
 Generate verification reports and metrics.
 
 ```bash
@@ -36,6 +41,7 @@ claude-flow verify report --period 7d
 ```
 
 ### `verify dashboard`
+
 Launch interactive verification dashboard.
 
 ```bash
@@ -49,6 +55,7 @@ claude-flow verify dashboard --export
 Default threshold: **0.95** (95% accuracy required)
 
 Configure in `.claude-flow/config.json`:
+
 ```json
 {
   "verification": {
@@ -67,17 +74,20 @@ Configure in `.claude-flow/config.json`:
 ## Integration
 
 ### With Swarm Commands
+
 ```bash
 claude-flow swarm --verify --threshold 0.98
 claude-flow hive-mind --verify
 ```
 
 ### With Training Pipeline
+
 ```bash
 claude-flow train --verify --rollback-on-fail
 ```
 
 ### With Pair Programming
+
 ```bash
 claude-flow pair --verify --real-time
 ```
@@ -92,6 +102,7 @@ claude-flow pair --verify --real-time
 ## Examples
 
 ### Basic Verification
+
 ```bash
 # Verify current directory
 claude-flow verify check
@@ -104,6 +115,7 @@ claude-flow verify check --auto-fix
 ```
 
 ### Advanced Workflows
+
 ```bash
 # Continuous verification during development
 claude-flow verify watch --directory src/

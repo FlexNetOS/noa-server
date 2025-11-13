@@ -17,36 +17,46 @@ export const DataExportJobDataSchema = z.object({
       table: z.string().optional(),
       query: z.string().optional(),
       url: z.string().optional(),
-      headers: z.record(z.string()).optional()
+      headers: z.record(z.string()).optional(),
     }),
-    filters: z.object({
-      where: z.record(z.any()).optional(),
-      limit: z.number().optional(),
-      offset: z.number().optional(),
-      orderBy: z.array(z.object({
-        column: z.string(),
-        direction: z.enum(['asc', 'desc'])
-      })).optional()
-    }).optional()
+    filters: z
+      .object({
+        where: z.record(z.any()).optional(),
+        limit: z.number().optional(),
+        offset: z.number().optional(),
+        orderBy: z
+          .array(
+            z.object({
+              column: z.string(),
+              direction: z.enum(['asc', 'desc']),
+            })
+          )
+          .optional(),
+      })
+      .optional(),
   }),
   format: z.enum(['csv', 'json', 'sql', 'xml', 'parquet', 'excel']),
   output: z.object({
     filename: z.string(),
     path: z.string().optional(),
     compression: z.enum(['none', 'gzip', 'zip']).optional(),
-    email: z.object({
-      to: z.union([z.string(), z.array(z.string())]),
-      subject: z.string().optional(),
-      template: z.string().optional()
-    }).optional()
+    email: z
+      .object({
+        to: z.union([z.string(), z.array(z.string())]),
+        subject: z.string().optional(),
+        template: z.string().optional(),
+      })
+      .optional(),
   }),
-  options: z.object({
-    includeHeaders: z.boolean().optional(),
-    delimiter: z.string().optional(),
-    encoding: z.string().optional(),
-    batchSize: z.number().optional(),
-    timeout: z.number().optional()
-  }).optional()
+  options: z
+    .object({
+      includeHeaders: z.boolean().optional(),
+      delimiter: z.string().optional(),
+      encoding: z.string().optional(),
+      batchSize: z.number().optional(),
+      timeout: z.number().optional(),
+    })
+    .optional(),
 });
 
 export type DataExportJobData = z.infer<typeof DataExportJobDataSchema>;
@@ -103,7 +113,7 @@ export class DataExportJob {
         jobId: job.id,
         sourceType: exportData.source.type,
         format: exportData.format,
-        filename: exportData.output.filename
+        filename: exportData.output.filename,
       });
 
       // Get data from source
@@ -129,7 +139,7 @@ export class DataExportJob {
         outputPath,
         recordCount: data.length,
         size: finalBuffer.length,
-        format: exportData.format
+        format: exportData.format,
       });
 
       // Send email if requested
@@ -143,15 +153,14 @@ export class DataExportJob {
         size: finalBuffer.length,
         format: exportData.format,
         compression: exportData.output.compression || 'none',
-        emailSent: !!exportData.output.email
+        emailSent: !!exportData.output.email,
       };
-
     } catch (error) {
       this.logger.error('Data export failed', {
         jobId: job.id,
         error: (error as Error).message,
         sourceType: exportData.source.type,
-        format: exportData.format
+        format: exportData.format,
       });
 
       throw new Error(`Data export failed: ${(error as Error).message}`);
@@ -206,7 +215,6 @@ export class DataExportJob {
 
       const data = await sourceHandler.query(query);
       return data;
-
     } finally {
       await sourceHandler.disconnect();
     }
@@ -224,9 +232,7 @@ export class DataExportJob {
 
     // Mock implementation - in real code, make HTTP request
     this.logger.info('Fetching data from API', { url });
-    return [
-      { id: 1, name: 'Sample Data', timestamp: new Date() }
-    ];
+    return [{ id: 1, name: 'Sample Data', timestamp: new Date() }];
   }
 
   /**
@@ -245,9 +251,7 @@ export class DataExportJob {
 
     // Mock implementation - in real code, parse CSV/JSON/XML etc.
     this.logger.info('Reading data from file', { filePath });
-    return [
-      { id: 1, name: 'File Data', timestamp: new Date() }
-    ];
+    return [{ id: 1, name: 'File Data', timestamp: new Date() }];
   }
 
   /**
@@ -301,7 +305,7 @@ export class DataExportJob {
       mimeType: 'text/csv',
       export: async (data, options) => {
         return this.exportToCSV(data, options);
-      }
+      },
     });
 
     // JSON Format
@@ -312,7 +316,7 @@ export class DataExportJob {
       export: async (data, options) => {
         const indent = options?.pretty ? 2 : 0;
         return Buffer.from(JSON.stringify(data, null, indent));
-      }
+      },
     });
 
     // SQL Format
@@ -322,7 +326,7 @@ export class DataExportJob {
       mimeType: 'application/sql',
       export: async (data, options) => {
         return this.exportToSQL(data, options);
-      }
+      },
     });
 
     // XML Format
@@ -332,7 +336,7 @@ export class DataExportJob {
       mimeType: 'application/xml',
       export: async (data, options) => {
         return this.exportToXML(data, options);
-      }
+      },
     });
 
     // Parquet Format (placeholder)
@@ -343,7 +347,7 @@ export class DataExportJob {
       export: async (_data) => {
         // In real implementation, use parquetjs or similar
         throw new Error('Parquet export not implemented');
-      }
+      },
     });
 
     // Excel Format (placeholder)
@@ -354,7 +358,7 @@ export class DataExportJob {
       export: async (_data) => {
         // In real implementation, use exceljs
         throw new Error('Excel export not implemented');
-      }
+      },
     });
   }
 
@@ -394,10 +398,13 @@ export class DataExportJob {
     }
 
     for (const row of data) {
-      const values = headers.map(header => {
+      const values = headers.map((header) => {
         const value = row[header];
         // Escape values containing delimiter, quotes, or newlines
-        if (typeof value === 'string' && (value.includes(delimiter) || value.includes('"') || value.includes('\n'))) {
+        if (
+          typeof value === 'string' &&
+          (value.includes(delimiter) || value.includes('"') || value.includes('\n'))
+        ) {
           return `"${value.replace(/"/g, '""')}"`;
         }
         return String(value);
@@ -421,7 +428,7 @@ export class DataExportJob {
 
     for (const row of data) {
       const columns = Object.keys(row);
-      const values = columns.map(col => {
+      const values = columns.map((col) => {
         const value = row[col];
         if (value === null) return 'NULL';
         if (typeof value === 'string') return `'${value.replace(/'/g, "''")}'`;
@@ -478,7 +485,11 @@ export class DataExportJob {
   /**
    * Save export to file
    */
-  private async saveExport(buffer: Buffer, data: DataExportJobData, extension: string): Promise<string> {
+  private async saveExport(
+    buffer: Buffer,
+    data: DataExportJobData,
+    extension: string
+  ): Promise<string> {
     let filename = data.output.filename;
     if (!filename.includes('.')) {
       filename += `.${extension}`;
@@ -508,7 +519,7 @@ export class DataExportJob {
     // In real implementation, this would create an EmailJob with the export as attachment
     this.logger.info('Export email sending not implemented yet', {
       outputPath,
-      email: data.output.email
+      email: data.output.email,
     });
   }
 
@@ -550,22 +561,22 @@ export class DataExportJob {
         type: 'database',
         connection: {
           table,
-          ...options?.connection
+          ...options?.connection,
         },
-        filters: options?.filters
+        filters: options?.filters,
       },
       format: options?.format || 'csv',
       output: {
         filename: outputFilename,
         path: options?.path,
         compression: options?.compression || 'none',
-        email: options?.email
+        email: options?.email,
       },
       options: {
         includeHeaders: true,
         delimiter: ',',
-        encoding: 'utf8'
-      }
+        encoding: 'utf8',
+      },
     });
   }
 
@@ -587,15 +598,15 @@ export class DataExportJob {
         type: 'api',
         connection: {
           url,
-          headers: options?.headers
-        }
+          headers: options?.headers,
+        },
       },
       format: options?.format || 'json',
       output: {
         filename: outputFilename,
         path: options?.path,
-        email: options?.email
-      }
+        email: options?.email,
+      },
     });
   }
 }

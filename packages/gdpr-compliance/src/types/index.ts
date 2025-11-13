@@ -4,7 +4,6 @@
  * Comprehensive types for GDPR compliance framework
  */
 
-
 // Extend Express Request to include user information
 declare global {
   namespace Express {

@@ -2,7 +2,10 @@
 
 ## Overview
 
-This document outlines the security practices, vulnerability reporting procedures, and security measures for the Noa Server project. We take security seriously and appreciate your efforts to responsibly disclose any security concerns.
+This document outlines the security practices, vulnerability reporting
+procedures, and security measures for the Noa Server project. We take security
+seriously and appreciate your efforts to responsibly disclose any security
+concerns.
 
 ## Supported Versions
 
@@ -16,7 +19,9 @@ We provide security updates for the following versions:
 
 ### How to Report
 
-If you discover a security vulnerability, please report it by emailing the maintainers. **DO NOT** create a public GitHub issue for security vulnerabilities.
+If you discover a security vulnerability, please report it by emailing the
+maintainers. **DO NOT** create a public GitHub issue for security
+vulnerabilities.
 
 **Contact:** [Add your security contact email here]
 
@@ -35,7 +40,8 @@ When reporting a vulnerability, please include:
 
 - **Initial Response**: Within 48 hours of report
 - **Status Update**: Within 5 business days
-- **Resolution Timeline**: Varies based on severity (critical issues prioritized)
+- **Resolution Timeline**: Varies based on severity (critical issues
+  prioritized)
 
 ### Disclosure Policy
 
@@ -80,6 +86,7 @@ npm run security:report
 #### Security Rules
 
 Our ESLint configuration includes security rules:
+
 - `security/detect-eval-with-expression`: Prevents eval() usage
 - `security/detect-non-literal-fs-filename`: Warns about dynamic file paths
 - `security/detect-object-injection`: Detects potential prototype pollution
@@ -116,7 +123,8 @@ ENCRYPTION_KEY=<encryption-key>
 
 - Never commit `.env` files to version control
 - Use `.env.example` for documentation
-- Store production secrets in secure vaults (AWS Secrets Manager, HashiCorp Vault)
+- Store production secrets in secure vaults (AWS Secrets Manager, HashiCorp
+  Vault)
 - Rotate secrets regularly
 
 ### Infrastructure Security
@@ -299,8 +307,8 @@ ENCRYPTION_KEY=<encryption-key>
 
 ### Version History
 
-| Version | Release Date | Security Fixes |
-|---------|--------------|----------------|
+| Version | Release Date | Security Fixes  |
+| ------- | ------------ | --------------- |
 | 0.0.1   | 2025-10-22   | Initial release |
 
 ## Contact
@@ -313,13 +321,14 @@ For security-related questions or concerns:
 
 ## Acknowledgments
 
-We would like to thank the following individuals for responsibly disclosing security vulnerabilities:
+We would like to thank the following individuals for responsibly disclosing
+security vulnerabilities:
 
 - [List will be maintained here]
 
 ---
 
-**Last Updated**: 2025-10-22
-**Version**: 1.0.0
+**Last Updated**: 2025-10-22 **Version**: 1.0.0
 
-This security policy is a living document and will be updated as our security practices evolve.
+This security policy is a living document and will be updated as our security
+practices evolve.

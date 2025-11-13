@@ -1,8 +1,12 @@
 # Welcome Contributors
 
-We welcome contributions to enhance opcode's capabilities and improve its performance. To report bugs, create a [GitHub issue](https://github.com/getAsterisk/opcode/issues).
+We welcome contributions to enhance opcode's capabilities and improve its
+performance. To report bugs, create a
+[GitHub issue](https://github.com/getAsterisk/opcode/issues).
 
-> Before contributing, read through the existing issues and pull requests to see if someone else is already working on something similar. That way you can avoid duplicating efforts.
+> Before contributing, read through the existing issues and pull requests to see
+> if someone else is already working on something similar. That way you can
+> avoid duplicating efforts.
 
 To contribute, please follow these steps:
 
@@ -27,25 +31,36 @@ When submitting a pull request, please follow these guidelines:
    - `Feature: added custom agent timeout configuration`
    - `Fix: resolved session list scrolling issue`
 
-2. **Description**: Provide a clear and detailed description of your changes in the pull request. Explain the problem you are solving, the approach you took, and any potential side effects or limitations of your changes.
+2. **Description**: Provide a clear and detailed description of your changes in
+   the pull request. Explain the problem you are solving, the approach you took,
+   and any potential side effects or limitations of your changes.
 
-3. **Documentation**: Update the relevant documentation to reflect your changes. This includes the README file, code comments, and any other relevant documentation.
+3. **Documentation**: Update the relevant documentation to reflect your changes.
+   This includes the README file, code comments, and any other relevant
+   documentation.
 
-4. **Dependencies**: If your changes require new dependencies, ensure that they are properly documented and added to the `package.json` or `Cargo.toml` files.
+4. **Dependencies**: If your changes require new dependencies, ensure that they
+   are properly documented and added to the `package.json` or `Cargo.toml`
+   files.
 
-5. If the pull request does not meet the above guidelines, it may be closed without merging.
+5. If the pull request does not meet the above guidelines, it may be closed
+   without merging.
 
-**Note**: Please ensure that you have the latest version of the code before creating a pull request. If you have an existing fork, just sync your fork with the latest version of the opcode repository.
+**Note**: Please ensure that you have the latest version of the code before
+creating a pull request. If you have an existing fork, just sync your fork with
+the latest version of the opcode repository.
 
 ## Coding Standards
 
 ### Frontend (React/TypeScript)
+
 - Use TypeScript for all new code
 - Follow functional components with hooks
 - Use Tailwind CSS for styling
 - Add JSDoc comments for exported functions and components
 
 ### Backend (Rust)
+
 - Follow Rust standard conventions
 - Use `cargo fmt` for formatting
 - Use `cargo clippy` for linting
@@ -53,15 +68,18 @@ When submitting a pull request, please follow these guidelines:
 - Add comprehensive documentation with `///` comments
 
 ### Security Requirements
+
 - Validate all inputs from the frontend
 - Use prepared statements for database operations
 - Never log sensitive data (tokens, passwords, etc.)
 - Use secure defaults for all configurations
 
 ## Testing
+
 - Add tests for new functionality
 - Ensure all existing tests pass
 - Run `cargo test` for Rust code
 - Test the application manually before submitting
 
-Please adhere to the coding conventions, maintain clear documentation, and provide thorough testing for your contributions. 
+Please adhere to the coding conventions, maintain clear documentation, and
+provide thorough testing for your contributions.

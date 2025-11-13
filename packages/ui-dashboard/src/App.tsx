@@ -25,9 +25,9 @@ function App() {
 
   if (data.isLoading && !lastUpdate) {
     return (
-      <div className="min-h-screen bg-brand-bg flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-brand-bg">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-brand-accent border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-brand-accent border-t-transparent" />
           <p className="text-brand-muted">Loading dashboard...</p>
         </div>
       </div>
@@ -43,9 +43,9 @@ function App() {
         onManualRefresh={handleManualRefresh}
       />
 
-      <main className="px-8 py-6 space-y-6">
+      <main className="space-y-6 px-8 py-6">
         {/* Top Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           <MetricCard
             title="Active Agents"
             value={`${data.swarmMetrics.activeAgents}/${data.swarmMetrics.totalAgents}`}
@@ -80,8 +80,8 @@ function App() {
             totalMessages: data.swarmMetrics.totalTasks,
             messagesSent: data.swarmMetrics.totalTasks - data.swarmMetrics.completedTasks,
             messagesReceived: data.swarmMetrics.completedTasks,
-            activeJobs: data.taskQueue.filter(t => t.status === 'running').length,
-            queuedJobs: data.taskQueue.filter(t => t.status === 'pending').length,
+            activeJobs: data.taskQueue.filter((t) => t.status === 'running').length,
+            queuedJobs: data.taskQueue.filter((t) => t.status === 'pending').length,
             averageProcessingTime: data.swarmMetrics.avgResponseTime,
             throughput: data.swarmMetrics.throughput,
           }}
@@ -91,34 +91,34 @@ function App() {
         <PerformanceCharts />
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* System Health */}
           <div className="lg:col-span-1">
             <SystemHealth health={data.systemHealth} />
           </div>
 
           {/* Neural Metrics */}
-          <div className="lg:col-span-2 bg-brand-card border border-brand-border rounded-lg p-6">
-            <h2 className="text-xl font-bold text-white mb-4">Neural Processing Metrics</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="rounded-lg border border-brand-border bg-brand-card p-6 lg:col-span-2">
+            <h2 className="mb-4 text-xl font-bold text-white">Neural Processing Metrics</h2>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
               <div>
-                <p className="text-sm text-brand-muted mb-1">Models Loaded</p>
+                <p className="mb-1 text-sm text-brand-muted">Models Loaded</p>
                 <p className="text-2xl font-bold text-white">{data.neuralMetrics.modelsLoaded}</p>
               </div>
               <div>
-                <p className="text-sm text-brand-muted mb-1">Total Inferences</p>
+                <p className="mb-1 text-sm text-brand-muted">Total Inferences</p>
                 <p className="text-2xl font-bold text-white">
                   {formatNumber(data.neuralMetrics.totalInferences)}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-brand-muted mb-1">Avg Inference</p>
+                <p className="mb-1 text-sm text-brand-muted">Avg Inference</p>
                 <p className="text-2xl font-bold text-white">
                   {data.neuralMetrics.avgInferenceTime}ms
                 </p>
               </div>
               <div>
-                <p className="text-sm text-brand-muted mb-1">Accuracy</p>
+                <p className="mb-1 text-sm text-brand-muted">Accuracy</p>
                 <p className="text-2xl font-bold text-white">
                   {formatPercentage(data.neuralMetrics.accuracy)}
                 </p>
@@ -126,13 +126,13 @@ function App() {
               {data.neuralMetrics.gpuUtilization !== undefined && (
                 <>
                   <div>
-                    <p className="text-sm text-brand-muted mb-1">GPU Usage</p>
+                    <p className="mb-1 text-sm text-brand-muted">GPU Usage</p>
                     <p className="text-2xl font-bold text-white">
                       {data.neuralMetrics.gpuUtilization}%
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-brand-muted mb-1">VRAM</p>
+                    <p className="mb-1 text-sm text-brand-muted">VRAM</p>
                     <p className="text-2xl font-bold text-white">
                       {data.neuralMetrics.vramUsage?.toFixed(1)} GB
                     </p>
@@ -154,8 +154,8 @@ function App() {
 
         {/* Agents Grid */}
         <div>
-          <h2 className="text-2xl font-bold text-white mb-4">Active Agents</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <h2 className="mb-4 text-2xl font-bold text-white">Active Agents</h2>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {data.agents.map((agent) => (
               <AgentCard
                 key={agent.id}
@@ -173,7 +173,7 @@ function App() {
         {/* Truth Gate Status */}
         {data.truthGate && (
           <div
-            className={`border-2 rounded-lg p-6 ${
+            className={`rounded-lg border-2 p-6 ${
               data.truthGate.passed
                 ? 'border-brand-success bg-brand-success/5'
                 : 'border-brand-warning bg-brand-warning/5'
@@ -181,7 +181,7 @@ function App() {
           >
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-xl font-bold text-white mb-1">Queen Seraphina Truth Gate</h3>
+                <h3 className="mb-1 text-xl font-bold text-white">Queen Seraphina Truth Gate</h3>
                 <p className="text-brand-muted">Verification System Status</p>
               </div>
               <div className="text-right">

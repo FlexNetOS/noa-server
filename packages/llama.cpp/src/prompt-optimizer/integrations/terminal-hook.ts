@@ -34,7 +34,7 @@ export class TerminalHookIntegration {
 
     this.enabled = true;
     this.logger.info('Terminal hook initialized', {
-      commands: Array.from(this.monitoredCommands)
+      commands: Array.from(this.monitoredCommands),
     });
   }
 
@@ -112,9 +112,6 @@ export function initializeTerminalHook(commands?: string[]): void {
 /**
  * Intercept terminal command
  */
-export async function interceptTerminalCommand(
-  command: string,
-  args: string[]
-): Promise<string[]> {
+export async function interceptTerminalCommand(command: string, args: string[]): Promise<string[]> {
   return await terminalHook.interceptCommand(command, args);
 }

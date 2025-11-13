@@ -4,11 +4,14 @@ Application metrics collection and Prometheus integration for Noa Server.
 
 ## Features
 
-- **Comprehensive Metrics Collection**: Counters, gauges, histograms, and summaries
+- **Comprehensive Metrics Collection**: Counters, gauges, histograms, and
+  summaries
 - **Prometheus Export**: Built-in HTTP server for metrics scraping
-- **Specialized Collectors**: Pre-built metrics for HTTP, database, cache, and queue operations
+- **Specialized Collectors**: Pre-built metrics for HTTP, database, cache, and
+  queue operations
 - **Custom Metrics**: Easy registration of application-specific metrics
-- **Default System Metrics**: CPU, memory, event loop, and garbage collection metrics
+- **Default System Metrics**: CPU, memory, event loop, and garbage collection
+  metrics
 - **TypeScript Support**: Full type safety with strict typing
 
 ## Installation
@@ -70,6 +73,7 @@ httpMetrics.recordRequest('GET', '/api/users', 200, 0.123, 1024, 2048);
 ```
 
 **Metrics collected:**
+
 - `http_requests_total` - Total requests by method, route, status
 - `http_request_duration_seconds` - Request duration histogram
 - `http_request_size_bytes` - Request size histogram
@@ -99,6 +103,7 @@ dbMetrics.recordTransaction('committed');
 ```
 
 **Metrics collected:**
+
 - `db_queries_total` - Total queries by operation, table, status
 - `db_query_duration_seconds` - Query duration histogram
 - `db_connections_active/idle/waiting` - Connection pool gauges
@@ -128,6 +133,7 @@ cacheMetrics.updateSize('redis', 1048576, 1000);
 ```
 
 **Metrics collected:**
+
 - `cache_operations_total` - Operations by type and result
 - `cache_hits_total/cache_misses_total` - Hit/miss counters
 - `cache_operation_duration_seconds` - Operation duration
@@ -156,6 +162,7 @@ queueMetrics.recordRetry('orders', 'timeout');
 ```
 
 **Metrics collected:**
+
 - `queue_messages_published_total` - Published messages
 - `queue_messages_consumed_total` - Consumed messages
 - `queue_message_processing_duration_seconds` - Processing time
@@ -219,6 +226,7 @@ await registry.startExporter({
 ```
 
 Access metrics:
+
 - `http://localhost:9090/metrics` - Prometheus format
 - `http://localhost:9090/metrics/json` - JSON format
 - `http://localhost:9090/health` - Health check

@@ -26,6 +26,7 @@ error: This package requires Node.js version >=18.0.0
 ```
 
 **Solution**:
+
 ```bash
 # Check current version
 node --version
@@ -46,6 +47,7 @@ node --version  # Should be v18.x.x or higher
 **Problem**: npm install fails with errors
 
 **Solution**:
+
 ```bash
 # Clear npm cache
 npm cache clean --force
@@ -65,6 +67,7 @@ npm install --legacy-peer-deps
 **Problem**: `npm run build` fails
 
 **Solution**:
+
 ```bash
 # Check TypeScript version
 npx tsc --version
@@ -85,6 +88,7 @@ npm run build
 **Problem**: EACCES permission denied
 
 **Solution**:
+
 ```bash
 # Don't use sudo! Fix npm permissions instead
 mkdir ~/.npm-global
@@ -103,6 +107,7 @@ npm install
 **Problem**: Server fails to start
 
 **Solution**:
+
 ```bash
 # Check if port is in use
 lsof -i :3000
@@ -125,6 +130,7 @@ psql $DATABASE_URL -c "SELECT 1"
 **Problem**: Server crashes unexpectedly
 
 **Solution**:
+
 ```bash
 # Enable debug logging
 export LOG_LEVEL=debug
@@ -145,6 +151,7 @@ tail -f logs/error.log
 **Problem**: `/health` endpoint returns unhealthy
 
 **Solution**:
+
 ```bash
 # Detailed health check
 curl http://localhost:3000/health?detailed=true
@@ -170,6 +177,7 @@ npx claude-flow@alpha swarm init --topology mesh
 ```
 
 **Solution**:
+
 ```bash
 # Check MCP connection
 claude mcp list
@@ -193,6 +201,7 @@ npx claude-flow@alpha swarm init \
 **Problem**: Agents in error state
 
 **Solution**:
+
 ```bash
 # Check swarm status
 npx claude-flow@alpha swarm status --verbose
@@ -215,6 +224,7 @@ npx claude-flow@alpha swarm restart
 **Problem**: Swarm running slowly
 
 **Solution**:
+
 ```bash
 # Check metrics
 npx claude-flow@alpha metrics swarm
@@ -239,6 +249,7 @@ npx claude-flow@alpha swarm optimize
 **Problem**: Cannot spawn agents
 
 **Solution**:
+
 ```bash
 # Check swarm status first
 npx claude-flow@alpha swarm status
@@ -263,6 +274,7 @@ npx claude-flow@alpha logs --component agent-spawner
 **Problem**: Agent stuck or unresponsive
 
 **Solution**:
+
 ```bash
 # Check agent status
 npx claude-flow@alpha agent status --name <agent-name>
@@ -289,6 +301,7 @@ npx claude-flow@alpha agent stop \
 **Problem**: Agent running out of memory
 
 **Solution**:
+
 ```bash
 # Check agent memory usage
 npx claude-flow@alpha agent metrics \
@@ -316,6 +329,7 @@ npx claude-flow@alpha agent restart \
 **Problem**: MCP server shows disconnected
 
 **Solution**:
+
 ```bash
 # List MCP servers
 claude mcp list
@@ -340,6 +354,7 @@ Error: Tool mcp__claude-flow__swarm_init not found
 ```
 
 **Solution**:
+
 ```bash
 # Verify MCP server is running
 claude mcp list
@@ -362,6 +377,7 @@ claude mcp add claude-flow npx claude-flow@alpha mcp start
 **Problem**: MCP operations timeout
 
 **Solution**:
+
 ```bash
 # Increase timeout in Claude Code settings
 # Or set environment variable
@@ -382,6 +398,7 @@ claude mcp add claude-flow npx claude-flow@alpha mcp start --timeout 60000
 **Problem**: CUDA not detected
 
 **Solution**:
+
 ```bash
 # Check NVIDIA driver
 nvidia-smi
@@ -406,6 +423,7 @@ python -c "import torch; print(torch.cuda.is_available())"
 **Problem**: Cannot load model
 
 **Solution**:
+
 ```bash
 # List available models
 mcp__neural-processing__list_available_models
@@ -427,6 +445,7 @@ mcp__neural-processing__validate_model \
 **Problem**: Neural processing runs out of memory
 
 **Solution**:
+
 ```bash
 # Check GPU memory
 nvidia-smi
@@ -451,6 +470,7 @@ export CUDA_ENABLED=false
 **Problem**: Model inference is slow
 
 **Solution**:
+
 ```bash
 # Verify CUDA is being used
 mcp__neural-processing__get_system_info
@@ -477,6 +497,7 @@ export LLAMA_BATCH_SIZE=512
 **Problem**: CPU usage at 100%
 
 **Solution**:
+
 ```bash
 # Check process CPU
 top -p $(pgrep -f "node.*noa-server")
@@ -497,6 +518,7 @@ export UV_THREADPOOL_SIZE=4
 **Problem**: Memory usage growing
 
 **Solution**:
+
 ```bash
 # Check memory
 free -h
@@ -520,6 +542,7 @@ node --max-old-space-size=2048 dist/server.js
 **Problem**: Operations taking too long
 
 **Solution**:
+
 ```bash
 # Check bottlenecks
 npx claude-flow@alpha perf analyze
@@ -545,6 +568,7 @@ node --prof-process isolate-*.log > profile.txt
 **Problem**: Cannot connect to server
 
 **Solution**:
+
 ```bash
 # Check if server is running
 ps aux | grep node
@@ -569,6 +593,7 @@ unset HTTP_PROXY HTTPS_PROXY
 **Problem**: CORS policy blocking requests
 
 **Solution**:
+
 ```bash
 # Update CORS config
 cat > config/cors.json << EOF
@@ -591,6 +616,7 @@ npm run dev
 **Problem**: Cannot connect to database
 
 **Solution**:
+
 ```bash
 # Test connection
 psql $DATABASE_URL
@@ -613,6 +639,7 @@ psql -h localhost -U postgres -d noa_server
 **Problem**: Database migrations fail
 
 **Solution**:
+
 ```bash
 # Check migration status
 npm run db:migrate:status
@@ -703,8 +730,10 @@ tail -f logs/*.log
 
 ### Community Support
 
-- **GitHub Issues**: [Report a bug](https://github.com/your-org/noa-server/issues)
-- **Discussions**: [Ask questions](https://github.com/your-org/noa-server/discussions)
+- **GitHub Issues**:
+  [Report a bug](https://github.com/your-org/noa-server/issues)
+- **Discussions**:
+  [Ask questions](https://github.com/your-org/noa-server/discussions)
 - **Discord**: Join our [Discord server](#)
 - **Email**: support@noa-server.com
 

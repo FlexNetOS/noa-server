@@ -40,39 +40,37 @@ export function PromptOptimizationMonitor() {
 
   if (!stats) {
     return (
-      <div className="bg-brand-card border border-brand-border rounded-lg p-6">
-        <h2 className="text-xl font-bold text-white mb-4">Prompt Optimization Monitor</h2>
+      <div className="rounded-lg border border-brand-border bg-brand-card p-6">
+        <h2 className="mb-4 text-xl font-bold text-white">Prompt Optimization Monitor</h2>
         <div className="text-center text-brand-muted">Loading...</div>
       </div>
     );
   }
 
-  const optimizationRate = stats.totalRequests > 0
-    ? (stats.optimizedRequests / stats.totalRequests) * 100
-    : 0;
+  const optimizationRate =
+    stats.totalRequests > 0 ? (stats.optimizedRequests / stats.totalRequests) * 100 : 0;
 
-  const cacheHitRate = stats.totalRequests > 0
-    ? ((stats.cachedRequests + stats.bypassedRequests) / stats.totalRequests) * 100
-    : 0;
+  const cacheHitRate =
+    stats.totalRequests > 0
+      ? ((stats.cachedRequests + stats.bypassedRequests) / stats.totalRequests) * 100
+      : 0;
 
   return (
-    <div className="bg-brand-card border border-brand-border rounded-lg p-6">
-      <div className="flex items-center justify-between mb-4">
+    <div className="rounded-lg border border-brand-border bg-brand-card p-6">
+      <div className="mb-4 flex items-center justify-between">
         <h2 className="text-xl font-bold text-white">Prompt Optimization Monitor</h2>
         <div className="flex items-center gap-2">
           <button
             onClick={handleToggleEnabled}
-            className={`px-3 py-1 rounded text-sm font-medium ${
-              isEnabled
-                ? 'bg-brand-success text-white'
-                : 'bg-brand-warning text-white'
+            className={`rounded px-3 py-1 text-sm font-medium ${
+              isEnabled ? 'bg-brand-success text-white' : 'bg-brand-warning text-white'
             }`}
           >
             {isEnabled ? 'Enabled' : 'Disabled'}
           </button>
           <button
             onClick={handleResetStats}
-            className="px-3 py-1 rounded text-sm font-medium bg-brand-muted text-white hover:bg-brand-border"
+            className="rounded bg-brand-muted px-3 py-1 text-sm font-medium text-white hover:bg-brand-border"
           >
             Reset Stats
           </button>
@@ -81,57 +79,67 @@ export function PromptOptimizationMonitor() {
 
       {/* Status Indicator */}
       <div className="mb-4">
-        <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-          isEnabled
-            ? 'bg-brand-success/20 text-brand-success border border-brand-success/30'
-            : 'bg-brand-warning/20 text-brand-warning border border-brand-warning/30'
-        }`}>
-          <div className={`w-2 h-2 rounded-full mr-2 ${
-            isEnabled ? 'bg-brand-success' : 'bg-brand-warning'
-          }`} />
+        <div
+          className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${
+            isEnabled
+              ? 'border border-brand-success/30 bg-brand-success/20 text-brand-success'
+              : 'border border-brand-warning/30 bg-brand-warning/20 text-brand-warning'
+          }`}
+        >
+          <div
+            className={`mr-2 h-2 w-2 rounded-full ${
+              isEnabled ? 'bg-brand-success' : 'bg-brand-warning'
+            }`}
+          />
           {isEnabled ? 'Active - Optimizing Requests' : 'Inactive - Requests Pass Through'}
         </div>
       </div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
         <div>
-          <p className="text-sm text-brand-muted mb-1">Total Requests</p>
+          <p className="mb-1 text-sm text-brand-muted">Total Requests</p>
           <p className="text-2xl font-bold text-white">{formatNumber(stats.totalRequests)}</p>
         </div>
         <div>
-          <p className="text-sm text-brand-muted mb-1">Optimized</p>
-          <p className="text-2xl font-bold text-brand-success">{formatNumber(stats.optimizedRequests)}</p>
+          <p className="mb-1 text-sm text-brand-muted">Optimized</p>
+          <p className="text-2xl font-bold text-brand-success">
+            {formatNumber(stats.optimizedRequests)}
+          </p>
           <p className="text-xs text-brand-muted">{optimizationRate.toFixed(1)}%</p>
         </div>
         <div>
-          <p className="text-sm text-brand-muted mb-1">Cached/Bypassed</p>
-          <p className="text-2xl font-bold text-brand-info">{formatNumber(stats.cachedRequests + stats.bypassedRequests)}</p>
+          <p className="mb-1 text-sm text-brand-muted">Cached/Bypassed</p>
+          <p className="text-2xl font-bold text-brand-info">
+            {formatNumber(stats.cachedRequests + stats.bypassedRequests)}
+          </p>
           <p className="text-xs text-brand-muted">{cacheHitRate.toFixed(1)}%</p>
         </div>
         <div>
-          <p className="text-sm text-brand-muted mb-1">Avg Processing</p>
+          <p className="mb-1 text-sm text-brand-muted">Avg Processing</p>
           <p className="text-2xl font-bold text-white">{formatDuration(stats.avgProcessingTime)}</p>
         </div>
       </div>
 
       {/* Detailed Breakdown */}
       <div className="space-y-3">
-        <div className="flex justify-between items-center py-2 border-b border-brand-border">
+        <div className="flex items-center justify-between border-b border-brand-border py-2">
           <span className="text-brand-muted">Successfully Optimized</span>
-          <span className="text-white font-medium">{formatNumber(stats.optimizedRequests)}</span>
+          <span className="font-medium text-white">{formatNumber(stats.optimizedRequests)}</span>
         </div>
-        <div className="flex justify-between items-center py-2 border-b border-brand-border">
+        <div className="flex items-center justify-between border-b border-brand-border py-2">
           <span className="text-brand-muted">Cache Hits</span>
-          <span className="text-white font-medium">{formatNumber(stats.cachedRequests)}</span>
+          <span className="font-medium text-white">{formatNumber(stats.cachedRequests)}</span>
         </div>
-        <div className="flex justify-between items-center py-2 border-b border-brand-border">
+        <div className="flex items-center justify-between border-b border-brand-border py-2">
           <span className="text-brand-muted">Bypassed Requests</span>
-          <span className="text-white font-medium">{formatNumber(stats.bypassedRequests)}</span>
+          <span className="font-medium text-white">{formatNumber(stats.bypassedRequests)}</span>
         </div>
-        <div className="flex justify-between items-center py-2">
+        <div className="flex items-center justify-between py-2">
           <span className="text-brand-muted">Failed Requests</span>
-          <span className={`font-medium ${stats.failedRequests > 0 ? 'text-brand-warning' : 'text-white'}`}>
+          <span
+            className={`font-medium ${stats.failedRequests > 0 ? 'text-brand-warning' : 'text-white'}`}
+          >
             {formatNumber(stats.failedRequests)}
           </span>
         </div>
@@ -139,7 +147,7 @@ export function PromptOptimizationMonitor() {
 
       {/* Performance Note */}
       {stats.avgProcessingTime > 100 && (
-        <div className="mt-4 p-3 bg-brand-warning/10 border border-brand-warning/30 rounded">
+        <div className="mt-4 rounded border border-brand-warning/30 bg-brand-warning/10 p-3">
           <p className="text-sm text-brand-warning">
             ⚠️ High average processing time detected ({formatDuration(stats.avgProcessingTime)}).
             Consider enabling caching or adjusting quality thresholds.

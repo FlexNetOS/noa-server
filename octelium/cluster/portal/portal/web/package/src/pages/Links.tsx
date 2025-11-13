@@ -1,5 +1,5 @@
-import { BsGithub } from "react-icons/bs";
-import { IoBook } from "react-icons/io5";
+import { BsGithub } from 'react-icons/bs';
+import { IoBook } from 'react-icons/io5';
 
 const LinkItem = (props: { link: string; children?: React.ReactNode }) => {
   return (
@@ -7,7 +7,7 @@ const LinkItem = (props: { link: string; children?: React.ReactNode }) => {
       <a
         href={props.link}
         target="_blank"
-        className="mb-2 w-full transition-all duration-300 text-zinc-200 hover:text-white inline-flex items-center text-sm leading-none"
+        className="mb-2 inline-flex w-full items-center text-sm leading-none text-zinc-200 transition-all duration-300 hover:text-white"
       >
         {props.children}
       </a>
@@ -17,7 +17,7 @@ const LinkItem = (props: { link: string; children?: React.ReactNode }) => {
 
 export default () => {
   return (
-    <div className="flex flex-col my-4 font-bold bg-zinc-800 border-none rounded-lg p-3 shadow-lg m-2">
+    <div className="m-2 my-4 flex flex-col rounded-lg border-none bg-zinc-800 p-3 font-bold shadow-lg">
       <LinkItem link="https://github.com/octelium/octelium">
         <BsGithub />
         <span className="ml-2">GitHub Repository</span>

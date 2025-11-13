@@ -1,11 +1,14 @@
 # ADR 002: TypeScript Adoption
 
 ## Status
+
 Accepted
 
 ## Context
 
-Noa Server is a complex system with multiple packages, agent coordination, and integration with various services. We need to decide on the programming language and type system for the backend.
+Noa Server is a complex system with multiple packages, agent coordination, and
+integration with various services. We need to decide on the programming language
+and type system for the backend.
 
 ### Current State
 
@@ -31,6 +34,7 @@ We will use **TypeScript** as the primary language for all backend code.
 **TypeScript Version**: 5.0+
 
 **tsconfig.json** (root):
+
 ```json
 {
   "compilerOptions": {
@@ -63,26 +67,30 @@ We will use **TypeScript** as the primary language for all backend code.
 ### Rationale
 
 **Type Safety**:
+
 - Catch errors at compile time, not runtime
 - Prevent undefined/null errors
 - Ensure correct function arguments
 - Refactoring safety
 
 **Developer Experience**:
+
 - Excellent IDE autocomplete
 - Inline documentation with JSDoc
 - Jump to definition
 - Find all references
 
 **Maintainability**:
+
 - Self-documenting code with types
 - Easier to understand complex code
 - Safer refactoring
 - Better for large teams
 
 **Ecosystem**:
+
 - Large community and ecosystem
-- Type definitions for most libraries (@types/*)
+- Type definitions for most libraries (@types/\*)
 - Good tooling (ESLint, Prettier, etc.)
 - Active development
 
@@ -108,16 +116,19 @@ We will use **TypeScript** as the primary language for all backend code.
 ### Mitigation Strategies
 
 **Learning Curve**:
+
 - Provide TypeScript training
 - Code review for TypeScript best practices
 - Share resources and examples
 
 **Build Step**:
+
 - Use fast build tools (esbuild, swc)
 - Watch mode for development
 - Incremental compilation
 
 **Type Definitions**:
+
 - Contribute types to DefinitelyTyped
 - Create custom type definitions when needed
 - Use `any` sparingly as escape hatch
@@ -127,6 +138,7 @@ We will use **TypeScript** as the primary language for all backend code.
 ### Type Usage
 
 **Prefer Interfaces Over Type Aliases** (for objects):
+
 ```typescript
 // Good
 interface UserConfig {
@@ -142,23 +154,26 @@ type UserConfig = {
 ```
 
 **Use Type Aliases for Unions/Intersections**:
+
 ```typescript
 type AgentStatus = 'idle' | 'active' | 'error';
 type Result<T> = Success<T> | Error;
 ```
 
 **Avoid `any`**:
+
 ```typescript
 // Bad
-function process(data: any) { }
+function process(data: any) {}
 
 // Good
-function process<T>(data: T) { }
+function process<T>(data: T) {}
 // or
-function process(data: unknown) { }
+function process(data: unknown) {}
 ```
 
 **Use Strict Null Checks**:
+
 ```typescript
 // Bad
 function getUser(id: string): User {
@@ -172,13 +187,14 @@ function getUser(id: string): User | null {
 ```
 
 **Generic Constraints**:
+
 ```typescript
 interface HasId {
   id: string;
 }
 
 function findById<T extends HasId>(items: T[], id: string): T | undefined {
-  return items.find(item => item.id === id);
+  return items.find((item) => item.id === id);
 }
 ```
 
@@ -213,7 +229,7 @@ export { SwarmConfig };
 
 ### Documentation
 
-```typescript
+````typescript
 /**
  * Initializes a new swarm with the specified configuration.
  *
@@ -231,12 +247,10 @@ export { SwarmConfig };
  * });
  * ```
  */
-export async function initializeSwarm(
-  config: SwarmConfig
-): Promise<Swarm> {
+export async function initializeSwarm(config: SwarmConfig): Promise<Swarm> {
   // Implementation
 }
-```
+````
 
 ### Testing
 
@@ -247,7 +261,7 @@ import { Swarm, SwarmConfig } from './swarm';
 describe('Swarm', () => {
   const config: SwarmConfig = {
     topology: 'mesh',
-    maxAgents: 5
+    maxAgents: 5,
   };
 
   it('should initialize with correct config', () => {
@@ -260,15 +274,18 @@ describe('Swarm', () => {
 ## Migration Strategy
 
 ### Phase 1: New Code (Complete)
+
 - All new code written in TypeScript
 - Type definitions for existing JavaScript
 
 ### Phase 2: Critical Paths (In Progress)
+
 - Migrate core functionality
 - Add types to API layer
 - Type swarm coordination
 
 ### Phase 3: Complete Migration (Future)
+
 - Migrate remaining JavaScript
 - Strict mode for all packages
 - Remove JavaScript files
@@ -278,11 +295,13 @@ describe('Swarm', () => {
 ### JavaScript with JSDoc
 
 **Pros**:
+
 - No build step
 - Familiar to team
 - Still get some type checking
 
 **Cons**:
+
 - Less powerful type system
 - Worse IDE support
 - Not enforced
@@ -292,10 +311,12 @@ describe('Swarm', () => {
 ### Flow
 
 **Pros**:
+
 - Similar to TypeScript
 - Facebook backing
 
 **Cons**:
+
 - Smaller ecosystem
 - Less community adoption
 - Fewer type definitions
@@ -305,10 +326,12 @@ describe('Swarm', () => {
 ### Reason/OCaml
 
 **Pros**:
+
 - Even stronger type system
 - Functional programming
 
 **Cons**:
+
 - Steep learning curve
 - Smaller ecosystem
 - Limited Node.js support
@@ -331,5 +354,6 @@ describe('Swarm', () => {
 ---
 
 **Related ADRs**:
+
 - [ADR 001: Monorepo Structure](001-monorepo-structure.md)
 - [ADR 003: Microservices Architecture](003-microservices-architecture.md)

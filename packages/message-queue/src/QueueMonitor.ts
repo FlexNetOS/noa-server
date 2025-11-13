@@ -134,35 +134,40 @@ export class QueueMonitor extends EventEmitter {
       {
         id: 'high-queue-depth',
         name: 'High Queue Depth',
-        condition: (metrics) => metrics.some(m => m.messageCount > this.config.alerts.thresholds.queueDepth),
+        condition: (metrics) =>
+          metrics.some((m) => m.messageCount > this.config.alerts.thresholds.queueDepth),
         severity: 'medium',
         message: 'Queue depth exceeds threshold',
-        cooldown: 300000 // 5 minutes
+        cooldown: 300000, // 5 minutes
       },
       {
         id: 'high-error-rate',
         name: 'High Error Rate',
-        condition: (metrics) => metrics.some(m => m.errorRate > this.config.alerts.thresholds.errorRate),
+        condition: (metrics) =>
+          metrics.some((m) => m.errorRate > this.config.alerts.thresholds.errorRate),
         severity: 'high',
         message: 'Error rate exceeds threshold',
-        cooldown: 60000 // 1 minute
+        cooldown: 60000, // 1 minute
       },
       {
         id: 'high-processing-latency',
         name: 'High Processing Latency',
-        condition: (metrics) => metrics.some(m => m.averageProcessingTime > this.config.alerts.thresholds.processingLatency),
+        condition: (metrics) =>
+          metrics.some(
+            (m) => m.averageProcessingTime > this.config.alerts.thresholds.processingLatency
+          ),
         severity: 'medium',
         message: 'Processing latency exceeds threshold',
-        cooldown: 300000 // 5 minutes
+        cooldown: 300000, // 5 minutes
       },
       {
         id: 'provider-unhealthy',
         name: 'Provider Unhealthy',
-        condition: (_, health) => health.some(h => h.status !== 'healthy'),
+        condition: (_, health) => health.some((h) => h.status !== 'healthy'),
         severity: 'critical',
         message: 'One or more providers are unhealthy',
-        cooldown: 60000 // 1 minute
-      }
+        cooldown: 60000, // 1 minute
+      },
     ];
   }
 
@@ -202,7 +207,7 @@ export class QueueMonitor extends EventEmitter {
       const dataPoint: MetricsDataPoint = {
         timestamp: new Date(),
         metrics,
-        healthStatuses
+        healthStatuses,
       };
 
       this.metricsHistory.push(dataPoint);
@@ -213,10 +218,9 @@ export class QueueMonitor extends EventEmitter {
       }
 
       this.emit('metrics-collected', dataPoint);
-
     } catch (error) {
       this.emit('metrics-collection-error', {
-        error: (error as Error).message
+        error: (error as Error).message,
       });
     }
   }
@@ -252,10 +256,9 @@ export class QueueMonitor extends EventEmitter {
       const healthStatuses: QueueHealthStatus[] = [];
 
       this.emit('health-checks-completed', healthStatuses);
-
     } catch (error) {
       this.emit('health-check-error', {
-        error: (error as Error).message
+        error: (error as Error).message,
       });
     }
   }
@@ -289,9 +292,9 @@ export class QueueMonitor extends EventEmitter {
       activeAlerts: Array.from(this.activeAlerts.entries()).map(([id, alert]) => ({
         id,
         triggered: alert.triggered,
-        lastNotification: alert.lastNotification
+        lastNotification: alert.lastNotification,
       })),
-      systemHealth: this.getSystemHealthStatus()
+      systemHealth: this.getSystemHealthStatus(),
     };
 
     this.emit('dashboard-updated', dashboardData);
@@ -302,9 +305,12 @@ export class QueueMonitor extends EventEmitter {
    */
   private startCleanup(): void {
     // Clean up old metrics daily
-    this.cleanupTimer = setInterval(() => {
-      this.cleanupOldMetrics();
-    }, 24 * 60 * 60 * 1000); // 24 hours
+    this.cleanupTimer = setInterval(
+      () => {
+        this.cleanupOldMetrics();
+      },
+      24 * 60 * 60 * 1000
+    ); // 24 hours
   }
 
   /**
@@ -324,7 +330,7 @@ export class QueueMonitor extends EventEmitter {
     const cutoffTime = new Date(Date.now() - this.config.metrics.retentionPeriod);
     const initialCount = this.metricsHistory.length;
 
-    this.metricsHistory = this.metricsHistory.filter(point => point.timestamp > cutoffTime);
+    this.metricsHistory = this.metricsHistory.filter((point) => point.timestamp > cutoffTime);
 
     const removedCount = initialCount - this.metricsHistory.length;
     if (removedCount > 0) {
@@ -344,25 +350,23 @@ export class QueueMonitor extends EventEmitter {
         // New alert
         this.activeAlerts.set(rule.id, {
           triggered: new Date(),
-          lastNotification: new Date()
+          lastNotification: new Date(),
         });
 
         this.emit('alert-triggered', {
           ruleId: rule.id,
           ruleName: rule.name,
           severity: rule.severity,
-          message: rule.message
+          message: rule.message,
         });
-
       } else if (!isTriggered && activeAlert) {
         // Alert resolved
         this.activeAlerts.delete(rule.id);
         this.emit('alert-resolved', {
           ruleId: rule.id,
           ruleName: rule.name,
-          duration: Date.now() - activeAlert.triggered.getTime()
+          duration: Date.now() - activeAlert.triggered.getTime(),
         });
-
       } else if (isTriggered && activeAlert) {
         // Check cooldown for re-notification
         const timeSinceLastNotification = Date.now() - activeAlert.lastNotification.getTime();
@@ -374,7 +378,7 @@ export class QueueMonitor extends EventEmitter {
             ruleId: rule.id,
             ruleName: rule.name,
             severity: rule.severity,
-            message: rule.message
+            message: rule.message,
           });
         }
       }
@@ -386,7 +390,7 @@ export class QueueMonitor extends EventEmitter {
    */
   addAlertRule(rule: AlertRule): void {
     // Check if rule already exists
-    const existingIndex = this.alertRules.findIndex(r => r.id === rule.id);
+    const existingIndex = this.alertRules.findIndex((r) => r.id === rule.id);
     if (existingIndex >= 0) {
       this.alertRules[existingIndex] = rule;
     } else {
@@ -400,7 +404,7 @@ export class QueueMonitor extends EventEmitter {
    * Remove an alert rule
    */
   removeAlertRule(ruleId: string): boolean {
-    const index = this.alertRules.findIndex(r => r.id === ruleId);
+    const index = this.alertRules.findIndex((r) => r.id === ruleId);
     if (index >= 0) {
       const removedRule = this.alertRules.splice(index, 1)[0];
       this.activeAlerts.delete(ruleId);
@@ -432,8 +436,8 @@ export class QueueMonitor extends EventEmitter {
    * Get metrics within a time range
    */
   getMetricsInRange(startTime: Date, endTime: Date): MetricsDataPoint[] {
-    return this.metricsHistory.filter(point =>
-      point.timestamp >= startTime && point.timestamp <= endTime
+    return this.metricsHistory.filter(
+      (point) => point.timestamp >= startTime && point.timestamp <= endTime
     );
   }
 
@@ -446,9 +450,13 @@ export class QueueMonitor extends EventEmitter {
       return 'unhealthy';
     }
 
-    const hasUnhealthyProviders = currentMetrics.healthStatuses.some(h => h.status !== 'healthy');
-    const hasHighErrorRate = currentMetrics.metrics.some(m => m.errorRate > this.config.alerts.thresholds.errorRate);
-    const hasHighLatency = currentMetrics.metrics.some(m => m.averageProcessingTime > this.config.alerts.thresholds.processingLatency);
+    const hasUnhealthyProviders = currentMetrics.healthStatuses.some((h) => h.status !== 'healthy');
+    const hasHighErrorRate = currentMetrics.metrics.some(
+      (m) => m.errorRate > this.config.alerts.thresholds.errorRate
+    );
+    const hasHighLatency = currentMetrics.metrics.some(
+      (m) => m.averageProcessingTime > this.config.alerts.thresholds.processingLatency
+    );
 
     if (hasUnhealthyProviders) {
       return 'unhealthy';
@@ -466,7 +474,7 @@ export class QueueMonitor extends EventEmitter {
     return Array.from(this.activeAlerts.entries()).map(([id, alert]) => ({
       id,
       triggered: alert.triggered,
-      lastNotification: alert.lastNotification
+      lastNotification: alert.lastNotification,
     }));
   }
 
@@ -503,10 +511,12 @@ export class QueueMonitor extends EventEmitter {
       activeAlerts: this.activeAlerts.size,
       alertRules: this.alertRules.length,
       systemHealth: this.getSystemHealthStatus(),
-      currentMetrics: currentMetrics ? {
-        queueCount: currentMetrics.metrics.length,
-        providerCount: currentMetrics.healthStatuses.length
-      } : null
+      currentMetrics: currentMetrics
+        ? {
+            queueCount: currentMetrics.metrics.length,
+            providerCount: currentMetrics.healthStatuses.length,
+          }
+        : null,
     };
   }
 
@@ -518,20 +528,30 @@ export class QueueMonitor extends EventEmitter {
       return JSON.stringify(this.metricsHistory, null, 2);
     } else {
       // CSV format
-      const headers = ['timestamp', 'queueName', 'messageCount', 'consumerCount', 'processingRate', 'errorRate', 'averageProcessingTime'];
+      const headers = [
+        'timestamp',
+        'queueName',
+        'messageCount',
+        'consumerCount',
+        'processingRate',
+        'errorRate',
+        'averageProcessingTime',
+      ];
       const rows = [headers.join(',')];
 
-      this.metricsHistory.forEach(point => {
-        point.metrics.forEach(metric => {
-          rows.push([
-            point.timestamp.toISOString(),
-            metric.queueName,
-            metric.messageCount.toString(),
-            metric.consumerCount.toString(),
-            metric.processingRate.toString(),
-            metric.errorRate.toString(),
-            metric.averageProcessingTime.toString()
-          ].join(','));
+      this.metricsHistory.forEach((point) => {
+        point.metrics.forEach((metric) => {
+          rows.push(
+            [
+              point.timestamp.toISOString(),
+              metric.queueName,
+              metric.messageCount.toString(),
+              metric.consumerCount.toString(),
+              metric.processingRate.toString(),
+              metric.errorRate.toString(),
+              metric.averageProcessingTime.toString(),
+            ].join(',')
+          );
         });
       });
 

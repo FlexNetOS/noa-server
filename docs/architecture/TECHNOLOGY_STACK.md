@@ -17,12 +17,14 @@ Comprehensive overview of all technologies used in Noa Server.
 ### Runtime Environment
 
 **Node.js 18+**
+
 - **Purpose**: JavaScript runtime for backend
 - **Version**: 18.16.0 or higher
 - **Why**: Event-driven, non-blocking I/O, large ecosystem
 - **Features Used**: Worker threads, async/await, ESM modules
 
 **TypeScript 5+**
+
 - **Purpose**: Type-safe JavaScript
 - **Version**: 5.0.0 or higher
 - **Why**: Type safety, better IDE support, refactoring
@@ -31,6 +33,7 @@ Comprehensive overview of all technologies used in Noa Server.
 ### Package Management
 
 **npm / pnpm**
+
 - **Purpose**: Dependency management
 - **Version**: npm 9+ or pnpm 8+
 - **Why**: Standard Node.js package manager, monorepo support
@@ -41,9 +44,11 @@ Comprehensive overview of all technologies used in Noa Server.
 ### Web Framework
 
 **Express.js 4.x**
+
 ```json
 "express": "^4.18.0"
 ```
+
 - **Purpose**: RESTful API framework
 - **Features Used**:
   - Middleware system
@@ -52,6 +57,7 @@ Comprehensive overview of all technologies used in Noa Server.
   - Static file serving
 
 **Key Middleware**:
+
 ```javascript
 - express.json() - Body parsing
 - cors() - Cross-origin requests
@@ -63,9 +69,11 @@ Comprehensive overview of all technologies used in Noa Server.
 ### GraphQL (Optional)
 
 **Apollo Server 4.x**
+
 ```json
 "@apollo/server": "^4.0.0"
 ```
+
 - **Purpose**: GraphQL API
 - **Features**:
   - Schema-first design
@@ -76,10 +84,12 @@ Comprehensive overview of all technologies used in Noa Server.
 ### API Documentation
 
 **Swagger/OpenAPI 3.0**
+
 ```json
 "swagger-jsdoc": "^6.2.0",
 "swagger-ui-express": "^5.0.0"
 ```
+
 - **Purpose**: API documentation
 - **Features**:
   - Interactive API explorer
@@ -91,9 +101,11 @@ Comprehensive overview of all technologies used in Noa Server.
 ### Primary Database
 
 **PostgreSQL 14+**
+
 ```json
 "pg": "^8.11.0"
 ```
+
 - **Purpose**: Relational database
 - **Why**: ACID compliance, JSON support, extensions
 - **Features Used**:
@@ -103,9 +115,11 @@ Comprehensive overview of all technologies used in Noa Server.
   - Triggers and stored procedures
 
 **Schema Management**:
+
 ```json
 "typeorm": "^0.3.17"
 ```
+
 - ORM for TypeScript
 - Migration system
 - Query builder
@@ -114,9 +128,11 @@ Comprehensive overview of all technologies used in Noa Server.
 ### Caching Layer
 
 **Redis 7+**
+
 ```json
 "redis": "^4.6.0"
 ```
+
 - **Purpose**: Caching and pub/sub
 - **Why**: In-memory performance, data structures
 - **Features Used**:
@@ -128,9 +144,11 @@ Comprehensive overview of all technologies used in Noa Server.
 ### Development Database
 
 **SQLite 3+**
+
 ```json
 "sqlite3": "^5.1.6"
 ```
+
 - **Purpose**: Local development and memory store
 - **Why**: Zero configuration, embedded
 - **Use Cases**:
@@ -143,9 +161,11 @@ Comprehensive overview of all technologies used in Noa Server.
 ### Local Model Inference
 
 **llama.cpp**
+
 ```json
 "@llama-node/llama-cpp": "^0.1.0"
 ```
+
 - **Purpose**: Local AI model execution
 - **Why**: Privacy, no API costs, offline capable
 - **Features**:
@@ -155,6 +175,7 @@ Comprehensive overview of all technologies used in Noa Server.
   - Streaming responses
 
 **Models Supported**:
+
 - LLaMA 2 (7B, 13B, 70B)
 - Mistral (7B)
 - CodeLLaMA
@@ -163,6 +184,7 @@ Comprehensive overview of all technologies used in Noa Server.
 ### CUDA Support
 
 **NVIDIA CUDA 11.8+**
+
 - **Purpose**: GPU acceleration
 - **Why**: 10x faster inference
 - **Requirements**:
@@ -173,11 +195,13 @@ Comprehensive overview of all technologies used in Noa Server.
 ### Python Integration
 
 **Python 3.9+**
+
 ```requirements
 torch>=2.0.0
 transformers>=4.30.0
 accelerate>=0.20.0
 ```
+
 - **Purpose**: ML model integration
 - **Features**:
   - PyTorch for model loading
@@ -189,9 +213,11 @@ accelerate>=0.20.0
 ### Containerization
 
 **Docker 24+**
+
 ```dockerfile
 FROM node:18-alpine
 ```
+
 - **Purpose**: Container runtime
 - **Why**: Consistent environments, easy deployment
 - **Features**:
@@ -200,6 +226,7 @@ FROM node:18-alpine
   - Health checks
 
 **Docker Compose 2.x**
+
 ```yaml
 version: '3.8'
 services:
@@ -207,12 +234,14 @@ services:
   db:
   cache:
 ```
+
 - **Purpose**: Multi-container orchestration
 - **Why**: Local development, integration testing
 
 ### Orchestration
 
 **Kubernetes 1.27+**
+
 - **Purpose**: Container orchestration
 - **Why**: Scalability, high availability, auto-healing
 - **Resources**:
@@ -225,6 +254,7 @@ services:
 ### CI/CD
 
 **GitHub Actions**
+
 ```yaml
 name: CI/CD Pipeline
 on: [push, pull_request]
@@ -233,6 +263,7 @@ jobs:
   build:
   deploy:
 ```
+
 - **Purpose**: Automated testing and deployment
 - **Features**:
   - Test automation
@@ -243,10 +274,12 @@ jobs:
 ### Monitoring
 
 **Prometheus 2.x**
+
 ```yaml
 scrape_configs:
   - job_name: 'noa-server'
 ```
+
 - **Purpose**: Metrics collection
 - **Metrics**:
   - Request rates
@@ -255,6 +288,7 @@ scrape_configs:
   - Resource usage
 
 **Grafana 10.x**
+
 - **Purpose**: Metrics visualization
 - **Dashboards**:
   - System overview
@@ -263,9 +297,11 @@ scrape_configs:
   - Neural processing stats
 
 **Winston 3.x**
+
 ```json
 "winston": "^3.10.0"
 ```
+
 - **Purpose**: Application logging
 - **Features**:
   - Multiple transports
@@ -276,9 +312,11 @@ scrape_configs:
 ### Tracing
 
 **Jaeger**
+
 ```json
 "jaeger-client": "^3.19.0"
 ```
+
 - **Purpose**: Distributed tracing
 - **Why**: Debug complex workflows, performance analysis
 - **Features**:
@@ -291,11 +329,13 @@ scrape_configs:
 ### Testing
 
 **Jest 29.x**
+
 ```json
 "jest": "^29.6.0",
 "@types/jest": "^29.5.0",
 "ts-jest": "^29.1.0"
 ```
+
 - **Purpose**: Testing framework
 - **Features**:
   - Unit testing
@@ -305,9 +345,11 @@ scrape_configs:
   - Mocking
 
 **Supertest**
+
 ```json
 "supertest": "^6.3.0"
 ```
+
 - **Purpose**: HTTP API testing
 - **Features**:
   - Request assertions
@@ -315,9 +357,11 @@ scrape_configs:
   - Status code checking
 
 **Playwright**
+
 ```json
 "@playwright/test": "^1.40.0"
 ```
+
 - **Purpose**: E2E testing
 - **Features**:
   - Browser automation
@@ -327,19 +371,23 @@ scrape_configs:
 ### Code Quality
 
 **ESLint 8.x**
+
 ```json
 "eslint": "^8.48.0",
 "@typescript-eslint/parser": "^6.7.0",
 "@typescript-eslint/eslint-plugin": "^6.7.0"
 ```
+
 - **Purpose**: Code linting
 - **Rules**: Airbnb, TypeScript recommended
 - **Custom Rules**: Project-specific standards
 
 **Prettier 3.x**
+
 ```json
 "prettier": "^3.0.0"
 ```
+
 - **Purpose**: Code formatting
 - **Configuration**:
   - Single quotes
@@ -348,9 +396,11 @@ scrape_configs:
   - Trailing commas
 
 **Husky 8.x**
+
 ```json
 "husky": "^8.0.0"
 ```
+
 - **Purpose**: Git hooks
 - **Hooks**:
   - pre-commit: Lint and format
@@ -358,23 +408,28 @@ scrape_configs:
   - pre-push: Run tests
 
 **Commitlint 17.x**
+
 ```json
 "@commitlint/cli": "^17.7.0",
 "@commitlint/config-conventional": "^17.7.0"
 ```
+
 - **Purpose**: Commit message validation
 - **Format**: Conventional Commits
 
 ### Documentation
 
 **TypeDoc 0.25+**
+
 ```json
 "typedoc": "^0.25.0"
 ```
+
 - **Purpose**: API documentation generation
 - **Output**: HTML documentation from TypeScript comments
 
 **JSDoc**
+
 - **Purpose**: Inline code documentation
 - **Format**: JSDoc comments for functions/classes
 
@@ -383,9 +438,11 @@ scrape_configs:
 ### MCP Integration
 
 **Claude Flow**
+
 ```bash
 npx claude-flow@alpha mcp start
 ```
+
 - **Purpose**: Core orchestration MCP server
 - **Features**:
   - Swarm management
@@ -394,9 +451,11 @@ npx claude-flow@alpha mcp start
   - Memory management
 
 **Ruv-Swarm** (Optional)
+
 ```bash
 npx ruv-swarm mcp start
 ```
+
 - **Purpose**: Enhanced coordination
 - **Features**:
   - Advanced consensus protocols
@@ -404,9 +463,11 @@ npx ruv-swarm mcp start
   - Distributed caching
 
 **Flow-Nexus** (Optional)
+
 ```bash
 npx flow-nexus@latest mcp start
 ```
+
 - **Purpose**: Cloud features
 - **Features**:
   - Cloud sandboxes
@@ -417,9 +478,11 @@ npx flow-nexus@latest mcp start
 ### GitHub Integration
 
 **Octokit (GitHub API)**
+
 ```json
 "@octokit/rest": "^20.0.0"
 ```
+
 - **Purpose**: GitHub API client
 - **Features**:
   - Repository management
@@ -430,16 +493,20 @@ npx flow-nexus@latest mcp start
 ### Cloud Services (Optional)
 
 **AWS SDK**
+
 ```json
 "aws-sdk": "^2.1450.0"
 ```
+
 - **Services**: S3, RDS, Lambda, ECS
 - **Purpose**: Cloud deployment and storage
 
 **Google Cloud SDK**
+
 ```json
 "@google-cloud/storage": "^7.0.0"
 ```
+
 - **Services**: Cloud SQL, Cloud Run, GCS
 - **Purpose**: Alternative cloud provider
 
@@ -448,9 +515,11 @@ npx flow-nexus@latest mcp start
 ### Authentication
 
 **jsonwebtoken**
+
 ```json
 "jsonwebtoken": "^9.0.0"
 ```
+
 - **Purpose**: JWT token generation/validation
 - **Features**:
   - Token signing
@@ -458,18 +527,22 @@ npx flow-nexus@latest mcp start
   - Expiry handling
 
 **bcrypt**
+
 ```json
 "bcrypt": "^5.1.0"
 ```
+
 - **Purpose**: Password hashing
 - **Algorithm**: bcrypt with salt rounds
 
 ### Security Headers
 
 **helmet**
+
 ```json
 "helmet": "^7.0.0"
 ```
+
 - **Purpose**: Security headers
 - **Features**:
   - Content Security Policy
@@ -480,9 +553,11 @@ npx flow-nexus@latest mcp start
 ### Rate Limiting
 
 **express-rate-limit**
+
 ```json
 "express-rate-limit": "^6.10.0"
 ```
+
 - **Purpose**: API rate limiting
 - **Storage**: Redis-backed
 
@@ -491,36 +566,44 @@ npx flow-nexus@latest mcp start
 ### Date/Time
 
 **date-fns**
+
 ```json
 "date-fns": "^2.30.0"
 ```
+
 - **Purpose**: Date manipulation
 - **Why**: Lightweight, tree-shakeable
 
 ### UUID Generation
 
 **uuid**
+
 ```json
 "uuid": "^9.0.0"
 ```
+
 - **Purpose**: Unique ID generation
 - **Format**: UUID v4
 
 ### Validation
 
 **joi**
+
 ```json
 "joi": "^17.10.0"
 ```
+
 - **Purpose**: Schema validation
 - **Use**: Input validation, config validation
 
 ### Environment Variables
 
 **dotenv**
+
 ```json
 "dotenv": "^16.3.0"
 ```
+
 - **Purpose**: Load environment variables
 - **Format**: .env files
 
@@ -540,6 +623,7 @@ npx flow-nexus@latest mcp start
 ### Dependency Updates
 
 **Renovate Bot**
+
 - Automated dependency updates
 - Security vulnerability alerts
 - Pull request automation
@@ -552,4 +636,5 @@ npx flow-nexus@latest mcp start
 
 ---
 
-**Questions?** See [Developer Documentation](../developer/) or ask in [Discussions](https://github.com/your-org/noa-server/discussions).
+**Questions?** See [Developer Documentation](../developer/) or ask in
+[Discussions](https://github.com/your-org/noa-server/discussions).

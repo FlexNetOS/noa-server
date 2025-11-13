@@ -142,8 +142,8 @@ class MonitoringDashboard {
         cpu: metrics.system.cpu.usage.average,
         memory: metrics.system.memory.usagePercent,
         errorRate: metrics.application.requests.errorRate,
-        latency: metrics.application.latency.average
-      }
+        latency: metrics.application.latency.average,
+      },
     };
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -157,7 +157,7 @@ class MonitoringDashboard {
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive'
+      Connection: 'keep-alive',
     });
 
     this.connections.add(res);
@@ -188,7 +188,7 @@ class MonitoringDashboard {
     return {
       timestamp: new Date().toISOString(),
       health,
-      metrics
+      metrics,
     };
   }
 

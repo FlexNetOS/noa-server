@@ -1,20 +1,22 @@
 # Phase 2: Unified AgenticOS Architecture Blueprint
 
-**Document Version:** 1.0
-**Date:** 2025-10-22
-**Status:** Design Complete - Ready for Implementation
+**Document Version:** 1.0 **Date:** 2025-10-22 **Status:** Design Complete -
+Ready for Implementation
 
 ---
 
 ## Executive Summary
 
-This blueprint defines the unified architecture for consolidating the current fragmented noa-server ecosystem into a cohesive AgenticOS platform. The design eliminates redundancy, establishes clear module boundaries, and creates a scalable foundation for agentic operations.
+This blueprint defines the unified architecture for consolidating the current
+fragmented noa-server ecosystem into a cohesive AgenticOS platform. The design
+eliminates redundancy, establishes clear module boundaries, and creates a
+scalable foundation for agentic operations.
 
 ### Current State Analysis
 
-**Package Count:** 29 packages
-**TypeScript Files:** 3,831 source files
-**Key Systems:**
+**Package Count:** 29 packages **TypeScript Files:** 3,831 source files **Key
+Systems:**
+
 - MCP (Model Context Protocol) coordination
 - Claude-Flow orchestration
 - Llama.cpp neural processing
@@ -23,6 +25,7 @@ This blueprint defines the unified architecture for consolidating the current fr
 - Comprehensive monitoring/observability
 
 **Critical Issues Identified:**
+
 1. **Duplicate implementations** across packages and claude-flow
 2. **Inconsistent module boundaries** between microservices
 3. **Fragmented configuration** systems
@@ -157,6 +160,7 @@ noa-server/
 **Pattern:** `@agenticos/<category>-<name>`
 
 **Examples:**
+
 - `@agenticos/core-common` - Shared utilities
 - `@agenticos/orchestration-agent-engine` - Agent orchestration
 - `@agenticos/infrastructure-api-gateway` - API gateway
@@ -172,12 +176,14 @@ noa-server/
 #### 3.1.1 Configuration Management
 
 **Current State:**
+
 - `/config` - Root configs
 - `/packages/llama.cpp/config` - Neural configs
 - `/claude-flow/src/config` - Flow configs
 - Individual package configs (20+ files)
 
 **Unified Target:**
+
 ```
 @agenticos/core-config/
 ├── src/
@@ -196,6 +202,7 @@ noa-server/
 ```
 
 **Migration Strategy:**
+
 1. Extract common config schemas from all packages
 2. Create unified validation layer using Zod/Joi
 3. Implement environment-aware config provider
@@ -205,12 +212,14 @@ noa-server/
 #### 3.1.2 Logging & Monitoring
 
 **Current State:**
+
 - `/packages/monitoring` - Prometheus metrics
 - `/packages/audit-logger` - Audit logging
 - `/claude-flow/src/monitoring` - Flow monitoring
 - Ad-hoc console.log across packages
 
 **Unified Target:**
+
 ```
 @agenticos/core-logger/
 ├── src/
@@ -228,6 +237,7 @@ noa-server/
 ```
 
 **Migration Strategy:**
+
 1. Adopt Winston/Pino as unified logger
 2. Create service-specific logger instances
 3. Implement structured logging (JSON)
@@ -237,12 +247,14 @@ noa-server/
 #### 3.1.3 Agent Orchestration
 
 **Current State:**
+
 - `/packages/agent-swarm` - Agent swarm logic
 - `/claude-flow/src/swarm` - Claude-Flow swarm
 - `/claude-flow/src/agents` - Agent definitions
 - `/packages/workflow-orchestration` - Workflow engine
 
 **Unified Target:**
+
 ```
 @agenticos/orchestration-agent-engine/
 ├── src/
@@ -268,6 +280,7 @@ noa-server/
 ```
 
 **Migration Strategy:**
+
 1. Define core agent interface/abstract class
 2. Migrate agent-swarm logic to core engine
 3. Create adapter layer for claude-flow agents
@@ -277,11 +290,13 @@ noa-server/
 #### 3.1.4 Neural Processing (llama.cpp)
 
 **Current State:**
+
 - `/packages/llama.cpp` - Full llama.cpp fork
 - `/claude-flow/src/neural` - Neural features
 - `/packages/ai-provider` - AI provider abstraction
 
 **Unified Target:**
+
 ```
 @agenticos/orchestration-neural/
 ├── src/
@@ -303,6 +318,7 @@ noa-server/
 ```
 
 **Migration Strategy:**
+
 1. Keep llama.cpp as external dependency (Git submodule)
 2. Create thin TypeScript wrapper for C++ bindings
 3. Unify AI provider abstraction layer
@@ -312,6 +328,7 @@ noa-server/
 #### 3.1.5 Data Layer
 
 **Current State:**
+
 - `/packages/database-optimizer` - Query optimization
 - `/packages/database-sharding` - Sharding logic
 - `/packages/connection-pool` - Connection pooling
@@ -319,6 +336,7 @@ noa-server/
 - Individual ORMs per service
 
 **Unified Target:**
+
 ```
 @agenticos/infrastructure-database/
 ├── src/
@@ -344,6 +362,7 @@ noa-server/
 ```
 
 **Migration Strategy:**
+
 1. Adopt Prisma or TypeORM as unified ORM
 2. Consolidate connection pooling logic
 3. Create database factory for multi-tenancy
@@ -353,12 +372,14 @@ noa-server/
 #### 3.1.6 API & Messaging
 
 **Current State:**
+
 - `/packages/microservices/api-gateway` - API gateway
 - `/packages/message-queue` - Message queue
 - `/packages/rate-limiter` - Rate limiting
 - `/claude-flow/src/api` - Claude-Flow API
 
 **Unified Target:**
+
 ```
 @agenticos/infrastructure-api-gateway/
 ├── src/
@@ -387,6 +408,7 @@ noa-server/
 ```
 
 **Migration Strategy:**
+
 1. Consolidate API gateways into single entry point
 2. Implement service mesh pattern (Istio/Linkerd)
 3. Unify message queue abstraction (support Kafka/RabbitMQ/SQS)
@@ -396,12 +418,14 @@ noa-server/
 ### 3.2 Shared Utilities Consolidation
 
 **Current Duplicates:**
+
 - File I/O helpers (12+ locations)
 - Date/time utilities (8+ locations)
 - Validation functions (15+ locations)
 - String manipulation (10+ locations)
 
 **Unified Target:**
+
 ```
 @agenticos/core-common/
 ├── src/
@@ -470,11 +494,13 @@ noa-server/
 **Protocol:** gRPC + HTTP/2
 
 **Use Cases:**
+
 - Agent-to-Agent direct communication
 - API Gateway to service calls
 - Real-time coordination
 
 **Implementation:**
+
 ```typescript
 // @agenticos/infrastructure-api-gateway/src/protocols/grpc.ts
 
@@ -515,11 +541,13 @@ export class GRPCServer {
 **Protocol:** Message Queue (Kafka/RabbitMQ)
 
 **Use Cases:**
+
 - Background task processing
 - Event-driven workflows
 - Distributed coordination
 
 **Implementation:**
+
 ```typescript
 // @agenticos/infrastructure-api-gateway/src/messaging/queue-manager.ts
 
@@ -539,10 +567,14 @@ export class UnifiedQueueManager {
 
   private createProvider(type: 'kafka' | 'rabbitmq' | 'redis'): QueueProvider {
     switch (type) {
-      case 'kafka': return new KafkaProvider();
-      case 'rabbitmq': return new RabbitMQProvider();
-      case 'redis': return new RedisQueueProvider();
-      default: throw new Error(`Unsupported queue type: ${type}`);
+      case 'kafka':
+        return new KafkaProvider();
+      case 'rabbitmq':
+        return new RabbitMQProvider();
+      case 'redis':
+        return new RedisQueueProvider();
+      default:
+        throw new Error(`Unsupported queue type: ${type}`);
     }
   }
 
@@ -555,6 +587,7 @@ export class UnifiedQueueManager {
 #### 4.2.3 Event Bus Pattern
 
 **Implementation:**
+
 ```typescript
 // @agenticos/core-common/src/events/event-bus.ts
 
@@ -584,9 +617,7 @@ export class EventBus {
     const handlers = this.handlers.get(event);
     if (!handlers) return;
 
-    await Promise.all(
-      Array.from(handlers).map(handler => handler(data))
-    );
+    await Promise.all(Array.from(handlers).map((handler) => handler(data)));
   }
 }
 ```
@@ -635,8 +666,8 @@ export class EventBus {
 # config/base/platform.yaml
 
 platform:
-  name: "AgenticOS"
-  version: "1.0.0"
+  name: 'AgenticOS'
+  version: '1.0.0'
   environment: ${NODE_ENV}
 
 services:
@@ -741,7 +772,7 @@ export class ConfigProvider {
     }
 
     if (Array.isArray(obj)) {
-      return obj.map(item => this.interpolateEnvVars(item));
+      return obj.map((item) => this.interpolateEnvVars(item));
     }
 
     if (typeof obj === 'object' && obj !== null) {
@@ -780,7 +811,9 @@ export class ConfigProvider {
     for (const [name, schema] of this.schemas.entries()) {
       const result = schema.safeParse(config[name]);
       if (!result.success) {
-        throw new Error(`Config validation failed for ${name}: ${result.error.message}`);
+        throw new Error(
+          `Config validation failed for ${name}: ${result.error.message}`
+        );
       }
     }
   }
@@ -909,6 +942,7 @@ export class UnifiedStateManager {
 **Objective:** Establish core infrastructure
 
 **Tasks:**
+
 1. Create `@agenticos/core-common` package
    - Migrate shared utilities
    - Create error handling framework
@@ -925,6 +959,7 @@ export class UnifiedStateManager {
    - Establish type safety standards
 
 **Success Criteria:**
+
 - All new packages compile without errors
 - 100% test coverage for core utilities
 - Configuration loads from YAML + env vars
@@ -935,6 +970,7 @@ export class UnifiedStateManager {
 **Objective:** Consolidate database and caching layers
 
 **Tasks:**
+
 1. Create `@agenticos/infrastructure-database` package
    - Migrate connection pooling logic
    - Implement repository pattern
@@ -951,6 +987,7 @@ export class UnifiedStateManager {
    - Implement rollback capability
 
 **Success Criteria:**
+
 - Single database connection pool per service
 - Unified cache API across all services
 - Database migrations run successfully
@@ -961,6 +998,7 @@ export class UnifiedStateManager {
 **Objective:** Create single unified API gateway
 
 **Tasks:**
+
 1. Create `@agenticos/infrastructure-api-gateway` package
    - Migrate REST endpoints
    - Implement GraphQL server
@@ -977,6 +1015,7 @@ export class UnifiedStateManager {
    - Add input validation layer
 
 **Success Criteria:**
+
 - Single API gateway serving all endpoints
 - Authentication works across all services
 - Rate limiting prevents abuse
@@ -987,6 +1026,7 @@ export class UnifiedStateManager {
 **Objective:** Consolidate agent orchestration logic
 
 **Tasks:**
+
 1. Create `@agenticos/orchestration-agent-engine` package
    - Define core agent interface
    - Migrate agent-swarm logic
@@ -1003,6 +1043,7 @@ export class UnifiedStateManager {
    - Add consensus algorithms
 
 **Success Criteria:**
+
 - Single agent engine manages all agents
 - Workflows execute via unified engine
 - Swarm coordination operational
@@ -1013,6 +1054,7 @@ export class UnifiedStateManager {
 **Objective:** Unify neural processing layer
 
 **Tasks:**
+
 1. Create `@agenticos/orchestration-neural` package
    - Migrate llama.cpp wrapper
    - Implement model selector
@@ -1029,6 +1071,7 @@ export class UnifiedStateManager {
    - Add pattern learning
 
 **Success Criteria:**
+
 - llama.cpp integration operational
 - Model auto-selection working
 - AI provider abstraction functional
@@ -1039,6 +1082,7 @@ export class UnifiedStateManager {
 **Objective:** Unify monitoring and logging
 
 **Tasks:**
+
 1. Create `@agenticos/infrastructure-monitoring` package
    - Consolidate Prometheus metrics
    - Implement OpenTelemetry tracing
@@ -1055,6 +1099,7 @@ export class UnifiedStateManager {
    - Add readiness/liveness probes
 
 **Success Criteria:**
+
 - All services emit Prometheus metrics
 - Distributed tracing working
 - Centralized logging operational
@@ -1065,6 +1110,7 @@ export class UnifiedStateManager {
 **Objective:** Consolidate UI components
 
 **Tasks:**
+
 1. Create `@agenticos-ui/dashboard` package
    - Migrate Next.js dashboard
    - Consolidate React components
@@ -1081,6 +1127,7 @@ export class UnifiedStateManager {
    - Add accessibility features
 
 **Success Criteria:**
+
 - UI dashboard fully functional
 - Admin interface operational
 - Component library documented
@@ -1091,6 +1138,7 @@ export class UnifiedStateManager {
 **Objective:** Comprehensive testing and validation
 
 **Tasks:**
+
 1. Integration testing
    - Write end-to-end tests
    - Test service interactions
@@ -1107,6 +1155,7 @@ export class UnifiedStateManager {
    - Validate input sanitization
 
 **Success Criteria:**
+
 - 80% integration test coverage
 - Performance meets SLA requirements
 - No critical security vulnerabilities
@@ -1117,6 +1166,7 @@ export class UnifiedStateManager {
 **Objective:** Complete documentation and production deployment
 
 **Tasks:**
+
 1. Documentation creation
    - Write architecture documentation
    - Create API documentation
@@ -1133,6 +1183,7 @@ export class UnifiedStateManager {
    - Execute production cutover
 
 **Success Criteria:**
+
 - Complete documentation published
 - CI/CD pipelines operational
 - Successful staging deployment
@@ -1143,6 +1194,7 @@ export class UnifiedStateManager {
 **Objective:** Remove deprecated code and finalize migration
 
 **Tasks:**
+
 1. Deprecation cleanup
    - Remove old packages
    - Delete unused code
@@ -1159,6 +1211,7 @@ export class UnifiedStateManager {
    - Sign off on migration
 
 **Success Criteria:**
+
 - No legacy packages remaining
 - Codebase reduced by 40%
 - All tests passing
@@ -1196,6 +1249,7 @@ export class AgentSwarm {
 ```
 
 **Deprecation Timeline:**
+
 - **Weeks 1-10:** Facade layer provides 100% backward compatibility
 - **Weeks 11-15:** Warning messages added to deprecated APIs
 - **Weeks 16-19:** Deprecated APIs marked for removal
@@ -1204,12 +1258,14 @@ export class AgentSwarm {
 ### 7.3 Rollback Procedures
 
 **Rollback Triggers:**
+
 - Critical bugs in production
 - Performance degradation >20%
 - Data integrity issues
 - Security vulnerabilities
 
 **Rollback Steps:**
+
 1. Identify problematic deployment
 2. Restore previous Docker images/K8s deployments
 3. Revert database migrations (if applicable)
@@ -1218,6 +1274,7 @@ export class AgentSwarm {
 6. Notify stakeholders
 
 **Rollback Testing:**
+
 - Practice rollback procedures in staging weekly
 - Document rollback times for each service
 - Maintain emergency contacts list
@@ -1246,6 +1303,7 @@ export { validateEmail } from './utils/validation';
 ```
 
 **Optimization Targets:**
+
 - Reduce bundle size by 50%
 - Improve cold start time by 30%
 - Decrease memory usage by 25%
@@ -1253,6 +1311,7 @@ export { validateEmail } from './utils/validation';
 ### 8.2 Runtime Performance
 
 **Database Query Optimization:**
+
 ```typescript
 // Implement query result caching
 class OptimizedRepository<T> {
@@ -1274,11 +1333,13 @@ class OptimizedRepository<T> {
 ```
 
 **Connection Pooling:**
+
 - Maintain minimum 2 connections per service
 - Scale up to 10 connections under load
 - Implement connection recycling after 1 hour
 
 **Caching Strategy:**
+
 - Cache frequently accessed data (>10 requests/min)
 - TTL based on data volatility
 - Implement cache warming on startup
@@ -1286,16 +1347,19 @@ class OptimizedRepository<T> {
 ### 8.3 Scalability Targets
 
 **Horizontal Scaling:**
+
 - API Gateway: 3-15 replicas (auto-scale on CPU >70%)
 - Agent Engine: 2-10 replicas (auto-scale on queue depth)
 - Neural Processing: 1-5 replicas (GPU availability dependent)
 
 **Vertical Scaling:**
+
 - Database: Optimized queries + read replicas
 - Redis: Cluster mode for high availability
 - Message Queue: Partitioned topics for parallelism
 
 **Target Metrics:**
+
 - API latency: P95 <200ms, P99 <500ms
 - Agent spawn time: <1s for standard agents
 - Neural inference: <100ms for small models, <500ms for large models
@@ -1360,7 +1424,9 @@ export class AuthMiddleware {
     }
 
     // 4. Load user permissions
-    const permissions = await this.permissionService.getPermissions(payload.sub);
+    const permissions = await this.permissionService.getPermissions(
+      payload.sub
+    );
 
     // 5. Create auth context
     return {
@@ -1371,9 +1437,13 @@ export class AuthMiddleware {
     };
   }
 
-  async authorize(context: AuthContext, resource: string, action: string): Promise<boolean> {
+  async authorize(
+    context: AuthContext,
+    resource: string,
+    action: string
+  ): Promise<boolean> {
     return context.permissions.some(
-      p => p.resource === resource && p.actions.includes(action)
+      (p) => p.resource === resource && p.actions.includes(action)
     );
   }
 }
@@ -1382,18 +1452,21 @@ export class AuthMiddleware {
 ### 9.3 Compliance Requirements
 
 **GDPR Compliance:**
+
 - Right to access: User data export API
 - Right to erasure: Data deletion workflows
 - Data portability: Standardized export formats
 - Consent management: Opt-in/opt-out tracking
 
 **SOC 2 Compliance:**
+
 - Security logging: All access logged
 - Encryption: Data at rest and in transit
 - Access control: Role-based permissions
 - Incident response: Documented procedures
 
 **HIPAA (if applicable):**
+
 - Audit controls: Comprehensive logging
 - Integrity controls: Data validation
 - Transmission security: TLS 1.3 minimum
@@ -1426,16 +1499,19 @@ export class AuthMiddleware {
 ### 10.2 Test Coverage Requirements
 
 **Unit Tests:**
+
 - Coverage target: 80%
 - Focus: Business logic, utilities, pure functions
 - Framework: Vitest
 
 **Integration Tests:**
+
 - Coverage target: 70%
 - Focus: API endpoints, database operations, service communication
 - Framework: Vitest + Testcontainers
 
 **E2E Tests:**
+
 - Coverage target: Critical user paths (20 scenarios)
 - Focus: User workflows, system integration
 - Framework: Playwright
@@ -1492,26 +1568,27 @@ describe('Agent Engine Integration', () => {
 
 ### 11.1 Observability Stack
 
-**Metrics:** Prometheus + Grafana
-**Logging:** Winston + ELK Stack
-**Tracing:** OpenTelemetry + Jaeger
-**Alerting:** Prometheus Alertmanager
+**Metrics:** Prometheus + Grafana **Logging:** Winston + ELK Stack **Tracing:**
+OpenTelemetry + Jaeger **Alerting:** Prometheus Alertmanager
 
 ### 11.2 Key Metrics to Track
 
 **System Metrics:**
+
 - CPU usage (per service)
 - Memory usage (heap + non-heap)
 - Disk I/O
 - Network throughput
 
 **Application Metrics:**
+
 - Request rate (requests/second)
 - Error rate (errors/second)
 - Latency (P50, P95, P99)
 - Active connections
 
 **Business Metrics:**
+
 - Agent spawn rate
 - Task completion rate
 - Workflow success rate
@@ -1531,17 +1608,18 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "High error rate detected"
-          description: "Error rate is {{ $value }} errors/sec"
+          summary: 'High error rate detected'
+          description: 'Error rate is {{ $value }} errors/sec'
 
       - alert: HighMemoryUsage
-        expr: container_memory_usage_bytes / container_spec_memory_limit_bytes > 0.9
+        expr:
+          container_memory_usage_bytes / container_spec_memory_limit_bytes > 0.9
         for: 10m
         labels:
           severity: warning
         annotations:
-          summary: "High memory usage"
-          description: "Memory usage is {{ $value | humanizePercentage }}"
+          summary: 'High memory usage'
+          description: 'Memory usage is {{ $value | humanizePercentage }}'
 
       - alert: AgentSpawnFailure
         expr: rate(agent_spawn_failures_total[5m]) > 0
@@ -1549,7 +1627,7 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "Agents failing to spawn"
+          summary: 'Agents failing to spawn'
 ```
 
 ---
@@ -1657,24 +1735,28 @@ components:
 ### 13.1 Migration Success Criteria
 
 **Code Quality:**
+
 - [ ] Codebase reduced by 40% (from 3,831 to ~2,300 files)
 - [ ] Duplicate code eliminated (<5% duplication)
 - [ ] Test coverage >80% for core packages
 - [ ] Zero critical security vulnerabilities
 
 **Performance:**
+
 - [ ] API latency P95 <200ms
 - [ ] Bundle size reduced by 50%
 - [ ] Cold start time improved by 30%
 - [ ] Memory usage reduced by 25%
 
 **Operational:**
+
 - [ ] All services deployable via single command
 - [ ] Zero-downtime deployments working
 - [ ] Rollback procedure tested and documented
 - [ ] Monitoring dashboards operational
 
 **Developer Experience:**
+
 - [ ] Documentation complete and published
 - [ ] New developer onboarding <1 day
 - [ ] Build time <2 minutes
@@ -1683,16 +1765,19 @@ components:
 ### 13.2 Key Performance Indicators (KPIs)
 
 **Development Velocity:**
+
 - Time to add new feature: Target <1 week
 - Time to fix bug: Target <1 day
 - Code review time: Target <4 hours
 
 **System Reliability:**
+
 - Uptime: Target 99.9%
 - Mean time to recovery (MTTR): <15 minutes
 - Mean time between failures (MTBF): >720 hours
 
 **Scalability:**
+
 - Concurrent users: Target 10,000
 - Requests per second: Target 10,000
 - Agent spawn time: <1 second
@@ -1703,28 +1788,31 @@ components:
 
 ### 14.1 Identified Risks
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|-----------|---------|------------|
-| Breaking changes in migration | High | High | Comprehensive facade layer + deprecation warnings |
-| Performance regression | Medium | High | Load testing before each deployment + rollback plan |
-| Data loss during migration | Low | Critical | Database backups + dry-run migrations + transaction support |
-| Team resistance to change | Medium | Medium | Clear communication + training + gradual rollout |
-| Third-party dependency issues | Medium | Medium | Pin versions + regular security audits + fallback implementations |
-| Configuration errors | High | Medium | Schema validation + health checks + canary deployments |
+| Risk                          | Likelihood | Impact   | Mitigation                                                        |
+| ----------------------------- | ---------- | -------- | ----------------------------------------------------------------- |
+| Breaking changes in migration | High       | High     | Comprehensive facade layer + deprecation warnings                 |
+| Performance regression        | Medium     | High     | Load testing before each deployment + rollback plan               |
+| Data loss during migration    | Low        | Critical | Database backups + dry-run migrations + transaction support       |
+| Team resistance to change     | Medium     | Medium   | Clear communication + training + gradual rollout                  |
+| Third-party dependency issues | Medium     | Medium   | Pin versions + regular security audits + fallback implementations |
+| Configuration errors          | High       | Medium   | Schema validation + health checks + canary deployments            |
 
 ### 14.2 Contingency Plans
 
 **Scenario 1: Critical Bug in Production**
+
 - Immediate rollback to previous version
 - Hot-patch if rollback not feasible
 - Post-mortem analysis within 48 hours
 
 **Scenario 2: Migration Delays**
+
 - Extend facade compatibility period
 - Prioritize critical path migrations
 - Communicate revised timeline to stakeholders
 
 **Scenario 3: Performance Degradation**
+
 - Enable performance profiling
 - Identify bottleneck (database, API, agent engine)
 - Apply targeted optimizations
@@ -1757,6 +1845,7 @@ components:
 ### 15.2 Phase Kickoff Checklist
 
 Before starting each migration phase:
+
 - [ ] Review phase objectives
 - [ ] Ensure all dependencies resolved
 - [ ] Create feature branch for phase
@@ -1767,12 +1856,14 @@ Before starting each migration phase:
 ### 15.3 Communication Plan
 
 **Weekly Updates:**
+
 - Migration progress report
 - Blockers and risks
 - Upcoming milestones
 - Team achievements
 
 **Stakeholder Communication:**
+
 - Monthly executive summaries
 - Quarterly architecture reviews
 - Ad-hoc updates for critical issues
@@ -1784,38 +1875,45 @@ Before starting each migration phase:
 ### Core Technologies
 
 **Runtime:**
+
 - Node.js 20+ (LTS)
 - TypeScript 5.7+
 - Python 3.12+ (for llama.cpp)
 
 **Frameworks:**
+
 - Express.js (REST API)
 - Apollo Server (GraphQL)
 - Next.js 14+ (UI)
 - Fastify (high-performance services)
 
 **Databases:**
+
 - PostgreSQL 16 (primary database)
 - Redis 7 (cache + sessions)
 - MongoDB (optional, for document storage)
 
 **Message Queues:**
+
 - Kafka (high-throughput)
 - RabbitMQ (reliable messaging)
 - Redis (lightweight queues)
 
 **Monitoring:**
+
 - Prometheus (metrics)
 - Grafana (dashboards)
 - Jaeger (tracing)
 - Winston (logging)
 
 **Testing:**
+
 - Vitest (unit + integration)
 - Playwright (E2E)
 - Artillery (load testing)
 
 **DevOps:**
+
 - Docker + Docker Compose
 - Kubernetes
 - GitHub Actions (CI/CD)
@@ -1837,9 +1935,11 @@ Before starting each migration phase:
 
 **Queen:** Neural coordinator that makes strategic decisions for the swarm
 
-**SPARC:** Specification, Pseudocode, Architecture, Refinement, Completion - development methodology
+**SPARC:** Specification, Pseudocode, Architecture, Refinement, Completion -
+development methodology
 
-**Facade Pattern:** Design pattern providing backward compatibility during migration
+**Facade Pattern:** Design pattern providing backward compatibility during
+migration
 
 **Event Sourcing:** Pattern for storing state as sequence of events
 
@@ -1850,16 +1950,19 @@ Before starting each migration phase:
 ## Appendix C: References
 
 **Architecture Patterns:**
+
 - Microservices Architecture (Martin Fowler)
 - Domain-Driven Design (Eric Evans)
 - Enterprise Integration Patterns (Gregor Hohpe)
 
 **Best Practices:**
+
 - The Twelve-Factor App (https://12factor.net)
 - OWASP Security Guidelines
 - Node.js Best Practices (Yoni Goldberg)
 
 **Tools Documentation:**
+
 - TypeScript Handbook
 - Kubernetes Documentation
 - Prometheus Best Practices
@@ -1868,6 +1971,7 @@ Before starting each migration phase:
 ---
 
 **Document Control:**
+
 - **Author:** Backend Architect Agent
 - **Reviewers:** Engineering Team, Security Team, Operations Team
 - **Approval Required From:** CTO, Engineering Manager
@@ -1877,6 +1981,7 @@ Before starting each migration phase:
 
 ## Sign-off
 
-This blueprint is ready for team review and implementation. Once approved, proceed to Phase 2.1 implementation.
+This blueprint is ready for team review and implementation. Once approved,
+proceed to Phase 2.1 implementation.
 
 **Status:** ✅ **DESIGN COMPLETE - READY FOR IMPLEMENTATION**

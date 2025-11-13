@@ -2,7 +2,9 @@
 
 ## Complete Guide to Automated Agent Integration
 
-The Agent Swarm Automation System provides **zero-configuration automatic integration** of new agents into your codebase. When you create a new agent, the system automatically:
+The Agent Swarm Automation System provides **zero-configuration automatic
+integration** of new agents into your codebase. When you create a new agent, the
+system automatically:
 
 - 🔍 Detects the new agent file
 - 🚀 Initializes a Claude-Flow swarm
@@ -120,6 +122,7 @@ export class MyFeatureAgent {
 ```
 
 **That's it!** The automation system will:
+
 - Detect the new file
 - Trigger integration automatically
 - Update all necessary files
@@ -191,12 +194,12 @@ Location: `src/agent-swarm/triggers/trigger-config.json`
 
 ```typescript
 const orchestrator = new AutomationOrchestrator({
-  enabled: true,           // Enable/disable entire system
-  autoTrigger: true,       // Automatically trigger on file detection
-  failFast: false,         // Stop on first error
-  enableHooks: true,       // Run pre/post hooks
-  enableValidation: true,  // Validate after integration
-  enableSwarm: true        // Use Claude-Flow swarm
+  enabled: true, // Enable/disable entire system
+  autoTrigger: true, // Automatically trigger on file detection
+  failFast: false, // Stop on first error
+  enableHooks: true, // Run pre/post hooks
+  enableValidation: true, // Validate after integration
+  enableSwarm: true, // Use Claude-Flow swarm
 });
 ```
 
@@ -279,7 +282,7 @@ const result = await orchestrator.integrateAgent({
   type: 'optimizer',
   path: './src/my-agent/agent.ts',
   className: 'MyAgent',
-  capabilities: ['optimize']
+  capabilities: ['optimize'],
 });
 
 if (result.success) {
@@ -436,6 +439,7 @@ node src/agent-swarm/cli/agent-swarm-cli.ts status
 ```
 
 Output:
+
 ```
 System Status:
   Running: YES
@@ -515,6 +519,7 @@ npm test tests/agent-swarm/automation.test.ts
 ```
 
 Test coverage includes:
+
 - ✅ Trigger system
 - ✅ Swarm initialization
 - ✅ Integration pipeline (all 7 steps)
@@ -531,16 +536,19 @@ Test coverage includes:
 ### Integration Fails
 
 1. Check system status:
+
    ```bash
    agent-swarm status
    ```
 
 2. Review recent integrations:
+
    ```bash
    agent-swarm list
    ```
 
 3. Export detailed report:
+
    ```bash
    agent-swarm report debug-report.json
    ```
@@ -552,7 +560,8 @@ Test coverage includes:
 
 ### Validation Errors
 
-If validation fails, check the detailed report in the console output. Common issues:
+If validation fails, check the detailed report in the console output. Common
+issues:
 
 - **Import not found**: Verify all import paths are correct
 - **Agent not documented**: Add agent to README.md
@@ -562,11 +571,13 @@ If validation fails, check the detailed report in the console output. Common iss
 ### Git Hook Not Running
 
 1. Verify installation:
+
    ```bash
    ls -la .git/hooks/pre-commit
    ```
 
 2. Check executable permission:
+
    ```bash
    chmod +x .git/hooks/pre-commit
    ```
@@ -580,14 +591,14 @@ If validation fails, check the detailed report in the console output. Common iss
 
 ## 📈 Performance
 
-| Metric | Performance |
-|--------|-------------|
-| **Detection Time** | <500ms |
+| Metric                   | Performance |
+| ------------------------ | ----------- |
+| **Detection Time**       | <500ms      |
 | **Integration Pipeline** | 2-4 seconds |
-| **Validation** | 500-1000ms |
+| **Validation**           | 500-1000ms  |
 | **Total (Single Agent)** | 3-6 seconds |
-| **Memory Usage** | <50MB |
-| **Concurrent Agents** | Up to 10 |
+| **Memory Usage**         | <50MB       |
+| **Concurrent Agents**    | Up to 10    |
 
 ---
 
@@ -609,10 +620,7 @@ If validation fails, check the detailed report in the console output. Common iss
 ```json
 {
   "detection": {
-    "watchPaths": [
-      "custom/path/**/*-agent.ts",
-      "agents/**/*.agent.ts"
-    ]
+    "watchPaths": ["custom/path/**/*-agent.ts", "agents/**/*.agent.ts"]
   }
 }
 ```
@@ -631,7 +639,7 @@ If validation fails, check the detailed report in the console output. Common iss
 
 ```typescript
 const orchestrator = new AutomationOrchestrator({
-  failFast: true  // Stop on first error
+  failFast: true, // Stop on first error
 });
 ```
 
@@ -644,23 +652,23 @@ const orchestrator = new AutomationOrchestrator({
 ```typescript
 class AutomationOrchestrator {
   // Start/stop
-  async start(): Promise<void>
-  async stop(): Promise<void>
+  async start(): Promise<void>;
+  async stop(): Promise<void>;
 
   // Integration
-  async integrateAgent(agentInfo: AgentInfo): Promise<OrchestrationResult>
+  async integrateAgent(agentInfo: AgentInfo): Promise<OrchestrationResult>;
 
   // Status & Stats
-  getStatus(): SystemStatus
-  getStatistics(): Statistics
+  getStatus(): SystemStatus;
+  getStatistics(): Statistics;
 
   // Configuration
-  setEnabled(enabled: boolean): void
-  setAutoTrigger(autoTrigger: boolean): void
+  setEnabled(enabled: boolean): void;
+  setAutoTrigger(autoTrigger: boolean): void;
 
   // History
-  clearHistory(): void
-  exportReport(path?: string): string
+  clearHistory(): void;
+  exportReport(path?: string): string;
 }
 ```
 
@@ -668,11 +676,11 @@ class AutomationOrchestrator {
 
 ```typescript
 interface AgentInfo {
-  name: string;              // Agent name (kebab-case)
-  type: string;              // optimizer, coordinator, validator, etc.
-  path: string;              // Full file path
-  className?: string;        // Class name
-  capabilities?: string[];   // Agent capabilities
+  name: string; // Agent name (kebab-case)
+  type: string; // optimizer, coordinator, validator, etc.
+  path: string; // Full file path
+  className?: string; // Class name
+  capabilities?: string[]; // Agent capabilities
   metadata?: Record<string, any>;
 }
 ```
@@ -683,15 +691,10 @@ interface AgentInfo {
 
 A successful integration produces:
 
-✅ Agent registered in `.claude/agents.json`
-✅ Package.json updated with keywords
-✅ Documentation marked for update
-✅ Integration code templates created
-✅ Test file template generated
-✅ All cross-references validated
-✅ Zero validation errors
-✅ Metrics updated
-✅ Notifications sent
+✅ Agent registered in `.claude/agents.json` ✅ Package.json updated with
+keywords ✅ Documentation marked for update ✅ Integration code templates
+created ✅ Test file template generated ✅ All cross-references validated ✅
+Zero validation errors ✅ Metrics updated ✅ Notifications sent
 
 ---
 

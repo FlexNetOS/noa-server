@@ -1,12 +1,12 @@
 import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
 
 import {
-    GCPConfig,
-    ISecretProvider,
-    ProviderError,
-    Secret,
-    SecretMetadata,
-    SecretNotFoundError,
+  GCPConfig,
+  ISecretProvider,
+  ProviderError,
+  Secret,
+  SecretMetadata,
+  SecretNotFoundError,
 } from '../types';
 
 /**

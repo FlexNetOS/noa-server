@@ -23,17 +23,17 @@ describe('HealthCheckMonitor', () => {
               url: 'http://localhost:8001/health',
               method: 'GET',
               expectedStatus: 200,
-              critical: true
-            }
-          ]
+              critical: true,
+            },
+          ],
         },
         alerting: {
           enabled: true,
           channels: {
             console: { enabled: true },
-            file: { enabled: false }
+            file: { enabled: false },
           },
-          rules: []
+          rules: [],
         },
         selfHealing: {
           enabled: true,
@@ -41,11 +41,11 @@ describe('HealthCheckMonitor', () => {
           strategies: {
             serviceRestart: {
               enabled: true,
-              cooldown: 30000
-            }
-          }
-        }
-      }
+              cooldown: 30000,
+            },
+          },
+        },
+      },
     };
 
     monitor = new HealthCheckMonitor(mockConfig);
@@ -65,7 +65,7 @@ describe('HealthCheckMonitor', () => {
         url: 'http://example.com/health',
         method: 'GET',
         expectedStatus: 200,
-        critical: false
+        critical: false,
       };
 
       // Test would require mocking HTTP requests
@@ -79,7 +79,7 @@ describe('HealthCheckMonitor', () => {
         url: 'http://example.com/slow',
         method: 'GET',
         expectedStatus: 200,
-        critical: false
+        critical: false,
       };
 
       // Test timeout handling
@@ -99,12 +99,12 @@ describe('HealthCheckMonitor', () => {
     it('should trigger healing when failures exceed threshold', async () => {
       const endpoint = {
         name: 'test-service',
-        critical: true
+        critical: true,
       };
 
       const result = {
         status: 'unhealthy',
-        error: 'Connection refused'
+        error: 'Connection refused',
       };
 
       // Set failure count above threshold

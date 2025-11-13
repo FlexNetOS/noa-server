@@ -113,7 +113,7 @@ export function AlertsPanel({ systemHealth }: AlertsPanelProps) {
       case 'critical':
       case 'error':
         return (
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
             <path
               fillRule="evenodd"
               d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
@@ -123,7 +123,7 @@ export function AlertsPanel({ systemHealth }: AlertsPanelProps) {
         );
       case 'warning':
         return (
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
             <path
               fillRule="evenodd"
               d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
@@ -133,7 +133,7 @@ export function AlertsPanel({ systemHealth }: AlertsPanelProps) {
         );
       default:
         return (
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
             <path
               fillRule="evenodd"
               d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
@@ -149,11 +149,11 @@ export function AlertsPanel({ systemHealth }: AlertsPanelProps) {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+    <div className="rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+      <div className="border-b border-gray-200 p-6 dark:border-gray-700">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Active Alerts</h2>
-          <span className="px-3 py-1 text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full">
+          <span className="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-300">
             {alerts.length} Active
           </span>
         </div>
@@ -161,7 +161,7 @@ export function AlertsPanel({ systemHealth }: AlertsPanelProps) {
 
       <div className="p-6">
         {alerts.length === 0 ? (
-          <div className="text-center py-8">
+          <div className="py-8 text-center">
             <svg
               className="mx-auto h-12 w-12 text-green-500"
               fill="none"
@@ -191,20 +191,20 @@ export function AlertsPanel({ systemHealth }: AlertsPanelProps) {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
-                  className={`p-4 rounded-lg border-2 ${getSeverityColor(alert.severity)}`}
+                  className={`rounded-lg border-2 p-4 ${getSeverityColor(alert.severity)}`}
                 >
                   <div className="flex items-start gap-3">
-                    <div className="flex-none mt-0.5">{getSeverityIcon(alert.severity)}</div>
+                    <div className="mt-0.5 flex-none">{getSeverityIcon(alert.severity)}</div>
 
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-2 mb-1">
-                        <h4 className="font-semibold text-sm">{alert.title}</h4>
-                        <span className="text-xs opacity-75 flex-none">
+                    <div className="min-w-0 flex-1">
+                      <div className="mb-1 flex items-start justify-between gap-2">
+                        <h4 className="text-sm font-semibold">{alert.title}</h4>
+                        <span className="flex-none text-xs opacity-75">
                           {format(new Date(alert.timestamp), 'p')}
                         </span>
                       </div>
 
-                      <p className="text-sm opacity-90 mb-2">{alert.message}</p>
+                      <p className="mb-2 text-sm opacity-90">{alert.message}</p>
 
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3 text-xs opacity-75">
@@ -215,7 +215,7 @@ export function AlertsPanel({ systemHealth }: AlertsPanelProps) {
 
                         <button
                           onClick={() => handleResolve(alert.id)}
-                          className="text-xs font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-offset-2 rounded px-2 py-1"
+                          className="rounded px-2 py-1 text-xs font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-offset-2"
                         >
                           Resolve
                         </button>

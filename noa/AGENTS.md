@@ -1,14 +1,17 @@
 # AGENTS Instructions
 
-This repository is a monorepo. Each library lives in a subdirectory under `libs/`.
+This repository is a monorepo. Each library lives in a subdirectory under
+`libs/`.
 
-When you modify code in any library, run the following commands in that library's directory before creating a pull request:
+When you modify code in any library, run the following commands in that
+library's directory before creating a pull request:
 
 - `make format` – run code formatters
 - `make lint` – run the linter
 - `make test` – execute the test suite
 
-To run a particular test file or to pass additional pytest options you can specify the `TEST` variable:
+To run a particular test file or to pass additional pytest options you can
+specify the `TEST` variable:
 
 ```
 TEST=path/to/test.py make test

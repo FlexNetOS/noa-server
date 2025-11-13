@@ -1,6 +1,7 @@
 # Horizontal Scaling Guide for Noa Server
 
 ## Table of Contents
+
 1. [Overview](#overview)
 2. [Scaling Strategies](#scaling-strategies)
 3. [Kubernetes HPA Configuration](#kubernetes-hpa-configuration)
@@ -14,7 +15,9 @@
 
 ## Overview
 
-Horizontal scaling allows Noa Server to handle increased load by adding more instances rather than increasing the resources of existing instances. This guide covers both Kubernetes and AWS-based horizontal scaling implementations.
+Horizontal scaling allows Noa Server to handle increased load by adding more
+instances rather than increasing the resources of existing instances. This guide
+covers both Kubernetes and AWS-based horizontal scaling implementations.
 
 ### Benefits of Horizontal Scaling
 
@@ -73,16 +76,19 @@ Pre-defined scaling schedule:
 ### Basic Setup
 
 1. **Deploy metrics-server**:
+
 ```bash
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 ```
 
 2. **Apply HPA configuration**:
+
 ```bash
 kubectl apply -f k8s/scaling/hpa/noa-server-hpa.yaml
 ```
 
 3. **Verify HPA**:
+
 ```bash
 kubectl get hpa -n noa-system
 kubectl describe hpa noa-server-hpa -n noa-system
@@ -102,13 +108,13 @@ Configure custom metrics in HPA:
 
 ```yaml
 metrics:
-- type: Pods
-  pods:
-    metric:
-      name: http_requests_per_second
-    target:
-      type: AverageValue
-      averageValue: "1000"
+  - type: Pods
+    pods:
+      metric:
+        name: http_requests_per_second
+      target:
+        type: AverageValue
+        averageValue: '1000'
 ```
 
 ### Testing HPA
@@ -129,11 +135,13 @@ kubectl get hpa -n noa-system --watch
 ### NGINX Ingress Controller
 
 1. **Install NGINX Ingress**:
+
 ```bash
 kubectl apply -f k8s/scaling/ingress/nginx-ingress.yaml
 ```
 
 2. **Configure SSL/TLS**:
+
 ```bash
 # Install cert-manager
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.0/cert-manager.yaml
@@ -143,6 +151,7 @@ kubectl apply -f k8s/cert-manager/cluster-issuer.yaml
 ```
 
 3. **Verify ingress**:
+
 ```bash
 kubectl get ingress -n noa-system
 kubectl describe ingress noa-server-ingress -n noa-system
@@ -157,6 +166,7 @@ kubectl apply -f k8s/scaling/ingress/haproxy-config.yaml
 ```
 
 HAProxy provides:
+
 - Multiple load balancing algorithms
 - Advanced health checking
 - Connection pooling
@@ -165,6 +175,7 @@ HAProxy provides:
 ### Load Balancing Algorithms
 
 #### Round Robin
+
 Distributes requests evenly across all instances.
 
 ```nginx
@@ -176,6 +187,7 @@ upstream backend {
 ```
 
 #### Least Connections
+
 Routes to instance with fewest active connections.
 
 ```nginx
@@ -187,6 +199,7 @@ upstream backend {
 ```
 
 #### IP Hash
+
 Ensures requests from same IP go to same instance (sticky sessions).
 
 ```nginx
@@ -202,17 +215,20 @@ upstream backend {
 ### Terraform Deployment
 
 1. **Initialize Terraform**:
+
 ```bash
 cd terraform/scaling
 terraform init
 ```
 
 2. **Plan deployment**:
+
 ```bash
 terraform plan -var-file=production.tfvars
 ```
 
 3. **Apply configuration**:
+
 ```bash
 terraform apply -var-file=production.tfvars
 ```
@@ -279,6 +295,7 @@ step_adjustment {
    - CPU at capacity: 80%
 
 2. **Calculate total capacity needed**:
+
    ```
    Peak traffic: 10,000 req/s
    Required instances: 10,000 / 500 = 20 instances
@@ -287,9 +304,9 @@ step_adjustment {
 
 3. **Set scaling parameters**:
    ```yaml
-   minReplicas: 5    # Handle minimum load
-   maxReplicas: 30   # Handle peak + buffer
-   targetCPU: 70%    # Scale before saturation
+   minReplicas: 5 # Handle minimum load
+   maxReplicas: 30 # Handle peak + buffer
+   targetCPU: 70% # Scale before saturation
    ```
 
 ### Load Testing
@@ -302,15 +319,15 @@ import { check, sleep } from 'k6';
 
 export let options = {
   stages: [
-    { duration: '2m', target: 100 },   // Ramp up
-    { duration: '5m', target: 100 },   // Stay at 100 users
-    { duration: '2m', target: 500 },   // Spike to 500
-    { duration: '5m', target: 500 },   // Stay at 500
-    { duration: '2m', target: 0 },     // Ramp down
+    { duration: '2m', target: 100 }, // Ramp up
+    { duration: '5m', target: 100 }, // Stay at 100 users
+    { duration: '2m', target: 500 }, // Spike to 500
+    { duration: '5m', target: 500 }, // Stay at 500
+    { duration: '2m', target: 0 }, // Ramp down
   ],
   thresholds: {
-    http_req_duration: ['p(95)<500'],  // 95% requests < 500ms
-    http_req_failed: ['rate<0.01'],    // < 1% errors
+    http_req_duration: ['p(95)<500'], // 95% requests < 500ms
+    http_req_failed: ['rate<0.01'], // < 1% errors
   },
 };
 
@@ -325,6 +342,7 @@ export default function () {
 ```
 
 Run test:
+
 ```bash
 k6 run --vus 100 --duration 30s load-test.js
 ```
@@ -334,16 +352,19 @@ k6 run --vus 100 --duration 30s load-test.js
 ### Benchmarking Tools
 
 1. **Apache Bench**:
+
 ```bash
 ab -n 10000 -c 100 https://noa-server.io/api/test
 ```
 
 2. **wrk**:
+
 ```bash
 wrk -t12 -c400 -d30s https://noa-server.io/api/test
 ```
 
 3. **Artillery**:
+
 ```yaml
 config:
   target: 'https://noa-server.io'
@@ -353,20 +374,20 @@ config:
 scenarios:
   - flow:
       - get:
-          url: "/api/test"
+          url: '/api/test'
 ```
 
 ### Performance Metrics
 
 Monitor these key metrics:
 
-| Metric | Target | Alert Threshold |
-|--------|--------|----------------|
-| Response time (P95) | < 500ms | > 1000ms |
-| Error rate | < 0.1% | > 1% |
-| CPU utilization | 50-70% | > 85% |
-| Memory usage | 50-70% | > 85% |
-| Request rate | - | Monitor trends |
+| Metric              | Target  | Alert Threshold |
+| ------------------- | ------- | --------------- |
+| Response time (P95) | < 500ms | > 1000ms        |
+| Error rate          | < 0.1%  | > 1%            |
+| CPU utilization     | 50-70%  | > 85%           |
+| Memory usage        | 50-70%  | > 85%           |
+| Request rate        | -       | Monitor trends  |
 
 ## Cost Optimization
 
@@ -388,8 +409,8 @@ Monitor these key metrics:
 4. **Optimize scaling policies**:
    ```yaml
    scaleDown:
-     stabilizationWindowSeconds: 300  # Wait 5 minutes
-     policy: Min                       # Conservative scaling
+     stabilizationWindowSeconds: 300 # Wait 5 minutes
+     policy: Min # Conservative scaling
    ```
 
 ### Cost Monitoring
@@ -448,19 +469,23 @@ rate(kube_horizontalpodautoscaler_status_current_replicas[5m])
 
 ```yaml
 groups:
-- name: scaling-alerts
-  rules:
-  - alert: HighErrorRate
-    expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
-    for: 5m
-    annotations:
-      summary: "High error rate detected"
+  - name: scaling-alerts
+    rules:
+      - alert: HighErrorRate
+        expr:
+          rate(http_requests_total{status=~"5.."}[5m]) /
+          rate(http_requests_total[5m]) > 0.05
+        for: 5m
+        annotations:
+          summary: 'High error rate detected'
 
-  - alert: SlowResponseTime
-    expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
-    for: 5m
-    annotations:
-      summary: "Slow response time detected"
+      - alert: SlowResponseTime
+        expr:
+          histogram_quantile(0.95,
+          rate(http_request_duration_seconds_bucket[5m])) > 1
+        for: 5m
+        annotations:
+          summary: 'Slow response time detected'
 ```
 
 ## Troubleshooting
@@ -470,10 +495,12 @@ groups:
 #### 1. Instances Not Scaling
 
 **Symptoms**:
+
 - HPA shows "unknown" metrics
 - Replicas stay at minimum
 
 **Solutions**:
+
 ```bash
 # Check metrics-server
 kubectl get apiservice v1beta1.metrics.k8s.io
@@ -486,10 +513,12 @@ kubectl get deployment noa-server -n noa-system -o yaml | grep -A 5 resources
 #### 2. Rapid Scaling (Flapping)
 
 **Symptoms**:
+
 - Frequent scale up/down events
 - Unstable replica count
 
 **Solutions**:
+
 ```yaml
 behavior:
   scaleUp:
@@ -501,28 +530,32 @@ behavior:
 #### 3. Health Check Failures
 
 **Symptoms**:
+
 - New instances terminated immediately
 - Load balancer shows unhealthy targets
 
 **Solutions**:
+
 ```yaml
 readinessProbe:
   httpGet:
     path: /health
     port: 3000
-  initialDelaySeconds: 30  # Increase startup time
+  initialDelaySeconds: 30 # Increase startup time
   periodSeconds: 10
   timeoutSeconds: 5
-  successThreshold: 2      # Require 2 successful checks
+  successThreshold: 2 # Require 2 successful checks
 ```
 
 #### 4. Uneven Load Distribution
 
 **Symptoms**:
+
 - Some instances overloaded while others idle
 - Inconsistent response times
 
 **Solutions**:
+
 - Enable session affinity/sticky sessions
 - Adjust load balancing algorithm
 - Check for connection pooling issues
@@ -565,6 +598,4 @@ aws cloudwatch get-metric-statistics --namespace AWS/EC2 --metric-name CPUUtiliz
 
 ---
 
-**Last Updated**: 2025-10-22
-**Version**: 1.0.0
-**Maintainer**: DevOps Team
+**Last Updated**: 2025-10-22 **Version**: 1.0.0 **Maintainer**: DevOps Team

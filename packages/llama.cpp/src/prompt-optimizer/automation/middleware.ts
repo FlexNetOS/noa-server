@@ -24,7 +24,7 @@ export function mandatoryPromptOptimizer(options: MiddlewareOptions = {}) {
     promptField = 'prompt',
     logRequests = true,
     attachMetrics = true,
-    onError = 'passthrough'
+    onError = 'passthrough',
   } = options;
 
   const logger = AutomationLogger.getInstance();
@@ -48,7 +48,7 @@ export function mandatoryPromptOptimizer(options: MiddlewareOptions = {}) {
         logger.info('Intercepting API request', {
           path: req.path,
           method: req.method,
-          promptLength: prompt.length
+          promptLength: prompt.length,
         });
       }
 
@@ -56,7 +56,7 @@ export function mandatoryPromptOptimizer(options: MiddlewareOptions = {}) {
       const result = await mandatoryOptimizer.intercept(prompt, {
         path: req.path,
         method: req.method,
-        headers: req.headers
+        headers: req.headers,
       });
 
       // Replace prompt in request body
@@ -69,20 +69,19 @@ export function mandatoryPromptOptimizer(options: MiddlewareOptions = {}) {
             bypassed: result.bypassed,
             cached: result.cached,
             processingTime: result.processingTime,
-            qualityScore: result.qualityScore
+            qualityScore: result.qualityScore,
           };
         }
       }
 
       next();
-
     } catch (error) {
       logger.error('Middleware optimization failed', error);
 
       if (onError === 'reject') {
         return res.status(500).json({
           error: 'Prompt optimization failed',
-          message: error instanceof Error ? error.message : 'Unknown error'
+          message: error instanceof Error ? error.message : 'Unknown error',
         });
       }
 

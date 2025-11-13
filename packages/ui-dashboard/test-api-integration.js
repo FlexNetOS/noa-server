@@ -11,7 +11,7 @@ async function testAPIIntegration() {
       swarmMetrics: telemetry.swarmMetrics,
       systemHealth: telemetry.systemHealth,
       agentsCount: telemetry.agents.length,
-      tasksCount: telemetry.taskQueue.length
+      tasksCount: telemetry.taskQueue.length,
     });
 
     console.log('Fetching agents...');

@@ -44,11 +44,7 @@
     "doc-updater": {
       "enabled": true,
       "priority": "high",
-      "files": [
-        "README.md",
-        "CLAUDE.md",
-        "docs/**/*.md"
-      ]
+      "files": ["README.md", "CLAUDE.md", "docs/**/*.md"]
     },
     "code-updater": {
       "enabled": true,

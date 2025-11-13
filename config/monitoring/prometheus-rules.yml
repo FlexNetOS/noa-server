@@ -19,10 +19,10 @@ groups:
           component: api
           metric: latency
         annotations:
-          summary: "API latency exceeds 100ms"
-          description: "95th percentile API response time is {{ $value }}s (threshold: 0.1s)"
-          dashboard: "https://grafana.example.com/d/api-performance"
-          runbook: "https://docs.example.com/runbooks/high-latency"
+          summary: 'API latency exceeds 100ms'
+          description: '95th percentile API response time is {{ $value }}s (threshold: 0.1s)'
+          dashboard: 'https://grafana.example.com/d/api-performance'
+          runbook: 'https://docs.example.com/runbooks/high-latency'
 
       - alert: CriticalAPILatency
         expr: |
@@ -35,9 +35,9 @@ groups:
           component: api
           metric: latency
         annotations:
-          summary: "API latency critically high"
-          description: "95th percentile API response time is {{ $value }}s (critical threshold: 0.5s)"
-          action: "Immediate investigation required"
+          summary: 'API latency critically high'
+          description: '95th percentile API response time is {{ $value }}s (critical threshold: 0.5s)'
+          action: 'Immediate investigation required'
 
       - alert: SlowDatabaseQueries
         expr: |
@@ -49,8 +49,8 @@ groups:
           severity: warning
           component: database
         annotations:
-          summary: "Database queries are slow"
-          description: "95th percentile query time is {{ $value }}s"
+          summary: 'Database queries are slow'
+          description: '95th percentile query time is {{ $value }}s'
 
   # ===================================
   # UPTIME & AVAILABILITY ALERTS
@@ -65,9 +65,9 @@ groups:
           severity: critical
           component: infrastructure
         annotations:
-          summary: "Service {{ $labels.job }} is down"
-          description: "{{ $labels.job }} has been down for more than 2 minutes"
-          action: "Immediate investigation and recovery required"
+          summary: 'Service {{ $labels.job }} is down'
+          description: '{{ $labels.job }} has been down for more than 2 minutes'
+          action: 'Immediate investigation and recovery required'
 
       - alert: HighErrorRate
         expr: |
@@ -80,9 +80,9 @@ groups:
           component: api
           metric: error_rate
         annotations:
-          summary: "High error rate detected"
-          description: "Error rate is {{ $value | humanizePercentage }} (threshold: 5%)"
-          impact: "Uptime SLA of 99.9% at risk"
+          summary: 'High error rate detected'
+          description: 'Error rate is {{ $value | humanizePercentage }} (threshold: 5%)'
+          impact: 'Uptime SLA of 99.9% at risk'
 
       - alert: UptimeSLAAtRisk
         expr: |
@@ -94,8 +94,8 @@ groups:
           severity: warning
           component: sla
         annotations:
-          summary: "Uptime SLA at risk"
-          description: "Current uptime: {{ $value | humanizePercentage }} (target: 99.9%)"
+          summary: 'Uptime SLA at risk'
+          description: 'Current uptime: {{ $value | humanizePercentage }} (target: 99.9%)'
 
   # ===================================
   # RESOURCE UTILIZATION ALERTS
@@ -111,8 +111,8 @@ groups:
           severity: warning
           component: infrastructure
         annotations:
-          summary: "High CPU usage on {{ $labels.instance }}"
-          description: "CPU usage is {{ $value }}% (threshold: 80%)"
+          summary: 'High CPU usage on {{ $labels.instance }}'
+          description: 'CPU usage is {{ $value }}% (threshold: 80%)'
 
       - alert: CriticalCPUUsage
         expr: |
@@ -122,9 +122,9 @@ groups:
           severity: critical
           component: infrastructure
         annotations:
-          summary: "Critical CPU usage on {{ $labels.instance }}"
-          description: "CPU usage is {{ $value }}% (threshold: 95%)"
-          action: "Scale up or investigate resource-intensive processes"
+          summary: 'Critical CPU usage on {{ $labels.instance }}'
+          description: 'CPU usage is {{ $value }}% (threshold: 95%)'
+          action: 'Scale up or investigate resource-intensive processes'
 
       - alert: HighMemoryUsage
         expr: |
@@ -134,8 +134,8 @@ groups:
           severity: warning
           component: infrastructure
         annotations:
-          summary: "High memory usage on {{ $labels.instance }}"
-          description: "Memory usage is {{ $value }}%"
+          summary: 'High memory usage on {{ $labels.instance }}'
+          description: 'Memory usage is {{ $value }}%'
 
       - alert: DiskSpaceLow
         expr: |
@@ -147,8 +147,8 @@ groups:
           severity: warning
           component: infrastructure
         annotations:
-          summary: "Low disk space on {{ $labels.instance }}"
-          description: "Available disk space: {{ $value }}%"
+          summary: 'Low disk space on {{ $labels.instance }}'
+          description: 'Available disk space: {{ $value }}%'
 
   # ===================================
   # SECURITY ALERTS
@@ -164,9 +164,9 @@ groups:
           severity: warning
           component: security
         annotations:
-          summary: "High number of unauthorized access attempts"
-          description: "{{ $value }} unauthorized requests per second on {{ $labels.job }}"
-          action: "Review security logs and consider rate limiting"
+          summary: 'High number of unauthorized access attempts'
+          description: '{{ $value }} unauthorized requests per second on {{ $labels.job }}'
+          action: 'Review security logs and consider rate limiting'
 
       - alert: SSLCertificateExpiringSoon
         expr: |
@@ -176,9 +176,9 @@ groups:
           severity: warning
           component: security
         annotations:
-          summary: "SSL certificate expiring soon"
-          description: "Certificate for {{ $labels.instance }} expires in {{ $value | humanizeDuration }}"
-          action: "Renew SSL certificate"
+          summary: 'SSL certificate expiring soon'
+          description: 'Certificate for {{ $labels.instance }} expires in {{ $value | humanizeDuration }}'
+          action: 'Renew SSL certificate'
 
       - alert: TooManyFailedLogins
         expr: |
@@ -188,8 +188,8 @@ groups:
           severity: warning
           component: security
         annotations:
-          summary: "High number of failed login attempts"
-          description: "{{ $value }} failed logins per second"
+          summary: 'High number of failed login attempts'
+          description: '{{ $value }} failed logins per second'
 
   # ===================================
   # APPLICATION HEALTH ALERTS
@@ -205,9 +205,9 @@ groups:
           severity: critical
           component: health
         annotations:
-          summary: "Health check failing for {{ $labels.instance }}"
-          description: "Health endpoint is not responding"
-          action: "Investigate service health immediately"
+          summary: 'Health check failing for {{ $labels.instance }}'
+          description: 'Health endpoint is not responding'
+          action: 'Investigate service health immediately'
 
       - alert: HighRequestQueueDepth
         expr: |
@@ -217,9 +217,9 @@ groups:
           severity: warning
           component: api
         annotations:
-          summary: "High request queue depth"
-          description: "Queue depth: {{ $value }} requests"
-          action: "Consider scaling up or investigating slow processing"
+          summary: 'High request queue depth'
+          description: 'Queue depth: {{ $value }} requests'
+          action: 'Consider scaling up or investigating slow processing'
 
       - alert: DatabaseConnectionPoolExhausted
         expr: |
@@ -229,8 +229,8 @@ groups:
           severity: warning
           component: database
         annotations:
-          summary: "Database connection pool nearly exhausted"
-          description: "Using {{ $value | humanizePercentage }} of connection pool"
+          summary: 'Database connection pool nearly exhausted'
+          description: 'Using {{ $value | humanizePercentage }} of connection pool'
 
   # ===================================
   # BUSINESS METRICS ALERTS
@@ -246,9 +246,9 @@ groups:
           severity: warning
           component: business
         annotations:
-          summary: "Unusually low request throughput"
-          description: "Request rate: {{ $value }} req/s"
-          action: "Investigate if traffic drop is expected"
+          summary: 'Unusually low request throughput'
+          description: 'Request rate: {{ $value }} req/s'
+          action: 'Investigate if traffic drop is expected'
 
       - alert: AbnormalTrafficSpike
         expr: |
@@ -260,9 +260,9 @@ groups:
           severity: warning
           component: business
         annotations:
-          summary: "Abnormal traffic spike detected"
-          description: "Traffic is {{ $value }}x higher than normal"
-          action: "Verify if spike is legitimate or potential attack"
+          summary: 'Abnormal traffic spike detected'
+          description: 'Traffic is {{ $value }}x higher than normal'
+          action: 'Verify if spike is legitimate or potential attack'
 
   # ===================================
   # DEPLOYMENT & ROLLBACK ALERTS
@@ -284,9 +284,9 @@ groups:
           severity: critical
           component: deployment
         annotations:
-          summary: "Error rate increased after deployment"
-          description: "Error rate is {{ $value }}x higher than before deployment"
-          action: "Consider rollback"
+          summary: 'Error rate increased after deployment'
+          description: 'Error rate is {{ $value }}x higher than before deployment'
+          action: 'Consider rollback'
 
       - alert: PodCrashLooping
         expr: |
@@ -296,5 +296,5 @@ groups:
           severity: warning
           component: kubernetes
         annotations:
-          summary: "Pod {{ $labels.pod }} is crash looping"
-          description: "Pod has restarted {{ $value }} times in the last 15 minutes"
+          summary: 'Pod {{ $labels.pod }} is crash looping'
+          description: 'Pod has restarted {{ $value }} times in the last 15 minutes'

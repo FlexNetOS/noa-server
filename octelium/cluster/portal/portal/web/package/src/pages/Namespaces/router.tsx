@@ -1,14 +1,14 @@
-import { RouteObject } from "react-router-dom";
-import Root from "./index";
-import List from "./List";
+import { RouteObject } from 'react-router-dom';
+import Root from './index';
+import List from './List';
 
 export default (): RouteObject => {
   return {
-    path: "namespaces",
+    path: 'namespaces',
     element: <Root />,
     children: [
       {
-        path: "",
+        path: '',
         element: <List />,
       },
     ],

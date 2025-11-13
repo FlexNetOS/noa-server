@@ -6,13 +6,13 @@ on:
       working-directory:
         required: true
         type: string
-        default: "libs/langgraph"
+        default: 'libs/langgraph'
 
 permissions:
   contents: read
 
 env:
-  PYTHON_VERSION: "3.11"
+  PYTHON_VERSION: '3.11'
 
 jobs:
   build:
@@ -33,7 +33,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
-          cache-suffix: "release"
+          cache-suffix: 'release'
 
       # We want to keep this build stage *separate* from the release stage,
       # so that there's no sharing of permissions between them.
@@ -268,7 +268,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
-          cache-suffix: "release"
+          cache-suffix: 'release'
 
       - uses: actions/download-artifact@v5
         with:
@@ -309,7 +309,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
-          cache-suffix: "release"
+          cache-suffix: 'release'
 
       - uses: actions/download-artifact@v5
         with:
@@ -319,7 +319,7 @@ jobs:
       - name: Create Tag
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "dist/*"
+          artifacts: 'dist/*'
           token: ${{ secrets.GITHUB_TOKEN }}
           generateReleaseNotes: false
           tag: ${{needs.build.outputs.tag}}

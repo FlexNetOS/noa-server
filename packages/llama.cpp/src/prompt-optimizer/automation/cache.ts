@@ -65,7 +65,7 @@ export class PromptCache {
     this.cache.set(key, {
       value: optimized,
       timestamp: Date.now(),
-      hits: 0
+      hits: 0,
     });
   }
 
@@ -111,7 +111,7 @@ export class PromptCache {
     let hash = 0;
     for (let i = 0; i < prompt.length; i++) {
       const char = prompt.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32bit integer
     }
     return hash.toString(36);
@@ -137,7 +137,7 @@ export class PromptCache {
       totalHits,
       hitRate: totalHits / Math.max(this.cache.size, 1),
       oldestEntry: oldestEntry === Infinity ? null : new Date(oldestEntry),
-      newestEntry: newestEntry === 0 ? null : new Date(newestEntry)
+      newestEntry: newestEntry === 0 ? null : new Date(newestEntry),
     };
   }
 

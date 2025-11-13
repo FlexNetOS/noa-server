@@ -15,7 +15,8 @@ Complete guide to authentication and authorization in the Noa Server API.
 
 ## Overview
 
-Noa Server API uses **JWT (JSON Web Tokens)** for authentication with support for:
+Noa Server API uses **JWT (JSON Web Tokens)** for authentication with support
+for:
 
 - Email/password authentication
 - Multi-factor authentication (MFA)
@@ -62,6 +63,7 @@ curl -X POST https://api.noa-server.io/v1/auth/register \
 ```
 
 **Password Requirements**:
+
 - Minimum 8 characters
 - At least one uppercase letter
 - At least one lowercase letter
@@ -69,6 +71,7 @@ curl -X POST https://api.noa-server.io/v1/auth/register \
 - At least one special character
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -99,12 +102,13 @@ curl -X POST https://api.noa-server.io/v1/auth/login \
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
   "data": {
-  "accessToken": "YOUR_ACCESS_TOKEN",
-  "refreshToken": "YOUR_REFRESH_TOKEN",
+    "accessToken": "YOUR_ACCESS_TOKEN",
+    "refreshToken": "YOUR_REFRESH_TOKEN",
     "tokenType": "Bearer",
     "expiresIn": 3600,
     "user": {
@@ -159,12 +163,13 @@ curl -X POST https://api.noa-server.io/v1/auth/refresh \
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
   "data": {
-  "accessToken": "YOUR_ACCESS_TOKEN",
-  "refreshToken": "YOUR_REFRESH_TOKEN",
+    "accessToken": "YOUR_ACCESS_TOKEN",
+    "refreshToken": "YOUR_REFRESH_TOKEN",
     "tokenType": "Bearer",
     "expiresIn": 3600
   }
@@ -203,7 +208,7 @@ class TokenManager {
     const response = await fetch('/auth/refresh', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refreshToken })
+      body: JSON.stringify({ refreshToken }),
     });
 
     const data = await response.json();
@@ -256,17 +261,14 @@ curl -X POST https://api.noa-server.io/v1/auth/mfa/setup \
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
   "data": {
     "secret": "JBSWY3DPEHPK3PXP",
     "qrCode": "data:image/png;base64,iVBORw0KGgoAAAANS...",
-    "backupCodes": [
-      "ABC123DEF456",
-      "GHI789JKL012",
-      "MNO345PQR678"
-    ]
+    "backupCodes": ["ABC123DEF456", "GHI789JKL012", "MNO345PQR678"]
   }
 }
 ```
@@ -360,12 +362,12 @@ curl -X POST https://api.noa-server.io/v1/auth/password/reset/confirm \
 
 ### User Roles
 
-| Role | Description | Permissions |
-|------|-------------|-------------|
-| `admin` | Full system access | All operations |
-| `user` | Standard user | Own resources + workflows |
-| `agent` | AI agent account | Execute tasks only |
-| `viewer` | Read-only access | View resources only |
+| Role     | Description        | Permissions               |
+| -------- | ------------------ | ------------------------- |
+| `admin`  | Full system access | All operations            |
+| `user`   | Standard user      | Own resources + workflows |
+| `agent`  | AI agent account   | Execute tasks only        |
+| `viewer` | Read-only access   | View resources only       |
 
 ### Checking Permissions
 
@@ -377,6 +379,7 @@ curl -X GET https://api.noa-server.io/v1/users/me/permissions \
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -395,6 +398,7 @@ curl -X GET https://api.noa-server.io/v1/users/me/permissions \
 Permissions use the format: `resource:action`
 
 Examples:
+
 - `users:read` - Read user information
 - `users:write` - Create/update users
 - `users:delete` - Delete users
@@ -420,8 +424,13 @@ localStorage.setItem('accessToken', token); // Vulnerable to XSS
 Always use HTTPS in production:
 
 ```javascript
-if (location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
-  location.replace(`https:${location.href.substring(location.protocol.length)}`);
+if (
+  location.protocol !== 'https:' &&
+  window.location.hostname !== 'localhost'
+) {
+  location.replace(
+    `https:${location.href.substring(location.protocol.length)}`
+  );
 }
 ```
 
@@ -448,11 +457,11 @@ class RateLimiter {
 
   async throttle() {
     const now = Date.now();
-    this.requests = this.requests.filter(time => now - time < this.windowMs);
+    this.requests = this.requests.filter((time) => now - time < this.windowMs);
 
     if (this.requests.length >= this.maxRequests) {
       const waitTime = this.windowMs - (now - this.requests[0]);
-      await new Promise(resolve => setTimeout(resolve, waitTime));
+      await new Promise((resolve) => setTimeout(resolve, waitTime));
     }
 
     this.requests.push(now);
@@ -470,7 +479,7 @@ function validatePassword(password) {
     hasUpper: /[A-Z]/.test(password),
     hasLower: /[a-z]/.test(password),
     hasNumber: /\d/.test(password),
-    hasSpecial: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+    hasSpecial: /[!@#$%^&*(),.?":{}|<>]/.test(password),
   };
 
   return Object.values(requirements).every(Boolean);
@@ -485,11 +494,11 @@ async function logout() {
     await fetch('/auth/logout', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${TokenManager.getAccessToken()}`
+        Authorization: `Bearer ${TokenManager.getAccessToken()}`,
       },
       body: JSON.stringify({
-        refreshToken: TokenManager.getRefreshToken()
-      })
+        refreshToken: TokenManager.getRefreshToken(),
+      }),
     });
   } finally {
     TokenManager.clearTokens();
@@ -504,16 +513,19 @@ async function logout() {
 ### Common Issues
 
 **1. 401 Unauthorized**
+
 - Check if token is expired
 - Verify token format: `Bearer <token>`
 - Ensure token is valid
 
 **2. 403 Forbidden**
+
 - Verify user has required role
 - Check permission requirements
 - Contact admin for role assignment
 
 **3. Token Refresh Fails**
+
 - Refresh token may be expired
 - Re-authenticate with credentials
 - Check refresh token validity
@@ -530,6 +542,7 @@ curl -X GET https://api.noa-server.io/v1/users/me \
 ---
 
 For more information, see:
+
 - [API Quick Start](./API_QUICKSTART.md)
 - [Rate Limiting Guide](./RATE_LIMITING.md)
 - [Swagger UI](../swagger-ui/index.html)

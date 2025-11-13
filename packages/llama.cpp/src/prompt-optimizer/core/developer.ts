@@ -11,7 +11,7 @@ import {
   RequestType,
   OptimizationTechnique,
   DeconstructResult,
-  DiagnoseResult
+  DiagnoseResult,
 } from '../types/interfaces';
 
 export class PromptDeveloper {
@@ -41,7 +41,7 @@ export class PromptDeveloper {
       strategySelection,
       techniques,
       enhancementPlan,
-      enhancedPromptDraft
+      enhancedPromptDraft,
     };
   }
 
@@ -62,16 +62,25 @@ export class PromptDeveloper {
     let reasoning = '';
 
     // Determine primary type based on domain and action verbs
-    if (domain === 'creative writing' || actionVerbs.some(v => ['create', 'write', 'design'].includes(v))) {
+    if (
+      domain === 'creative writing' ||
+      actionVerbs.some((v) => ['create', 'write', 'design'].includes(v))
+    ) {
       primaryType = RequestType.CREATIVE;
       confidence = 0.8;
       reasoning = 'Creative domain with imaginative action verbs';
-    } else if (domain === 'software development' || domain === 'data science' ||
-               actionVerbs.some(v => ['implement', 'build', 'debug', 'optimize'].includes(v))) {
+    } else if (
+      domain === 'software development' ||
+      domain === 'data science' ||
+      actionVerbs.some((v) => ['implement', 'build', 'debug', 'optimize'].includes(v))
+    ) {
       primaryType = RequestType.TECHNICAL;
       confidence = 0.85;
       reasoning = 'Technical domain requiring precision and constraints';
-    } else if (domain === 'education' || actionVerbs.some(v => ['explain', 'teach', 'describe'].includes(v))) {
+    } else if (
+      domain === 'education' ||
+      actionVerbs.some((v) => ['explain', 'teach', 'describe'].includes(v))
+    ) {
       primaryType = RequestType.EDUCATIONAL;
       confidence = 0.8;
       reasoning = 'Educational focus with explanatory objectives';
@@ -98,7 +107,7 @@ export class PromptDeveloper {
       primaryType,
       secondaryTypes,
       confidence,
-      reasoning
+      reasoning,
     };
   }
 
@@ -115,45 +124,93 @@ export class PromptDeveloper {
     switch (strategy.primaryType) {
       case RequestType.CREATIVE:
         techniques.push(
-          this.createTechnique(OptimizationTechnique.MULTI_PERSPECTIVE, true, 'high',
-            'Multiple creative perspectives to inspire diverse ideas'),
-          this.createTechnique(OptimizationTechnique.TONE_EMPHASIS, true, 'high',
-            'Emphasis on creative tone and imaginative language'),
-          this.createTechnique(OptimizationTechnique.CONTEXT_ENRICHMENT, true, 'medium',
-            'Rich contextual details for creative inspiration')
+          this.createTechnique(
+            OptimizationTechnique.MULTI_PERSPECTIVE,
+            true,
+            'high',
+            'Multiple creative perspectives to inspire diverse ideas'
+          ),
+          this.createTechnique(
+            OptimizationTechnique.TONE_EMPHASIS,
+            true,
+            'high',
+            'Emphasis on creative tone and imaginative language'
+          ),
+          this.createTechnique(
+            OptimizationTechnique.CONTEXT_ENRICHMENT,
+            true,
+            'medium',
+            'Rich contextual details for creative inspiration'
+          )
         );
         break;
 
       case RequestType.TECHNICAL:
         techniques.push(
-          this.createTechnique(OptimizationTechnique.CONSTRAINT_BASED, true, 'high',
-            'Clear constraints and technical requirements'),
-          this.createTechnique(OptimizationTechnique.PRECISION_FOCUS, true, 'high',
-            'Precise terminology and unambiguous instructions'),
-          this.createTechnique(OptimizationTechnique.CLEAR_STRUCTURE, true, 'high',
-            'Logical, step-by-step structure')
+          this.createTechnique(
+            OptimizationTechnique.CONSTRAINT_BASED,
+            true,
+            'high',
+            'Clear constraints and technical requirements'
+          ),
+          this.createTechnique(
+            OptimizationTechnique.PRECISION_FOCUS,
+            true,
+            'high',
+            'Precise terminology and unambiguous instructions'
+          ),
+          this.createTechnique(
+            OptimizationTechnique.CLEAR_STRUCTURE,
+            true,
+            'high',
+            'Logical, step-by-step structure'
+          )
         );
         break;
 
       case RequestType.EDUCATIONAL:
         techniques.push(
-          this.createTechnique(OptimizationTechnique.FEW_SHOT_EXAMPLES, true, 'high',
-            'Concrete examples to illustrate concepts'),
-          this.createTechnique(OptimizationTechnique.CLEAR_STRUCTURE, true, 'high',
-            'Clear learning scaffolding and organization'),
-          this.createTechnique(OptimizationTechnique.CONTEXT_ENRICHMENT, true, 'medium',
-            'Background context for understanding')
+          this.createTechnique(
+            OptimizationTechnique.FEW_SHOT_EXAMPLES,
+            true,
+            'high',
+            'Concrete examples to illustrate concepts'
+          ),
+          this.createTechnique(
+            OptimizationTechnique.CLEAR_STRUCTURE,
+            true,
+            'high',
+            'Clear learning scaffolding and organization'
+          ),
+          this.createTechnique(
+            OptimizationTechnique.CONTEXT_ENRICHMENT,
+            true,
+            'medium',
+            'Background context for understanding'
+          )
         );
         break;
 
       case RequestType.COMPLEX:
         techniques.push(
-          this.createTechnique(OptimizationTechnique.CHAIN_OF_THOUGHT, true, 'high',
-            'Step-by-step reasoning process'),
-          this.createTechnique(OptimizationTechnique.SYSTEMATIC_FRAMEWORK, true, 'high',
-            'Comprehensive systematic framework'),
-          this.createTechnique(OptimizationTechnique.DECOMPOSITION, true, 'high',
-            'Breaking down complex task into manageable steps')
+          this.createTechnique(
+            OptimizationTechnique.CHAIN_OF_THOUGHT,
+            true,
+            'high',
+            'Step-by-step reasoning process'
+          ),
+          this.createTechnique(
+            OptimizationTechnique.SYSTEMATIC_FRAMEWORK,
+            true,
+            'high',
+            'Comprehensive systematic framework'
+          ),
+          this.createTechnique(
+            OptimizationTechnique.DECOMPOSITION,
+            true,
+            'high',
+            'Breaking down complex task into manageable steps'
+          )
         );
         break;
     }
@@ -161,27 +218,39 @@ export class PromptDeveloper {
     // Add universal techniques based on diagnosis
     if (diagnoseResult.clarityScore.score < 7) {
       techniques.push(
-        this.createTechnique(OptimizationTechnique.PRECISION_FOCUS, true, 'high',
-          'Enhanced clarity through precise language')
+        this.createTechnique(
+          OptimizationTechnique.PRECISION_FOCUS,
+          true,
+          'high',
+          'Enhanced clarity through precise language'
+        )
       );
     }
 
     if (diagnoseResult.completenessMatrix.completenessPercentage < 70) {
       techniques.push(
-        this.createTechnique(OptimizationTechnique.CONTEXT_ENRICHMENT, true, 'high',
-          'Fill completeness gaps with context')
+        this.createTechnique(
+          OptimizationTechnique.CONTEXT_ENRICHMENT,
+          true,
+          'high',
+          'Fill completeness gaps with context'
+        )
       );
     }
 
     // Always add structure for moderate+ complexity
     if (diagnoseResult.complexityAssessment.level !== 'simple') {
-      const hasStructure = techniques.some(t =>
-        t.technique === OptimizationTechnique.CLEAR_STRUCTURE
+      const hasStructure = techniques.some(
+        (t) => t.technique === OptimizationTechnique.CLEAR_STRUCTURE
       );
       if (!hasStructure) {
         techniques.push(
-          this.createTechnique(OptimizationTechnique.CLEAR_STRUCTURE, true, 'medium',
-            'Organized structure for clarity')
+          this.createTechnique(
+            OptimizationTechnique.CLEAR_STRUCTURE,
+            true,
+            'medium',
+            'Organized structure for clarity'
+          )
         );
       }
     }
@@ -221,7 +290,7 @@ export class PromptDeveloper {
       contextEnrichment.push(`Domain context: ${deconstructResult.keyEntities.domain}`);
     }
 
-    deconstructResult.gapAnalysis.missing.forEach(gap => {
+    deconstructResult.gapAnalysis.missing.forEach((gap) => {
       contextEnrichment.push(`Add ${gap.toLowerCase()}`);
     });
 
@@ -229,7 +298,7 @@ export class PromptDeveloper {
     structuralEnhancements.push(...diagnoseResult.complexityAssessment.structuralNeeds);
 
     // Clarity amplifications
-    diagnoseResult.clarityScore.recommendations.forEach(rec => {
+    diagnoseResult.clarityScore.recommendations.forEach((rec) => {
       clarityAmplifications.push(rec);
     });
 
@@ -246,7 +315,7 @@ export class PromptDeveloper {
     constraintDefinitions.push('Define quality expectations');
 
     // Example integrations
-    if (techniques.some(t => t.technique === OptimizationTechnique.FEW_SHOT_EXAMPLES)) {
+    if (techniques.some((t) => t.technique === OptimizationTechnique.FEW_SHOT_EXAMPLES)) {
       exampleIntegrations.push('Add 1-2 concrete examples');
       exampleIntegrations.push('Show desired output format');
     }
@@ -262,7 +331,7 @@ export class PromptDeveloper {
       clarityAmplifications,
       constraintDefinitions,
       exampleIntegrations,
-      verificationCriteria
+      verificationCriteria,
     };
   }
 
@@ -307,7 +376,7 @@ export class PromptDeveloper {
     // Add constraints if any
     if (deconstructResult.keyEntities.constraints.length > 0) {
       sections.push('# CONSTRAINTS');
-      deconstructResult.keyEntities.constraints.forEach(constraint => {
+      deconstructResult.keyEntities.constraints.forEach((constraint) => {
         sections.push(`- ${constraint}`);
       });
       sections.push('');
@@ -316,7 +385,7 @@ export class PromptDeveloper {
     // Add context enrichment
     if (plan.contextEnrichment.length > 0) {
       sections.push('# CONTEXT');
-      plan.contextEnrichment.forEach(context => {
+      plan.contextEnrichment.forEach((context) => {
         sections.push(`- ${context}`);
       });
       sections.push('');
@@ -325,11 +394,11 @@ export class PromptDeveloper {
     // Add success criteria
     sections.push('# SUCCESS CRITERIA');
     if (deconstructResult.requirements.qualityCriteria.length > 0) {
-      deconstructResult.requirements.qualityCriteria.forEach(criterion => {
+      deconstructResult.requirements.qualityCriteria.forEach((criterion) => {
         sections.push(`- ${criterion}`);
       });
     }
-    plan.verificationCriteria.forEach(criterion => {
+    plan.verificationCriteria.forEach((criterion) => {
       sections.push(`- ${criterion}`);
     });
     sections.push('');
@@ -346,7 +415,7 @@ export class PromptDeveloper {
     lines.push('DEVELOP PHASE SUMMARY:');
     lines.push(`Strategy: ${result.strategySelection.primaryType}`);
     lines.push(`Confidence: ${(result.strategySelection.confidence * 100).toFixed(1)}%`);
-    lines.push(`Techniques: ${result.techniques.filter(t => t.applied).length} applied`);
+    lines.push(`Techniques: ${result.techniques.filter((t) => t.applied).length} applied`);
 
     return lines.join('\n');
   }

@@ -2,12 +2,12 @@ services:
   postgres-test:
     image: pgvector/pgvector:pg${POSTGRES_VERSION:-16}
     ports:
-      - "5441:5432"
+      - '5441:5432'
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    command: ["postgres", "-c", "shared_preload_libraries=vector"]
+    command: ['postgres', '-c', 'shared_preload_libraries=vector']
     healthcheck:
       test: pg_isready -U postgres
       start_period: 10s

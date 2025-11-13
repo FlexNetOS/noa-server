@@ -10,7 +10,7 @@
       {
         "title": "Database Connections",
         "type": "graph",
-        "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
+        "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "pg_stat_database_numbackends{datname=\"noa_db\"}",
@@ -24,17 +24,17 @@
           }
         ],
         "yaxes": [
-          {"format": "short", "label": "Connections"},
-          {"format": "short"}
+          { "format": "short", "label": "Connections" },
+          { "format": "short" }
         ],
         "alert": {
           "name": "High Database Connections",
           "conditions": [
             {
-              "evaluator": {"params": [80], "type": "gt"},
-              "operator": {"type": "and"},
-              "query": {"params": ["A", "5m", "now"]},
-              "reducer": {"params": [], "type": "avg"},
+              "evaluator": { "params": [80], "type": "gt" },
+              "operator": { "type": "and" },
+              "query": { "params": ["A", "5m", "now"] },
+              "reducer": { "params": [], "type": "avg" },
               "type": "query"
             }
           ],
@@ -49,7 +49,7 @@
       {
         "title": "Query Duration (P95)",
         "type": "graph",
-        "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8},
+        "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "histogram_quantile(0.95, sum(rate(pg_stat_statements_total_time_seconds_bucket[5m])) by (le, query))",
@@ -58,14 +58,14 @@
           }
         ],
         "yaxes": [
-          {"format": "s", "label": "Query Duration"},
-          {"format": "short"}
+          { "format": "s", "label": "Query Duration" },
+          { "format": "short" }
         ]
       },
       {
         "title": "Transactions Per Second",
         "type": "graph",
-        "gridPos": {"x": 0, "y": 8, "w": 12, "h": 8},
+        "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "rate(pg_stat_database_xact_commit{datname=\"noa_db\"}[5m])",
@@ -79,14 +79,14 @@
           }
         ],
         "yaxes": [
-          {"format": "ops", "label": "Transactions/sec"},
-          {"format": "short"}
+          { "format": "ops", "label": "Transactions/sec" },
+          { "format": "short" }
         ]
       },
       {
         "title": "Cache Hit Ratio",
         "type": "gauge",
-        "gridPos": {"x": 12, "y": 8, "w": 12, "h": 8},
+        "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "sum(pg_stat_database_blks_hit{datname=\"noa_db\"}) / (sum(pg_stat_database_blks_hit{datname=\"noa_db\"}) + sum(pg_stat_database_blks_read{datname=\"noa_db\"})) * 100",
@@ -105,9 +105,9 @@
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                {"value": 0, "color": "red"},
-                {"value": 90, "color": "yellow"},
-                {"value": 95, "color": "green"}
+                { "value": 0, "color": "red" },
+                { "value": 90, "color": "yellow" },
+                { "value": 95, "color": "green" }
               ]
             }
           }
@@ -116,7 +116,7 @@
       {
         "title": "Top 10 Slowest Queries",
         "type": "table",
-        "gridPos": {"x": 0, "y": 16, "w": 24, "h": 8},
+        "gridPos": { "x": 0, "y": 16, "w": 24, "h": 8 },
         "targets": [
           {
             "expr": "topk(10, avg_over_time(pg_stat_statements_mean_time_seconds[5m]))",
@@ -128,7 +128,7 @@
           {
             "id": "organize",
             "options": {
-              "excludeByName": {"Time": true},
+              "excludeByName": { "Time": true },
               "indexByName": {},
               "renameByName": {
                 "query": "Query",
@@ -141,7 +141,7 @@
       {
         "title": "Database Size",
         "type": "graph",
-        "gridPos": {"x": 0, "y": 24, "w": 12, "h": 8},
+        "gridPos": { "x": 0, "y": 24, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "pg_database_size_bytes{datname=\"noa_db\"} / 1024 / 1024 / 1024",
@@ -150,14 +150,14 @@
           }
         ],
         "yaxes": [
-          {"format": "gbytes", "label": "Size"},
-          {"format": "short"}
+          { "format": "gbytes", "label": "Size" },
+          { "format": "short" }
         ]
       },
       {
         "title": "Deadlocks",
         "type": "graph",
-        "gridPos": {"x": 12, "y": 24, "w": 12, "h": 8},
+        "gridPos": { "x": 12, "y": 24, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "rate(pg_stat_database_deadlocks{datname=\"noa_db\"}[5m])",
@@ -166,17 +166,17 @@
           }
         ],
         "yaxes": [
-          {"format": "ops", "label": "Deadlocks"},
-          {"format": "short"}
+          { "format": "ops", "label": "Deadlocks" },
+          { "format": "short" }
         ],
         "alert": {
           "name": "Database Deadlocks",
           "conditions": [
             {
-              "evaluator": {"params": [0.1], "type": "gt"},
-              "operator": {"type": "and"},
-              "query": {"params": ["A", "5m", "now"]},
-              "reducer": {"params": [], "type": "avg"},
+              "evaluator": { "params": [0.1], "type": "gt" },
+              "operator": { "type": "and" },
+              "query": { "params": ["A", "5m", "now"] },
+              "reducer": { "params": [], "type": "avg" },
               "type": "query"
             }
           ],
@@ -191,7 +191,7 @@
       {
         "title": "Replication Lag",
         "type": "graph",
-        "gridPos": {"x": 0, "y": 32, "w": 12, "h": 8},
+        "gridPos": { "x": 0, "y": 32, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "pg_replication_lag_seconds",
@@ -199,18 +199,15 @@
             "refId": "A"
           }
         ],
-        "yaxes": [
-          {"format": "s", "label": "Lag"},
-          {"format": "short"}
-        ],
+        "yaxes": [{ "format": "s", "label": "Lag" }, { "format": "short" }],
         "alert": {
           "name": "High Replication Lag",
           "conditions": [
             {
-              "evaluator": {"params": [10], "type": "gt"},
-              "operator": {"type": "and"},
-              "query": {"params": ["A", "5m", "now"]},
-              "reducer": {"params": [], "type": "avg"},
+              "evaluator": { "params": [10], "type": "gt" },
+              "operator": { "type": "and" },
+              "query": { "params": ["A", "5m", "now"] },
+              "reducer": { "params": [], "type": "avg" },
               "type": "query"
             }
           ],
@@ -225,7 +222,7 @@
       {
         "title": "Locks by Type",
         "type": "graph",
-        "gridPos": {"x": 12, "y": 32, "w": 12, "h": 8},
+        "gridPos": { "x": 12, "y": 32, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "sum(pg_locks_count) by (mode)",
@@ -234,8 +231,8 @@
           }
         ],
         "yaxes": [
-          {"format": "short", "label": "Lock Count"},
-          {"format": "short"}
+          { "format": "short", "label": "Lock Count" },
+          { "format": "short" }
         ]
       }
     ]

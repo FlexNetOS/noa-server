@@ -3,16 +3,20 @@
 ## 🚨 CRITICAL: CONCURRENT EXECUTION & FILE MANAGEMENT
 
 **ABSOLUTE RULES**:
+
 1. ALL operations MUST be concurrent/parallel in a single message
 2. **NEVER save working files, text/mds and tests to the root folder**
 3. ALWAYS organize files in appropriate subdirectories
-4. **USE CLAUDE CODE'S TASK TOOL** for spawning agents concurrently, not just MCP
+4. **USE CLAUDE CODE'S TASK TOOL** for spawning agents concurrently, not just
+   MCP
 
 ### ⚡ GOLDEN RULE: "1 MESSAGE = ALL RELATED OPERATIONS"
 
 **MANDATORY PATTERNS:**
+
 - **TodoWrite**: ALWAYS batch ALL todos in ONE call (5-10+ todos minimum)
-- **Task tool (Claude Code)**: ALWAYS spawn ALL agents in ONE message with full instructions
+- **Task tool (Claude Code)**: ALWAYS spawn ALL agents in ONE message with full
+  instructions
 - **File operations**: ALWAYS batch ALL reads/writes/edits in ONE message
 - **Bash commands**: ALWAYS batch ALL terminal operations in ONE message
 - **Memory operations**: ALWAYS batch ALL memory store/retrieve in ONE message
@@ -20,6 +24,7 @@
 ### 🎯 CRITICAL: Claude Code Task Tool for Agent Execution
 
 **Claude Code's Task tool is the PRIMARY way to spawn agents:**
+
 ```javascript
 // ✅ CORRECT: Use Claude Code's Task tool for parallel agent execution
 [Single Message]:
@@ -31,6 +36,7 @@
 ```
 
 **MCP tools are ONLY for coordination setup:**
+
 - `mcp__claude-flow__swarm_init` - Initialize coordination topology
 - `mcp__claude-flow__agent_spawn` - Define agent types for coordination
 - `mcp__claude-flow__task_orchestrate` - Orchestrate high-level workflows
@@ -38,6 +44,7 @@
 ### 📁 File Organization Rules
 
 **NEVER save to root folder. Use these directories:**
+
 - `/src` - Source code files
 - `/tests` - Test files
 - `/docs` - Documentation and markdown files
@@ -47,22 +54,28 @@
 
 ## Project Overview
 
-This project uses SPARC (Specification, Pseudocode, Architecture, Refinement, Completion) methodology with Claude-Flow orchestration for systematic Test-Driven Development.
+This project uses SPARC (Specification, Pseudocode, Architecture, Refinement,
+Completion) methodology with Claude-Flow orchestration for systematic
+Test-Driven Development.
 
 ## SPARC Commands
 
 ### Core Commands
+
 - `npx claude-flow sparc modes` - List available modes
 - `npx claude-flow sparc run <mode> "<task>"` - Execute specific mode
 - `npx claude-flow sparc tdd "<feature>"` - Run complete TDD workflow
 - `npx claude-flow sparc info <mode>` - Get mode details
 
 ### Batchtools Commands
+
 - `npx claude-flow sparc batch <modes> "<task>"` - Parallel execution
 - `npx claude-flow sparc pipeline "<task>"` - Full pipeline processing
-- `npx claude-flow sparc concurrent <mode> "<tasks-file>"` - Multi-task processing
+- `npx claude-flow sparc concurrent <mode> "<tasks-file>"` - Multi-task
+  processing
 
 ### Build Commands
+
 - `npm run build` - Build project
 - `npm run test` - Run tests
 - `npm run lint` - Linting
@@ -87,35 +100,52 @@ This project uses SPARC (Specification, Pseudocode, Architecture, Refinement, Co
 ## 🚀 Available Agents (54 Total)
 
 ### Core Development
+
 `coder`, `reviewer`, `tester`, `planner`, `researcher`
 
 ### Swarm Coordination
-`hierarchical-coordinator`, `mesh-coordinator`, `adaptive-coordinator`, `collective-intelligence-coordinator`, `swarm-memory-manager`
+
+`hierarchical-coordinator`, `mesh-coordinator`, `adaptive-coordinator`,
+`collective-intelligence-coordinator`, `swarm-memory-manager`
 
 ### Consensus & Distributed
-`byzantine-coordinator`, `raft-manager`, `gossip-coordinator`, `consensus-builder`, `crdt-synchronizer`, `quorum-manager`, `security-manager`
+
+`byzantine-coordinator`, `raft-manager`, `gossip-coordinator`,
+`consensus-builder`, `crdt-synchronizer`, `quorum-manager`, `security-manager`
 
 ### Performance & Optimization
-`perf-analyzer`, `performance-benchmarker`, `task-orchestrator`, `memory-coordinator`, `smart-agent`
+
+`perf-analyzer`, `performance-benchmarker`, `task-orchestrator`,
+`memory-coordinator`, `smart-agent`
 
 ### GitHub & Repository
-`github-modes`, `pr-manager`, `code-review-swarm`, `issue-tracker`, `release-manager`, `workflow-automation`, `project-board-sync`, `repo-architect`, `multi-repo-swarm`
+
+`github-modes`, `pr-manager`, `code-review-swarm`, `issue-tracker`,
+`release-manager`, `workflow-automation`, `project-board-sync`,
+`repo-architect`, `multi-repo-swarm`
 
 ### SPARC Methodology
-`sparc-coord`, `sparc-coder`, `specification`, `pseudocode`, `architecture`, `refinement`
+
+`sparc-coord`, `sparc-coder`, `specification`, `pseudocode`, `architecture`,
+`refinement`
 
 ### Specialized Development
-`backend-dev`, `mobile-dev`, `ml-developer`, `cicd-engineer`, `api-docs`, `system-architect`, `code-analyzer`, `base-template-generator`
+
+`backend-dev`, `mobile-dev`, `ml-developer`, `cicd-engineer`, `api-docs`,
+`system-architect`, `code-analyzer`, `base-template-generator`
 
 ### Testing & Validation
+
 `tdd-london-swarm`, `production-validator`
 
 ### Migration & Planning
+
 `migration-planner`, `swarm-init`
 
 ## 🎯 Claude Code vs MCP Tools
 
 ### Claude Code Handles ALL EXECUTION:
+
 - **Task tool**: Spawn and run agents concurrently for actual work
 - File operations (Read, Write, Edit, MultiEdit, Glob, Grep)
 - Code generation and programming
@@ -128,6 +158,7 @@ This project uses SPARC (Specification, Pseudocode, Architecture, Refinement, Co
 - Testing and debugging
 
 ### MCP Tools ONLY COORDINATE:
+
 - Swarm initialization (topology setup)
 - Agent type definitions (coordination patterns)
 - Task orchestration (high-level planning)
@@ -136,7 +167,8 @@ This project uses SPARC (Specification, Pseudocode, Architecture, Refinement, Co
 - Performance tracking
 - GitHub integration
 
-**KEY**: MCP coordinates the strategy, Claude Code's Task tool executes with real agents.
+**KEY**: MCP coordinates the strategy, Claude Code's Task tool executes with
+real agents.
 
 ## 🚀 Quick Setup
 
@@ -207,12 +239,17 @@ Flow-Nexus extends MCP capabilities with 70+ cloud-based orchestration tools:
 
 **Key MCP Tool Categories:**
 
-- **Swarm & Agents**: `swarm_init`, `swarm_scale`, `agent_spawn`, `task_orchestrate`
-- **Sandboxes**: `sandbox_create`, `sandbox_execute`, `sandbox_upload` (cloud execution)
-- **Templates**: `template_list`, `template_deploy` (pre-built project templates)
-- **Neural AI**: `neural_train`, `neural_patterns`, `seraphina_chat` (AI assistant)
+- **Swarm & Agents**: `swarm_init`, `swarm_scale`, `agent_spawn`,
+  `task_orchestrate`
+- **Sandboxes**: `sandbox_create`, `sandbox_execute`, `sandbox_upload` (cloud
+  execution)
+- **Templates**: `template_list`, `template_deploy` (pre-built project
+  templates)
+- **Neural AI**: `neural_train`, `neural_patterns`, `seraphina_chat` (AI
+  assistant)
 - **GitHub**: `github_repo_analyze`, `github_pr_manage` (repository management)
-- **Real-time**: `execution_stream_subscribe`, `realtime_subscribe` (live monitoring)
+- **Real-time**: `execution_stream_subscribe`, `realtime_subscribe` (live
+  monitoring)
 - **Storage**: `storage_upload`, `storage_list` (cloud file management)
 
 **Authentication Required:**
@@ -385,7 +422,8 @@ Message 4: Write "file.js"
 
 ### Overview
 
-The project includes a comprehensive **Hive-Mind Audit Agent Swarm** that automatically verifies all completed tasks using:
+The project includes a comprehensive **Hive-Mind Audit Agent Swarm** that
+automatically verifies all completed tasks using:
 
 - **7 Specialized Audit Agents** running concurrently
 - **Triple-Verification Protocol** (Pass A, Pass B, Pass C)
@@ -398,6 +436,7 @@ The project includes a comprehensive **Hive-Mind Audit Agent Swarm** that automa
 **The audit system runs AUTOMATICALLY when you mark a todo as completed.**
 
 When you use TodoWrite with `status: "completed"`, the system:
+
 1. ✅ Intercepts the completion via `.claude/hooks/post-task`
 2. 🔍 Spawns the 7-agent audit swarm
 3. 📊 Executes triple-verification protocol
@@ -405,6 +444,7 @@ When you use TodoWrite with `status: "completed"`, the system:
 5. 📋 Saves results to `.claude/audit-history/<task-id>/`
 
 **Configuration**: `.claude/config.json`
+
 - `audit.enabled`: Enable/disable audit system
 - `audit.mandatory`: Make audits mandatory
 - `audit.autoTrigger`: Auto-run on TodoWrite completions
@@ -413,6 +453,7 @@ When you use TodoWrite with `status: "completed"`, the system:
 ### Audit Slash Commands
 
 #### `/audit` - Comprehensive Audit
+
 Run full audit on current workspace or specified target.
 
 ```bash
@@ -422,6 +463,7 @@ Run full audit on current workspace or specified target.
 ```
 
 #### `/audit-task` - Audit Specific Task
+
 Audit a completed or in-progress task by ID.
 
 ```bash
@@ -431,6 +473,7 @@ Audit a completed or in-progress task by ID.
 ```
 
 #### `/audit-file` - Audit File or Directory
+
 Deep analysis on specific file or directory.
 
 ```bash
@@ -440,6 +483,7 @@ Deep analysis on specific file or directory.
 ```
 
 #### `/audit-report` - Generate Audit Report
+
 Generate comprehensive report for completed audit.
 
 ```bash
@@ -448,6 +492,7 @@ Generate comprehensive report for completed audit.
 ```
 
 #### `/audit-config` - View/Modify Configuration
+
 Manage audit system settings.
 
 ```bash
@@ -458,6 +503,7 @@ Manage audit system settings.
 ```
 
 #### `/audit-history` - View Audit History
+
 Display audit execution history and statistics.
 
 ```bash
@@ -471,20 +517,25 @@ Display audit execution history and statistics.
 
 The system uses 7 specialized agents:
 
-1. **Report Verification Agent** - Verifies completion reports with formatting/error-correction
-2. **File System Scanner** - Recursive file scanning, LOC counting, tree generation
+1. **Report Verification Agent** - Verifies completion reports with
+   formatting/error-correction
+2. **File System Scanner** - Recursive file scanning, LOC counting, tree
+   generation
 3. **Code Analyzer** - AST parsing, complexity metrics, quality analysis
 4. **Cross-Reference Agent** - Multi-source verification with git history
-5. **Deep Analytics Agent** - Statistical analysis, anomaly detection, neural processing
+5. **Deep Analytics Agent** - Statistical analysis, anomaly detection, neural
+   processing
 6. **Gap Scanner Agent** - Detects missing files and incomplete implementations
-7. **Hash & Index Agent** - SHA-256 cryptographic hashing with blockchain-style ledger
+7. **Hash & Index Agent** - SHA-256 cryptographic hashing with blockchain-style
+   ledger
 
 ### Triple-Verification Protocol
 
 Every audit executes three independent verification passes:
 
 - **Pass A (Self-Check)**: Agent verifies own work
-- **Pass B (Independent)**: Different agent re-derives results without Pass A evidence
+- **Pass B (Independent)**: Different agent re-derives results without Pass A
+  evidence
 - **Pass C (Adversarial)**: Actively challenges findings from Pass A and B
 
 **Final confidence** = Average of all passes (with 10% bonus if all complete)
@@ -492,6 +543,7 @@ Every audit executes three independent verification passes:
 ### Truth Gate
 
 Evidence validation system that:
+
 - Prioritizes truth sources (file-system > git > tests > analysis > reports)
 - Generates blockchain-style evidence ledger
 - Uses SHA-256 cryptographic hashing
@@ -520,6 +572,7 @@ ls -la ../.claude/audit-history/my-task/reports/
 ### Audit Output
 
 Results saved to `.claude/audit-history/<task-id>/`:
+
 - `reports/audit-result.json` - Detailed verification results
 - `reports/audit-report.json` - Human-readable report
 - `evidence/` - Evidence files with SHA-256 hashes
@@ -572,20 +625,27 @@ Results saved to `.claude/audit-history/<task-id>/`:
 - ✅ Address critical and high-severity discrepancies
 - ✅ Keep `.claude/config.json` in version control
 - ✅ Use `/audit-history` to track progress over time
-- ⚠️  Don't disable mandatory audits without good reason
-- ⚠️  Investigate low confidence scores (<95%)
+- ⚠️ Don't disable mandatory audits without good reason
+- ⚠️ Investigate low confidence scores (<95%)
 
 ## 🤖 Model Selector - Automatic SLLM Selection for Queen
 
 ### Overview
 
-The **Model Selector** intelligently chooses the optimal Small Language Model (SLLM) for the Queen coordinator based on hardware capabilities, task requirements, and quality metrics. It eliminates manual model configuration by automatically detecting system resources and selecting from a curated database of 20+ pre-profiled models.
+The **Model Selector** intelligently chooses the optimal Small Language Model
+(SLLM) for the Queen coordinator based on hardware capabilities, task
+requirements, and quality metrics. It eliminates manual model configuration by
+automatically detecting system resources and selecting from a curated database
+of 20+ pre-profiled models.
 
 **Key Features:**
+
 - 🎯 **Automatic Hardware Detection** - CPU/GPU/RAM/VRAM detection
-- 📊 **Multi-Criteria Scoring** - Weighted algorithm balancing quality, speed, and memory
+- 📊 **Multi-Criteria Scoring** - Weighted algorithm balancing quality, speed,
+  and memory
 - 🔄 **Fallback Chains** - Automatic failover to alternative models
-- 📈 **Queen Fitness Metrics** - Custom scores for coordination, reasoning, JSON reliability
+- 📈 **Queen Fitness Metrics** - Custom scores for coordination, reasoning, JSON
+  reliability
 - 🛠️ **CLI Management Tool** - Interactive model selection, testing, comparison
 - ⚡ **Hot-Swappable Models** - Change models at runtime without restart
 
@@ -594,6 +654,7 @@ The **Model Selector** intelligently chooses the optimal Small Language Model (S
 When Queen initializes without a hardcoded model path:
 
 1. **Hardware Detection**
+
    ```bash
    # Detects via nvidia-smi and os module
    - CPU: Model, cores
@@ -603,15 +664,18 @@ When Queen initializes without a hardcoded model path:
    ```
 
 2. **Model Scoring Algorithm**
+
    ```typescript
-   score = queen_fitness * 0.40      // Strategic planning capability
-         + reasoning_score * 0.25    // Multi-step reasoning
-         + json_reliability * 0.20   // Structured output quality
-         + speed_score * 0.10        // Inference performance
-         + memory_fit_score * 0.05   // Resource efficiency
+   score =
+     queen_fitness * 0.4 + // Strategic planning capability
+     reasoning_score * 0.25 + // Multi-step reasoning
+     json_reliability * 0.2 + // Structured output quality
+     speed_score * 0.1 + // Inference performance
+     memory_fit_score * 0.05; // Resource efficiency
    ```
 
 3. **Selection Logic**
+
    ```
    if (GPU && VRAM >= 6GB) → Llama-3.1-8B Q5 (Premium tier)
    else if (GPU && VRAM >= 4GB) → Phi-3.5-mini Q4 (Balanced tier)
@@ -626,7 +690,8 @@ When Queen initializes without a hardcoded model path:
 
 ### CLI Tool Commands
 
-The Model Selector includes a comprehensive CLI tool for manual selection and testing:
+The Model Selector includes a comprehensive CLI tool for manual selection and
+testing:
 
 #### List Available Models
 
@@ -690,52 +755,61 @@ node claude-flow/hooks/select-queen-model.js --stats
 ### Recommended Models by Tier
 
 #### Premium Tier (High Performance)
+
 **Requirements**: GPU with ≥6GB VRAM or ≥8GB RAM
 
-| Model | Parameters | Quant | Fitness | Reasoning | JSON | Speed (GPU) |
-|-------|-----------|-------|---------|-----------|------|-------------|
-| Llama-3.1-8B-Instruct | 8B | Q5_K_M | 92% | 94% | 95% | 90 tok/s |
-| Gemma2-9B-Instruct | 9B | Q4_K_M | 90% | 92% | 93% | 75 tok/s |
-| Phi-3.5-mini-instruct | 3.8B | Q8_0 | 95% | 95% | 98% | 120 tok/s |
+| Model                 | Parameters | Quant  | Fitness | Reasoning | JSON | Speed (GPU) |
+| --------------------- | ---------- | ------ | ------- | --------- | ---- | ----------- |
+| Llama-3.1-8B-Instruct | 8B         | Q5_K_M | 92%     | 94%       | 95%  | 90 tok/s    |
+| Gemma2-9B-Instruct    | 9B         | Q4_K_M | 90%     | 92%       | 93%  | 75 tok/s    |
+| Phi-3.5-mini-instruct | 3.8B       | Q8_0   | 95%     | 95%       | 98%  | 120 tok/s   |
 
-**Use Cases**: Complex strategic planning, multi-agent coordination, critical decision-making
+**Use Cases**: Complex strategic planning, multi-agent coordination, critical
+decision-making
 
 #### Balanced Tier (Recommended)
+
 **Requirements**: ≥4GB RAM (CPU or GPU)
 
-| Model | Parameters | Quant | Fitness | Reasoning | JSON | Speed (CPU) |
-|-------|-----------|-------|---------|-----------|------|-------------|
-| Phi-3.5-mini-instruct | 3.8B | Q4_K_M | 95% | 95% | 98% | 40 tok/s |
-| Gemma2-2B-Instruct | 2B | Q5_K_M | 87% | 88% | 91% | 65 tok/s |
-| Qwen2-7B-Instruct | 7B | Q4_K_M | 88% | 90% | 92% | 30 tok/s |
+| Model                 | Parameters | Quant  | Fitness | Reasoning | JSON | Speed (CPU) |
+| --------------------- | ---------- | ------ | ------- | --------- | ---- | ----------- |
+| Phi-3.5-mini-instruct | 3.8B       | Q4_K_M | 95%     | 95%       | 98%  | 40 tok/s    |
+| Gemma2-2B-Instruct    | 2B         | Q5_K_M | 87%     | 88%       | 91%  | 65 tok/s    |
+| Qwen2-7B-Instruct     | 7B         | Q4_K_M | 88%     | 90%       | 92%  | 30 tok/s    |
 
-**Use Cases**: Standard coordination, real-time decisions, production deployments
+**Use Cases**: Standard coordination, real-time decisions, production
+deployments
 
 #### Lightweight Tier (Minimal Resources)
+
 **Requirements**: ≥2GB RAM
 
-| Model | Parameters | Quant | Fitness | Reasoning | JSON | Speed (CPU) |
-|-------|-----------|-------|---------|-----------|------|-------------|
-| Qwen2-1.5B-Instruct | 1.5B | Q4_K_M | 82% | 85% | 88% | 75 tok/s |
-| Gemma2-2B-Instruct | 2B | Q4_K_M | 85% | 86% | 89% | 55 tok/s |
-| Llama-3.2-1B-Instruct | 1B | Q4_K_M | 78% | 80% | 84% | 85 tok/s |
+| Model                 | Parameters | Quant  | Fitness | Reasoning | JSON | Speed (CPU) |
+| --------------------- | ---------- | ------ | ------- | --------- | ---- | ----------- |
+| Qwen2-1.5B-Instruct   | 1.5B       | Q4_K_M | 82%     | 85%       | 88%  | 75 tok/s    |
+| Gemma2-2B-Instruct    | 2B         | Q4_K_M | 85%     | 86%       | 89%  | 55 tok/s    |
+| Llama-3.2-1B-Instruct | 1B         | Q4_K_M | 78%     | 80%       | 84%  | 85 tok/s    |
 
-**Use Cases**: Edge deployment, resource-constrained environments, development/testing
+**Use Cases**: Edge deployment, resource-constrained environments,
+development/testing
 
 ### Hardware Requirements
 
 #### Minimum Requirements
+
 - **CPU**: 2+ cores
 - **RAM**: 2GB minimum (4GB recommended)
 - **Disk**: 2-8GB for model files
 - **OS**: Linux, macOS, Windows (WSL2)
 
 #### GPU Acceleration (Optional)
+
 - **NVIDIA GPU** with CUDA support
 - **VRAM**: 3GB minimum (6GB recommended)
 - **Driver**: Latest NVIDIA drivers with CUDA 11+
 
 #### Optimal Configurations
+
 - **Development**: 8GB RAM, CPU-only, Phi-3.5-mini Q4
 - **Production**: 16GB RAM + 6GB VRAM, Llama-3.1-8B Q5
 - **Edge/Mobile**: 4GB RAM, CPU-only, Qwen2-1.5B Q4
@@ -751,11 +825,11 @@ Edit `.claude/config.json`:
   "audit": {
     "llamaCpp": {
       "enabled": true,
-      "modelPath": null,                    // Set to null for auto-selection
-      "cudaEnabled": false,                 // Set true if GPU available
+      "modelPath": null, // Set to null for auto-selection
+      "cudaEnabled": false, // Set true if GPU available
       "queenNeuralProcessing": true,
-      "autoSelectModel": true,              // Enable auto-selection
-      "modelSelectionProfile": "balanced"   // Profile: balanced/high-performance/lightweight
+      "autoSelectModel": true, // Enable auto-selection
+      "modelSelectionProfile": "balanced" // Profile: balanced/high-performance/lightweight
     }
   }
 }
@@ -832,6 +906,7 @@ The model database is stored in CSV format for easy updates:
 **Location**: `/home/deflex/noa-server/models/queen-model-profiles.csv`
 
 **Adding New Models**:
+
 1. Download GGUF model file
 2. Add row to CSV with metrics:
    - Model name, family, parameters, quantization
@@ -844,6 +919,7 @@ The model database is stored in CSV format for easy updates:
 3. Reload Queen or restart application
 
 **Example CSV Entry**:
+
 ```csv
 Phi-3.5-mini-instruct,Phi,3.8B,Q4_K_M,0.95,0.95,0.98,40,120,2.5,2.5,4096,2.3,MIT,...
 ```
@@ -856,7 +932,9 @@ Queen emits events during model selection:
 queen.on('model-auto-selected', (event) => {
   console.log(`Selected: ${event.profile.model_name}`);
   console.log(`Reasoning: ${event.reasoning}`);
-  console.log(`Fallbacks: ${event.fallbacks.map(f => f.model_name).join(', ')}`);
+  console.log(
+    `Fallbacks: ${event.fallbacks.map((f) => f.model_name).join(', ')}`
+  );
 });
 
 queen.on('model-switched', (event) => {
@@ -907,14 +985,15 @@ nvidia-smi
 - ✅ **Monitor Queen events** - Track model selection and switching
 - ✅ **Keep CSV updated** - Add new models as they become available
 - ✅ **Test fallbacks** - Verify fallback chain works in your environment
-- ⚠️  **Don't hardcode model paths** - Use auto-selection for flexibility
-- ⚠️  **Review fitness scores** - Ensure model meets your quality requirements
+- ⚠️ **Don't hardcode model paths** - Use auto-selection for flexibility
+- ⚠️ **Review fitness scores** - Ensure model meets your quality requirements
 
 ## Support
 
 - Documentation: <https://github.com/ruvnet/claude-flow>
 - Issues: <https://github.com/ruvnet/claude-flow/issues>
-- Flow-Nexus Platform: <https://flow-nexus.ruv.io> (registration required for cloud features)
+- Flow-Nexus Platform: <https://flow-nexus.ruv.io> (registration required for
+  cloud features)
 
 ---
 
@@ -922,8 +1001,9 @@ Remember: **Claude Flow coordinates, Claude Code creates!**
 
 ## Important Instruction Reminders
 
-Do what has been asked; nothing more, nothing less.
-NEVER create files unless they're absolutely necessary for achieving your goal.
-ALWAYS prefer editing an existing file to creating a new one.
-NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
-Never save working files, text/mds and tests to the root folder.
+Do what has been asked; nothing more, nothing less. NEVER create files unless
+they're absolutely necessary for achieving your goal. ALWAYS prefer editing an
+existing file to creating a new one. NEVER proactively create documentation
+files (\*.md) or README files. Only create documentation files if explicitly
+requested by the User. Never save working files, text/mds and tests to the root
+folder.

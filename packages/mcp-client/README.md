@@ -1,6 +1,7 @@
 # @noa-server/mcp-client
 
-TypeScript SDK for Model Context Protocol (MCP) - A comprehensive client library for connecting to and interacting with MCP servers.
+TypeScript SDK for Model Context Protocol (MCP) - A comprehensive client library
+for connecting to and interacting with MCP servers.
 
 ## Features
 
@@ -33,8 +34,8 @@ const client = createMCPClient({
   transport: {
     type: 'stdio',
     command: 'npx',
-    args: ['my-mcp-server']
-  }
+    args: ['my-mcp-server'],
+  },
 });
 
 // Connect to server
@@ -43,12 +44,15 @@ console.log('Connected to:', serverInfo.name);
 
 // List available tools
 const tools = await client.tools.listTools();
-console.log('Available tools:', tools.map(t => t.name));
+console.log(
+  'Available tools:',
+  tools.map((t) => t.name)
+);
 
 // Call a tool
 const result = await client.tools.callTool({
   name: 'get_weather',
-  arguments: { city: 'San Francisco' }
+  arguments: { city: 'San Francisco' },
 });
 console.log('Result:', result);
 
@@ -68,10 +72,10 @@ const client = createMCPClient({
     type: 'http',
     endpoint: 'http://localhost:3000/mcp',
     headers: {
-      'Authorization': 'Bearer your-token-here'
-    }
+      Authorization: 'Bearer your-token-here',
+    },
   },
-  timeout: 30000
+  timeout: 30000,
 });
 
 await client.connect();
@@ -89,9 +93,9 @@ const client = createMCPClient({
     type: 'websocket',
     endpoint: 'ws://localhost:3000/mcp',
     headers: {
-      'Authorization': 'Bearer your-token-here'
-    }
-  }
+      Authorization: 'Bearer your-token-here',
+    },
+  },
 });
 
 // Listen for notifications
@@ -108,20 +112,21 @@ await client.connect();
 
 ```typescript
 interface MCPClientConfig {
-  name: string;              // Client application name
-  version: string;           // Client version
+  name: string; // Client application name
+  version: string; // Client version
   transport: MCPTransportConfig;
   capabilities?: MCPCapabilities;
-  timeout?: number;          // Request timeout (default: 30000ms)
-  retryAttempts?: number;    // Connection retry attempts (default: 3)
-  retryDelay?: number;       // Delay between retries (default: 1000ms)
-  debug?: boolean;           // Enable debug logging
+  timeout?: number; // Request timeout (default: 30000ms)
+  retryAttempts?: number; // Connection retry attempts (default: 3)
+  retryDelay?: number; // Delay between retries (default: 1000ms)
+  debug?: boolean; // Enable debug logging
 }
 ```
 
 ### Transport Types
 
 #### Stdio Transport
+
 Best for local MCP servers running as separate processes:
 
 ```typescript
@@ -134,6 +139,7 @@ Best for local MCP servers running as separate processes:
 ```
 
 #### HTTP Transport
+
 Best for stateless request/response patterns:
 
 ```typescript
@@ -146,6 +152,7 @@ Best for stateless request/response patterns:
 ```
 
 #### WebSocket Transport
+
 Best for real-time, bidirectional communication:
 
 ```typescript
@@ -164,7 +171,7 @@ Best for real-time, bidirectional communication:
 ```typescript
 const tools = await client.tools.listTools();
 
-tools.forEach(tool => {
+tools.forEach((tool) => {
   console.log(`${tool.name}: ${tool.description}`);
   console.log('Schema:', tool.inputSchema);
 });
@@ -177,8 +184,8 @@ const result = await client.tools.callTool({
   name: 'calculate',
   arguments: {
     operation: 'add',
-    numbers: [10, 20, 30]
-  }
+    numbers: [10, 20, 30],
+  },
 });
 
 // Extract text content
@@ -194,14 +201,14 @@ console.log(texts.join('\n'));
 const results = await client.tools.callToolsSequence([
   { name: 'tool1', arguments: { param: 'value1' } },
   { name: 'tool2', arguments: { param: 'value2' } },
-  { name: 'tool3', arguments: { param: 'value3' } }
+  { name: 'tool3', arguments: { param: 'value3' } },
 ]);
 
 // Parallel execution
 const results = await client.tools.callToolsParallel([
   { name: 'tool1', arguments: { param: 'value1' } },
   { name: 'tool2', arguments: { param: 'value2' } },
-  { name: 'tool3', arguments: { param: 'value3' } }
+  { name: 'tool3', arguments: { param: 'value3' } },
 ]);
 ```
 
@@ -214,7 +221,7 @@ const resources = await client.listResources();
 // Read a resource
 const contents = await client.readResource('file:///path/to/file.txt');
 
-contents.forEach(content => {
+contents.forEach((content) => {
   if (content.type === 'text') {
     console.log(content.text);
   }
@@ -230,11 +237,11 @@ const prompts = await client.listPrompts();
 // Get a prompt
 const prompt = await client.getPrompt('code_review', {
   language: 'typescript',
-  file: 'app.ts'
+  file: 'app.ts',
 });
 
 console.log('Prompt:', prompt.description);
-prompt.messages.forEach(msg => {
+prompt.messages.forEach((msg) => {
   console.log(`${msg.role}:`, msg.content);
 });
 ```
@@ -290,7 +297,7 @@ import {
   MCPError,
   MCPConnectionError,
   MCPTimeoutError,
-  MCPToolError
+  MCPToolError,
 } from '@noa-server/mcp-client';
 
 try {
@@ -308,7 +315,7 @@ try {
 try {
   const result = await client.tools.callTool({
     name: 'unknown_tool',
-    arguments: {}
+    arguments: {},
   });
 } catch (error) {
   if (error instanceof MCPToolError) {
@@ -361,7 +368,7 @@ import { MCPToolUtils } from '@noa-server/mcp-client';
 
 const result = await client.tools.callTool({
   name: 'analyze_image',
-  arguments: { url: 'https://example.com/image.jpg' }
+  arguments: { url: 'https://example.com/image.jpg' },
 });
 
 // Extract different content types
@@ -381,7 +388,8 @@ if (MCPToolUtils.hasError(result)) {
 
 ## Type Definitions
 
-The SDK includes comprehensive TypeScript definitions for all MCP protocol types:
+The SDK includes comprehensive TypeScript definitions for all MCP protocol
+types:
 
 ```typescript
 import {
@@ -429,7 +437,8 @@ Main client class for MCP communication.
 - `listResources(): Promise<MCPResource[]>` - List available resources
 - `readResource(uri: string): Promise<MCPContent[]>` - Read a resource
 - `listPrompts(): Promise<MCPPrompt[]>` - List available prompts
-- `getPrompt(name: string, args?: Record<string, string>): Promise<GetPromptResponse>` - Get a prompt
+- `getPrompt(name: string, args?: Record<string, string>): Promise<GetPromptResponse>` -
+  Get a prompt
 
 #### Properties
 
@@ -446,8 +455,10 @@ Tool discovery and invocation manager.
 - `getAllTools(): MCPTool[]` - Get all cached tools
 - `hasTool(name: string): boolean` - Check if tool exists
 - `callTool(call: MCPToolCall): Promise<MCPToolResult>` - Call a tool
-- `callToolsSequence(calls: MCPToolCall[]): Promise<MCPToolResult[]>` - Call tools sequentially
-- `callToolsParallel(calls: MCPToolCall[]): Promise<MCPToolResult[]>` - Call tools in parallel
+- `callToolsSequence(calls: MCPToolCall[]): Promise<MCPToolResult[]>` - Call
+  tools sequentially
+- `callToolsParallel(calls: MCPToolCall[]): Promise<MCPToolResult[]>` - Call
+  tools in parallel
 - `refresh(): Promise<MCPTool[]>` - Refresh tool list from server
 
 ## License
@@ -456,10 +467,12 @@ MIT
 
 ## Contributing
 
-Contributions are welcome! Please read our contributing guidelines before submitting PRs.
+Contributions are welcome! Please read our contributing guidelines before
+submitting PRs.
 
 ## Support
 
 For issues and questions:
+
 - GitHub Issues: https://github.com/noa-server/noa-server/issues
 - Documentation: https://docs.noa-server.io/mcp-client

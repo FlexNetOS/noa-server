@@ -46,8 +46,8 @@ export function RealTimeDashboard() {
 
   if (!telemetry) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      <div className="flex h-full items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-500" />
       </div>
     );
   }
@@ -55,15 +55,15 @@ export function RealTimeDashboard() {
   const activeAlerts = telemetry.systemHealth.status !== 'healthy' ? 1 : 0;
 
   return (
-    <div className="h-full flex flex-col bg-gray-50 dark:bg-gray-900">
+    <div className="flex h-full flex-col bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <div className="flex-none px-6 py-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+      <div className="flex-none border-b border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               Real-Time Monitoring
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
               Live system metrics and performance data
             </p>
           </div>
@@ -71,7 +71,7 @@ export function RealTimeDashboard() {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <span
-                className={`inline-block w-2 h-2 rounded-full animate-pulse ${
+                className={`inline-block h-2 w-2 animate-pulse rounded-full ${
                   isConnected ? 'bg-green-500' : 'bg-red-500'
                 }`}
                 aria-label={isConnected ? 'Connected' : 'Disconnected'}
@@ -82,8 +82,8 @@ export function RealTimeDashboard() {
             </div>
 
             {activeAlerts > 0 && (
-              <div className="flex items-center gap-2 px-3 py-1 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 rounded-full">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <div className="flex items-center gap-2 rounded-full bg-red-100 px-3 py-1 text-red-800 dark:bg-red-900 dark:text-red-200">
+                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fillRule="evenodd"
                     d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
@@ -99,19 +99,19 @@ export function RealTimeDashboard() {
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Metric Cards */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+            className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
           >
-            <div className="flex items-center justify-between mb-4">
+            <div className="mb-4 flex items-center justify-between">
               <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
                 Active Agents
               </h3>
               <svg
-                className="w-5 h-5 text-purple-500"
+                className="h-5 w-5 text-purple-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -124,7 +124,7 @@ export function RealTimeDashboard() {
                 />
               </svg>
             </div>
-            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            <div className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">
               {telemetry.swarmMetrics.activeAgents} / {telemetry.swarmMetrics.totalAgents}
             </div>
             <div className="text-sm text-gray-500 dark:text-gray-400">
@@ -140,14 +140,14 @@ export function RealTimeDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+            className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
           >
-            <div className="flex items-center justify-between mb-4">
+            <div className="mb-4 flex items-center justify-between">
               <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
                 Task Throughput
               </h3>
               <svg
-                className="w-5 h-5 text-blue-500"
+                className="h-5 w-5 text-blue-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -160,7 +160,7 @@ export function RealTimeDashboard() {
                 />
               </svg>
             </div>
-            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            <div className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">
               {telemetry.swarmMetrics.throughput.toFixed(1)}
             </div>
             <div className="text-sm text-gray-500 dark:text-gray-400">tasks/second</div>
@@ -170,14 +170,14 @@ export function RealTimeDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+            className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
           >
-            <div className="flex items-center justify-between mb-4">
+            <div className="mb-4 flex items-center justify-between">
               <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
                 Avg Response Time
               </h3>
               <svg
-                className="w-5 h-5 text-green-500"
+                className="h-5 w-5 text-green-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -190,7 +190,7 @@ export function RealTimeDashboard() {
                 />
               </svg>
             </div>
-            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            <div className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">
               {telemetry.swarmMetrics.avgResponseTime.toFixed(0)}ms
             </div>
             <div className="text-sm text-gray-500 dark:text-gray-400">average latency</div>
@@ -203,7 +203,7 @@ export function RealTimeDashboard() {
         </div>
 
         {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
           <MetricsChart
             title="CPU Usage"
             data={historicalData}

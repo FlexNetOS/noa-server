@@ -1,9 +1,9 @@
-import * as isLeapYear from "dayjs/plugin/isLeapYear";
+import * as isLeapYear from 'dayjs/plugin/isLeapYear';
 
-import React from "react";
+import React from 'react';
 
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 
 dayjs.extend(relativeTime);
 
@@ -15,10 +15,7 @@ const TimeAgo = (props: { rfc3339?: string }) => {
   React.useEffect(() => {
     setTime(dayjs(props.rfc3339).fromNow());
 
-    const interval = setInterval(
-      () => setTime(dayjs(props.rfc3339).fromNow()),
-      10000
-    );
+    const interval = setInterval(() => setTime(dayjs(props.rfc3339).fromNow()), 10000);
     return () => {
       clearInterval(interval);
     };

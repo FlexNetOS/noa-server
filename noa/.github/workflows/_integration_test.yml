@@ -12,8 +12,8 @@ jobs:
     strategy:
       matrix:
         python-version:
-          - "3.10"
-          - "3.11"
+          - '3.10'
+          - '3.11'
         example:
           - name: A
             workdir: libs/cli/examples
@@ -27,7 +27,7 @@ jobs:
           - name: D
             workdir: libs/cli/examples/graphs_reqs_b
             tag: langgraph-test-d
-    name: "CLI integration test"
+    name: 'CLI integration test'
     defaults:
       run:
         working-directory: libs/cli
@@ -37,14 +37,14 @@ jobs:
         id: changed-files
         uses: Ana06/get-changed-files@v2.3.0
         with:
-          filter: "libs/cli/**"
+          filter: 'libs/cli/**'
       - name: Set up Python ${{ matrix.python-version }}
         if: steps.changed-files.outputs.all
         uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ matrix.python-version }}
           enable-cache: true
-          cache-suffix: "cli-integration-test"
+          cache-suffix: 'cli-integration-test'
           ignore-nothing-to-cache: true
       - name: Install cli globally
         if: steps.changed-files.outputs.all

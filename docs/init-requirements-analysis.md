@@ -1,17 +1,22 @@
 # Initialization Requirements Analysis
+
 ## noa-server Project
 
-**Generated:** 2025-10-22
-**Agent:** RequirementsAnalyst (Swarm Session: swarm-1761138133786)
-**Location:** /home/deflex/noa-server
+**Generated:** 2025-10-22 **Agent:** RequirementsAnalyst (Swarm Session:
+swarm-1761138133786) **Location:** /home/deflex/noa-server
 
 ---
 
 ## Executive Summary
 
-The "init" requirement for noa-server is **multi-faceted**, requiring initialization across 8 major subsystems. This analysis documents comprehensive requirements for a unified initialization system that brings up the entire Claude Suite infrastructure.
+The "init" requirement for noa-server is **multi-faceted**, requiring
+initialization across 8 major subsystems. This analysis documents comprehensive
+requirements for a unified initialization system that brings up the entire
+Claude Suite infrastructure.
 
-**Key Finding:** The project already has extensive initialization code in `claude-flow/bin/init/` but lacks a **unified orchestration script** that coordinates all subsystems in the correct sequence.
+**Key Finding:** The project already has extensive initialization code in
+`claude-flow/bin/init/` but lacks a **unified orchestration script** that
+coordinates all subsystems in the correct sequence.
 
 ---
 
@@ -90,7 +95,9 @@ The "init" requirement for noa-server is **multi-faceted**, requiring initializa
 **Location:** `/home/deflex/noa-server/claude-flow/bin/init/`
 
 **Capabilities:**
-- Creates Claude Code integration files (CLAUDE.md, memory-bank.md, coordination.md)
+
+- Creates Claude Code integration files (CLAUDE.md, memory-bank.md,
+  coordination.md)
 - Sets up SPARC development environment (17+ modes)
 - Initializes agent system (64 specialized agents)
 - Configures MCP server connections
@@ -101,6 +108,7 @@ The "init" requirement for noa-server is **multi-faceted**, requiring initializa
 - Batch initialization support
 
 **Key Files:**
+
 - `index.js` - Main orchestration (1641 lines)
 - `batch-init.js` - Parallel project initialization
 - `hive-mind-init.js` - Advanced hive-mind setup
@@ -110,6 +118,7 @@ The "init" requirement for noa-server is **multi-faceted**, requiring initializa
 ### 3. Package.json Scripts
 
 **Root Package (`claude-suite`):**
+
 ```json
 {
   "hive:init": "bash scripts/automation/hive-mind-init.sh",
@@ -124,6 +133,7 @@ The "init" requirement for noa-server is **multi-faceted**, requiring initializa
 ```
 
 **Claude Flow Package:**
+
 ```json
 {
   "init:neural": "node scripts/init-neural.js",
@@ -138,6 +148,7 @@ The "init" requirement for noa-server is **multi-faceted**, requiring initializa
 ### 1. Environment Variables Required
 
 **From `.env.example`:**
+
 ```bash
 NODE_ENV=development
 LLM_MODEL_PATH=${PWD}/models/demo.gguf
@@ -148,6 +159,7 @@ UI_PORT=9200
 ```
 
 **From Infrastructure Docs:**
+
 ```bash
 # Database (MUST CHANGE IN PRODUCTION!)
 POSTGRES_USER=noa
@@ -171,9 +183,9 @@ CUDA_VISIBLE_DEVICES=0
 
 ### 2. Runtime Requirements
 
-**Node.js Version:** 20.17.0 (from `.nvmrc`)
-**Python Environment:** `praisonai_env` virtual environment
-**Virtual Environments:**
+**Node.js Version:** 20.17.0 (from `.nvmrc`) **Python Environment:**
+`praisonai_env` virtual environment **Virtual Environments:**
+
 - `/home/deflex/noa-server/noa/venv/` - LangGraph shared venv
 - `/home/deflex/noa-server/.venv/` - Project venv
 - `praisonai_env` - Llama.cpp neural processing
@@ -184,17 +196,19 @@ CUDA_VISIBLE_DEVICES=0
 
 ### 1. Node.js Version Mismatch
 
-**Issue:** Claude Flow hooks failing due to better-sqlite3 native module mismatch
+**Issue:** Claude Flow hooks failing due to better-sqlite3 native module
+mismatch
 
 ```
 Error: The module 'better-sqlite3.node' was compiled against Node.js
 MODULE_VERSION 115 but current Node.js requires MODULE_VERSION 127.
 ```
 
-**Impact:** Memory coordination hooks cannot execute
-**Solution Required:** Rebuild better-sqlite3 for Node.js 20.17.0 or use in-memory fallback
+**Impact:** Memory coordination hooks cannot execute **Solution Required:**
+Rebuild better-sqlite3 for Node.js 20.17.0 or use in-memory fallback
 
 **Recommended Fix:**
+
 ```bash
 cd /home/deflex/.npm/_npx/7cfa166e65244432
 npm rebuild better-sqlite3
@@ -208,8 +222,9 @@ npm rebuild better-sqlite3
 ⚠️  Git operations blocked - Truth Verification System active
 ```
 
-**Impact:** Pre-task, post-task, and session coordination hooks cannot persist state
-**Solution Required:** Either disable Truth Verification or implement git-free coordination
+**Impact:** Pre-task, post-task, and session coordination hooks cannot persist
+state **Solution Required:** Either disable Truth Verification or implement
+git-free coordination
 
 ---
 
@@ -250,6 +265,7 @@ npm rebuild better-sqlite3
 ### Phase 3: Python Environment Setup
 
 1. **Activate Virtual Environments**
+
    ```bash
    source /home/deflex/noa-server/noa/venv/bin/activate
    source /home/deflex/noa-server/.venv/bin/activate  # If separate
@@ -257,6 +273,7 @@ npm rebuild better-sqlite3
    ```
 
 2. **Install Python Dependencies**
+
    ```bash
    cd /home/deflex/noa-server/noa
    pip install -U "langgraph-cli[inmem]" "langgraph==0.6.10"
@@ -268,11 +285,13 @@ npm rebuild better-sqlite3
 ### Phase 4: Node.js Environment Setup
 
 1. **Use Correct Node Version**
+
    ```bash
    nvm use 20.17.0  # From .nvmrc
    ```
 
 2. **Install Dependencies**
+
    ```bash
    cd /home/deflex/noa-server
    npm install  # Workspace installation
@@ -290,6 +309,7 @@ npm rebuild better-sqlite3
 ### Phase 5: Claude Flow Initialization
 
 1. **Initialize Claude Code Integration**
+
    ```bash
    cd /home/deflex/noa-server
    npx claude-flow@alpha init --sparc --force
@@ -305,6 +325,7 @@ npm rebuild better-sqlite3
    - Local `./claude-flow` executable wrapper
 
 2. **Initialize Hive-Mind System**
+
    ```bash
    npx claude-flow@alpha hive-mind init
    ```
@@ -319,30 +340,35 @@ npm rebuild better-sqlite3
 ### Phase 6: Service Startup
 
 1. **LangGraph Dev Server**
+
    ```bash
    cd /home/deflex/noa-server/noa
    langgraph dev --port 8000
    ```
 
 2. **MCP Server**
+
    ```bash
    cd /home/deflex/noa-server/mcp
    langgraph dev --port 8001
    ```
 
 3. **Claude Flow Service**
+
    ```bash
    cd /home/deflex/noa-server/claude-flow
    npx claude-flow@alpha start --port 9100
    ```
 
 4. **Flow Nexus Service**
+
    ```bash
    cd /home/deflex/noa-server/packages/flow-nexus
    npm start -- --port 9000
    ```
 
 5. **UI Dashboard**
+
    ```bash
    cd /home/deflex/noa-server/packages/ui-dashboard
    npm run dev -- --port 9200
@@ -358,6 +384,7 @@ npm rebuild better-sqlite3
 ### Phase 7: Health Checks
 
 **Verify All Services:**
+
 ```bash
 curl http://localhost:8000/health   # LangGraph
 curl http://localhost:8001/health   # MCP
@@ -369,11 +396,13 @@ curl http://localhost:9300/health   # Llama.cpp
 ### Phase 8: Post-Initialization Tasks
 
 1. **Verify Claude Code Integration**
+
    ```bash
    claude mcp list  # Should show all 3 MCP servers
    ```
 
 2. **Test Agent System**
+
    ```bash
    npx claude-flow@alpha agent list
    npx claude-flow@alpha swarm status
@@ -548,8 +577,8 @@ echo "✅ NOA Server initialization complete!"
 9. **Migration & Planning (2 agents)**
    - migration-planner, swarm-init
 
-**Agent Files Location:** `.claude/agents/`
-**Format:** Markdown files with agent personality, capabilities, and coordination protocols
+**Agent Files Location:** `.claude/agents/` **Format:** Markdown files with
+agent personality, capabilities, and coordination protocols
 
 ---
 
@@ -637,6 +666,7 @@ npx claude-flow@alpha sparc pipeline "task"
 ### Docker Deployment
 
 **Quick Start:**
+
 ```bash
 cd /home/deflex/noa-server
 cp .env.example .env
@@ -645,6 +675,7 @@ docker-compose -f docker/docker-compose.yml \
 ```
 
 **Services in Docker:**
+
 - noa-mcp (MCP server)
 - claude-flow (orchestration)
 - ui-dashboard (web interface)
@@ -654,6 +685,7 @@ docker-compose -f docker/docker-compose.yml \
 ### Kubernetes Deployment
 
 **Production Deployment:**
+
 ```bash
 kubectl create secret generic noa-server-secrets \
   --from-literal=POSTGRES_PASSWORD='secure-password' \
@@ -665,6 +697,7 @@ kubectl apply -k k8s/overlays/prod/
 ```
 
 **Auto-scaling Configured:**
+
 - MCP: 2-10 replicas
 - Claude Flow: 2-8 replicas
 - UI Dashboard: 3-15 replicas
@@ -678,6 +711,7 @@ kubectl apply -k k8s/overlays/prod/
 **CRITICAL:** Default passwords MUST be changed in production!
 
 **Secrets to Rotate:**
+
 ```bash
 POSTGRES_PASSWORD=changeme-in-production
 REDIS_PASSWORD=changeme-in-production
@@ -687,6 +721,7 @@ SESSION_SECRET=changeme-to-random-32-char-string
 ```
 
 **Secret Scan Results:**
+
 - 34 potential secrets found in quick scan
 - Output: `/home/deflex/quick_secrets_audit.csv`
 - **Action Required:** Review and rotate all production credentials
@@ -735,27 +770,27 @@ curl http://localhost:9300/health        # Llama.cpp
 
 ### 1. Missing Unified Init Script
 
-**Gap:** No single script coordinates all initialization phases
-**Impact:** Manual execution of multiple scripts required
-**Recommendation:** Create `/home/deflex/noa-server/init-noa-server.sh`
+**Gap:** No single script coordinates all initialization phases **Impact:**
+Manual execution of multiple scripts required **Recommendation:** Create
+`/home/deflex/noa-server/init-noa-server.sh`
 
 ### 2. Environment Validation Script
 
-**Gap:** No automated environment check before initialization
-**Impact:** Init may fail mid-process due to missing dependencies
-**Recommendation:** Create `scripts/validation/check-environment.sh`
+**Gap:** No automated environment check before initialization **Impact:** Init
+may fail mid-process due to missing dependencies **Recommendation:** Create
+`scripts/validation/check-environment.sh`
 
 ### 3. Health Check Automation
 
-**Gap:** Health checks are manual curl commands
-**Impact:** No automated verification of successful initialization
-**Recommendation:** Create `scripts/validation/health-checks.sh`
+**Gap:** Health checks are manual curl commands **Impact:** No automated
+verification of successful initialization **Recommendation:** Create
+`scripts/validation/health-checks.sh`
 
 ### 4. Rollback Capability
 
-**Gap:** No rollback mechanism if initialization fails mid-process
-**Impact:** Partial initialization leaves system in inconsistent state
-**Recommendation:** Leverage existing rollback system in `claude-flow/bin/init/rollback/`
+**Gap:** No rollback mechanism if initialization fails mid-process **Impact:**
+Partial initialization leaves system in inconsistent state **Recommendation:**
+Leverage existing rollback system in `claude-flow/bin/init/rollback/`
 
 ### 5. Documentation Sync
 
@@ -771,15 +806,15 @@ curl http://localhost:9300/health        # Llama.cpp
 
 ### 7. Model Download
 
-**Gap:** No automation for downloading GGUF models for llama.cpp
-**Impact:** Neural processing cannot start without models
-**Recommendation:** Add model download to initialization or provide clear instructions
+**Gap:** No automation for downloading GGUF models for llama.cpp **Impact:**
+Neural processing cannot start without models **Recommendation:** Add model
+download to initialization or provide clear instructions
 
 ### 8. MCP Server Registration
 
-**Gap:** MCP servers must be manually added to Claude Code
-**Impact:** Additional manual step after init
-**Recommendation:** Automate MCP server registration or provide clear post-init checklist
+**Gap:** MCP servers must be manually added to Claude Code **Impact:**
+Additional manual step after init **Recommendation:** Automate MCP server
+registration or provide clear post-init checklist
 
 ---
 
@@ -788,12 +823,14 @@ curl http://localhost:9300/health        # Llama.cpp
 ### Resource Requirements
 
 **Minimum (Development):**
+
 - CPU: 4 vCPUs
 - Memory: 8GB RAM
 - Storage: 50GB
 - GPU: Optional (for llama.cpp acceleration)
 
 **Recommended (Production):**
+
 - CPU: 16+ vCPUs
 - Memory: 32+ GB RAM
 - Storage: 200GB SSD
@@ -802,12 +839,14 @@ curl http://localhost:9300/health        # Llama.cpp
 ### Performance Optimizations
 
 **From Claude Flow v2.0.0:**
+
 - 84.8% SWE-Bench solve rate
 - 32.3% token reduction
 - 2.8-4.4x speed improvement
 - Parallel processing with batch operations
 
 **Auto-scaling Available:**
+
 - Kubernetes HPA configured
 - Service-specific replica ranges
 - CPU and memory-based scaling triggers
@@ -850,12 +889,14 @@ curl http://localhost:9300/health        # Llama.cpp
 ### From Existing Setup
 
 Current state analysis:
+
 - Git repository initialized (main branch, 1 commit)
 - Infrastructure documentation complete
 - Setup scripts exist but scattered
 - No unified orchestration
 
 **Migration Steps:**
+
 1. Audit existing configuration files
 2. Consolidate scattered init scripts
 3. Preserve custom configurations
@@ -877,6 +918,7 @@ Current state analysis:
 ### Agent Communication Pattern
 
 **Memory Keys:**
+
 ```
 swarm/research/requirements          # This document
 swarm/architect/init-design          # System architect design
@@ -888,12 +930,14 @@ swarm/shared/init-status            # Overall status
 ### Hooks Integration
 
 **Pre-Task:**
+
 ```bash
 npx claude-flow@alpha hooks pre-task \
   --description "Initialize unified init system"
 ```
 
 **During Work:**
+
 ```bash
 npx claude-flow@alpha hooks notify \
   --message "Research phase complete - requirements documented"
@@ -904,12 +948,14 @@ npx claude-flow@alpha hooks post-edit \
 ```
 
 **Post-Task:**
+
 ```bash
 npx claude-flow@alpha hooks post-task \
   --task-id "requirements-analysis"
 ```
 
-**Note:** Current hook execution failing due to better-sqlite3 native module mismatch. Using manual coordination until resolved.
+**Note:** Current hook execution failing due to better-sqlite3 native module
+mismatch. Using manual coordination until resolved.
 
 ---
 
@@ -986,7 +1032,10 @@ npx claude-flow@alpha hooks post-task \
 
 ## Conclusion
 
-The noa-server project requires comprehensive initialization across 8 major subsystems. While extensive initialization code exists in the `claude-flow/bin/init/` system, a **unified orchestration script** is needed to coordinate:
+The noa-server project requires comprehensive initialization across 8 major
+subsystems. While extensive initialization code exists in the
+`claude-flow/bin/init/` system, a **unified orchestration script** is needed to
+coordinate:
 
 1. Environment validation and preparation
 2. Database and cache initialization
@@ -997,11 +1046,13 @@ The noa-server project requires comprehensive initialization across 8 major subs
 7. Post-init configuration and documentation
 
 **Critical Blockers:**
+
 - Node.js module version mismatch (better-sqlite3)
 - Git operations blocked by Truth Verification System
 - No rollback mechanism for failed initialization
 
 **Success Criteria:**
+
 - Single command (`./scripts/init-noa-server.sh`) brings up entire system
 - All 6 services respond to health checks
 - 64 agents available in Claude Code
@@ -1009,6 +1060,7 @@ The noa-server project requires comprehensive initialization across 8 major subs
 - Memory and coordination systems operational
 
 **Next Steps:**
+
 1. System architect designs unified init script architecture
 2. Coder implements init orchestration
 3. Tester creates validation suite
@@ -1020,30 +1072,33 @@ The noa-server project requires comprehensive initialization across 8 major subs
 ## Appendix A: File Paths Reference
 
 ### Critical Configuration Files
+
 - `/home/deflex/noa-server/.env` (create from .env.example)
 - `/home/deflex/noa-server/.nvmrc` (Node.js 20.17.0)
 - `/home/deflex/noa-server/CLAUDE.md` (Claude Code config)
 - `/home/deflex/noa-server/.mcp.json` (MCP server config)
 
 ### Key Scripts
+
 - `/home/deflex/noa-server/start.sh` (service startup)
 - `/home/deflex/noa-server/scripts/runtime/bootstrap_python.sh`
 - `/home/deflex/noa-server/scripts/runtime/bootstrap_node.sh`
 - `/home/deflex/noa-server/claude-flow/bin/init/index.js` (Claude Flow init)
 
 ### Infrastructure
+
 - `/home/deflex/noa-server/docker/docker-compose.yml` (Docker orchestration)
 - `/home/deflex/noa-server/k8s/` (Kubernetes manifests)
 - `/home/deflex/noa-server/docker/init-db.sql` (PostgreSQL schema)
 
 ### Documentation
+
 - `/home/deflex/noa-server/INFRASTRUCTURE.md` (infrastructure guide)
 - `/home/deflex/noa-server/SETUP_COMPLETE.md` (setup summary)
 - `/home/deflex/noa-server/CLAUDE.md` (project instructions)
 
 ---
 
-**Document Status:** Complete
-**Research Findings Stored:** Yes (this document)
+**Document Status:** Complete **Research Findings Stored:** Yes (this document)
 **Memory Coordination:** Attempted (hooks failed due to dependency issue)
 **Ready for Next Agent:** System Architect (init-design phase)

@@ -72,7 +72,7 @@ export class PostAgentAddHook {
       duration,
       pipelineResult,
       validationResult,
-      sessionId
+      sessionId,
     };
 
     // Execute post-integration tasks
@@ -91,7 +91,7 @@ export class PostAgentAddHook {
       notifications: this.notifications,
       cleanupActions: this.cleanupActions,
       nextSteps: this.nextSteps,
-      summary
+      summary,
     };
 
     this.printHookReport(result);
@@ -114,7 +114,7 @@ export class PostAgentAddHook {
         type: 'success',
         channel: 'console',
         message: `✅ Agent "${agentInfo.name}" successfully integrated!`,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     }
 
@@ -124,7 +124,7 @@ export class PostAgentAddHook {
         type: 'warning',
         channel: 'console',
         message: `⚠️  ${validationResult.warnings.length} validation warnings found`,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     }
 
@@ -134,7 +134,7 @@ export class PostAgentAddHook {
         type: 'error',
         channel: 'console',
         message: `❌ Integration completed with ${pipelineResult.failedSteps} failed steps and ${validationResult.errors.length} validation errors`,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     }
 
@@ -144,7 +144,7 @@ export class PostAgentAddHook {
         type: 'info',
         channel: 'console',
         message: `⚡ Fast integration: ${context.duration}ms`,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     }
 
@@ -176,27 +176,20 @@ export class PostAgentAddHook {
   /**
    * Generate next steps recommendations
    */
-  private async generateNextSteps(
-    agentInfo: AgentInfo,
-    context: PostHookContext
-  ): Promise<void> {
+  private async generateNextSteps(agentInfo: AgentInfo, context: PostHookContext): Promise<void> {
     const { pipelineResult, validationResult } = context;
 
     // Always recommend testing
     this.nextSteps.push('Run test suite to verify agent functionality');
 
     // If documentation warnings, recommend updates
-    const hasDocWarnings = validationResult.warnings.some(
-      w => w.category === 'documentation'
-    );
+    const hasDocWarnings = validationResult.warnings.some((w) => w.category === 'documentation');
     if (hasDocWarnings) {
       this.nextSteps.push('Update documentation with agent details');
     }
 
     // If test warnings, recommend creating tests
-    const hasTestWarnings = validationResult.warnings.some(
-      w => w.message.includes('test')
-    );
+    const hasTestWarnings = validationResult.warnings.some((w) => w.message.includes('test'));
     if (hasTestWarnings) {
       this.nextSteps.push(`Create comprehensive tests for ${agentInfo.name}`);
     }
@@ -220,10 +213,7 @@ export class PostAgentAddHook {
   /**
    * Log integration to file
    */
-  private async logIntegration(
-    agentInfo: AgentInfo,
-    context: PostHookContext
-  ): Promise<void> {
+  private async logIntegration(agentInfo: AgentInfo, context: PostHookContext): Promise<void> {
     const logsDir = path.join(process.cwd(), 'logs');
     if (!fs.existsSync(logsDir)) {
       fs.mkdirSync(logsDir, { recursive: true });
@@ -239,13 +229,13 @@ export class PostAgentAddHook {
       pipeline: {
         total: context.pipelineResult.totalSteps,
         successful: context.pipelineResult.successfulSteps,
-        failed: context.pipelineResult.failedSteps
+        failed: context.pipelineResult.failedSteps,
       },
       validation: {
         passed: context.validationResult.passed,
         errors: context.validationResult.errors.length,
-        warnings: context.validationResult.warnings.length
-      }
+        warnings: context.validationResult.warnings.length,
+      },
     };
 
     const logLine = JSON.stringify(logEntry) + '\n';
@@ -258,10 +248,7 @@ export class PostAgentAddHook {
   /**
    * Update metrics tracking
    */
-  private async updateMetrics(
-    agentInfo: AgentInfo,
-    context: PostHookContext
-  ): Promise<void> {
+  private async updateMetrics(agentInfo: AgentInfo, context: PostHookContext): Promise<void> {
     const metricsPath = path.join(process.cwd(), '.claude/metrics.json');
 
     let metrics: any = {};
@@ -275,7 +262,7 @@ export class PostAgentAddHook {
         successful: 0,
         failed: 0,
         averageDuration: 0,
-        agents: []
+        agents: [],
       };
     }
 
@@ -300,7 +287,7 @@ export class PostAgentAddHook {
       type: agentInfo.type,
       timestamp: context.timestamp.toISOString(),
       duration: context.duration,
-      success
+      success,
     });
 
     fs.writeFileSync(metricsPath, JSON.stringify(metrics, null, 2));
@@ -311,10 +298,7 @@ export class PostAgentAddHook {
   /**
    * Generate integration summary
    */
-  private generateSummary(
-    agentInfo: AgentInfo,
-    context: PostHookContext
-  ): IntegrationSummary {
+  private generateSummary(agentInfo: AgentInfo, context: PostHookContext): IntegrationSummary {
     const { pipelineResult, validationResult, duration } = context;
 
     const filesModified = this.extractModifiedFiles(pipelineResult);
@@ -330,7 +314,7 @@ export class PostAgentAddHook {
       overallSuccess: this.determineOverallSuccess(context),
       integrationTime: duration,
       filesModified,
-      recommendations
+      recommendations,
     };
   }
 
@@ -346,10 +330,10 @@ export class PostAgentAddHook {
       'update-package-json': ['package.json'],
       'update-documentation': ['README.md', 'docs/'],
       'create-integration-code': ['src/'],
-      'generate-tests': ['tests/']
+      'generate-tests': ['tests/'],
     };
 
-    pipelineResult.results.forEach(result => {
+    pipelineResult.results.forEach((result) => {
       if (result.success && stepFileMapping[result.step]) {
         files.push(...stepFileMapping[result.step]);
       }
@@ -408,16 +392,17 @@ export class PostAgentAddHook {
       return;
     }
 
-    const files = fs.readdirSync(backupDir)
-      .map(file => ({
+    const files = fs
+      .readdirSync(backupDir)
+      .map((file) => ({
         name: file,
         path: path.join(backupDir, file),
-        time: fs.statSync(path.join(backupDir, file)).mtime.getTime()
+        time: fs.statSync(path.join(backupDir, file)).mtime.getTime(),
       }))
       .sort((a, b) => b.time - a.time); // Newest first
 
     // Keep only the 10 most recent backups
-    files.slice(10).forEach(file => {
+    files.slice(10).forEach((file) => {
       fs.unlinkSync(file.path);
     });
   }
@@ -461,7 +446,7 @@ export class PostAgentAddHook {
 
     if (summary.filesModified.length > 0) {
       console.log('📝 Files Modified:');
-      summary.filesModified.forEach(file => {
+      summary.filesModified.forEach((file) => {
         console.log(`   • ${file}`);
       });
       console.log('');
@@ -474,7 +459,7 @@ export class PostAgentAddHook {
           success: '✅',
           warning: '⚠️',
           error: '❌',
-          info: 'ℹ️'
+          info: 'ℹ️',
         }[notif.type];
         console.log(`   ${icon} ${notif.message}`);
       });

@@ -20,7 +20,7 @@ async function example1_AutomaticIntegration() {
     autoTrigger: true,
     enableHooks: true,
     enableValidation: true,
-    enableSwarm: false // Disable for demo
+    enableSwarm: false, // Disable for demo
   });
 
   // Start watching for new agent files
@@ -45,7 +45,7 @@ async function example2_ManualIntegration() {
   const orchestrator = new AutomationOrchestrator({
     enabled: true,
     autoTrigger: false,
-    enableSwarm: false
+    enableSwarm: false,
   });
 
   const agentInfo: AgentInfo = {
@@ -53,7 +53,7 @@ async function example2_ManualIntegration() {
     type: 'optimizer',
     path: path.join(__dirname, 'example-agent.ts'),
     className: 'ExampleOptimizer',
-    capabilities: ['optimize', 'analyze', 'enhance']
+    capabilities: ['optimize', 'analyze', 'enhance'],
   };
 
   console.log('\n🚀 Integrating agent manually...');
@@ -93,10 +93,10 @@ async function example3_ConfiguredIntegration() {
   const orchestrator = new AutomationOrchestrator({
     enabled: true,
     autoTrigger: false,
-    failFast: true,        // Stop on first error
-    enableHooks: true,     // Run pre/post hooks
+    failFast: true, // Stop on first error
+    enableHooks: true, // Run pre/post hooks
     enableValidation: true, // Validate after integration
-    enableSwarm: false     // Disable swarm for demo
+    enableSwarm: false, // Disable swarm for demo
   });
 
   const agentInfo: AgentInfo = {
@@ -104,7 +104,7 @@ async function example3_ConfiguredIntegration() {
     type: 'coordinator',
     path: path.join(__dirname, 'configured-agent.ts'),
     className: 'ConfiguredAgent',
-    capabilities: ['coordinate', 'manage']
+    capabilities: ['coordinate', 'manage'],
   };
 
   console.log('\n⚙️  Configuration:');
@@ -115,7 +115,9 @@ async function example3_ConfiguredIntegration() {
 
   const result = await orchestrator.integrateAgent(agentInfo);
 
-  console.log(`\n${result.success ? '✅' : '❌'} Integration ${result.success ? 'succeeded' : 'failed'}`);
+  console.log(
+    `\n${result.success ? '✅' : '❌'} Integration ${result.success ? 'succeeded' : 'failed'}`
+  );
 }
 
 /**
@@ -127,7 +129,7 @@ async function example4_MonitoringStatistics() {
 
   const orchestrator = new AutomationOrchestrator({
     enabled: true,
-    enableSwarm: false
+    enableSwarm: false,
   });
 
   // Integrate multiple agents
@@ -136,20 +138,20 @@ async function example4_MonitoringStatistics() {
       name: 'agent-1',
       type: 'optimizer',
       path: '/tmp/agent-1.ts',
-      className: 'Agent1'
+      className: 'Agent1',
     },
     {
       name: 'agent-2',
       type: 'validator',
       path: '/tmp/agent-2.ts',
-      className: 'Agent2'
+      className: 'Agent2',
     },
     {
       name: 'agent-3',
       type: 'analyzer',
       path: '/tmp/agent-3.ts',
-      className: 'Agent3'
-    }
+      className: 'Agent3',
+    },
   ];
 
   console.log('\n🔄 Integrating 3 agents...\n');
@@ -187,7 +189,7 @@ async function example5_ErrorHandling() {
   const orchestrator = new AutomationOrchestrator({
     enabled: true,
     failFast: false, // Continue on errors
-    enableSwarm: false
+    enableSwarm: false,
   });
 
   // Try to integrate non-existent agent
@@ -195,14 +197,16 @@ async function example5_ErrorHandling() {
     name: 'non-existent',
     type: 'optimizer',
     path: '/path/that/does/not/exist.ts',
-    className: 'NonExistent'
+    className: 'NonExistent',
   };
 
   console.log('\n🔍 Attempting to integrate non-existent agent...');
 
   const result = await orchestrator.integrateAgent(badAgentInfo);
 
-  console.log(`\n${result.success ? '✅' : '❌'} Integration result: ${result.success ? 'SUCCESS' : 'FAILED'}`);
+  console.log(
+    `\n${result.success ? '✅' : '❌'} Integration result: ${result.success ? 'SUCCESS' : 'FAILED'}`
+  );
 
   if (!result.success) {
     console.log(`   Error: ${result.error || 'Unknown error'}`);
@@ -225,13 +229,13 @@ async function example6_ExportReport() {
 
   const orchestrator = new AutomationOrchestrator({
     enabled: true,
-    enableSwarm: false
+    enableSwarm: false,
   });
 
   // Integrate a couple agents
   const agents: AgentInfo[] = [
     { name: 'report-agent-1', type: 'optimizer', path: '/tmp/r1.ts', className: 'R1' },
-    { name: 'report-agent-2', type: 'validator', path: '/tmp/r2.ts', className: 'R2' }
+    { name: 'report-agent-2', type: 'validator', path: '/tmp/r2.ts', className: 'R2' },
   ];
 
   for (const agent of agents) {
@@ -251,7 +255,9 @@ async function example6_ExportReport() {
     console.log('\n📋 Report Summary:');
     console.log(`   Generated: ${report.generated}`);
     console.log(`   Total Integrations: ${report.statistics.totalIntegrations}`);
-    console.log(`   Success Rate: ${Math.round((report.statistics.successful / report.statistics.totalIntegrations) * 100)}%`);
+    console.log(
+      `   Success Rate: ${Math.round((report.statistics.successful / report.statistics.totalIntegrations) * 100)}%`
+    );
   }
 }
 
@@ -265,7 +271,7 @@ async function example7_DynamicConfiguration() {
   const orchestrator = new AutomationOrchestrator({
     enabled: true,
     autoTrigger: true,
-    enableSwarm: false
+    enableSwarm: false,
   });
 
   console.log('\n⚙️  Initial state:');
@@ -304,7 +310,7 @@ async function example8_HistoryManagement() {
 
   const orchestrator = new AutomationOrchestrator({
     enabled: true,
-    enableSwarm: false
+    enableSwarm: false,
   });
 
   // Integrate some agents
@@ -313,7 +319,7 @@ async function example8_HistoryManagement() {
       name: `history-agent-${i}`,
       type: 'optimizer',
       path: `/tmp/h${i}.ts`,
-      className: `H${i}`
+      className: `H${i}`,
     });
   }
 
@@ -341,7 +347,7 @@ async function main() {
     { name: 'Error Handling', fn: example5_ErrorHandling },
     { name: 'Export Report', fn: example6_ExportReport },
     { name: 'Dynamic Configuration', fn: example7_DynamicConfiguration },
-    { name: 'History Management', fn: example8_HistoryManagement }
+    { name: 'History Management', fn: example8_HistoryManagement },
   ];
 
   console.log('\n' + '='.repeat(60));
@@ -367,7 +373,7 @@ async function main() {
 
 // Run if executed directly
 if (require.main === module) {
-  main().catch(error => {
+  main().catch((error) => {
     console.error('\n❌ Error:', error);
     process.exit(1);
   });
@@ -381,5 +387,5 @@ export {
   example5_ErrorHandling,
   example6_ExportReport,
   example7_DynamicConfiguration,
-  example8_HistoryManagement
+  example8_HistoryManagement,
 };

@@ -5,11 +5,14 @@ search:
 
 # Cloud SaaS
 
-To deploy a [LangGraph Server](../concepts/langgraph_server.md), follow the how-to guide for [how to deploy to Cloud SaaS](../cloud/deployment/cloud.md).
+To deploy a [LangGraph Server](../concepts/langgraph_server.md), follow the
+how-to guide for [how to deploy to Cloud SaaS](../cloud/deployment/cloud.md).
 
 ## Overview
 
-The Cloud SaaS deployment option is a fully managed model for deployment where we manage the [control plane](./langgraph_control_plane.md) and [data plane](./langgraph_data_plane.md) in our cloud.
+The Cloud SaaS deployment option is a fully managed model for deployment where
+we manage the [control plane](./langgraph_control_plane.md) and
+[data plane](./langgraph_data_plane.md) in our cloud.
 
 |                                    | [Control plane](../concepts/langgraph_control_plane.md)                                                                                     | [Data plane](../concepts/langgraph_data_plane.md)                                                                                                   |
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |

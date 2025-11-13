@@ -86,7 +86,8 @@ spec:
     - Egress
 ```
 
-This policy denies all traffic by default. All communication must be explicitly allowed.
+This policy denies all traffic by default. All communication must be explicitly
+allowed.
 
 #### 2. Allow DNS
 
@@ -172,10 +173,10 @@ networks:
     driver: bridge
   backend:
     driver: bridge
-    internal: true  # No external access
+    internal: true # No external access
   database:
     driver: bridge
-    internal: true  # No external access
+    internal: true # No external access
 ```
 
 ## Deployment
@@ -253,11 +254,11 @@ spec:
   rules:
     - from:
         - source:
-            namespaces: ["noa-server"]
-            principals: ["cluster.local/ns/noa-server/sa/noa-server"]
+            namespaces: ['noa-server']
+            principals: ['cluster.local/ns/noa-server/sa/noa-server']
       to:
         - operation:
-            ports: ["5432"]
+            ports: ['5432']
 ```
 
 ## Monitoring
@@ -270,6 +271,7 @@ spec:
 ```
 
 The audit checks:
+
 - Kubernetes network policies
 - Docker network configuration
 - Firewall rules
@@ -456,6 +458,7 @@ sudo iptables -L -n -v
 ## Support
 
 For security issues:
+
 - Email: security@noa-server.com
 - GitHub: https://github.com/noa-server/security/issues
 - Docs: https://docs.noa-server.com/security

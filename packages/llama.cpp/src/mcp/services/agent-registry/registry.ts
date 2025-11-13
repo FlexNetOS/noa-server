@@ -23,7 +23,7 @@ import {
   TaskCompletion,
   RegistryStatistics,
   RegistryEvent,
-  MCPToolResult
+  MCPToolResult,
 } from './types';
 
 export interface RegistryConfig {
@@ -52,7 +52,7 @@ export class AgentRegistry extends EventEmitter {
       heartbeatTimeout: config.heartbeatTimeout || 60000, // 1 minute
       healthCheckInterval: config.healthCheckInterval || 30000, // 30 seconds
       enableAutoCleanup: config.enableAutoCleanup ?? true,
-      cleanupInterval: config.cleanupInterval || 300000 // 5 minutes
+      cleanupInterval: config.cleanupInterval || 300000, // 5 minutes
     };
   }
 
@@ -64,17 +64,13 @@ export class AgentRegistry extends EventEmitter {
 
     // Start health monitoring
     this.healthCheckTimer = setInterval(() => {
-      this.performHealthChecks().catch(err =>
-        console.error('Health check failed:', err)
-      );
+      this.performHealthChecks().catch((err) => console.error('Health check failed:', err));
     }, this.config.healthCheckInterval);
 
     // Start cleanup
     if (this.config.enableAutoCleanup) {
       this.cleanupTimer = setInterval(() => {
-        this.performCleanup().catch(err =>
-          console.error('Cleanup failed:', err)
-        );
+        this.performCleanup().catch((err) => console.error('Cleanup failed:', err));
       }, this.config.cleanupInterval);
     }
   }
@@ -114,7 +110,7 @@ export class AgentRegistry extends EventEmitter {
         maxConcurrentTasks: request.maxConcurrentTasks || 5,
         createdAt: now,
         updatedAt: now,
-        configuration: request.configuration
+        configuration: request.configuration,
       };
 
       const health: AgentHealthMetrics = {
@@ -125,7 +121,7 @@ export class AgentRegistry extends EventEmitter {
         warningCount: 0,
         taskCount: 0,
         successRate: 1.0,
-        averageResponseTime: 0
+        averageResponseTime: 0,
       };
 
       const performance: AgentPerformanceMetrics = {
@@ -138,7 +134,7 @@ export class AgentRegistry extends EventEmitter {
         cacheHitRate: 0,
         qualityScore: 1.0,
         collaborationScore: 1.0,
-        lastUpdated: now
+        lastUpdated: now,
       };
 
       const registration: AgentRegistration = {
@@ -146,7 +142,7 @@ export class AgentRegistry extends EventEmitter {
         status: AgentStatus.INITIALIZING,
         health,
         performance,
-        endpoint: request.endpoint
+        endpoint: request.endpoint,
       };
 
       await this.storage.registerAgent(registration);
@@ -154,7 +150,7 @@ export class AgentRegistry extends EventEmitter {
 
       // Auto-transition to IDLE after registration
       setTimeout(() => {
-        this.updateAgentStatus(agentId, AgentStatus.IDLE).catch(err =>
+        this.updateAgentStatus(agentId, AgentStatus.IDLE).catch((err) =>
           console.error('Failed to transition agent to IDLE:', err)
         );
       }, 1000);
@@ -162,13 +158,13 @@ export class AgentRegistry extends EventEmitter {
       return {
         success: true,
         data: registration,
-        timestamp: now
+        timestamp: now,
       };
     } catch (error) {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     }
   }
@@ -176,48 +172,48 @@ export class AgentRegistry extends EventEmitter {
   /**
    * Discover agents by filter
    */
-  async discoverAgents(filter: AgentDiscoveryFilter = {}): Promise<MCPToolResult<AgentDiscoveryResult>> {
+  async discoverAgents(
+    filter: AgentDiscoveryFilter = {}
+  ): Promise<MCPToolResult<AgentDiscoveryResult>> {
     try {
       let agents = this.storage.getAllAgents();
       const total = agents.length;
 
       // Apply filters
       if (filter.types && filter.types.length > 0) {
-        agents = agents.filter(a => filter.types!.includes(a.metadata.type));
+        agents = agents.filter((a) => filter.types!.includes(a.metadata.type));
       }
 
       if (filter.capabilities && filter.capabilities.length > 0) {
-        agents = agents.filter(a =>
-          filter.capabilities!.some(cap => a.metadata.capabilities.includes(cap))
+        agents = agents.filter((a) =>
+          filter.capabilities!.some((cap) => a.metadata.capabilities.includes(cap))
         );
       }
 
       if (filter.statuses && filter.statuses.length > 0) {
-        agents = agents.filter(a => filter.statuses!.includes(a.status));
+        agents = agents.filter((a) => filter.statuses!.includes(a.status));
       }
 
       if (filter.tags && filter.tags.length > 0) {
-        agents = agents.filter(a =>
-          filter.tags!.some(tag => a.metadata.tags?.includes(tag))
-        );
+        agents = agents.filter((a) => filter.tags!.some((tag) => a.metadata.tags?.includes(tag)));
       }
 
       if (filter.minPriority !== undefined) {
-        agents = agents.filter(a => a.metadata.priority >= filter.minPriority!);
+        agents = agents.filter((a) => a.metadata.priority >= filter.minPriority!);
       }
 
       if (filter.maxPriority !== undefined) {
-        agents = agents.filter(a => a.metadata.priority <= filter.maxPriority!);
+        agents = agents.filter((a) => a.metadata.priority <= filter.maxPriority!);
       }
 
       if (filter.availableOnly) {
-        agents = agents.filter(a =>
-          a.status === AgentStatus.IDLE || a.status === AgentStatus.ACTIVE
+        agents = agents.filter(
+          (a) => a.status === AgentStatus.IDLE || a.status === AgentStatus.ACTIVE
         );
       }
 
       if (filter.minSuccessRate !== undefined) {
-        agents = agents.filter(a => a.performance.successRate >= filter.minSuccessRate!);
+        agents = agents.filter((a) => a.performance.successRate >= filter.minSuccessRate!);
       }
 
       const filtered = agents.length;
@@ -256,19 +252,19 @@ export class AgentRegistry extends EventEmitter {
         total,
         filtered,
         limit,
-        offset
+        offset,
       };
 
       return {
         success: true,
         data: result,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     } catch (error) {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     }
   }
@@ -284,20 +280,20 @@ export class AgentRegistry extends EventEmitter {
         return {
           success: false,
           error: `Agent ${agentId} not found`,
-          timestamp: new Date()
+          timestamp: new Date(),
         };
       }
 
       return {
         success: true,
         data: agent.health,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     } catch (error) {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     }
   }
@@ -313,20 +309,20 @@ export class AgentRegistry extends EventEmitter {
         return {
           success: false,
           error: `Agent ${agentId} not found`,
-          timestamp: new Date()
+          timestamp: new Date(),
         };
       }
 
       return {
         success: true,
         data: agent.performance,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     } catch (error) {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     }
   }
@@ -346,13 +342,13 @@ export class AgentRegistry extends EventEmitter {
         success,
         data: success,
         error: success ? undefined : `Agent ${agentId} not found`,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     } catch (error) {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     }
   }
@@ -369,8 +365,8 @@ export class AgentRegistry extends EventEmitter {
           tags: request.tags,
           priority: request.priority,
           maxConcurrentTasks: request.maxConcurrentTasks,
-          configuration: request.configuration
-        } as Partial<AgentMetadata>
+          configuration: request.configuration,
+        } as Partial<AgentMetadata>,
       };
 
       const success = await this.storage.updateAgent(request.agentId, updates);
@@ -383,13 +379,13 @@ export class AgentRegistry extends EventEmitter {
         success,
         data: success,
         error: success ? undefined : `Agent ${request.agentId} not found`,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     } catch (error) {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     }
   }
@@ -403,7 +399,7 @@ export class AgentRegistry extends EventEmitter {
         lastHeartbeat: heartbeat.timestamp,
         taskCount: heartbeat.taskCount,
         memoryUsage: heartbeat.memoryUsage,
-        cpuUsage: heartbeat.cpuUsage
+        cpuUsage: heartbeat.cpuUsage,
       };
 
       const success = await this.storage.updateAgentHealth(heartbeat.agentId, health);
@@ -415,13 +411,13 @@ export class AgentRegistry extends EventEmitter {
       return {
         success,
         data: success,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     } catch (error) {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     }
   }
@@ -437,7 +433,7 @@ export class AgentRegistry extends EventEmitter {
         return {
           success: false,
           error: `Agent ${task.agentId} not found`,
-          timestamp: new Date()
+          timestamp: new Date(),
         };
       }
 
@@ -449,13 +445,13 @@ export class AgentRegistry extends EventEmitter {
       return {
         success: true,
         data: true,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     } catch (error) {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     }
   }
@@ -477,13 +473,13 @@ export class AgentRegistry extends EventEmitter {
       return {
         success: true,
         data: true,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     } catch (error) {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     }
   }
@@ -498,33 +494,38 @@ export class AgentRegistry extends EventEmitter {
 
       const stats: RegistryStatistics = {
         totalAgents: agents.length,
-        activeAgents: agents.filter(a => a.status === AgentStatus.ACTIVE).length,
-        idleAgents: agents.filter(a => a.status === AgentStatus.IDLE).length,
-        busyAgents: agents.filter(a => a.status === AgentStatus.BUSY).length,
-        errorAgents: agents.filter(a => a.status === AgentStatus.ERROR).length,
-        offlineAgents: agents.filter(a => a.status === AgentStatus.OFFLINE).length,
-        totalTasks: agents.reduce((sum, a) => sum + a.performance.tasksCompleted + a.performance.tasksFailed, 0),
+        activeAgents: agents.filter((a) => a.status === AgentStatus.ACTIVE).length,
+        idleAgents: agents.filter((a) => a.status === AgentStatus.IDLE).length,
+        busyAgents: agents.filter((a) => a.status === AgentStatus.BUSY).length,
+        errorAgents: agents.filter((a) => a.status === AgentStatus.ERROR).length,
+        offlineAgents: agents.filter((a) => a.status === AgentStatus.OFFLINE).length,
+        totalTasks: agents.reduce(
+          (sum, a) => sum + a.performance.tasksCompleted + a.performance.tasksFailed,
+          0
+        ),
         completedTasks: agents.reduce((sum, a) => sum + a.performance.tasksCompleted, 0),
         failedTasks: agents.reduce((sum, a) => sum + a.performance.tasksFailed, 0),
-        averageSuccessRate: agents.length > 0
-          ? agents.reduce((sum, a) => sum + a.performance.successRate, 0) / agents.length
-          : 0,
-        averageResponseTime: agents.length > 0
-          ? agents.reduce((sum, a) => sum + a.health.averageResponseTime, 0) / agents.length
-          : 0,
-        updatedAt: new Date()
+        averageSuccessRate:
+          agents.length > 0
+            ? agents.reduce((sum, a) => sum + a.performance.successRate, 0) / agents.length
+            : 0,
+        averageResponseTime:
+          agents.length > 0
+            ? agents.reduce((sum, a) => sum + a.health.averageResponseTime, 0) / agents.length
+            : 0,
+        updatedAt: new Date(),
       };
 
       return {
         success: true,
         data: stats,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     } catch (error) {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     }
   }
@@ -590,13 +591,13 @@ export class AgentRegistry extends EventEmitter {
       return {
         success,
         data: success,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     } catch (error) {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     }
   }

@@ -1,10 +1,12 @@
 # JavaScript/TypeScript Getting Started Guide
 
-Learn how to integrate Flow Nexus's 94 MCP tools into your JavaScript and TypeScript applications.
+Learn how to integrate Flow Nexus's 94 MCP tools into your JavaScript and
+TypeScript applications.
 
 ## Prerequisites
 
-Flow Nexus uses the Model Context Protocol (MCP) for tool integration. You'll need an MCP-compatible client like Claude Code.
+Flow Nexus uses the Model Context Protocol (MCP) for tool integration. You'll
+need an MCP-compatible client like Claude Code.
 
 ## Authentication
 
@@ -13,8 +15,8 @@ First, authenticate with Flow Nexus:
 ```javascript
 // Login to Flow Nexus
 const authResult = await mcp_flow_nexus_user_login({
-  email: "your-email@domain.com",
-  password: "your-password"
+  email: 'your-email@domain.com',
+  password: 'your-password',
 });
 
 console.log(authResult);
@@ -35,23 +37,23 @@ Create and manage AI agent swarms for complex tasks:
 ```javascript
 // Initialize a swarm
 const swarm = await mcp_flow_nexus_swarm_init({
-  topology: "hierarchical",  // or "mesh", "ring", "star"
+  topology: 'hierarchical', // or "mesh", "ring", "star"
   maxAgents: 8,
-  strategy: "balanced"
+  strategy: 'balanced',
 });
 
 // Spawn specialized agents
 const agent = await mcp_flow_nexus_agent_spawn({
-  type: "researcher",  // "coder", "analyst", "optimizer", "coordinator"
-  capabilities: ["data-analysis", "report-generation"],
-  name: "research-agent-1"
+  type: 'researcher', // "coder", "analyst", "optimizer", "coordinator"
+  capabilities: ['data-analysis', 'report-generation'],
+  name: 'research-agent-1',
 });
 
 // Orchestrate tasks
 const task = await mcp_flow_nexus_task_orchestrate({
-  task: "Analyze user behavior patterns in our application logs",
-  priority: "high",    // "low", "medium", "high", "critical"
-  strategy: "adaptive" // "parallel", "sequential", "adaptive"
+  task: 'Analyze user behavior patterns in our application logs',
+  priority: 'high', // "low", "medium", "high", "critical"
+  strategy: 'adaptive', // "parallel", "sequential", "adaptive"
 });
 ```
 
@@ -62,12 +64,12 @@ const task = await mcp_flow_nexus_task_orchestrate({
 ```javascript
 // Create a sandbox (tested and verified)
 const sandbox = await mcp_flow_nexus_sandbox_create({
-  template: "node",         // "python", "react", "nextjs", "vanilla", "base"
-  name: "my-dev-environment",
+  template: 'node', // "python", "react", "nextjs", "vanilla", "base"
+  name: 'my-dev-environment',
   env_vars: {
-    API_KEY: "your-api-key",
-    NODE_ENV: "development"
-  }
+    API_KEY: 'your-api-key',
+    NODE_ENV: 'development',
+  },
 });
 
 console.log(sandbox);
@@ -90,7 +92,7 @@ const execution = await mcp_flow_nexus_sandbox_execute({
     console.log("2 + 2 =", result);
     return result;
   `,
-  language: "javascript"
+  language: 'javascript',
 });
 ```
 
@@ -101,35 +103,35 @@ Train and deploy AI models:
 ```javascript
 // List available neural network templates
 const templates = await mcp_flow_nexus_neural_list_templates({
-  category: "classification",
-  tier: "free"
+  category: 'classification',
+  tier: 'free',
 });
 
 // Train a neural network
 const training = await mcp_flow_nexus_neural_train({
   config: {
     architecture: {
-      type: "feedforward",
+      type: 'feedforward',
       layers: [
-        { type: "input", size: 784 },
-        { type: "hidden", size: 128, activation: "relu" },
-        { type: "output", size: 10, activation: "softmax" }
-      ]
+        { type: 'input', size: 784 },
+        { type: 'hidden', size: 128, activation: 'relu' },
+        { type: 'output', size: 10, activation: 'softmax' },
+      ],
     },
     training: {
       epochs: 50,
       batch_size: 32,
       learning_rate: 0.001,
-      optimizer: "adam"
-    }
+      optimizer: 'adam',
+    },
   },
-  tier: "small"
+  tier: 'small',
 });
 
 // Run inference
 const prediction = await mcp_flow_nexus_neural_predict({
   model_id: training.model_id,
-  input: [0.1, 0.2, 0.3, /* ... more features */]
+  input: [0.1, 0.2, 0.3 /* ... more features */],
 });
 ```
 
@@ -144,7 +146,7 @@ const workflow = await mcp_flow_nexus_workflow_create({
   description: "Process incoming user data",
   steps: [
     "validate input data",
-    "transform data format", 
+    "transform data format",
     "analyze patterns",
     "generate insights",
     "send notifications"
@@ -180,24 +182,24 @@ const execution = await mcp_flow_nexus_workflow_execute({
 ```javascript
 // List available templates (tested and verified)
 const templates = await mcp_flow_nexus_template_list({
-  category: "ai-coordination",
-  featured: true
+  category: 'ai-coordination',
+  featured: true,
 });
 
 // Example templates available:
 // - Claude Flow Swarm (12 deployments)
-// - GitHub + Claude Flow Integration (6 deployments)  
+// - GitHub + Claude Flow Integration (6 deployments)
 // - Claude Flow Hive Mind (5 deployments)
 // - DAA Swarm Orchestrator (2 deployments)
 
 // Deploy a template
 const deployment = await mcp_flow_nexus_template_deploy({
-  template_id: "69895db8-9156-4014-b4e8-33b0d16b4a9a", // Claude Flow Swarm
+  template_id: '69895db8-9156-4014-b4e8-33b0d16b4a9a', // Claude Flow Swarm
   variables: {
-    anthropic_api_key: "your-key",
-    task: "Build a React component for user profiles",
-    max_agents: 5
-  }
+    anthropic_api_key: 'your-key',
+    task: 'Build a React component for user profiles',
+    max_agents: 5,
+  },
 });
 ```
 
@@ -208,8 +210,8 @@ const deployment = await mcp_flow_nexus_template_deploy({
 ```javascript
 // Analyze a GitHub repository (tested and verified)
 const analysis = await mcp_flow_nexus_github_repo_analyze({
-  repo: "owner/repository-name",
-  analysis_type: "code_quality" // "performance", "security"
+  repo: 'owner/repository-name',
+  analysis_type: 'code_quality', // "performance", "security"
 });
 
 console.log(analysis);
@@ -218,7 +220,7 @@ console.log(analysis);
 //   "success": true,
 //   "analysis_id": "7226c5a7-8a79-45af-bcc6-0f895a13937f",
 //   "repository": "ruvnet/flow-nexus",
-//   "analysis_type": "code_quality", 
+//   "analysis_type": "code_quality",
 //   "status": "analyzing"
 // }
 ```
@@ -243,8 +245,8 @@ console.log(balance);
 // Configure auto-refill
 const autoRefill = await mcp_flow_nexus_configure_auto_refill({
   enabled: true,
-  threshold: 50,   // Refill when below 50 credits
-  amount: 100      // Add 100 credits
+  threshold: 50, // Refill when below 50 credits
+  amount: 100, // Add 100 credits
 });
 ```
 
@@ -255,18 +257,18 @@ const autoRefill = await mcp_flow_nexus_configure_auto_refill({
 ```javascript
 // Chat with Queen Seraphina (tested and verified)
 const response = await mcp_flow_nexus_seraphina_chat({
-  message: "Help me optimize my neural network training performance",
+  message: 'Help me optimize my neural network training performance',
   conversation_history: [
     {
-      role: "user", 
-      content: "I'm working on a classification model"
-    }
-  ]
+      role: 'user',
+      content: "I'm working on a classification model",
+    },
+  ],
 });
 
 // Seraphina has 4 core functions:
 // - orchestrate_swarm: Create AI agent swarms
-// - deploy_to_sandbox: Deploy code to sandboxes  
+// - deploy_to_sandbox: Deploy code to sandboxes
 // - analyze_performance: System/code analysis
 // - query_credits: Check rUv credit balance
 ```
@@ -279,21 +281,21 @@ async function safeFlowNexusCall(toolFunction, params) {
     const result = await toolFunction(params);
     return { success: true, data: result };
   } catch (error) {
-    console.error("Flow Nexus error:", error.message);
+    console.error('Flow Nexus error:', error.message);
     return { success: false, error: error.message };
   }
 }
 
 // Usage
-const result = await safeFlowNexusCall(
-  mcp_flow_nexus_sandbox_create,
-  { template: "python", name: "ml-workspace" }
-);
+const result = await safeFlowNexusCall(mcp_flow_nexus_sandbox_create, {
+  template: 'python',
+  name: 'ml-workspace',
+});
 
 if (result.success) {
-  console.log("Sandbox created:", result.data.sandbox_id);
+  console.log('Sandbox created:', result.data.sandbox_id);
 } else {
-  console.log("Failed:", result.error);
+  console.log('Failed:', result.error);
 }
 ```
 
@@ -304,69 +306,68 @@ async function analyzeDataWithAI() {
   try {
     // 1. Create a specialized swarm
     const swarm = await mcp_flow_nexus_swarm_init({
-      topology: "hierarchical",
+      topology: 'hierarchical',
       maxAgents: 5,
-      strategy: "specialized"
+      strategy: 'specialized',
     });
 
     // 2. Spawn data analysis agents
     const analyst = await mcp_flow_nexus_agent_spawn({
-      type: "analyst",
-      capabilities: ["data-processing", "pattern-recognition"],
-      name: "data-analyst"
+      type: 'analyst',
+      capabilities: ['data-processing', 'pattern-recognition'],
+      name: 'data-analyst',
     });
 
     // 3. Create a sandbox for execution
     const sandbox = await mcp_flow_nexus_sandbox_create({
-      template: "python",
-      name: "data-analysis-env",
+      template: 'python',
+      name: 'data-analysis-env',
       env_vars: {
-        PYTHONPATH: "/workspace",
-        DATA_SOURCE: "production-logs"
-      }
+        PYTHONPATH: '/workspace',
+        DATA_SOURCE: 'production-logs',
+      },
     });
 
     // 4. Set up workflow
     const workflow = await mcp_flow_nexus_workflow_create({
-      name: "data-analysis-pipeline",
+      name: 'data-analysis-pipeline',
       steps: [
-        "load data from source",
-        "clean and preprocess",
-        "run statistical analysis", 
-        "generate visualizations",
-        "create summary report"
-      ]
+        'load data from source',
+        'clean and preprocess',
+        'run statistical analysis',
+        'generate visualizations',
+        'create summary report',
+      ],
     });
 
     // 5. Execute the analysis
     const task = await mcp_flow_nexus_task_orchestrate({
-      task: "Analyze user engagement patterns from the last 30 days",
-      priority: "high",
-      strategy: "adaptive"
+      task: 'Analyze user engagement patterns from the last 30 days',
+      priority: 'high',
+      strategy: 'adaptive',
     });
 
     // 6. Check progress
     const status = await mcp_flow_nexus_workflow_status({
-      workflow_id: workflow.workflow_id
+      workflow_id: workflow.workflow_id,
     });
 
     return {
       swarm_id: swarm.swarm_id,
       sandbox_id: sandbox.sandbox_id,
       workflow_id: workflow.workflow_id,
-      task_id: task.task_id
+      task_id: task.task_id,
     };
-
   } catch (error) {
-    console.error("Analysis setup failed:", error);
+    console.error('Analysis setup failed:', error);
     throw error;
   }
 }
 
 // Run the analysis
 analyzeDataWithAI()
-  .then(ids => console.log("Analysis started:", ids))
-  .catch(err => console.error("Failed:", err));
+  .then((ids) => console.log('Analysis started:', ids))
+  .catch((err) => console.error('Failed:', err));
 ```
 
 ## TypeScript Support
@@ -375,13 +376,13 @@ For TypeScript projects, define interfaces for better type safety:
 
 ```typescript
 interface FlowNexusSwarmConfig {
-  topology: "hierarchical" | "mesh" | "ring" | "star";
+  topology: 'hierarchical' | 'mesh' | 'ring' | 'star';
   maxAgents: number;
-  strategy: "balanced" | "specialized" | "adaptive";
+  strategy: 'balanced' | 'specialized' | 'adaptive';
 }
 
 interface SandboxConfig {
-  template: "node" | "python" | "react" | "nextjs" | "vanilla" | "base";
+  template: 'node' | 'python' | 'react' | 'nextjs' | 'vanilla' | 'base';
   name: string;
   env_vars?: Record<string, string>;
   timeout?: number;
@@ -403,9 +404,9 @@ interface FlowNexusWorkflow {
 
 // Usage with types
 const swarmConfig: FlowNexusSwarmConfig = {
-  topology: "hierarchical",
-  maxAgents: 8, 
-  strategy: "balanced"
+  topology: 'hierarchical',
+  maxAgents: 8,
+  strategy: 'balanced',
 };
 
 const swarm = await mcp_flow_nexus_swarm_init(swarmConfig);
@@ -421,4 +422,5 @@ const swarm = await mcp_flow_nexus_swarm_init(swarmConfig);
 6. **Clean up resources (sandboxes, swarms) when done**
 7. **Use Seraphina for guidance on complex implementations**
 
-This guide covers the core functionality verified through actual testing of the Flow Nexus MCP tools.
+This guide covers the core functionality verified through actual testing of the
+Flow Nexus MCP tools.

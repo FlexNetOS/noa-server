@@ -22,6 +22,7 @@ Comprehensive guide to all features available in Noa Server.
 Noa Server includes a comprehensive library of specialized AI agents:
 
 #### Development Agents
+
 - **coder**: General-purpose code generation
 - **backend-dev**: Backend/API development specialist
 - **frontend-dev**: Frontend/UI development specialist
@@ -32,18 +33,21 @@ Noa Server includes a comprehensive library of specialized AI agents:
 - **debugger**: Bug identification and fixing
 
 #### Architecture Agents
+
 - **system-architect**: System design and architecture
 - **repo-architect**: Repository structure design
 - **code-analyzer**: Code analysis and metrics
 - **api-docs**: API documentation generation
 
 #### Operations Agents
+
 - **cicd-engineer**: CI/CD pipeline setup
 - **workflow-automation**: Workflow optimization
 - **perf-analyzer**: Performance analysis
 - **performance-benchmarker**: Benchmarking
 
 #### Coordination Agents
+
 - **hierarchical-coordinator**: Tree-structured coordination
 - **mesh-coordinator**: Peer-to-peer coordination
 - **adaptive-coordinator**: Self-optimizing coordination
@@ -51,6 +55,7 @@ Noa Server includes a comprehensive library of specialized AI agents:
 - **swarm-memory-manager**: Shared memory management
 
 #### Consensus Agents
+
 - **byzantine-coordinator**: Byzantine fault tolerance
 - **raft-manager**: Raft consensus protocol
 - **gossip-coordinator**: Gossip protocol coordination
@@ -59,6 +64,7 @@ Noa Server includes a comprehensive library of specialized AI agents:
 - **quorum-manager**: Quorum-based decisions
 
 #### GitHub Agents
+
 - **pr-manager**: Pull request management
 - **code-review-swarm**: Coordinated code reviews
 - **issue-tracker**: Issue management
@@ -67,6 +73,7 @@ Noa Server includes a comprehensive library of specialized AI agents:
 - **multi-repo-swarm**: Multi-repository operations
 
 #### SPARC Agents
+
 - **sparc-coord**: SPARC methodology coordinator
 - **sparc-coder**: SPARC-guided development
 - **specification**: Requirements specification
@@ -77,6 +84,7 @@ Noa Server includes a comprehensive library of specialized AI agents:
 ### Swarm Topologies
 
 #### Mesh Topology
+
 ```mermaid
 graph LR
     A[Agent 1] --- B[Agent 2]
@@ -88,18 +96,21 @@ graph LR
 ```
 
 **Characteristics**:
+
 - Direct peer-to-peer communication
 - High fault tolerance
 - Best for collaborative tasks
 - Overhead: O(n²) connections
 
 **Use Cases**:
+
 - Code review sessions
 - Collaborative design
 - Brainstorming
 - Small teams (3-7 agents)
 
 **Configuration**:
+
 ```bash
 npx claude-flow@alpha swarm init \
   --topology mesh \
@@ -108,6 +119,7 @@ npx claude-flow@alpha swarm init \
 ```
 
 #### Hierarchical Topology
+
 ```mermaid
 graph TD
     A[Root Coordinator] --> B[Sub-Coordinator 1]
@@ -119,18 +131,21 @@ graph TD
 ```
 
 **Characteristics**:
+
 - Tree-structured organization
 - Efficient for large teams
 - Clear chain of command
 - Overhead: O(log n) coordination
 
 **Use Cases**:
+
 - Large projects (10+ agents)
 - Enterprise workflows
 - Structured development
 - Multi-team coordination
 
 **Configuration**:
+
 ```bash
 npx claude-flow@alpha swarm init \
   --topology hierarchical \
@@ -140,6 +155,7 @@ npx claude-flow@alpha swarm init \
 ```
 
 #### Adaptive Topology
+
 ```mermaid
 graph TB
     subgraph "Dynamic Adjustment"
@@ -151,18 +167,21 @@ graph TB
 ```
 
 **Characteristics**:
+
 - Self-optimizing structure
 - Adjusts based on workload
 - Intelligent resource allocation
 - Overhead: Smart optimization
 
 **Use Cases**:
+
 - Variable workloads
 - Mixed task complexity
 - Auto-scaling systems
 - Production environments
 
 **Configuration**:
+
 ```bash
 npx claude-flow@alpha swarm init \
   --topology adaptive \
@@ -175,6 +194,7 @@ npx claude-flow@alpha swarm init \
 ### Swarm Features
 
 #### Auto-Spawning
+
 Automatically spawn agents based on task requirements:
 
 ```json
@@ -190,6 +210,7 @@ Automatically spawn agents based on task requirements:
 ```
 
 #### Self-Healing
+
 Automatically recover from agent failures:
 
 ```bash
@@ -201,6 +222,7 @@ npx claude-flow@alpha swarm configure \
 ```
 
 #### Load Balancing
+
 Distribute tasks efficiently:
 
 ```bash
@@ -215,7 +237,8 @@ npx claude-flow@alpha swarm configure \
 
 ### SPARC Methodology
 
-Systematic development using Specification, Pseudocode, Architecture, Refinement, Completion:
+Systematic development using Specification, Pseudocode, Architecture,
+Refinement, Completion:
 
 ```bash
 # Full SPARC workflow
@@ -287,6 +310,7 @@ npx claude-flow@alpha task list --sort-by priority
 Core orchestration capabilities:
 
 **Available Tools**:
+
 - `swarm_init`: Initialize swarm coordination
 - `agent_spawn`: Define agent types
 - `task_orchestrate`: Orchestrate workflows
@@ -297,6 +321,7 @@ Core orchestration capabilities:
 - `benchmark_run`: Run benchmarks
 
 **Example Usage**:
+
 ```bash
 # Via Claude Code
 mcp__claude-flow__swarm_init --topology mesh
@@ -309,12 +334,14 @@ mcp__claude-flow__task_orchestrate --task-file task.json
 Enhanced coordination features:
 
 **Additional Tools**:
+
 - Enhanced consensus protocols
 - Advanced load balancing
 - Distributed caching
 - Real-time analytics
 
 **Setup**:
+
 ```bash
 claude mcp add ruv-swarm npx ruv-swarm mcp start
 ```
@@ -324,6 +351,7 @@ claude mcp add ruv-swarm npx ruv-swarm mcp start
 Cloud-based features (70+ tools):
 
 **Key Features**:
+
 - Cloud sandboxes for execution
 - Pre-built project templates
 - AI assistant (Seraphina)
@@ -332,6 +360,7 @@ Cloud-based features (70+ tools):
 - Advanced analytics
 
 **Setup**:
+
 ```bash
 # Register account
 npx flow-nexus@latest register
@@ -348,12 +377,14 @@ mcp__flow-nexus__user_login
 Local AI processing with llama.cpp:
 
 **Features**:
+
 - Local model inference
 - CUDA acceleration
 - Model benchmarking
 - GGUF format support
 
 **Setup**:
+
 ```bash
 cd packages/llama.cpp
 source ~/praisonai_env/bin/activate
@@ -367,12 +398,14 @@ claude --dangerously-skip-permissions
 Run AI models locally with llama.cpp:
 
 **Supported Models**:
+
 - LLaMA 2 (7B, 13B, 70B)
 - Mistral (7B)
 - CodeLLaMA
 - Custom GGUF models
 
 **Model Management**:
+
 ```bash
 # List models
 mcp__neural-processing__list_available_models
@@ -405,11 +438,13 @@ mcp__neural-processing__stream_chat \
 ### CUDA Acceleration
 
 **Requirements**:
+
 - NVIDIA GPU (Compute Capability 6.0+)
 - CUDA Toolkit 11.8+
 - cuBLAS library
 
 **Configuration**:
+
 ```env
 CUDA_ENABLED=true
 CUDA_DEVICE=0
@@ -417,6 +452,7 @@ CUDA_MEMORY_LIMIT=8GB
 ```
 
 **Performance**:
+
 - Up to 10x faster inference
 - Batch processing support
 - Dynamic memory management
@@ -428,12 +464,14 @@ CUDA_MEMORY_LIMIT=8GB
 Agents share context through distributed memory:
 
 **Features**:
+
 - Key-value storage
 - Prefix-based retrieval
 - Cross-session persistence
 - Automatic cleanup
 
 **Usage**:
+
 ```bash
 # Store data
 npx claude-flow@alpha memory store \
@@ -494,24 +532,28 @@ npx claude-flow@alpha neural patterns --sort-by accuracy
 Automatic coordination through hooks:
 
 **Pre-Task Hooks**:
+
 - Auto-assign agents by file type
 - Validate commands for safety
 - Prepare resources
 - Optimize topology
 
 **Post-Task Hooks**:
+
 - Auto-format code
 - Train neural patterns
 - Update memory
 - Analyze performance
 
 **Session Hooks**:
+
 - Generate summaries
 - Persist state
 - Track metrics
 - Export workflows
 
 **Usage**:
+
 ```bash
 # Pre-task
 npx claude-flow@alpha hooks pre-task \
@@ -541,6 +583,7 @@ npx claude-flow@alpha configure \
 ```
 
 **Optimization Features**:
+
 - Topology selection based on task
 - Agent allocation optimization
 - Task batching
@@ -720,24 +763,28 @@ npx claude-flow@alpha security scan \
 ### Optimization Features
 
 #### Parallel Execution
+
 - Concurrent agent operations
 - Batch task processing
 - Parallel file operations
 - Multi-threaded coordination
 
 #### Caching
+
 - Result caching
 - Memory caching
 - Pattern caching
 - Model caching
 
 #### Resource Management
+
 - Dynamic agent allocation
 - Memory pooling
 - Connection pooling
 - CPU/GPU optimization
 
 #### Token Optimization
+
 - Smart context management
 - Efficient prompting
 - Result reuse
