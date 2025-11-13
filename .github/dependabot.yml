@@ -1,0 +1,58 @@
+version: 2
+updates:
+  # Root package dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    groups:
+      security-updates:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
+    labels:
+      - "dependencies"
+      - "security"
+    reviewers:
+      - "FlexNetOS"
+    commit-message:
+      prefix: "security"
+      include: "scope"
+
+  # Workspace packages
+  - package-ecosystem: "npm"
+    directory: "/packages/ai-provider"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      security-updates:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "npm"
+    directory: "/packages/cache-manager"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: "npm"
+    directory: "/packages/monitoring"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels:
+      - "github-actions"
+      - "security"
+    commit-message:
+      prefix: "ci"
