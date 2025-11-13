@@ -25,9 +25,9 @@ regexes = [
     '''Authorization:\s*Bearer\s*(?:YOUR_ACCESS_TOKEN|YOUR_TOKEN|TOKEN|<token>|<admin_token>|<admin-token>|no-key|\$\{?your-token\}?|\$[A-Z_]+)''',
 
     # Placeholder API keys and patterns used in docs
-    '''\bnoa_sk_live_[A-Za-z0-9]{6,}\b''',
+    '''\bnoa_sk_live_abc123xyz789\b''',
     '''\bsk_live_abc123(?:xyz789)?\b''',
-    '''X-API-Key:\s*(?:YOUR_API_KEY|noa_sk_live_[A-Za-z0-9]+)''',
+    '''X-API-Key:\s*(?:YOUR_API_KEY|noa_sk_live_abc123xyz789)''',
 
     # Truncated JWT placeholders in docs
     '''\"?(?:accessToken|refreshToken|token|access_token)\"?\s*[:=]\s*\"(?:eyJhbGci[^\"]*\\.\\.\\.)\"''',

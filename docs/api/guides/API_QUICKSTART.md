@@ -164,10 +164,9 @@ curl -X POST https://api.noa-server.io/v1/workflows \
           "name": "Process Data",
           "type": "task",
           "config": {
-            "command": "process-data",
-            "args": ["--normalize", "--summary"]
+            "processor": "json"
           },
-          "dependsOn": ["step1"]
+          "dependencies": ["step1"]
         }
       ]
     }
