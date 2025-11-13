@@ -128,7 +128,7 @@
   },
 
   // Post create command
-  "postCreateCommand": "pnpm install && pnpm run build",
+  "postCreateCommand": "pnpm install && pnpm run build:all",
 
   // Post start command
   "postStartCommand": "echo 'Noa Server Dev Container Ready! Run: pnpm run dev'",

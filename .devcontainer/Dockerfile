@@ -3,7 +3,7 @@ FROM node:20.17.0-bullseye
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    python3.12 \
+    python3 \
     python3-pip \
     python3-venv \
     build-essential \
@@ -13,7 +13,6 @@ RUN apt-get update && apt-get install -y \
     vim \
     postgresql-client \
     redis-tools \
-    mongodb-clients \
     && rm -rf /var/lib/apt/lists/*
 
 # Install pnpm
