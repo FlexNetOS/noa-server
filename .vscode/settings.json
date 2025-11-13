@@ -1,3 +1,13 @@
 {
-  "claude-code.claudeProcessWrapper": "/home/deflex/.npm-global/bin/claude"
+  "claude-code.claudeProcessWrapper": "/home/deflex/.npm-global/bin/claude",
+  "github.copilot.chat.agent.thinkingTool": true,
+  "chat.tools.terminal.autoApprove": {
+    "/^\\s*(pwd|whoami|uname( -a)?|env|printenv|date)\\s*$/": { "approve": true, "matchCommandLine": true },
+    "/^\\s*(ls( -la)?|tree( -L [0-3])?)\\s*([./][^;&|]*)?\\s*$/": { "approve": true, "matchCommandLine": true },
+    "/^\\s*cat\\s+([./][^;&|]+)\\s*$/": { "approve": true, "matchCommandLine": true },
+    "/^\\s*(head|tail)\\s+(-n \\d+|\\d+)\\s+([./][^;&|]+)\\s*$/": { "approve": true, "matchCommandLine": true },
+    "/^\\s*(node|pnpm|npm|yarn|python3?|pip3?|go|java|javac|tsc)\\s+(-v|--version)\\s*$/": { "approve": true, "matchCommandLine": true },
+    "/^\\s*(git\\s+(status|rev-parse\\s+--short\\s+HEAD|log\\s+-1|branch))\\s*$/": { "approve": true, "matchCommandLine": true },
+    "/^\\s*(docker|docker\\s+compose|docker-compose|gh)\\s+(--version|-v)\\s*$/": { "approve": true, "matchCommandLine": true }
+  }
 }
