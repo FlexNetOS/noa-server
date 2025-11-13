@@ -39,19 +39,19 @@ jobs:
       should_release: ${{ steps.version.outputs.should_release }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@d882d12c64e032187b2edb46d3a0d003b7a43598 # v2.4.0
         with:
           version: 8
 
@@ -103,16 +103,16 @@ jobs:
           - feature-flags
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@d882d12c64e032187b2edb46d3a0d003b7a43598 # v2.4.0
         with:
           version: 8
 
@@ -129,7 +129,7 @@ jobs:
         run: pnpm run test --filter=@noa/${{ matrix.package }} -- --coverage
 
       - name: Upload coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@e28ff129e5465c2c0dcc6f003fc735cb6ae0c673 # v3.1.4
         with:
           files: ./coverage/coverage-final.json
           flags: ${{ matrix.package }}
@@ -149,16 +149,16 @@ jobs:
           - feature-flags
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@49b3bc8e6bdd4a60e6116a5414239cba5943d3cf # v3.2.0
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@8026d2bc3645ea78b0d2544766a1225eb5691f89 # v3.7.1
 
       - name: Log in to Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -166,7 +166,7 @@ jobs:
 
       - name: Extract metadata
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@70b2cdc6480c1a8b86edf1777157f8f437de2166 # v5.5.1
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.service }}
           tags: |
@@ -178,7 +178,7 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@4f58ea79222b3b9dc2c8bbdd6debcef730109a75 # v5.4.0
         with:
           context: .
           file: ./docker/Dockerfile.${{ matrix.service }}
@@ -201,17 +201,17 @@ jobs:
     if: needs.version-check.outputs.should_release == 'true'
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@d882d12c64e032187b2edb46d3a0d003b7a43598 # v2.4.0
         with:
           version: 8
 
@@ -231,7 +231,7 @@ jobs:
           done
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v3.1.3
         with:
           name: npm-packages
           path: ./artifacts/*.tar.gz
@@ -251,14 +251,14 @@ jobs:
           - feature-flags
     steps:
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@5681af892cd0b3e6192a2d3f6d1b0c80b5e64169 # master
         with:
           image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.service }}:${{ needs.version-check.outputs.version }}
           format: 'sarif'
           output: 'trivy-results.sarif'
 
       - name: Upload Trivy results to GitHub Security
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@429e1977040da7a23b6822b13c129cd1ba93dbb2 # v2.25.15
         with:
           sarif_file: 'trivy-results.sarif'
 
@@ -272,10 +272,10 @@ jobs:
       contents: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
 
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427 # v3.0.2
         with:
           name: npm-packages
           path: ./artifacts
@@ -316,7 +316,7 @@ jobs:
           EOF
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@a485cc634e32a619a9f7b1a4c69e7da60b91c43e # v1.0.0
         with:
           tag_name: v${{ needs.version-check.outputs.version }}
           name: Release v${{ needs.version-check.outputs.version }}
@@ -336,17 +336,17 @@ jobs:
     if: needs.version-check.outputs.should_release == 'true' && !contains(needs.version-check.outputs.version, '-')
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@d882d12c64e032187b2edb46d3a0d003b7a43598 # v2.4.0
         with:
           version: 8
 
@@ -370,7 +370,7 @@ jobs:
     steps:
       - name: Send Slack notification
         if: success()
-        uses: slackapi/slack-github-action@v1
+        uses: slackapi/slack-github-action@37ebaef184d7626c5f204ab8d3baff4262dd30f0 # v1.27.0
         with:
           payload: |
             {

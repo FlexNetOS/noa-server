@@ -8,6 +8,14 @@ claude-flow.config.json
 .claude-flow/
 memory/
 coordination/
+
+# Development symlinks (local development only, not for repository)
+packages/claude-code
+packages/claude-cookbooks
+packages/claude-flow-alpha
+packages/claude-flow.wiki
+packages/contains-studio-agents
+packages/mcp-agent
 memory/claude-flow-data.json
 memory/sessions/*
 !memory/sessions/README.md
