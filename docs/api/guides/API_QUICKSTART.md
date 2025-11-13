@@ -166,7 +166,7 @@ curl -X POST https://api.noa-server.io/v1/workflows \
           "config": {
             "processor": "json"
           },
-          "dependsOn": ["step1"]
+          "dependencies": ["step1"]
         }
       ]
     }
