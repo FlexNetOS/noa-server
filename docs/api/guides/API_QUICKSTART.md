@@ -1,6 +1,7 @@
 # Noa Server API Quick Start Guide
 
-Welcome to the Noa Server API! This guide will help you get started with the API in minutes.
+Welcome to the Noa Server API! This guide will help you get started with the API
+in minutes.
 
 ## Table of Contents
 
@@ -16,7 +17,8 @@ Welcome to the Noa Server API! This guide will help you get started with the API
 
 The Noa Server API is a RESTful API that provides:
 
-- **Authentication & Authorization**: Secure JWT-based authentication with MFA support
+- **Authentication & Authorization**: Secure JWT-based authentication with MFA
+  support
 - **User Management**: Complete CRUD operations for users with RBAC
 - **MCP Tools Integration**: Execute filesystem, SQLite, and GitHub operations
 - **Workflow Orchestration**: Create and execute complex workflows
@@ -26,16 +28,14 @@ The Noa Server API is a RESTful API that provides:
 ### Base URLs
 
 - **Production**: `https://api.noa-server.io/v1`
-- **Staging**: `https://staging-api.noa-server.io/v1`
-- **Local**: `http://localhost:3000/v1`
 
 ### Rate Limits
 
-| User Type | Requests per Hour |
-|-----------|------------------|
-| Anonymous | 100 |
-| Authenticated | 1000 |
-| Admin | 10000 |
+| User Type     | Requests per Hour |
+| ------------- | ----------------- |
+| Anonymous     | 100               |
+| Authenticated | 1000              |
+| Admin         | 10000             |
 
 ## Authentication
 
@@ -54,6 +54,7 @@ curl -X POST https://api.noa-server.io/v1/auth/register \
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -80,12 +81,13 @@ curl -X POST https://api.noa-server.io/v1/auth/login \
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
   "data": {
-  "accessToken": "YOUR_ACCESS_TOKEN",
-  "refreshToken": "YOUR_REFRESH_TOKEN",
+    "accessToken": "YOUR_ACCESS_TOKEN",
+    "refreshToken": "YOUR_REFRESH_TOKEN",
     "tokenType": "Bearer",
     "expiresIn": 3600,
     "user": {
@@ -135,11 +137,7 @@ curl -X POST https://api.noa-server.io/v1/mcp/filesystem \
   }'
 ```
 
-## Common Operations
-
-### Working with Workflows
-
-#### Create a Workflow
+### Create a Workflow
 
 ```bash
 curl -X POST https://api.noa-server.io/v1/workflows \
@@ -166,16 +164,17 @@ curl -X POST https://api.noa-server.io/v1/workflows \
           "name": "Process Data",
           "type": "task",
           "config": {
-            "processor": "json"
+            "command": "process-data",
+            "args": ["--normalize", "--summary"]
           },
-          "dependencies": ["step1"]
+          "dependsOn": ["step1"]
         }
       ]
     }
   }'
 ```
 
-#### Execute a Workflow
+### Execute a Workflow
 
 ```bash
 curl -X POST https://api.noa-server.io/v1/workflows/{workflowId}/execute \
@@ -258,24 +257,24 @@ The API uses standard HTTP status codes and returns consistent error responses:
 
 ### Common Status Codes
 
-| Code | Meaning | Description |
-|------|---------|-------------|
-| 200 | OK | Request successful |
-| 201 | Created | Resource created successfully |
-| 202 | Accepted | Request accepted for processing |
-| 400 | Bad Request | Invalid request parameters |
-| 401 | Unauthorized | Authentication required |
-| 403 | Forbidden | Insufficient permissions |
-| 404 | Not Found | Resource not found |
-| 409 | Conflict | Resource already exists |
-| 429 | Too Many Requests | Rate limit exceeded |
-| 500 | Internal Server Error | Server error |
+| Code | Meaning               | Description                     |
+| ---- | --------------------- | ------------------------------- |
+| 200  | OK                    | Request successful              |
+| 201  | Created               | Resource created successfully   |
+| 202  | Accepted              | Request accepted for processing |
+| 400  | Bad Request           | Invalid request parameters      |
+| 401  | Unauthorized          | Authentication required         |
+| 403  | Forbidden             | Insufficient permissions        |
+| 404  | Not Found             | Resource not found              |
+| 409  | Conflict              | Resource already exists         |
+| 429  | Too Many Requests     | Rate limit exceeded             |
+| 500  | Internal Server Error | Server error                    |
 
 ### Handling Rate Limits
 
 Check rate limit headers in responses:
 
-```
+```text
 X-RateLimit-Limit: 1000
 X-RateLimit-Remaining: 999
 X-RateLimit-Reset: 1640000000
@@ -338,22 +337,23 @@ const timeout = setTimeout(() => controller.abort(), 30000);
 
 fetch(url, {
   signal: controller.signal,
-  headers: { Authorization: `Bearer ${token}` }
-})
-  .finally(() => clearTimeout(timeout));
+  headers: { Authorization: `Bearer ${token}` },
+}).finally(() => clearTimeout(timeout));
 ```
 
 ## Next Steps
 
 ### Explore the API
 
-- **Interactive Documentation**: Visit the [Swagger UI](../swagger-ui/index.html)
+- **Interactive Documentation**: Visit the
+  [Swagger UI](../swagger-ui/index.html)
 - **Full API Reference**: See [OpenAPI Specification](../openapi.yaml)
-- **Authentication Guide**: Read [Authentication Documentation](./AUTHENTICATION.md)
+- **Authentication Guide**: Read
+  [Authentication Documentation](./AUTHENTICATION.md)
 - **Rate Limiting**: Learn about [Rate Limiting](./RATE_LIMITING.md)
 - **Webhooks**: Set up [Webhooks](./WEBHOOKS.md)
 
-### SDK and Client Libraries
+## SDK and Client Libraries
 
 Generate client libraries in your preferred language:
 
@@ -379,11 +379,12 @@ Check out example applications in the `/examples` directory:
 
 ### Support
 
-- **Documentation**: https://docs.noa-server.io
-- **GitHub Issues**: https://github.com/deflex/noa-server/issues
-- **Email**: support@noa-server.io
-- **Discord**: https://discord.gg/noa-server
+- **Documentation**: <https://docs.noa-server.io>
+- **GitHub Issues**: <https://github.com/deflex/noa-server/issues>
+- **Email**: <support@noa-server.io>
+- **Discord**: <https://discord.gg/noa-server>
 
 ---
 
-**Happy coding!** If you have questions or feedback, please reach out to our support team.
+**Happy coding!** If you have questions or feedback, please reach out to our
+support team.

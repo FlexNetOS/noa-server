@@ -576,7 +576,7 @@ const manager = new SecretsManager({
 
 ```typescript
 // Bad
-const apiKey = 'sk-1234567890abcdef';
+const apiKey = 'YOUR_API_KEY';
 
 // Good
 const apiKey = await secrets.get('api-keys/openai');
@@ -639,6 +639,7 @@ describe('Secret Rotation', () => {
 ### 10. Document Recovery Procedures
 
 Maintain runbooks for:
+
 - Secret compromise response
 - Provider outage fallback
 - Emergency secret access
@@ -648,18 +649,21 @@ Maintain runbooks for:
 ## Compliance Considerations
 
 ### SOC 2
+
 - Implement audit logging for all secret access
 - Enable encryption at rest and in transit
 - Regular access reviews
 - Secret rotation policies
 
 ### PCI DSS
+
 - Rotate secrets every 90 days
 - Mask secret values in logs
 - Strong access controls
 - Encryption of cardholder data
 
 ### HIPAA
+
 - Encrypt PHI-related secrets
 - Audit trail for 7 years
 - Access controls based on role

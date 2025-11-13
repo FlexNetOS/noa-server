@@ -1,0 +1,32 @@
+name: docs
+
+on:
+  pull_request:
+    paths:
+      - '**/*.md'
+      - '.markdownlint*'
+  push:
+    branches: [ main ]
+    paths:
+      - '**/*.md'
+      - '.markdownlint*'
+
+permissions:
+  contents: read
+
+jobs:
+  markdownlint:
+    name: markdownlint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run markdownlint-cli2
+        uses: DavidAnson/markdownlint-cli2-action@v15
+        with:
+          globs: |
+            **/*.md
+            !**/node_modules/**
+            !**/dist/**
+          config: .markdownlint-cli2.jsonc

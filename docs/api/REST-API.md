@@ -13,7 +13,8 @@
 
 ## Overview
 
-The NOA Server Platform provides a comprehensive REST API for managing agents, swarms, services, and neural processing tasks.
+The NOA Server Platform provides a comprehensive REST API for managing agents,
+swarms, services, and neural processing tasks.
 
 **Base URL**: `https://api.noa-server.io/v1`
 
@@ -35,12 +36,14 @@ The NOA Server Platform provides a comprehensive REST API for managing agents, s
 All API requests require authentication using OAuth 2.0 Bearer tokens.
 
 **Example Request**:
+
 ```http
 GET /v1/agents
 Authorization: Bearer YOUR_ACCESS_TOKEN
 ```
 
 **Obtaining a Token**:
+
 ```http
 POST /v1/auth/token
 Content-Type: application/json
@@ -53,6 +56,7 @@ Content-Type: application/json
 ```
 
 **Response**:
+
 ```json
 {
   "access_token": "YOUR_ACCESS_TOKEN",
@@ -82,18 +86,21 @@ GET /v1/agents
 ```
 
 **Query Parameters**:
+
 - `type` (string, optional) - Filter by agent type
 - `status` (string, optional) - Filter by status (active, idle, error)
 - `limit` (integer, optional) - Number of results (default: 50, max: 100)
 - `offset` (integer, optional) - Pagination offset (default: 0)
 
 **Example Request**:
+
 ```bash
 curl -X GET "https://api.noa-server.io/v1/agents?type=coder&limit=10" \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 
 **Response** (200 OK):
+
 ```json
 {
   "data": [
@@ -119,6 +126,7 @@ curl -X GET "https://api.noa-server.io/v1/agents?type=coder&limit=10" \
 ```
 
 **Errors** (POL-0144: Document panics, errors, safety):
+
 - `401 Unauthorized` - Invalid or missing authentication
 - `403 Forbidden` - Insufficient permissions
 - `429 Too Many Requests` - Rate limit exceeded
@@ -130,6 +138,7 @@ POST /v1/agents
 ```
 
 **Request Body**:
+
 ```json
 {
   "type": "coder",
@@ -142,6 +151,7 @@ POST /v1/agents
 ```
 
 **Response** (201 Created):
+
 ```json
 {
   "id": "agent-456def",
@@ -157,10 +167,12 @@ POST /v1/agents
 ```
 
 **Errors**:
+
 - `400 Bad Request` - Invalid request body
 - `422 Unprocessable Entity` - Validation errors
 
 **Validation Errors Example**:
+
 ```json
 {
   "error": {
@@ -183,6 +195,7 @@ GET /v1/agents/{agent_id}
 ```
 
 **Response** (200 OK):
+
 ```json
 {
   "id": "agent-123abc",
@@ -199,6 +212,7 @@ GET /v1/agents/{agent_id}
 ```
 
 **Errors**:
+
 - `404 Not Found` - Agent does not exist
 
 #### Update Agent
@@ -208,6 +222,7 @@ PATCH /v1/agents/{agent_id}
 ```
 
 **Request Body**:
+
 ```json
 {
   "name": "UpdatedAgentName",
@@ -218,6 +233,7 @@ PATCH /v1/agents/{agent_id}
 ```
 
 **Response** (200 OK):
+
 ```json
 {
   "id": "agent-123abc",
@@ -238,6 +254,7 @@ DELETE /v1/agents/{agent_id}
 **Response** (204 No Content)
 
 **Errors**:
+
 - `409 Conflict` - Agent is currently executing tasks
 
 ### Swarms
@@ -249,6 +266,7 @@ POST /v1/swarms
 ```
 
 **Request Body**:
+
 ```json
 {
   "topology": "mesh",
@@ -262,6 +280,7 @@ POST /v1/swarms
 ```
 
 **Response** (201 Created):
+
 ```json
 {
   "id": "swarm-789ghi",
@@ -280,6 +299,7 @@ GET /v1/swarms/{swarm_id}
 ```
 
 **Response** (200 OK):
+
 ```json
 {
   "id": "swarm-789ghi",
@@ -314,6 +334,7 @@ POST /v1/tasks
 ```
 
 **Request Body**:
+
 ```json
 {
   "description": "Build REST API for user authentication",
@@ -325,6 +346,7 @@ POST /v1/tasks
 ```
 
 **Response** (201 Created):
+
 ```json
 {
   "id": "task-101jkl",
@@ -342,6 +364,7 @@ GET /v1/tasks/{task_id}/results
 ```
 
 **Response** (200 OK):
+
 ```json
 {
   "task_id": "task-101jkl",
@@ -373,6 +396,7 @@ POST /v1/neural/chat/completions
 ```
 
 **Request Body**:
+
 ```json
 {
   "model": "llama-2-7b-chat",
@@ -392,6 +416,7 @@ POST /v1/neural/chat/completions
 ```
 
 **Response** (200 OK):
+
 ```json
 {
   "id": "cmpl-abc123",
@@ -492,7 +517,8 @@ The API uses URL-based versioning:
 - Current version: `v1`
 - Base URL: `https://api.noa-server.io/v1`
 
-Breaking changes will result in a new version (`v2`, etc.). Non-breaking changes are deployed to existing versions.
+Breaking changes will result in a new version (`v2`, etc.). Non-breaking changes
+are deployed to existing versions.
 
 ## SDKs and Libraries
 
@@ -502,9 +528,9 @@ Breaking changes will result in a new version (`v2`, etc.). Non-breaking changes
 
 ## Support
 
-- **API Status**: https://status.noa-server.io
-- **Documentation**: https://docs.noa-server.io
-- **Support**: api-support@noa-server.io
+- **API Status**: <https://status.noa-server.io>
+- **Documentation**: <https://docs.noa-server.io>
+- **Support**: <api-support@noa-server.io>
 
 ---
 

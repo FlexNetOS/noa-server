@@ -1,0 +1,6 @@
+{
+  // Keep line-length flexible to avoid noise in API specs and tables
+  "config": {
+    "MD013": false
+  }
+}
