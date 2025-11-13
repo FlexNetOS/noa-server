@@ -1,0 +1,114 @@
+version: '3.9'
+
+services:
+  # ================================
+  # Message Queue API - Development Mode
+  # ================================
+  message-queue-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: noa-message-queue-api-dev
+    image: noa/message-queue-api:dev
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+      - "9229:9229"  # Node.js debugger
+    environment:
+      NODE_ENV: development
+      API_PORT: 8081
+      API_HOST: 0.0.0.0
+      LOG_LEVEL: debug
+
+      # CORS - Allow all in dev
+      CORS_ORIGINS: "*"
+
+      # Feature Flags
+      ENABLE_WEBSOCKET: "true"
+      ENABLE_METRICS: "true"
+      AUTH_ENABLED: "false"
+
+      # Redis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ""
+
+      # Development settings
+      NODE_OPTIONS: "--inspect=0.0.0.0:9229"
+    volumes:
+      # Mount source for hot-reload
+      - ./src:/app/src:ro
+      - ./package.json:/app/package.json:ro
+      - ./tsconfig.json:/app/tsconfig.json:ro
+      - ./logs:/app/logs
+      # Prevent node_modules override
+      - /app/node_modules
+    networks:
+      - queue-network-dev
+    depends_on:
+      - redis
+    # Disable healthcheck for faster dev iteration
+    healthcheck:
+      disable: true
+    stdin_open: true
+    tty: true
+
+  # ================================
+  # Redis - Development Mode
+  # ================================
+  redis:
+    image: redis:7-alpine
+    container_name: noa-queue-redis-dev
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --loglevel debug
+    volumes:
+      - redis-data-dev:/data
+    networks:
+      - queue-network-dev
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+  # ================================
+  # Redis Commander (Always enabled in dev)
+  # ================================
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: noa-redis-commander-dev
+    restart: unless-stopped
+    ports:
+      - "8082:8081"
+    environment:
+      REDIS_HOSTS: local:redis:6379
+      HTTP_USER: admin
+      HTTP_PASSWORD: admin
+    networks:
+      - queue-network-dev
+    depends_on:
+      - redis
+
+  # ================================
+  # Mailhog (Email Testing)
+  # ================================
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: noa-mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    networks:
+      - queue-network-dev
+
+networks:
+  queue-network-dev:
+    driver: bridge
+
+volumes:
+  redis-data-dev:
+    driver: local

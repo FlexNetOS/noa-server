@@ -1,0 +1,31 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: message-queue-api-pdb
+  namespace: noa-server
+  labels:
+    app: message-queue-api
+spec:
+  # Minimum available pods during disruptions
+  minAvailable: 2
+
+  # Alternative: maxUnavailable: 1
+
+  selector:
+    matchLabels:
+      app: message-queue-api
+
+---
+# Pod Disruption Budget for Redis
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: redis-pdb
+  namespace: noa-server
+  labels:
+    app: redis
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: redis

@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Application } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import swaggerUi from 'swagger-ui-express';
@@ -10,6 +10,7 @@ import { notFoundHandler } from './middleware/notFoundHandler';
 import { logger } from './middleware/logger';
 import { swaggerOptions } from './config/swagger';
 
+<<<<<<< HEAD
 // Import monitoring middleware
 import { requestLogger } from './middleware/request-logger';
 import { performanceMonitor } from './middleware/performance-monitor';
@@ -20,6 +21,9 @@ import monitoringRoutes from './routes/monitoring';
 import { initializeLogStreaming } from './routes/monitoring';
 
 const app = express();
+=======
+const app: Application = express();
+>>>>>>> origin/feature/separate-home-lab-server
 const server = createServer(app);
 
 // Security middleware
@@ -82,6 +86,7 @@ server.listen(PORT, () => {
   console.log('  ✓ WebSocket Log Streaming (/logs/stream)');
 });
 
+<<<<<<< HEAD
 // Graceful shutdown
 process.on('SIGTERM', () => {
   console.log('SIGTERM received, shutting down gracefully');
@@ -91,4 +96,6 @@ process.on('SIGTERM', () => {
   });
 });
 
+=======
+>>>>>>> origin/feature/separate-home-lab-server
 export default app;

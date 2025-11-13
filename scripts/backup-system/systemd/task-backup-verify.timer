@@ -1,0 +1,20 @@
+[Unit]
+Description=Weekly Task Backup Verification Timer
+Documentation=file:///home/deflex/noa-server/docs/BACKUP_DISASTER_RECOVERY.md
+Requires=task-backup-verify.service
+
+[Timer]
+# Run weekly on Sunday at 3:00 AM (after backup completes)
+OnCalendar=Sun *-*-* 03:00:00
+
+# Run 10 minutes after boot if missed
+OnBootSec=10min
+
+# Allow up to 2 hour delay if system is busy
+AccuracySec=2h
+
+# Run immediately if last run was missed
+Persistent=true
+
+[Install]
+WantedBy=timers.target

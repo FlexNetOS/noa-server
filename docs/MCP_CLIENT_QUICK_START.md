@@ -30,8 +30,13 @@ const client = createMCPClient({
   version: '1.0.0',
   transport: {
     type: 'stdio',
+<<<<<<< HEAD
     command: 'npx',
     args: ['-y', '@modelcontextprotocol/server-filesystem', '/tmp'],
+=======
+    command: 'pnpm',
+    args: ['dlx', '@modelcontextprotocol/server-filesystem', '/tmp'],
+>>>>>>> origin/feature/separate-home-lab-server
   },
 });
 
@@ -66,8 +71,8 @@ config = MCPClientConfig(
     version="1.0.0",
     transport=MCPTransportConfig(
         type=MCPTransportType.STDIO,
-        command="npx",
-        args=["-y", "@modelcontextprotocol/server-filesystem", "/tmp"]
+        command="pnpm",
+        args=["dlx", "@modelcontextprotocol/server-filesystem", "/tmp"]
     )
 )
 client = create_mcp_client(config)

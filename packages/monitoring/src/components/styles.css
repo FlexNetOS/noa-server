@@ -1,0 +1,71 @@
+/**
+ * AI Dashboard Components - Global Styles
+ * Tailwind CSS imports and custom styles
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom scrollbar for dark mode */
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+
+  .scrollbar-thumb-gray {
+    scrollbar-color: #4b5563 transparent;
+  }
+
+  .dark .scrollbar-thumb-gray {
+    scrollbar-color: #6b7280 transparent;
+  }
+}
+
+/* Chart animations */
+@layer components {
+  .chart-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Custom card styles */
+  .metric-card {
+    @apply rounded-lg border-2 p-4 transition-all duration-200 hover:shadow-lg;
+  }
+
+  /* Alert styles */
+  .alert-banner {
+    @apply rounded-lg border-2 p-4 flex items-start gap-3 transition-all duration-200;
+  }
+
+  /* Chart container */
+  .chart-container {
+    @apply bg-white dark:bg-gray-800 rounded-lg border-2 border-gray-200 dark:border-gray-700 p-6;
+  }
+}
+
+/* Responsive utilities */
+@layer utilities {
+  @media (max-width: 640px) {
+    .grid-mobile {
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 641px) and (max-width: 768px) {
+    .grid-tablet {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+}

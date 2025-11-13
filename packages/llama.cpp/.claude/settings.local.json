@@ -18,12 +18,24 @@
       "Bash(/home/deflex/noa-server/agentic-homelab/coordinator-plane/agents/queens/primary-queen/setup_neural.sh)",
       "Bash(./agentic-homelab/coordinator-plane/agents/queens/audit-queen/test-validation.sh:*)",
       "Bash(sqlite3:*)",
+<<<<<<< HEAD
       "Bash(ls:*)",
       "Bash(pnpm install:*)",
       "Bash(xargs ls:*)",
       "Bash(bash:*)",
       "Bash(/home/deflex/noa-server/tests/e2e/verify-setup.sh:*)",
       "Bash(cat:*)"
+=======
+      "Bash(npm test)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm build:*)",
+      "Bash(npm test:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm install:*)",
+      "Bash(pnpm install:*)",
+      "Bash(cat:*)",
+      "Bash(pnpm run:*)"
+>>>>>>> origin/feature/separate-home-lab-server
     ],
     "deny": [],
     "ask": []

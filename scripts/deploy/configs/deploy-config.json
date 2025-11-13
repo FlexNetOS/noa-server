@@ -1,0 +1,82 @@
+{
+  "deployment": {
+    "environments": {
+      "staging": {
+        "requireApproval": false,
+        "runTests": true,
+        "createBackup": true,
+        "healthCheckRetries": 5,
+        "healthCheckTimeout": 30
+      },
+      "production": {
+        "requireApproval": true,
+        "runTests": true,
+        "createBackup": true,
+        "healthCheckRetries": 10,
+        "healthCheckTimeout": 60
+      }
+    },
+    "strategies": {
+      "standard": {
+        "enabled": true,
+        "maxDowntime": 60
+      },
+      "blue-green": {
+        "enabled": true,
+        "monitoringDuration": 300,
+        "errorThreshold": 5,
+        "oldEnvironmentRetention": 3600
+      },
+      "canary": {
+        "enabled": true,
+        "trafficPhases": [10, 25, 50, 100],
+        "phaseDuration": 300,
+        "errorThreshold": 5,
+        "latencyThreshold": 1000
+      }
+    }
+  },
+  "notifications": {
+    "enabled": true,
+    "channels": {
+      "slack": {
+        "enabled": false,
+        "webhookUrl": "${SLACK_WEBHOOK_URL}",
+        "notifyOn": ["error", "success"]
+      },
+      "email": {
+        "enabled": false,
+        "recipients": ["${NOTIFICATION_EMAIL}"],
+        "notifyOn": ["error", "critical"]
+      },
+      "discord": {
+        "enabled": false,
+        "webhookUrl": "${DISCORD_WEBHOOK_URL}",
+        "notifyOn": ["error", "success"]
+      }
+    }
+  },
+  "backup": {
+    "enabled": true,
+    "retentionDays": 30,
+    "maxBackups": 10,
+    "compression": true,
+    "includeDatabase": true,
+    "includeUploads": false
+  },
+  "monitoring": {
+    "enabled": true,
+    "healthCheckInterval": 5,
+    "errorRateThreshold": 5,
+    "latencyThreshold": 1000,
+    "cpuThreshold": 80,
+    "memoryThreshold": 80,
+    "diskThreshold": 90
+  },
+  "rollback": {
+    "enabled": true,
+    "automatic": true,
+    "errorThreshold": 5,
+    "confirmBeforeRollback": false
+  }
+}

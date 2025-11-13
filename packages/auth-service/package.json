@@ -34,7 +34,10 @@
     "@fastify/jwt": "^8.0.1",
     "@fastify/rate-limit": "^9.1.0",
     "@noble/hashes": "^1.3.3",
+<<<<<<< HEAD
     "@node-saml/passport-saml": "^5.1.0",
+=======
+>>>>>>> origin/feature/separate-home-lab-server
     "argon2": "^0.31.2",
     "axios": "^1.6.7",
     "bcrypt": "^5.1.1",
@@ -50,6 +53,10 @@
     "passport-jwt": "^4.0.1",
     "passport-ldapauth": "^3.0.1",
     "passport-oauth2": "^1.8.0",
+<<<<<<< HEAD
+=======
+    "passport-saml": "^3.2.4",
+>>>>>>> origin/feature/separate-home-lab-server
     "pg": "^8.11.3",
     "qrcode": "^1.5.3",
     "rate-limiter-flexible": "^5.0.0",
@@ -71,11 +78,18 @@
     "@types/speakeasy": "^2.0.10",
     "@types/uuid": "^9.0.7",
     "@vitest/coverage-v8": "^1.2.2",
+<<<<<<< HEAD
     "dotenv": "^17.2.3",
+=======
+>>>>>>> origin/feature/separate-home-lab-server
     "eslint": "^8.56.0",
     "prettier": "^3.2.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3",
+<<<<<<< HEAD
     "vitest": "^1.2.2"
+=======
+    "vitest": "^3.2.4"
+>>>>>>> origin/feature/separate-home-lab-server
   }
 }

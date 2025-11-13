@@ -1,0 +1,21 @@
+# Prometheus ServiceMonitor for metrics collection
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: message-queue-api
+  namespace: noa-server
+  labels:
+    app: message-queue-api
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: message-queue-api
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 30s
+      scrapeTimeout: 10s
+  namespaceSelector:
+    matchNames:
+      - noa-server

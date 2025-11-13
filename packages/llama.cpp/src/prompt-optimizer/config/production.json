@@ -1,0 +1,241 @@
+{
+  "mandatory": true,
+  "enabled": true,
+  "version": "2.0.0",
+  "environment": "production",
+
+  "quality": {
+    "threshold": 8.5,
+    "blockBelowThreshold": false,
+    "autoRetryOnFailure": true,
+    "maxRetries": 3,
+    "enforceMinimumScore": true,
+    "warningThreshold": 7.5,
+    "criticalThreshold": 6.0
+  },
+
+  "bypass": {
+    "enabled": true,
+    "prefixes": [
+      "@raw:",
+      "@skip:",
+      "@direct:",
+      "@noopt:",
+      "@passthrough:"
+    ],
+    "allowAdminOverride": true,
+    "requireAuthentication": true,
+    "logBypassAttempts": true,
+    "maxBypassRate": 0.15
+  },
+
+  "caching": {
+    "enabled": true,
+    "ttl": 7200,
+    "maxEntries": 10000,
+    "strategy": "lru",
+    "warmupCache": true,
+    "persistCache": false,
+    "compressionEnabled": true,
+    "invalidateOnConfigChange": true,
+    "pruneInterval": 3600
+  },
+
+  "strategies": {
+    "default": "auto-detect",
+    "fallback": "technical",
+    "forceStrategy": null,
+    "enableHybridStrategies": true,
+    "strategySelectionConfidence": 0.75,
+    "allowStrategyOverride": false
+  },
+
+  "integrations": {
+    "claudeCode": {
+      "enabled": true,
+      "hookPriority": "high",
+      "preProcessing": true,
+      "postProcessing": true,
+      "errorHandling": "graceful"
+    },
+    "api": {
+      "enabled": true,
+      "endpoints": ["*"],
+      "excludeEndpoints": [
+        "/health",
+        "/metrics",
+        "/status",
+        "/ping"
+      ],
+      "rateLimit": {
+        "enabled": true,
+        "maxRequests": 1000,
+        "windowMs": 60000
+      }
+    },
+    "terminal": {
+      "enabled": false,
+      "commands": ["ai", "claude", "chat"],
+      "interceptStdio": false
+    }
+  },
+
+  "logging": {
+    "enabled": true,
+    "level": "info",
+    "logOriginal": false,
+    "logOptimized": true,
+    "logMetrics": true,
+    "logBypass": true,
+    "destination": "file",
+    "logFile": "logs/prompt-optimizer.log",
+    "rotationSize": "100M",
+    "rotationCount": 10,
+    "includeTimestamps": true,
+    "includeRequestId": true,
+    "sensitiveDataMasking": true
+  },
+
+  "monitoring": {
+    "enabled": true,
+    "trackMetrics": true,
+    "trackPerformance": true,
+    "trackCacheHits": true,
+    "alertOnFailures": true,
+    "metricsInterval": 60000,
+    "performanceThresholds": {
+      "p50": 50,
+      "p95": 200,
+      "p99": 500
+    },
+    "alerting": {
+      "enabled": true,
+      "channels": ["email", "slack"],
+      "thresholds": {
+        "errorRate": 0.05,
+        "successRate": 0.95,
+        "avgProcessingTime": 1000
+      }
+    }
+  },
+
+  "performance": {
+    "maxProcessingTime": 3000,
+    "timeoutAction": "passthrough",
+    "parallelOptimization": true,
+    "batchOptimization": {
+      "enabled": true,
+      "batchSize": 10,
+      "maxBatchWait": 100
+    },
+    "throttling": {
+      "enabled": true,
+      "maxConcurrent": 50,
+      "queueSize": 200
+    },
+    "circuitBreaker": {
+      "enabled": true,
+      "threshold": 0.5,
+      "timeout": 60000,
+      "resetTimeout": 30000
+    }
+  },
+
+  "abTesting": {
+    "enabled": false,
+    "sampleRate": 0.0,
+    "compareResults": false,
+    "trackVariants": false,
+    "minSampleSize": 100
+  },
+
+  "emergency": {
+    "overrideEnabled": false,
+    "overrideKey": null,
+    "disableOnError": false,
+    "autoRecovery": true,
+    "recoveryDelay": 5000,
+    "fallbackMode": "passthrough",
+    "healthCheck": {
+      "enabled": true,
+      "interval": 30000,
+      "timeout": 5000
+    }
+  },
+
+  "security": {
+    "sanitizeInput": true,
+    "maxPromptLength": 50000,
+    "rejectMaliciousPatterns": true,
+    "rateLimiting": {
+      "enabled": true,
+      "maxRequestsPerMinute": 100,
+      "maxRequestsPerHour": 5000
+    },
+    "encryption": {
+      "encryptCache": false,
+      "encryptLogs": false
+    }
+  },
+
+  "optimization": {
+    "enableLearning": false,
+    "adaptiveThresholds": false,
+    "continuousImprovement": false,
+    "feedbackLoop": {
+      "enabled": false,
+      "sampleRate": 0.0
+    }
+  },
+
+  "compliance": {
+    "gdprCompliant": true,
+    "dataRetention": {
+      "enabled": true,
+      "retentionDays": 90,
+      "anonymizeAfterDays": 30
+    },
+    "auditLogging": {
+      "enabled": true,
+      "logAllRequests": false,
+      "logFailures": true,
+      "logBypasses": true
+    }
+  },
+
+  "features": {
+    "multiModal": false,
+    "languageDetection": true,
+    "contextPreservation": true,
+    "semanticAnalysis": true,
+    "intentRecognition": true
+  },
+
+  "requestTypes": {
+    "creative": {
+      "enabled": true,
+      "minQualityScore": 8.0,
+      "techniques": ["multi_perspective", "tone_emphasis", "few_shot_examples"]
+    },
+    "technical": {
+      "enabled": true,
+      "minQualityScore": 9.0,
+      "techniques": ["precision_focus", "clear_structure", "constraint_based"]
+    },
+    "educational": {
+      "enabled": true,
+      "minQualityScore": 8.5,
+      "techniques": ["systematic_framework", "chain_of_thought", "context_enrichment"]
+    },
+    "complex": {
+      "enabled": true,
+      "minQualityScore": 9.0,
+      "techniques": ["decomposition", "chain_of_thought", "systematic_framework"]
+    },
+    "hybrid": {
+      "enabled": true,
+      "minQualityScore": 8.5,
+      "techniques": ["context_enrichment", "clear_structure", "multi_perspective"]
+    }
+  }
+}

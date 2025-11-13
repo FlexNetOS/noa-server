@@ -1,0 +1,21 @@
+[Unit]
+Description=Daily Task Management Backup Timer
+Documentation=file:///home/deflex/noa-server/docs/BACKUP_DISASTER_RECOVERY.md
+Requires=task-backup.service
+
+[Timer]
+# Run daily at 2:00 AM
+OnCalendar=daily
+OnCalendar=*-*-* 02:00:00
+
+# Run 5 minutes after boot if missed
+OnBootSec=5min
+
+# Allow up to 1 hour delay if system is busy
+AccuracySec=1h
+
+# Run immediately if last run was missed
+Persistent=true
+
+[Install]
+WantedBy=timers.target
