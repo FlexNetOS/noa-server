@@ -43,7 +43,7 @@ export const LoggerConfigSchema = z.object({
       enabled: z.boolean().default(true),
       level: z.nativeEnum(LogLevel).optional(),
       colorize: z.boolean().default(true),
-    }).default({}),
+    }).optional(),
     file: z.object({
       enabled: z.boolean().default(true),
       level: z.nativeEnum(LogLevel).optional(),
@@ -52,27 +52,27 @@ export const LoggerConfigSchema = z.object({
       maxSize: z.number().default(10485760), // 10MB
       maxFiles: z.number().default(5),
       errorFilename: z.string().default('error.log'),
-    }).default({}),
+    }).optional(),
     http: z.object({
       enabled: z.boolean().default(false),
       endpoint: z.string().optional(),
-      headers: z.record(z.string()).optional(),
-    }).default({}),
-  }).default({}),
+      headers: z.record(z.string(), z.string()).optional(),
+    }).optional(),
+  }).optional(),
   metadata: z.object({
     service: z.string().default('noa-server'),
     environment: z.string().default(process.env.NODE_ENV || 'development'),
     version: z.string().optional(),
     hostname: z.string().optional(),
-  }).default({}),
+  }).optional(),
   enableCorrelationId: z.boolean().default(true),
   enableTimestamps: z.boolean().default(true),
   enableStackTrace: z.boolean().default(true),
   sampling: z.object({
     enabled: z.boolean().default(false),
     rate: z.number().min(0).max(1).default(1.0), // 1.0 = 100%
-  }).default({}),
-  moduleOverrides: z.record(z.nativeEnum(LogLevel)).default({}),
+  }).optional(),
+  moduleOverrides: z.record(z.string(), z.nativeEnum(LogLevel)).optional(),
 });
 
 export type LoggerConfig = z.infer<typeof LoggerConfigSchema>;
@@ -146,8 +146,9 @@ export class LoggerFactory {
     this.initialized = true;
 
     // Ensure log directory exists
-    if (this.config.transports.file.enabled) {
-      const logDir = this.config.transports.file.directory;
+    const fileTransport = this.config.transports?.file;
+    if (fileTransport?.enabled) {
+      const logDir = fileTransport.directory || 'logs';
       if (!fs.existsSync(logDir)) {
         fs.mkdirSync(logDir, { recursive: true });
       }
@@ -177,7 +178,7 @@ export class LoggerFactory {
     }
 
     // Determine log level for this module
-    const level = this.config.moduleOverrides[module] || this.config.level;
+    const level = (this.config.moduleOverrides?.[module] as LogLevel | undefined) || this.config.level;
 
     // Create Winston logger
     const winstonLogger = winston.createLogger({
@@ -258,11 +259,12 @@ export class LoggerFactory {
     const transports: winston.transport[] = [];
 
     // Console transport
-    if (this.config.transports.console.enabled) {
+    const consoleTransport = this.config.transports?.console;
+    if (consoleTransport?.enabled) {
       transports.push(
         new winston.transports.Console({
-          level: this.config.transports.console.level || this.config.level,
-          format: this.config.transports.console.colorize
+          level: consoleTransport.level || this.config.level,
+          format: consoleTransport.colorize
             ? winston.format.combine(winston.format.colorize(), winston.format.simple())
             : undefined,
         })
@@ -270,18 +272,18 @@ export class LoggerFactory {
     }
 
     // File transports
-    if (this.config.transports.file.enabled) {
-      const fileConfig = this.config.transports.file;
-      const logPath = path.join(fileConfig.directory, fileConfig.filename);
-      const errorLogPath = path.join(fileConfig.directory, fileConfig.errorFilename);
+    const fileConfig = this.config.transports?.file;
+    if (fileConfig?.enabled) {
+      const logPath = path.join(fileConfig.directory || 'logs', fileConfig.filename || 'application.log');
+      const errorLogPath = path.join(fileConfig.directory || 'logs', fileConfig.errorFilename || 'error.log');
 
       // Combined log file
       transports.push(
         new winston.transports.File({
           filename: logPath,
           level: fileConfig.level || this.config.level,
-          maxsize: fileConfig.maxSize,
-          maxFiles: fileConfig.maxFiles,
+          maxsize: fileConfig.maxSize || 10485760,
+          maxFiles: fileConfig.maxFiles || 5,
         })
       );
 
@@ -390,6 +392,9 @@ export class LoggerFactory {
    * Set log level for specific module
    */
   public static setModuleLevel(module: string, level: LogLevel): void {
+    if (!this.config.moduleOverrides) {
+      this.config.moduleOverrides = {};
+    }
     this.config.moduleOverrides[module] = level;
     const logger = this.loggers.get(module);
     if (logger) {
