@@ -17,6 +17,9 @@ RUN apt-get update && apt-get install -y \
 
 # Install pnpm
 RUN npm install -g pnpm@9.11.0
+# Configure pnpm environment
+ENV PNPM_HOME=/usr/local/share/pnpm
+ENV PATH=$PNPM_HOME:$PATH
 
 # Install Python tools
 RUN pip3 install --no-cache-dir \

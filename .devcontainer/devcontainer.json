@@ -132,10 +132,12 @@
   "postStartCommand": "echo 'Noa Server Dev Container Ready! Run: pnpm run dev'",
 
   // Environment variables
+  "initializeCommand": "corepack enable pnpm",
+
   "containerEnv": {
     "NODE_ENV": "development",
     "PNPM_HOME": "/usr/local/share/pnpm",
-    "PATH": "/usr/local/share/pnpm:${containerEnv:PATH}"
+    "PATH": "/usr/local/share/pnpm:${PATH}"
   },
 
   // Mounts
