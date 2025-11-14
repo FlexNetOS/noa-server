@@ -504,9 +504,17 @@ export class TypedEventBus<TEvents extends Record<string, any>> {
     return this.bus.getHistory(eventName as string) as EventEnvelope<TEvents[K]>[];
   }
 
-  public getMetrics = this.bus.getMetrics.bind(this.bus);
-  public getStatistics = this.bus.getStatistics.bind(this.bus);
-  public shutdown = this.bus.shutdown.bind(this.bus);
+  public getMetrics(): EventBusMetrics {
+    return this.bus.getMetrics();
+  }
+  
+  public getStatistics(): EventBusStatistics {
+    return this.bus.getStatistics();
+  }
+  
+  public shutdown(): void {
+    this.bus.shutdown();
+  }
 }
 
 /**
