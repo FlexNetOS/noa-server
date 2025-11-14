@@ -73,6 +73,27 @@ export type EventTransform<TIn = any, TOut = any> = (
 ) => TOut;
 
 /**
+ * Event bus metrics type
+ */
+export interface EventBusMetrics {
+  [eventName: string]: {
+    count: number;
+    avgTime: number;
+    errors: number;
+  };
+}
+
+/**
+ * Event bus statistics type
+ */
+export interface EventBusStatistics {
+  totalEvents: number;
+  totalSubscriptions: number;
+  historySize: number;
+  eventTypes: number;
+}
+
+/**
  * EventBus configuration
  */
 export interface EventBusConfig {
@@ -147,7 +168,7 @@ export class EventBus extends EventEmitter {
    * @param options - Subscription options
    * @returns Subscription ID for unsubscribing
    */
-  public on<T = any>(
+  public subscribe<T = any>(
     eventName: string,
     handler: EventHandler<T>,
     options: { priority?: number; once?: boolean } = {}
@@ -168,20 +189,43 @@ export class EventBus extends EventEmitter {
 
     this.subscriptions.set(eventName, subs);
 
+    // Also register with EventEmitter for compatibility
+    super.on(eventName, handler as any);
+
     return subscription.id;
+  }
+
+  /**
+   * Alias for subscribe
+   */
+  public override on<T = any>(
+    eventName: string,
+    handler: EventHandler<T>,
+    options: { priority?: number; once?: boolean } = {}
+  ): this {
+    this.subscribe(eventName, handler, options);
+    return this;
   }
 
   /**
    * Subscribe to an event (fires once)
    */
-  public once<T = any>(eventName: string, handler: EventHandler<T>, options: { priority?: number } = {}): string {
-    return this.on(eventName, handler, { ...options, once: true });
+  public subscribeOnce<T = any>(eventName: string, handler: EventHandler<T>, options: { priority?: number } = {}): string {
+    return this.subscribe(eventName, handler, { ...options, once: true });
+  }
+
+  /**
+   * Alias for subscribeOnce
+   */
+  public override once<T = any>(eventName: string, handler: EventHandler<T>, options: { priority?: number } = {}): this {
+    this.subscribeOnce(eventName, handler, options);
+    return this;
   }
 
   /**
    * Unsubscribe from an event
    */
-  public off(subscriptionId: string): boolean {
+  public unsubscribe(subscriptionId: string): boolean {
     for (const [eventName, subs] of this.subscriptions.entries()) {
       const index = subs.findIndex((sub) => sub.id === subscriptionId);
       if (index !== -1) {
@@ -196,13 +240,21 @@ export class EventBus extends EventEmitter {
   }
 
   /**
+   * Alias for unsubscribe
+   */
+  public override off(eventName: string | symbol, listener: (...args: any[]) => void): this {
+    super.off(eventName, listener);
+    return this;
+  }
+
+  /**
    * Emit an event
    *
    * @param eventName - Event name
    * @param data - Event data
    * @param metadata - Event metadata
    */
-  public async emit<T = any>(
+  public async emitAsync<T = any>(
     eventName: string,
     data: T,
     metadata: Partial<EventMetadata> = {}
@@ -263,6 +315,23 @@ export class EventBus extends EventEmitter {
 
     // Also emit wildcard events
     await this.emitWildcard(envelope);
+    
+    // Also call parent emit for compatibility
+    super.emit(eventName, data);
+  }
+
+  /**
+   * Override emit to support both sync and async
+   */
+  public override emit(eventName: string | symbol, ...args: any[]): boolean {
+    // Call async version in background
+    if (typeof eventName === 'string') {
+      this.emitAsync(eventName, args[0], args[1]).catch((err) => {
+        logger.error('Error in async emit', { eventName, error: err });
+      });
+    }
+    // Also call parent for compatibility
+    return super.emit(eventName, ...args);
   }
 
   /**
@@ -477,7 +546,7 @@ export class TypedEventBus<TEvents extends Record<string, any>> {
     handler: EventHandler<TEvents[K]>,
     options?: { priority?: number; once?: boolean }
   ): string {
-    return this.bus.on(eventName as string, handler, options);
+    return this.bus.subscribe(eventName as string, handler, options);
   }
 
   public once<K extends keyof TEvents>(
@@ -485,11 +554,11 @@ export class TypedEventBus<TEvents extends Record<string, any>> {
     handler: EventHandler<TEvents[K]>,
     options?: { priority?: number }
   ): string {
-    return this.bus.once(eventName as string, handler, options);
+    return this.bus.subscribeOnce(eventName as string, handler, options);
   }
 
   public off(subscriptionId: string): boolean {
-    return this.bus.off(subscriptionId);
+    return this.bus.unsubscribe(subscriptionId);
   }
 
   public async emit<K extends keyof TEvents>(
@@ -497,7 +566,7 @@ export class TypedEventBus<TEvents extends Record<string, any>> {
     data: TEvents[K],
     metadata?: Partial<EventMetadata>
   ): Promise<void> {
-    await this.bus.emit(eventName as string, data, metadata);
+    await this.bus.emitAsync(eventName as string, data, metadata);
   }
 
   public getHistory<K extends keyof TEvents>(eventName?: K): EventEnvelope<TEvents[K]>[] {
