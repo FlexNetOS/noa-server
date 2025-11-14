@@ -43,10 +43,7 @@ export interface EventEnvelope<T = any> {
 /**
  * Event handler function
  */
-export type EventHandler<T = any> = (
-  data: T,
-  metadata: EventMetadata
-) => void | Promise<void>;
+export type EventHandler<T = any> = (data: T, metadata: EventMetadata) => void | Promise<void>;
 
 /**
  * Event subscription
@@ -67,10 +64,7 @@ export type EventFilter<T = any> = (data: T, metadata: EventMetadata) => boolean
 /**
  * Event transformation function
  */
-export type EventTransform<TIn = any, TOut = any> = (
-  data: TIn,
-  metadata: EventMetadata
-) => TOut;
+export type EventTransform<TIn = any, TOut = any> = (data: TIn, metadata: EventMetadata) => TOut;
 
 /**
  * Event bus metrics type
@@ -210,14 +204,22 @@ export class EventBus extends EventEmitter {
   /**
    * Subscribe to an event (fires once)
    */
-  public subscribeOnce<T = any>(eventName: string, handler: EventHandler<T>, options: { priority?: number } = {}): string {
+  public subscribeOnce<T = any>(
+    eventName: string,
+    handler: EventHandler<T>,
+    options: { priority?: number } = {}
+  ): string {
     return this.subscribe(eventName, handler, { ...options, once: true });
   }
 
   /**
    * Alias for subscribeOnce
    */
-  public override once<T = any>(eventName: string, handler: EventHandler<T>, options: { priority?: number } = {}): this {
+  public override once<T = any>(
+    eventName: string,
+    handler: EventHandler<T>,
+    options: { priority?: number } = {}
+  ): this {
     this.subscribeOnce(eventName, handler, options);
     return this;
   }
@@ -315,7 +317,7 @@ export class EventBus extends EventEmitter {
 
     // Also emit wildcard events
     await this.emitWildcard(envelope);
-    
+
     // Also call parent emit for compatibility
     super.emit(eventName, data);
   }
@@ -365,7 +367,11 @@ export class EventBus extends EventEmitter {
   /**
    * Subscribe to wildcard events
    */
-  public onAny(pattern: string, handler: EventHandler, options: { priority?: number } = {}): string {
+  public onAny(
+    pattern: string,
+    handler: EventHandler,
+    options: { priority?: number } = {}
+  ): string {
     return this.on(pattern, handler, options);
   }
 
@@ -397,7 +403,9 @@ export class EventBus extends EventEmitter {
     for (const events of this.history.values()) {
       allHistory.push(...events);
     }
-    return allHistory.sort((a, b) => a.metadata.timestamp.getTime() - b.metadata.timestamp.getTime());
+    return allHistory.sort(
+      (a, b) => a.metadata.timestamp.getTime() - b.metadata.timestamp.getTime()
+    );
   }
 
   /**
@@ -436,7 +444,9 @@ export class EventBus extends EventEmitter {
   /**
    * Get metrics for an event
    */
-  public getMetrics(eventName?: string): Record<string, { count: number; avgTime: number; errors: number }> {
+  public getMetrics(
+    eventName?: string
+  ): Record<string, { count: number; avgTime: number; errors: number }> {
     if (eventName) {
       const metric = this.metrics.get(eventName);
       if (!metric) return {};
@@ -576,11 +586,11 @@ export class TypedEventBus<TEvents extends Record<string, any>> {
   public getMetrics(): EventBusMetrics {
     return this.bus.getMetrics();
   }
-  
+
   public getStatistics(): EventBusStatistics {
     return this.bus.getStatistics();
   }
-  
+
   public shutdown(): void {
     this.bus.shutdown();
   }

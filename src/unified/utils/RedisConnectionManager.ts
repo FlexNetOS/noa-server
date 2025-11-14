@@ -29,23 +29,29 @@ export const RedisConnectionConfigSchema = z.object({
   db: z.number().min(0).max(15).default(0),
   keyPrefix: z.string().default(''),
   connectionName: z.string().optional(),
-  retryStrategy: z.object({
-    maxAttempts: z.number().default(3),
-    initialDelay: z.number().default(100), // ms
-    maxDelay: z.number().default(3000), // ms
-    factor: z.number().default(2), // exponential backoff factor
-  }).optional(),
-  circuitBreaker: z.object({
-    enabled: z.boolean().default(true),
-    failureThreshold: z.number().default(5),
-    successThreshold: z.number().default(2),
-    timeout: z.number().default(60000), // ms
-  }).optional(),
-  pooling: z.object({
-    enabled: z.boolean().default(true),
-    min: z.number().default(2),
-    max: z.number().default(10),
-  }).optional(),
+  retryStrategy: z
+    .object({
+      maxAttempts: z.number().default(3),
+      initialDelay: z.number().default(100), // ms
+      maxDelay: z.number().default(3000), // ms
+      factor: z.number().default(2), // exponential backoff factor
+    })
+    .optional(),
+  circuitBreaker: z
+    .object({
+      enabled: z.boolean().default(true),
+      failureThreshold: z.number().default(5),
+      successThreshold: z.number().default(2),
+      timeout: z.number().default(60000), // ms
+    })
+    .optional(),
+  pooling: z
+    .object({
+      enabled: z.boolean().default(true),
+      min: z.number().default(2),
+      max: z.number().default(10),
+    })
+    .optional(),
   enableOfflineQueue: z.boolean().default(true),
   enableReadyCheck: z.boolean().default(true),
   connectTimeout: z.number().default(10000), // ms
@@ -379,9 +385,8 @@ export class RedisConnectionManager extends EventEmitter {
       const latency = Date.now() - start;
 
       const connected = connection.status === 'ready';
-      const failureRate = stats.commandsExecuted > 0
-        ? stats.commandsFailed / stats.commandsExecuted
-        : 0;
+      const failureRate =
+        stats.commandsExecuted > 0 ? stats.commandsFailed / stats.commandsExecuted : 0;
 
       let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
       if (!connected || failureRate > 0.1) {

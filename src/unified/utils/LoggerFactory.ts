@@ -38,40 +38,52 @@ export enum LogLevel {
 export const LoggerConfigSchema = z.object({
   level: z.nativeEnum(LogLevel).default(LogLevel.INFO),
   format: z.enum(['json', 'simple', 'colorized']).default('json'),
-  transports: z.object({
-    console: z.object({
-      enabled: z.boolean().default(true),
-      level: z.nativeEnum(LogLevel).optional(),
-      colorize: z.boolean().default(true),
-    }).optional(),
-    file: z.object({
-      enabled: z.boolean().default(true),
-      level: z.nativeEnum(LogLevel).optional(),
-      directory: z.string().default('logs'),
-      filename: z.string().default('application.log'),
-      maxSize: z.number().default(10485760), // 10MB
-      maxFiles: z.number().default(5),
-      errorFilename: z.string().default('error.log'),
-    }).optional(),
-    http: z.object({
-      enabled: z.boolean().default(false),
-      endpoint: z.string().optional(),
-      headers: z.record(z.string(), z.string()).optional(),
-    }).optional(),
-  }).optional(),
-  metadata: z.object({
-    service: z.string().default('noa-server'),
-    environment: z.string().default(process.env.NODE_ENV || 'development'),
-    version: z.string().optional(),
-    hostname: z.string().optional(),
-  }).optional(),
+  transports: z
+    .object({
+      console: z
+        .object({
+          enabled: z.boolean().default(true),
+          level: z.nativeEnum(LogLevel).optional(),
+          colorize: z.boolean().default(true),
+        })
+        .optional(),
+      file: z
+        .object({
+          enabled: z.boolean().default(true),
+          level: z.nativeEnum(LogLevel).optional(),
+          directory: z.string().default('logs'),
+          filename: z.string().default('application.log'),
+          maxSize: z.number().default(10485760), // 10MB
+          maxFiles: z.number().default(5),
+          errorFilename: z.string().default('error.log'),
+        })
+        .optional(),
+      http: z
+        .object({
+          enabled: z.boolean().default(false),
+          endpoint: z.string().optional(),
+          headers: z.record(z.string(), z.string()).optional(),
+        })
+        .optional(),
+    })
+    .optional(),
+  metadata: z
+    .object({
+      service: z.string().default('noa-server'),
+      environment: z.string().default(process.env.NODE_ENV || 'development'),
+      version: z.string().optional(),
+      hostname: z.string().optional(),
+    })
+    .optional(),
   enableCorrelationId: z.boolean().default(true),
   enableTimestamps: z.boolean().default(true),
   enableStackTrace: z.boolean().default(true),
-  sampling: z.object({
-    enabled: z.boolean().default(false),
-    rate: z.number().min(0).max(1).default(1.0), // 1.0 = 100%
-  }).optional(),
+  sampling: z
+    .object({
+      enabled: z.boolean().default(false),
+      rate: z.number().min(0).max(1).default(1.0), // 1.0 = 100%
+    })
+    .optional(),
   moduleOverrides: z.record(z.string(), z.nativeEnum(LogLevel)).optional(),
 });
 
@@ -178,7 +190,8 @@ export class LoggerFactory {
     }
 
     // Determine log level for this module
-    const level = (this.config.moduleOverrides?.[module] as LogLevel | undefined) || this.config.level;
+    const level =
+      (this.config.moduleOverrides?.[module] as LogLevel | undefined) || this.config.level;
 
     // Create Winston logger
     const winstonLogger = winston.createLogger({
@@ -274,8 +287,14 @@ export class LoggerFactory {
     // File transports
     const fileConfig = this.config.transports?.file;
     if (fileConfig?.enabled) {
-      const logPath = path.join(fileConfig.directory || 'logs', fileConfig.filename || 'application.log');
-      const errorLogPath = path.join(fileConfig.directory || 'logs', fileConfig.errorFilename || 'error.log');
+      const logPath = path.join(
+        fileConfig.directory || 'logs',
+        fileConfig.filename || 'application.log'
+      );
+      const errorLogPath = path.join(
+        fileConfig.directory || 'logs',
+        fileConfig.errorFilename || 'error.log'
+      );
 
       // Combined log file
       transports.push(
@@ -314,10 +333,7 @@ export class LoggerFactory {
   /**
    * Extend Winston logger with custom methods
    */
-  private static extendLogger(
-    winstonLogger: winston.Logger,
-    module: string
-  ): CustomLogger {
+  private static extendLogger(winstonLogger: winston.Logger, module: string): CustomLogger {
     const customLogger = winstonLogger as CustomLogger;
 
     /**

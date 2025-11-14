@@ -99,11 +99,7 @@ export class DatabaseMetrics {
   /**
    * Time a database query
    */
-  public async timeQuery<T>(
-    operation: string,
-    table: string,
-    fn: () => Promise<T>
-  ): Promise<T> {
+  public async timeQuery<T>(operation: string, table: string, fn: () => Promise<T>): Promise<T> {
     const start = Date.now();
     try {
       const result = await fn();
@@ -121,7 +117,12 @@ export class DatabaseMetrics {
   /**
    * Update connection pool metrics
    */
-  public updateConnectionPool(pool: string, active: number, idle: number, waiting: number = 0): void {
+  public updateConnectionPool(
+    pool: string,
+    active: number,
+    idle: number,
+    waiting: number = 0
+  ): void {
     this.collector.setGauge('db_connections_active', active, { pool });
     this.collector.setGauge('db_connections_idle', idle, { pool });
     this.collector.setGauge('db_connections_waiting', waiting, { pool });
