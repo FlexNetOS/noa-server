@@ -20,9 +20,9 @@ import { z } from 'zod';
  * Circuit breaker states
  */
 export enum CircuitState {
-  CLOSED = 'closed',     // Normal operation
-  OPEN = 'open',         // Blocking requests
-  HALF_OPEN = 'half-open' // Testing if service recovered
+  CLOSED = 'closed', // Normal operation
+  OPEN = 'open', // Blocking requests
+  HALF_OPEN = 'half-open', // Testing if service recovered
 }
 
 /**

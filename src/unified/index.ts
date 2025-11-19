@@ -79,25 +79,30 @@ export const MODULE_NAME = 'unified';
  *
  * @param config - Global configuration
  */
-export async function initializeUnified(config: {
-  logger?: any;
-  redis?: any;
-  eventBus?: any;
-} = {}): Promise<void> {
+export async function initializeUnified(
+  config: {
+    logger?: any;
+    redis?: any;
+    eventBus?: any;
+  } = {}
+): Promise<void> {
   // Initialize logger
   if (config.logger) {
-    LoggerFactory.configure(config.logger);
+    const { LoggerFactory: LF } = await import('./utils/LoggerFactory.js');
+    LF.configure(config.logger);
   }
 
   // Initialize Redis connections
   if (config.redis) {
-    const manager = getRedisManager();
+    const { getRedisManager: getRM } = await import('./utils/RedisConnectionManager.js');
+    const manager = getRM();
     // Redis connections are lazy-loaded
   }
 
   // Initialize global event bus
   if (config.eventBus !== false) {
-    getGlobalEventBus();
+    const { getGlobalEventBus: getEB } = await import('./utils/EventBus.js');
+    getEB();
   }
 }
 
@@ -105,19 +110,23 @@ export async function initializeUnified(config: {
  * Shutdown all unified modules
  */
 export async function shutdownUnified(): Promise<void> {
-  const logger = getLogger('unified');
+  const { getLogger: getL } = await import('./utils/LoggerFactory.js');
+  const logger = getL('unified');
   logger.info('Shutting down unified modules');
 
   // Shutdown Redis connections
-  const redisManager = getRedisManager();
+  const { getRedisManager: getRM } = await import('./utils/RedisConnectionManager.js');
+  const redisManager = getRM();
   await redisManager.shutdown();
 
   // Shutdown event bus
-  const eventBus = getGlobalEventBus();
+  const { getGlobalEventBus: getEB } = await import('./utils/EventBus.js');
+  const eventBus = getEB();
   eventBus.shutdown();
 
   // Shutdown logger
-  await LoggerFactory.shutdown();
+  const { LoggerFactory: LF } = await import('./utils/LoggerFactory.js');
+  await LF.shutdown();
 
   logger.info('Unified modules shutdown complete');
 }

@@ -98,12 +98,17 @@
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "@playwright/test": "^1.56.1",
+    "@types/amqplib": "^0.10.1",
+    "@types/express": "^5.0.5",
     "@types/node": "^24.9.1",
+    "@types/pg": "^8.15.6",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
     "agentic-payments": "^0.1.7",
+    "amqplib": "^0.10.3",
+    "axios": "^1.13.2",
     "claude-flow": "^2.7.0",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.0.1",
@@ -114,11 +119,18 @@
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-security": "^1.7.1",
+    "express": "^5.1.0",
     "flow-nexus": "^0.1.128",
+    "ioredis": "^5.3.2",
     "license-checker": "^25.0.1",
+    "pg": "^8.16.3",
     "prettier": "^3.3.3",
+    "prom-client": "^15.1.0",
+    "redis": "^5.9.0",
     "ruv-swarm": "^1.0.20",
     "typescript": "^5.7.3",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "winston": "^3.18.3",
+    "zod": "^4.1.12"
   }
 }

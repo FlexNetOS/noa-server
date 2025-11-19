@@ -17,7 +17,7 @@ const MetricsConfigSchema = z.object({
   prefix: z.string().default('noa'),
   enableDefaultMetrics: z.boolean().default(true),
   defaultMetricsInterval: z.number().default(10000),
-  labels: z.record(z.string()).optional(),
+  labels: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
   registry: z.any().optional(),
 });
 
@@ -45,7 +45,7 @@ export class MetricsCollector {
   private summaries: Map<string, Summary> = new Map();
   private prefix: string;
   private logger?: Logger;
-  private defaultLabels: Record<string, string>;
+  private defaultLabels: Record<string, string | number>;
 
   constructor(config: MetricsConfig, logger?: Logger) {
     const validatedConfig = MetricsConfigSchema.parse(config);
@@ -57,7 +57,7 @@ export class MetricsCollector {
 
     // Set default labels
     if (Object.keys(this.defaultLabels).length > 0) {
-      this.registry.setDefaultLabels(this.defaultLabels);
+      this.registry.setDefaultLabels(this.defaultLabels as Record<string, string>);
     }
 
     // Enable default system metrics
@@ -173,11 +173,15 @@ export class MetricsCollector {
   /**
    * Increment a counter
    */
-  public incrementCounter(name: string, labels?: Record<string, string | number>, value: number = 1): void {
+  public incrementCounter(
+    name: string,
+    labels?: Record<string, string | number>,
+    value: number = 1
+  ): void {
     try {
       const counter = this.counters.get(this.getMetricName(name));
       if (counter) {
-        counter.inc(labels, value);
+        counter.inc(labels || {}, value);
       } else {
         this.logger?.warn('Counter not found', { name });
       }
@@ -193,7 +197,7 @@ export class MetricsCollector {
     try {
       const gauge = this.gauges.get(this.getMetricName(name));
       if (gauge) {
-        gauge.set(labels, value);
+        gauge.set(labels || {}, value);
       } else {
         this.logger?.warn('Gauge not found', { name });
       }
@@ -205,11 +209,15 @@ export class MetricsCollector {
   /**
    * Increment a gauge
    */
-  public incrementGauge(name: string, labels?: Record<string, string | number>, value: number = 1): void {
+  public incrementGauge(
+    name: string,
+    labels?: Record<string, string | number>,
+    value: number = 1
+  ): void {
     try {
       const gauge = this.gauges.get(this.getMetricName(name));
       if (gauge) {
-        gauge.inc(labels, value);
+        gauge.inc(labels || {}, value);
       } else {
         this.logger?.warn('Gauge not found', { name });
       }
@@ -221,11 +229,15 @@ export class MetricsCollector {
   /**
    * Decrement a gauge
    */
-  public decrementGauge(name: string, labels?: Record<string, string | number>, value: number = 1): void {
+  public decrementGauge(
+    name: string,
+    labels?: Record<string, string | number>,
+    value: number = 1
+  ): void {
     try {
       const gauge = this.gauges.get(this.getMetricName(name));
       if (gauge) {
-        gauge.dec(labels, value);
+        gauge.dec(labels || {}, value);
       } else {
         this.logger?.warn('Gauge not found', { name });
       }
@@ -237,11 +249,15 @@ export class MetricsCollector {
   /**
    * Observe a histogram value
    */
-  public observeHistogram(name: string, value: number, labels?: Record<string, string | number>): void {
+  public observeHistogram(
+    name: string,
+    value: number,
+    labels?: Record<string, string | number>
+  ): void {
     try {
       const histogram = this.histograms.get(this.getMetricName(name));
       if (histogram) {
-        histogram.observe(labels, value);
+        histogram.observe(labels || {}, value);
       } else {
         this.logger?.warn('Histogram not found', { name });
       }
@@ -253,11 +269,15 @@ export class MetricsCollector {
   /**
    * Observe a summary value
    */
-  public observeSummary(name: string, value: number, labels?: Record<string, string | number>): void {
+  public observeSummary(
+    name: string,
+    value: number,
+    labels?: Record<string, string | number>
+  ): void {
     try {
       const summary = this.summaries.get(this.getMetricName(name));
       if (summary) {
-        summary.observe(labels, value);
+        summary.observe(labels || {}, value);
       } else {
         this.logger?.warn('Summary not found', { name });
       }
