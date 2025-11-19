@@ -102,8 +102,8 @@ export function WorkflowExecution({ executionId }: WorkflowExecutionProps) {
 
   if (!execution) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      <div className="flex h-full items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-500" />
       </div>
     );
   }
@@ -114,17 +114,17 @@ export function WorkflowExecution({ executionId }: WorkflowExecutionProps) {
   const totalNodes = Object.keys(execution.nodes).length;
 
   return (
-    <div className="h-full flex flex-col bg-gray-50 dark:bg-gray-900">
+    <div className="flex h-full flex-col bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <div className="flex-none px-6 py-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex items-center justify-between mb-4">
+      <div className="flex-none border-b border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
+        <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
               onClick={() => (window.location.href = '/workflows')}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              className="rounded-lg p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
               aria-label="Back to workflows"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -145,7 +145,7 @@ export function WorkflowExecution({ executionId }: WorkflowExecutionProps) {
 
           <div className="flex items-center gap-3">
             <span
-              className={`px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(
+              className={`rounded-full px-3 py-1 text-sm font-medium ${getStatusColor(
                 execution.status
               )}`}
             >
@@ -154,7 +154,7 @@ export function WorkflowExecution({ executionId }: WorkflowExecutionProps) {
             {execution.status === 'running' && (
               <button
                 onClick={handleCancel}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="rounded-lg bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
               >
                 Cancel
               </button>
@@ -172,9 +172,9 @@ export function WorkflowExecution({ executionId }: WorkflowExecutionProps) {
               {execution.progress.toFixed(0)}%
             </span>
           </div>
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+          <div className="h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700">
             <motion.div
-              className="bg-blue-600 h-2 rounded-full"
+              className="h-2 rounded-full bg-blue-600"
               initial={{ width: 0 }}
               animate={{ width: `${execution.progress}%` }}
               transition={{ duration: 0.5 }}
@@ -183,7 +183,7 @@ export function WorkflowExecution({ executionId }: WorkflowExecutionProps) {
         </div>
 
         {/* Metadata */}
-        <div className="grid grid-cols-4 gap-4 mt-4 text-sm">
+        <div className="mt-4 grid grid-cols-4 gap-4 text-sm">
           <div>
             <span className="text-gray-500 dark:text-gray-400">Started</span>
             <div className="font-medium text-gray-900 dark:text-white">
@@ -213,22 +213,22 @@ export function WorkflowExecution({ executionId }: WorkflowExecutionProps) {
         </div>
       </div>
 
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex flex-1 overflow-hidden">
         {/* Node Status */}
-        <div className="flex-none w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto">
+        <div className="w-80 flex-none overflow-y-auto border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
           <div className="p-4">
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
+            <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">
               Node Status
             </h3>
             <div className="space-y-2">
               {Object.entries(execution.nodes).map(([nodeId, nodeStatus]) => (
-                <div key={nodeId} className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="flex items-center justify-between mb-2">
+                <div key={nodeId} className="rounded-lg bg-gray-50 p-3 dark:bg-gray-700">
+                  <div className="mb-2 flex items-center justify-between">
                     <span className="text-sm font-medium text-gray-900 dark:text-white">
                       {nodeId}
                     </span>
                     <span
-                      className={`px-2 py-1 text-xs font-medium rounded ${getStatusColor(
+                      className={`rounded px-2 py-1 text-xs font-medium ${getStatusColor(
                         nodeStatus.status
                       )}`}
                     >
@@ -236,12 +236,12 @@ export function WorkflowExecution({ executionId }: WorkflowExecutionProps) {
                     </span>
                   </div>
                   {nodeStatus.error && (
-                    <p className="text-xs text-red-600 dark:text-red-400 mt-1">
+                    <p className="mt-1 text-xs text-red-600 dark:text-red-400">
                       {nodeStatus.error}
                     </p>
                   )}
                   {nodeStatus.startedAt && (
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                       Started: {format(new Date(nodeStatus.startedAt), 'p')}
                     </p>
                   )}
@@ -252,8 +252,8 @@ export function WorkflowExecution({ executionId }: WorkflowExecutionProps) {
         </div>
 
         {/* Logs */}
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <div className="flex-none flex items-center justify-between px-6 py-3 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex flex-1 flex-col overflow-hidden">
+          <div className="flex flex-none items-center justify-between border-b border-gray-200 bg-white px-6 py-3 dark:border-gray-700 dark:bg-gray-800">
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Execution Logs</h3>
             <div className="flex items-center gap-3">
               <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
@@ -266,7 +266,7 @@ export function WorkflowExecution({ executionId }: WorkflowExecutionProps) {
                 Auto-scroll
               </label>
               <span
-                className={`inline-block w-2 h-2 rounded-full ${
+                className={`inline-block h-2 w-2 rounded-full ${
                   isConnected ? 'bg-green-500' : 'bg-red-500'
                 }`}
                 aria-label={isConnected ? 'Connected' : 'Disconnected'}
@@ -277,13 +277,13 @@ export function WorkflowExecution({ executionId }: WorkflowExecutionProps) {
           <div className="flex-1 overflow-y-auto bg-gray-900 p-4 font-mono text-sm">
             {execution.logs.map((log, index) => (
               <div key={index} className="mb-1 flex gap-3">
-                <span className="text-gray-500 flex-none">
+                <span className="flex-none text-gray-500">
                   {format(new Date(log.timestamp), 'HH:mm:ss.SSS')}
                 </span>
                 <span className={`flex-none font-semibold ${getLogLevelColor(log.level)}`}>
                   [{log.level.toUpperCase()}]
                 </span>
-                {log.nodeId && <span className="text-purple-400 flex-none">[{log.nodeId}]</span>}
+                {log.nodeId && <span className="flex-none text-purple-400">[{log.nodeId}]</span>}
                 <span className="text-gray-300">{log.message}</span>
               </div>
             ))}

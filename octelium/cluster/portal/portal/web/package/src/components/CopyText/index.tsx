@@ -1,20 +1,16 @@
-import * as React from "react";
+import * as React from 'react';
 
-import truncate from "truncate-utf8-bytes";
+import truncate from 'truncate-utf8-bytes';
 
-import { CopyButton, ActionIcon, Tooltip, rem } from "@mantine/core";
+import { CopyButton, ActionIcon, Tooltip, rem } from '@mantine/core';
 
-import { MdOutlineContentCopy } from "react-icons/md";
-import { FaCheckDouble } from "react-icons/fa6";
-import { IoCopySharp } from "react-icons/io5";
-import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { MdOutlineContentCopy } from 'react-icons/md';
+import { FaCheckDouble } from 'react-icons/fa6';
+import { IoCopySharp } from 'react-icons/io5';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
 
-const CopyText = (props: {
-  value?: string;
-  truncate?: number;
-  hide?: boolean;
-}) => {
+const CopyText = (props: { value?: string; truncate?: number; hide?: boolean }) => {
   const [copied, setCopied] = useState(false);
   const { value, hide } = props;
   if (!value) {
@@ -31,7 +27,7 @@ const CopyText = (props: {
         </span>
       )}
       <button
-        className="hover:text-black p-0 rounded-full text-slate-700 transition-all duration-500 font-extrabold cursor-pointer"
+        className="cursor-pointer rounded-full p-0 font-extrabold text-slate-700 transition-all duration-500 hover:text-black"
         aria-label="Copy to clipboard"
         onClick={(e) => {
           e.stopPropagation();

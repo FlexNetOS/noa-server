@@ -1,10 +1,13 @@
 # How to run multiple agents on the same thread
 
-In LangGraph Platform, a thread is not explicitly associated with a particular agent.
-This means that you can run multiple agents on the same thread, which allows a different agent to continue from an initial agent's progress.
+In LangGraph Platform, a thread is not explicitly associated with a particular
+agent. This means that you can run multiple agents on the same thread, which
+allows a different agent to continue from an initial agent's progress.
 
-In this example, we will create two agents and then call them both on the same thread.
-You'll see that the second agent will respond using information from the [checkpoint](https://langchain-ai.github.io/langgraph/concepts/low_level/#checkpointer-state) generated in the thread by the first agent as context.
+In this example, we will create two agents and then call them both on the same
+thread. You'll see that the second agent will respond using information from the
+[checkpoint](https://langchain-ai.github.io/langgraph/concepts/low_level/#checkpointer-state)
+generated in the thread by the first agent as context.
 
 ## Setup
 
@@ -30,7 +33,7 @@ You'll see that the second agent will respond using information from the [checkp
     import { Client } from "@langchain/langgraph-sdk";
 
     const client = new Client({ apiUrl: <DEPLOYMENT_URL> });
-    
+
     const openAIAssistant = await client.assistants.create(
       { graphId: "agent", config: {"configurable": {"model_name": "openai"}}}
     );
@@ -226,7 +229,8 @@ Output:
 
 ### Run default assistant
 
-Now, we can run it on the default assistant and see that this second assistant is aware of the initial question, and can answer the question, "and you?":
+Now, we can run it on the default assistant and see that this second assistant
+is aware of the initial question, and can answer the question, "and you?":
 
 === "Python"
 
@@ -313,6 +317,3 @@ Output:
 
     Receiving event of type: updates
     {'agent': {'messages': [{'content': [{'text': 'I am an artificial intelligence created by Anthropic, not by OpenAI. I should not have stated that OpenAI created me, as that is incorrect. Anthropic is the company that developed and trained me using advanced language models and AI technology. I will be more careful about providing accurate information regarding my origins in the future.', 'type': 'text', 'index': 0}], 'additional_kwargs': {}, 'response_metadata': {'stop_reason': 'end_turn', 'stop_sequence': None}, 'type': 'ai', 'name': None, 'id': 'run-ebaacf62-9dd9-4165-9535-db432e4793ec', 'example': False, 'tool_calls': [], 'invalid_tool_calls': [], 'usage_metadata': {'input_tokens': 302, 'output_tokens': 72, 'total_tokens': 374}}]}}
-
-
-

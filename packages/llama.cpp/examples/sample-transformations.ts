@@ -98,7 +98,6 @@ async function runAllExamples() {
     console.log('═'.repeat(80));
     const stats = promptOptimizer.getStats();
     console.log(JSON.stringify(stats, null, 2));
-
   } catch (error) {
     console.error('Error running examples:', error);
   }
@@ -107,12 +106,4 @@ async function runAllExamples() {
 // Uncomment to run examples
 // runAllExamples();
 
-export {
-  example1,
-  example2,
-  example3,
-  example4,
-  example5,
-  example6,
-  runAllExamples
-};
+export { example1, example2, example3, example4, example5, example6, runAllExamples };

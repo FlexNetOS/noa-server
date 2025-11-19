@@ -37,52 +37,61 @@ This starts the Vite dev server on `http://localhost:3000`.
 ### 4. Access the Dashboard
 
 Open your browser to:
+
 - **Dashboard**: http://localhost:3000
 - **API Health**: http://localhost:8080/health
 
 ## Features Overview
 
 ### Real-time Monitoring
+
 - Auto-refresh every 5 seconds (toggleable)
 - WebSocket for live updates
 - Performance metrics charts
 
 ### Agent Management
+
 - View all active agents
 - Pause/resume agents
 - Monitor CPU and memory usage
 - Track task counts and response times
 
 ### Task Queue
+
 - View pending and running tasks
 - Monitor task progress
 - Cancel running tasks
 - Filter by priority and status
 
 ### System Health
+
 - CPU, memory, disk usage
 - Network metrics
 - Service status indicators
 - MCP, Neural, Swarm, Hooks status
 
 ### Agent Swarm Visualization
+
 - Interactive network graph
 - Real-time agent status
 - Connection visualization
 - Color-coded by status
 
 ### Performance Charts
+
 - Response time trends
 - Throughput metrics
 - Real-time updates
 
 ### Neural Processing
+
 - GPU utilization
 - VRAM usage
 - Inference statistics
 - Model accuracy
 
 ### Truth Gate Status
+
 - Queen Seraphina verification
 - Accuracy percentage
 - Pass/fail status
@@ -124,7 +133,9 @@ Update `.env` accordingly.
 
 ### API Connection Issues
 
-The dashboard will fall back to static file-based data if the API is unavailable. Check:
+The dashboard will fall back to static file-based data if the API is
+unavailable. Check:
+
 - Backend server is running
 - Firewall settings
 - CORS configuration
@@ -138,21 +149,28 @@ The dashboard will fall back to static file-based data if the API is unavailable
 ## Development Tips
 
 ### Hot Module Replacement
+
 Vite supports HMR - changes to React components will update instantly.
 
 ### TypeScript Errors
+
 Run type checking:
+
 ```bash
 npm run build
 ```
 
 ### Component Development
-Components are in `src/components/`. Each is self-contained with props interface.
+
+Components are in `src/components/`. Each is self-contained with props
+interface.
 
 ### State Management
+
 Global state is managed via Zustand in `src/services/store.ts`.
 
 ### API Integration
+
 Update `src/services/api.ts` to connect to real MCP endpoints.
 
 ## Next Steps

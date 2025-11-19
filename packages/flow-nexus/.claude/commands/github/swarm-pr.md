@@ -1,11 +1,14 @@
 # Swarm PR - Managing Swarms through Pull Requests
 
 ## Overview
-Create and manage AI swarms directly from GitHub Pull Requests, enabling seamless integration with your development workflow.
+
+Create and manage AI swarms directly from GitHub Pull Requests, enabling
+seamless integration with your development workflow.
 
 ## Core Features
 
 ### 1. PR-Based Swarm Creation
+
 ```bash
 # Create swarm from PR description using gh CLI
 gh pr view 123 --json body,title,labels,files | npx ruv-swarm swarm create-from-pr
@@ -19,14 +22,14 @@ gh pr view 123 --json body,labels,author,assignees | \
 ```
 
 ### 2. PR Comment Commands
+
 Execute swarm commands via PR comments:
 
 ```markdown
 <!-- In PR comment -->
-/swarm init mesh 6
-/swarm spawn coder "Implement authentication"
-/swarm spawn tester "Write unit tests"
-/swarm status
+
+/swarm init mesh 6 /swarm spawn coder "Implement authentication" /swarm spawn
+tester "Write unit tests" /swarm status
 ```
 
 ### 3. Automated PR Workflows
@@ -57,6 +60,7 @@ jobs:
 ## PR Label Integration
 
 ### Automatic Agent Assignment
+
 Map PR labels to agent types:
 
 ```json
@@ -72,9 +76,10 @@ Map PR labels to agent types:
 ```
 
 ### Label-Based Topology
+
 ```bash
 # Small PR (< 100 lines): ring topology
-# Medium PR (100-500 lines): mesh topology  
+# Medium PR (100-500 lines): mesh topology
 # Large PR (> 500 lines): hierarchical topology
 npx ruv-swarm github pr-topology --pr 123
 ```
@@ -82,6 +87,7 @@ npx ruv-swarm github pr-topology --pr 123
 ## PR Swarm Commands
 
 ### Initialize from PR
+
 ```bash
 # Create swarm with PR context using gh CLI
 PR_DIFF=$(gh pr diff 123)
@@ -95,6 +101,7 @@ npx ruv-swarm github pr-init 123 \
 ```
 
 ### Progress Updates
+
 ```bash
 # Post swarm progress to PR using gh CLI
 PROGRESS=$(npx ruv-swarm github pr-progress 123 --format markdown)
@@ -108,6 +115,7 @@ fi
 ```
 
 ### Code Review Integration
+
 ```bash
 # Create review agents with gh CLI integration
 PR_FILES=$(gh pr view 123 --json files --jq '.files[].path')
@@ -122,7 +130,7 @@ echo "$REVIEW_RESULTS" | jq -r '.comments[]' | while read -r comment; do
   FILE=$(echo "$comment" | jq -r '.file')
   LINE=$(echo "$comment" | jq -r '.line')
   BODY=$(echo "$comment" | jq -r '.body')
-  
+
   gh pr review 123 --comment --body "$BODY"
 done
 ```
@@ -130,6 +138,7 @@ done
 ## Advanced Features
 
 ### 1. Multi-PR Swarm Coordination
+
 ```bash
 # Coordinate swarms across related PRs
 npx ruv-swarm github multi-pr \
@@ -139,6 +148,7 @@ npx ruv-swarm github multi-pr \
 ```
 
 ### 2. PR Dependency Analysis
+
 ```bash
 # Analyze PR dependencies
 npx ruv-swarm github pr-deps 123 \
@@ -147,6 +157,7 @@ npx ruv-swarm github pr-deps 123 \
 ```
 
 ### 3. Automated PR Fixes
+
 ```bash
 # Auto-fix PR issues
 npx ruv-swarm github pr-fix 123 \
@@ -157,30 +168,36 @@ npx ruv-swarm github pr-fix 123 \
 ## Best Practices
 
 ### 1. PR Templates
+
 ```markdown
 <!-- .github/pull_request_template.md -->
+
 ## Swarm Configuration
+
 - Topology: [mesh/hierarchical/ring/star]
 - Max Agents: [number]
 - Auto-spawn: [yes/no]
 - Priority: [high/medium/low]
 
 ## Tasks for Swarm
+
 - [ ] Task 1 description
 - [ ] Task 2 description
 ```
 
 ### 2. Status Checks
+
 ```yaml
 # Require swarm completion before merge
 required_status_checks:
   contexts:
-    - "swarm/tasks-complete"
-    - "swarm/tests-pass"
-    - "swarm/review-approved"
+    - 'swarm/tasks-complete'
+    - 'swarm/tests-pass'
+    - 'swarm/review-approved'
 ```
 
 ### 3. PR Merge Automation
+
 ```bash
 # Auto-merge when swarm completes using gh CLI
 # Check swarm completion status
@@ -189,7 +206,7 @@ SWARM_STATUS=$(npx ruv-swarm github pr-status 123)
 if [[ "$SWARM_STATUS" == "complete" ]]; then
   # Check review requirements
   REVIEWS=$(gh pr view 123 --json reviews --jq '.reviews | length')
-  
+
   if [[ $REVIEWS -ge 2 ]]; then
     # Enable auto-merge
     gh pr merge 123 --auto --squash
@@ -200,6 +217,7 @@ fi
 ## Webhook Integration
 
 ### Setup Webhook Handler
+
 ```javascript
 // webhook-handler.js
 const { createServer } = require('http');
@@ -208,11 +226,11 @@ const { execSync } = require('child_process');
 createServer((req, res) => {
   if (req.url === '/github-webhook') {
     const event = JSON.parse(body);
-    
+
     if (event.action === 'opened' && event.pull_request) {
       execSync(`npx ruv-swarm github pr-init ${event.pull_request.number}`);
     }
-    
+
     res.writeHead(200);
     res.end('OK');
   }
@@ -222,6 +240,7 @@ createServer((req, res) => {
 ## Examples
 
 ### Feature Development PR
+
 ```bash
 # PR #456: Add user authentication
 npx ruv-swarm github pr-init 456 \
@@ -231,6 +250,7 @@ npx ruv-swarm github pr-init 456 \
 ```
 
 ### Bug Fix PR
+
 ```bash
 # PR #789: Fix memory leak
 npx ruv-swarm github pr-init 789 \
@@ -240,6 +260,7 @@ npx ruv-swarm github pr-init 789 \
 ```
 
 ### Documentation PR
+
 ```bash
 # PR #321: Update API docs
 npx ruv-swarm github pr-init 321 \
@@ -251,6 +272,7 @@ npx ruv-swarm github pr-init 321 \
 ## Metrics & Reporting
 
 ### PR Swarm Analytics
+
 ```bash
 # Generate PR swarm report
 npx ruv-swarm github pr-report 123 \
@@ -259,6 +281,7 @@ npx ruv-swarm github pr-report 123 \
 ```
 
 ### Dashboard Integration
+
 ```bash
 # Export to GitHub Insights
 npx ruv-swarm github export-metrics \
@@ -276,10 +299,12 @@ npx ruv-swarm github export-metrics \
 ## Integration with Claude Code
 
 When using with Claude Code:
+
 1. Claude Code reads PR diff and context
 2. Swarm coordinates approach based on PR type
 3. Agents work in parallel on different aspects
 4. Progress updates posted to PR automatically
 5. Final review performed before marking ready
 
-See also: [swarm-issue.md](./swarm-issue.md), [workflow-automation.md](./workflow-automation.md)
+See also: [swarm-issue.md](./swarm-issue.md),
+[workflow-automation.md](./workflow-automation.md)

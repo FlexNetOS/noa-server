@@ -14,7 +14,7 @@ const customCSS = `
     }
 `;
 
-const styleTag = document.createElement("style");
+const styleTag = document.createElement('style');
 styleTag.textContent = customCSS;
 document.head.append(styleTag);
 
@@ -34,19 +34,13 @@ function markPage() {
   var bodyRect = document.body.getBoundingClientRect();
 
   var items = Array.prototype.slice
-    .call(document.querySelectorAll("*"))
+    .call(document.querySelectorAll('*'))
     .map(function (element) {
-      var vw = Math.max(
-        document.documentElement.clientWidth || 0,
-        window.innerWidth || 0
-      );
-      var vh = Math.max(
-        document.documentElement.clientHeight || 0,
-        window.innerHeight || 0
-      );
-      var textualContent = element.textContent.trim().replace(/\s{2,}/g, " ");
+      var vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+      var vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+      var textualContent = element.textContent.trim().replace(/\s{2,}/g, ' ');
       var elementType = element.tagName.toLowerCase();
-      var ariaLabel = element.getAttribute("aria-label") || "";
+      var ariaLabel = element.getAttribute('aria-label') || '';
 
       var rects = [...element.getClientRects()]
         .filter((bb) => {
@@ -75,15 +69,15 @@ function markPage() {
       return {
         element: element,
         include:
-          element.tagName === "INPUT" ||
-          element.tagName === "TEXTAREA" ||
-          element.tagName === "SELECT" ||
-          element.tagName === "BUTTON" ||
-          element.tagName === "A" ||
+          element.tagName === 'INPUT' ||
+          element.tagName === 'TEXTAREA' ||
+          element.tagName === 'SELECT' ||
+          element.tagName === 'BUTTON' ||
+          element.tagName === 'A' ||
           element.onclick != null ||
-          window.getComputedStyle(element).cursor == "pointer" ||
-          element.tagName === "IFRAME" ||
-          element.tagName === "VIDEO",
+          window.getComputedStyle(element).cursor == 'pointer' ||
+          element.tagName === 'IFRAME' ||
+          element.tagName === 'VIDEO',
         area,
         rects,
         text: textualContent,
@@ -94,14 +88,12 @@ function markPage() {
     .filter((item) => item.include && item.area >= 20);
 
   // Only keep inner clickable items
-  items = items.filter(
-    (x) => !items.some((y) => x.element.contains(y.element) && !(x == y))
-  );
+  items = items.filter((x) => !items.some((y) => x.element.contains(y.element) && !(x == y)));
 
   // Function to generate random colors
   function getRandomColor() {
-    var letters = "0123456789ABCDEF";
-    var color = "#";
+    var letters = '0123456789ABCDEF';
+    var color = '#';
     for (var i = 0; i < 6; i++) {
       color += letters[Math.floor(Math.random() * 16)];
     }
@@ -111,32 +103,32 @@ function markPage() {
   // Lets create a floating border on top of these elements that will always be visible
   items.forEach(function (item, index) {
     item.rects.forEach((bbox) => {
-      newElement = document.createElement("div");
+      newElement = document.createElement('div');
       var borderColor = getRandomColor();
       newElement.style.outline = `2px dashed ${borderColor}`;
-      newElement.style.position = "fixed";
-      newElement.style.left = bbox.left + "px";
-      newElement.style.top = bbox.top + "px";
-      newElement.style.width = bbox.width + "px";
-      newElement.style.height = bbox.height + "px";
-      newElement.style.pointerEvents = "none";
-      newElement.style.boxSizing = "border-box";
+      newElement.style.position = 'fixed';
+      newElement.style.left = bbox.left + 'px';
+      newElement.style.top = bbox.top + 'px';
+      newElement.style.width = bbox.width + 'px';
+      newElement.style.height = bbox.height + 'px';
+      newElement.style.pointerEvents = 'none';
+      newElement.style.boxSizing = 'border-box';
       newElement.style.zIndex = 2147483647;
       // newElement.style.background = `${borderColor}80`;
 
       // Add floating label at the corner
-      var label = document.createElement("span");
+      var label = document.createElement('span');
       label.textContent = index;
-      label.style.position = "absolute";
+      label.style.position = 'absolute';
       // These we can tweak if we want
-      label.style.top = "-19px";
-      label.style.left = "0px";
+      label.style.top = '-19px';
+      label.style.left = '0px';
       label.style.background = borderColor;
       // label.style.background = "black";
-      label.style.color = "white";
-      label.style.padding = "2px 4px";
-      label.style.fontSize = "12px";
-      label.style.borderRadius = "2px";
+      label.style.color = 'white';
+      label.style.padding = '2px 4px';
+      label.style.fontSize = '12px';
+      label.style.borderRadius = '2px';
       newElement.appendChild(label);
 
       document.body.appendChild(newElement);

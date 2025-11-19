@@ -5,74 +5,110 @@ search:
 
 # LangGraph runtime
 
-:::python
-@[Pregel] implements LangGraph's runtime, managing the execution of LangGraph applications.
+:::python @[Pregel] implements LangGraph's runtime, managing the execution of
+LangGraph applications.
 
-Compiling a @[StateGraph][StateGraph] or creating an @[entrypoint][entrypoint] produces a @[Pregel] instance that can be invoked with input.
+Compiling a @[StateGraph][StateGraph] or creating an @[entrypoint][entrypoint]
+produces a @[Pregel] instance that can be invoked with input. :::
+
+:::js @[Pregel] implements LangGraph's runtime, managing the execution of
+LangGraph applications.
+
+Compiling a @[StateGraph][StateGraph] or creating an @[entrypoint][entrypoint]
+produces a @[Pregel] instance that can be invoked with input. :::
+
+This guide explains the runtime at a high level and provides instructions for
+directly implementing applications with Pregel.
+
+:::python
+
+> **Note:** The @[Pregel] runtime is named after
+> [Google's Pregel algorithm](https://research.google/pubs/pub37252/), which
+> describes an efficient method for large-scale parallel computation using
+> graphs.
+
 :::
 
 :::js
-@[Pregel] implements LangGraph's runtime, managing the execution of LangGraph applications.
 
-Compiling a @[StateGraph][StateGraph] or creating an @[entrypoint][entrypoint] produces a @[Pregel] instance that can be invoked with input.
-:::
-
-This guide explains the runtime at a high level and provides instructions for directly implementing applications with Pregel.
-
-:::python
-
-> **Note:** The @[Pregel] runtime is named after [Google's Pregel algorithm](https://research.google/pubs/pub37252/), which describes an efficient method for large-scale parallel computation using graphs.
-
-:::
-
-:::js
-
-> **Note:** The @[Pregel] runtime is named after [Google's Pregel algorithm](https://research.google/pubs/pub37252/), which describes an efficient method for large-scale parallel computation using graphs.
+> **Note:** The @[Pregel] runtime is named after
+> [Google's Pregel algorithm](https://research.google/pubs/pub37252/), which
+> describes an efficient method for large-scale parallel computation using
+> graphs.
 
 :::
 
 ## Overview
 
-In LangGraph, Pregel combines [**actors**](https://en.wikipedia.org/wiki/Actor_model) and **channels** into a single application. **Actors** read data from channels and write data to channels. Pregel organizes the execution of the application into multiple steps, following the **Pregel Algorithm**/**Bulk Synchronous Parallel** model.
+In LangGraph, Pregel combines
+[**actors**](https://en.wikipedia.org/wiki/Actor_model) and **channels** into a
+single application. **Actors** read data from channels and write data to
+channels. Pregel organizes the execution of the application into multiple steps,
+following the **Pregel Algorithm**/**Bulk Synchronous Parallel** model.
 
 Each step consists of three phases:
 
-- **Plan**: Determine which **actors** to execute in this step. For example, in the first step, select the **actors** that subscribe to the special **input** channels; in subsequent steps, select the **actors** that subscribe to channels updated in the previous step.
-- **Execution**: Execute all selected **actors** in parallel, until all complete, or one fails, or a timeout is reached. During this phase, channel updates are invisible to actors until the next step.
-- **Update**: Update the channels with the values written by the **actors** in this step.
+- **Plan**: Determine which **actors** to execute in this step. For example, in
+  the first step, select the **actors** that subscribe to the special **input**
+  channels; in subsequent steps, select the **actors** that subscribe to
+  channels updated in the previous step.
+- **Execution**: Execute all selected **actors** in parallel, until all
+  complete, or one fails, or a timeout is reached. During this phase, channel
+  updates are invisible to actors until the next step.
+- **Update**: Update the channels with the values written by the **actors** in
+  this step.
 
-Repeat until no **actors** are selected for execution, or a maximum number of steps is reached.
+Repeat until no **actors** are selected for execution, or a maximum number of
+steps is reached.
 
 ## Actors
 
-An **actor** is a `PregelNode`. It subscribes to channels, reads data from them, and writes data to them. It can be thought of as an **actor** in the Pregel algorithm. `PregelNodes` implement LangChain's Runnable interface.
+An **actor** is a `PregelNode`. It subscribes to channels, reads data from them,
+and writes data to them. It can be thought of as an **actor** in the Pregel
+algorithm. `PregelNodes` implement LangChain's Runnable interface.
 
 ## Channels
 
-Channels are used to communicate between actors (PregelNodes). Each channel has a value type, an update type, and an update function – which takes a sequence of updates and modifies the stored value. Channels can be used to send data from one chain to another, or to send data from a chain to itself in a future step. LangGraph provides a number of built-in channels:
+Channels are used to communicate between actors (PregelNodes). Each channel has
+a value type, an update type, and an update function – which takes a sequence of
+updates and modifies the stored value. Channels can be used to send data from
+one chain to another, or to send data from a chain to itself in a future step.
+LangGraph provides a number of built-in channels:
 
 :::python
 
-- @[LastValue][LastValue]: The default channel, stores the last value sent to the channel, useful for input and output values, or for sending data from one step to the next.
-- @[Topic][Topic]: A configurable PubSub Topic, useful for sending multiple values between **actors**, or for accumulating output. Can be configured to deduplicate values or to accumulate values over the course of multiple steps.
-- @[BinaryOperatorAggregate][BinaryOperatorAggregate]: stores a persistent value, updated by applying a binary operator to the current value and each update sent to the channel, useful for computing aggregates over multiple steps; e.g.,`total = BinaryOperatorAggregate(int, operator.add)`
-  :::
+- @[LastValue][LastValue]: The default channel, stores the last value sent to
+  the channel, useful for input and output values, or for sending data from one
+  step to the next.
+- @[Topic][Topic]: A configurable PubSub Topic, useful for sending multiple
+  values between **actors**, or for accumulating output. Can be configured to
+  deduplicate values or to accumulate values over the course of multiple steps.
+- @[BinaryOperatorAggregate][BinaryOperatorAggregate]: stores a persistent
+  value, updated by applying a binary operator to the current value and each
+  update sent to the channel, useful for computing aggregates over multiple
+  steps; e.g.,`total = BinaryOperatorAggregate(int, operator.add)` :::
 
 :::js
 
-- @[LastValue]: The default channel, stores the last value sent to the channel, useful for input and output values, or for sending data from one step to the next.
-- @[Topic]: A configurable PubSub Topic, useful for sending multiple values between **actors**, or for accumulating output. Can be configured to deduplicate values or to accumulate values over the course of multiple steps.
-- @[BinaryOperatorAggregate]: stores a persistent value, updated by applying a binary operator to the current value and each update sent to the channel, useful for computing aggregates over multiple steps; e.g.,`total = BinaryOperatorAggregate(int, operator.add)`
-  :::
+- @[LastValue]: The default channel, stores the last value sent to the channel,
+  useful for input and output values, or for sending data from one step to the
+  next.
+- @[Topic]: A configurable PubSub Topic, useful for sending multiple values
+  between **actors**, or for accumulating output. Can be configured to
+  deduplicate values or to accumulate values over the course of multiple steps.
+- @[BinaryOperatorAggregate]: stores a persistent value, updated by applying a
+  binary operator to the current value and each update sent to the channel,
+  useful for computing aggregates over multiple steps;
+  e.g.,`total = BinaryOperatorAggregate(int, operator.add)` :::
 
 ## Examples
 
-:::python
-While most users will interact with Pregel through the @[StateGraph][StateGraph] API or the @[entrypoint][entrypoint] decorator, it is possible to interact with Pregel directly.
-:::
+:::python While most users will interact with Pregel through the
+@[StateGraph][StateGraph] API or the @[entrypoint][entrypoint] decorator, it is
+possible to interact with Pregel directly. :::
 
-:::js
-While most users will interact with Pregel through the @[StateGraph] API or the @[entrypoint] decorator, it is possible to interact with Pregel directly.
+:::js While most users will interact with Pregel through the @[StateGraph] API
+or the @[entrypoint] decorator, it is possible to interact with Pregel directly.
 :::
 
 Below are a few different examples to give you a sense of the Pregel API.
@@ -431,7 +467,9 @@ Below are a few different examples to give you a sense of the Pregel API.
 
 ## High-level API
 
-LangGraph provides two high-level APIs for creating a Pregel application: the [StateGraph (Graph API)](./low_level.md) and the [Functional API](functional_api.md).
+LangGraph provides two high-level APIs for creating a Pregel application: the
+[StateGraph (Graph API)](./low_level.md) and the
+[Functional API](functional_api.md).
 
 === "StateGraph (Graph API)"
 

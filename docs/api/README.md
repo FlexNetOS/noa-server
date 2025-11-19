@@ -1,49 +1,58 @@
-# Noa Server API Documentation
+# NOA Server API Documentation
 
-Complete API documentation for the Noa Server platform.
+Complete API documentation for NOA Server with interactive examples and
+comprehensive guides.
 
-## Overview
+## 📚 Overview
 
-The Noa Server API is a comprehensive RESTful API for intelligent orchestration with MCP tools integration, agent swarm coordination, and workflow automation.
+NOA Server provides enterprise-grade APIs for:
 
-### Key Features
-
-- **Authentication & Authorization**: JWT-based auth with MFA support
-- **User Management**: Complete CRUD with RBAC
+- **AI Inference**: Multi-provider AI completions, embeddings, and streaming
+- **Authentication**: JWT, OAuth 2.0, SAML SSO, MFA
+- **Message Queue**: High-performance async task processing
+- **Monitoring**: Kubernetes-compatible health probes and metrics
 - **MCP Tools Integration**: Filesystem, SQLite, GitHub operations
 - **Workflow Orchestration**: Create and execute complex workflows
 - **Agent Swarm Coordination**: Spawn and coordinate multiple AI agents
-- **Real-time Monitoring**: Health checks, metrics, and webhooks
+
+### Key Features
+
+- ✅ **OpenAPI 3.1 Specifications** - Complete API schemas
+- ✅ **Interactive Documentation** - Swagger UI and ReDoc
+- ✅ **Code Examples** - JavaScript, TypeScript, Python, cURL
+- ✅ **Postman Collection** - Ready-to-import API collection
+- ✅ **SDK Documentation** - TypeScript and Python clients
+- ✅ **Automation Scripts** - Generate and validate docs
 
 ## Documentation Structure
 
 ```
 docs/api/
-├── openapi.yaml              # Main OpenAPI 3.0 specification
-├── openapi.json              # JSON version of spec
-├── schemas/                  # API schema definitions
-│   ├── auth.yaml            # Authentication endpoints
-│   ├── users.yaml           # User management endpoints
-│   ├── mcp.yaml             # MCP tools endpoints
-│   ├── workflows.yaml       # Workflow endpoints
-│   └── agents.yaml          # Agent swarm endpoints
-├── swagger-ui/               # Interactive API documentation
-│   ├── index.html           # Swagger UI interface
-│   └── config.js            # UI configuration
-├── clients/                  # API client libraries
-│   ├── typescript/          # TypeScript/JavaScript client
-│   │   ├── generate-client.sh
-│   │   ├── README.md
-│   │   └── generated/       # Generated client code
-│   └── python/              # Python client
-│       ├── generate-client.sh
-│       ├── README.md
-│       └── generated/       # Generated client code
-└── guides/                   # Documentation guides
-    ├── API_QUICKSTART.md    # Quick start guide
-    ├── AUTHENTICATION.md    # Authentication guide
-    ├── RATE_LIMITING.md     # Rate limiting guide
-    └── WEBHOOKS.md          # Webhooks guide
+├── openapi/                      # OpenAPI 3.1 Specifications (NEW!)
+│   ├── ai-inference-api.yaml     # AI Inference API
+│   ├── auth-api.yaml             # Authentication API
+│   ├── message-queue-api.yaml    # Message Queue API
+│   └── monitoring-api.yaml       # Monitoring API
+├── examples/                     # Code Examples (NEW!)
+│   ├── javascript/
+│   │   ├── chat-completion.js    # Fetch API examples
+│   │   └── authentication.ts     # TypeScript auth client
+│   ├── python/
+│   │   └── client.py             # Complete Python client
+│   └── curl/
+│       └── examples.sh           # Comprehensive cURL examples
+├── postman/                      # Postman Collection (NEW!)
+│   └── noa-server.json           # Import-ready collection
+├── sdk/                          # SDK Documentation
+│   ├── typescript/               # TypeScript SDK docs
+│   └── python/                   # Python SDK docs
+├── scripts/                      # Automation Scripts (NEW!)
+│   ├── generate-api-docs.sh      # Generate all docs
+│   └── validate-openapi.sh       # Validate specifications
+├── swagger-ui.html               # Interactive Swagger UI (NEW!)
+├── redoc.html                    # ReDoc documentation (NEW!)
+├── CHANGELOG.md                  # API version history
+└── README.md                     # This file
 ```
 
 ## Quick Links
@@ -56,13 +65,16 @@ docs/api/
 ### Guides
 
 - **[Quick Start Guide](./guides/API_QUICKSTART.md)** - Get started in minutes
-- **[Authentication Guide](./guides/AUTHENTICATION.md)** - Complete auth documentation
-- **[Rate Limiting Guide](./guides/RATE_LIMITING.md)** - Understanding rate limits
+- **[Authentication Guide](./guides/AUTHENTICATION.md)** - Complete auth
+  documentation
+- **[Rate Limiting Guide](./guides/RATE_LIMITING.md)** - Understanding rate
+  limits
 - **[Webhooks Guide](./guides/WEBHOOKS.md)** - Real-time event notifications
 
 ### Client Libraries
 
-- **[TypeScript Client](./clients/typescript/README.md)** - TypeScript/JavaScript SDK
+- **[TypeScript Client](./clients/typescript/README.md)** -
+  TypeScript/JavaScript SDK
 - **[Python Client](./clients/python/README.md)** - Python SDK
 
 ## Getting Started
@@ -178,11 +190,11 @@ See [Authentication Guide](./guides/AUTHENTICATION.md) for details.
 
 ## Rate Limits
 
-| User Type | Requests/Hour |
-|-----------|--------------|
-| Anonymous | 100 |
-| Authenticated | 1000 |
-| Admin | 10000 |
+| User Type     | Requests/Hour |
+| ------------- | ------------- |
+| Anonymous     | 100           |
+| Authenticated | 1000          |
+| Admin         | 10000         |
 
 See [Rate Limiting Guide](./guides/RATE_LIMITING.md) for details.
 
@@ -223,18 +235,18 @@ See [Rate Limiting Guide](./guides/RATE_LIMITING.md) for details.
 
 ## Status Codes
 
-| Code | Meaning |
-|------|---------|
-| 200 | OK - Request successful |
-| 201 | Created - Resource created |
-| 202 | Accepted - Request accepted for processing |
-| 400 | Bad Request - Invalid parameters |
-| 401 | Unauthorized - Authentication required |
-| 403 | Forbidden - Insufficient permissions |
-| 404 | Not Found - Resource not found |
-| 409 | Conflict - Resource already exists |
-| 429 | Too Many Requests - Rate limit exceeded |
-| 500 | Internal Server Error - Server error |
+| Code | Meaning                                    |
+| ---- | ------------------------------------------ |
+| 200  | OK - Request successful                    |
+| 201  | Created - Resource created                 |
+| 202  | Accepted - Request accepted for processing |
+| 400  | Bad Request - Invalid parameters           |
+| 401  | Unauthorized - Authentication required     |
+| 403  | Forbidden - Insufficient permissions       |
+| 404  | Not Found - Resource not found             |
+| 409  | Conflict - Resource already exists         |
+| 429  | Too Many Requests - Rate limit exceeded    |
+| 500  | Internal Server Error - Server error       |
 
 ## Pagination
 
@@ -288,7 +300,7 @@ import { Configuration, AuthenticationApi } from '@noa-server/api-client';
 
 const config = new Configuration({
   basePath: 'https://api.noa-server.io/v1',
-  accessToken: 'YOUR_ACCESS_TOKEN'
+  accessToken: 'YOUR_ACCESS_TOKEN',
 });
 
 const authApi = new AuthenticationApi(config);

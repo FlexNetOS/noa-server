@@ -2,8 +2,7 @@
 
 ## Overview
 
-**Severity**: SEV2 (High)
-**Estimated Duration**: 20-45 minutes
+**Severity**: SEV2 (High) **Estimated Duration**: 20-45 minutes
 **Prerequisites**: Grafana access, kubectl access
 
 ## Symptoms
@@ -26,6 +25,7 @@
 ### Step 1: Verify Latency Issue (3 minutes)
 
 **Check Dashboards**:
+
 ```bash
 # Open Grafana API Performance Dashboard
 # URL: https://grafana.noaserver.com/d/api-performance
@@ -38,6 +38,7 @@
 ```
 
 **Run Manual Tests**:
+
 ```bash
 # Test API endpoint response time
 time curl -X GET https://api.noaserver.com/health
@@ -52,9 +53,11 @@ for region in us-east us-west eu-west; do
 done
 ```
 
-**Expected Outcome**: Confirm latency is elevated and identify affected endpoints
+**Expected Outcome**: Confirm latency is elevated and identify affected
+endpoints
 
 **Decision Point**:
+
 - If latency is global → Go to Step 2
 - If latency is region-specific → Check CDN/network (Step 5)
 - If latency is endpoint-specific → Go to Step 3
@@ -62,6 +65,7 @@ done
 ### Step 2: Check System Resources (5 minutes)
 
 **Commands**:
+
 ```bash
 # Check pod CPU and memory usage
 kubectl top pods -n production --sort-by=cpu
@@ -83,6 +87,7 @@ kubectl get hpa -n production
 **Expected Outcome**: Identify resource bottlenecks
 
 **Common Issues**:
+
 - CPU throttling → Scale up pods or increase CPU limits
 - Memory pressure → Scale up pods or increase memory limits
 - Pending pods → Node capacity issues, add nodes
@@ -91,6 +96,7 @@ kubectl get hpa -n production
 ### Step 3: Analyze Database Performance (5 minutes)
 
 **Commands**:
+
 ```bash
 # Check active queries
 kubectl exec -n database postgres-0 -- psql -U admin -d noa_db -c \
@@ -121,6 +127,7 @@ kubectl exec -n database postgres-0 -- psql -U admin -d noa_db -c \
 **Expected Outcome**: Identify slow queries or lock contention
 
 **Immediate Actions**:
+
 ```bash
 # Kill long-running query (if safe)
 kubectl exec -n database postgres-0 -- psql -U admin -d noa_db -c \
@@ -137,6 +144,7 @@ kubectl exec -n database postgres-0 -- psql -U admin -d noa_db -c \
 ### Step 4: Check External Dependencies (5 minutes)
 
 **Commands**:
+
 ```bash
 # Check Redis latency
 kubectl exec -n cache redis-0 -- redis-cli --latency-history
@@ -154,6 +162,7 @@ kubectl exec -n messaging rabbitmq-0 -- rabbitmqctl list_queues
 **Expected Outcome**: Identify slow external dependencies
 
 **Mitigation**:
+
 - Redis slow → Check memory, restart if needed
 - External API slow → Enable circuit breaker, increase timeout
 - Queue backlog → Scale workers, check for stuck jobs
@@ -161,6 +170,7 @@ kubectl exec -n messaging rabbitmq-0 -- rabbitmqctl list_queues
 ### Step 5: Scale Application (10 minutes)
 
 **Immediate Scaling**:
+
 ```bash
 # Scale up API pods
 kubectl scale deployment api -n production --replicas=10
@@ -176,6 +186,7 @@ kubectl top pods -n production -l app=api
 ```
 
 **Verify Improvement**:
+
 ```bash
 # Check response times
 curl -w '%{time_total}\n' -o /dev/null -s https://api.noaserver.com/health
@@ -191,6 +202,7 @@ curl -w '%{time_total}\n' -o /dev/null -s https://api.noaserver.com/health
 ### Step 6: Enable Performance Optimizations (5 minutes)
 
 **Cache Warming**:
+
 ```bash
 # Warm up Redis cache
 kubectl exec -n cache redis-0 -- redis-cli FLUSHDB
@@ -198,6 +210,7 @@ kubectl exec -n production api-0 -- curl -X POST http://localhost:8080/admin/cac
 ```
 
 **Enable Query Caching**:
+
 ```bash
 # Enable application-level caching
 kubectl set env deployment/api -n production ENABLE_QUERY_CACHE=true
@@ -207,6 +220,7 @@ kubectl rollout restart deployment/api -n production
 ```
 
 **Increase Connection Pools**:
+
 ```bash
 # Increase database connection pool size
 kubectl set env deployment/api -n production DB_POOL_SIZE=50
@@ -218,6 +232,7 @@ kubectl rollout restart deployment/api -n production
 ### Step 7: Monitor and Verify (10 minutes)
 
 **Monitoring Checklist**:
+
 - [ ] P95 latency back to baseline (<2s)
 - [ ] Error rate normal (<0.1%)
 - [ ] CPU usage normal (<70%)
@@ -226,6 +241,7 @@ kubectl rollout restart deployment/api -n production
 - [ ] No queue backlogs
 
 **Commands**:
+
 ```bash
 # Watch metrics in real-time
 watch -n 5 'curl -s https://api.noaserver.com/metrics | grep latency'
@@ -240,16 +256,19 @@ kubectl logs -f -n production api-0 | grep ERROR
 ## Quick Wins
 
 ### Immediate Actions (Do First)
+
 1. Scale up API pods (2 minutes)
 2. Clear idle database connections (1 minute)
 3. Restart Redis if memory full (2 minutes)
 
 ### If Still Slow (Do Next)
+
 1. Kill long-running queries (2 minutes)
 2. Enable query caching (3 minutes)
 3. Increase connection pool sizes (3 minutes)
 
 ### Last Resort
+
 1. Restart all API pods (5 minutes)
 2. Failover to read replicas (10 minutes)
 3. Enable maintenance mode (1 minute)
@@ -257,6 +276,7 @@ kubectl logs -f -n production api-0 | grep ERROR
 ## Communication Template
 
 ### Initial Alert
+
 ```
 [SEV2 INCIDENT] High API Latency
 Status: Investigating
@@ -267,6 +287,7 @@ Next Update: 10 minutes
 ```
 
 ### Update During Recovery
+
 ```
 [SEV2 UPDATE] High API Latency
 Status: Identified - Database query bottleneck
@@ -277,6 +298,7 @@ Next Update: 10 minutes
 ```
 
 ### Resolution
+
 ```
 [SEV2 RESOLVED] High API Latency
 Status: Resolved

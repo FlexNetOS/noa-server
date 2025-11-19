@@ -36,16 +36,16 @@ export function MetricCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className={`bg-brand-card border border-brand-border rounded-lg p-6 ${status ? statusColors[status] : ''} ${className}`}
+      className={`rounded-lg border border-brand-border bg-brand-card p-6 ${status ? statusColors[status] : ''} ${className}`}
     >
-      <div className="flex items-start justify-between mb-2">
-        <h3 className="text-sm font-medium text-brand-muted uppercase tracking-wide">{title}</h3>
+      <div className="mb-2 flex items-start justify-between">
+        <h3 className="text-sm font-medium uppercase tracking-wide text-brand-muted">{title}</h3>
         {icon && <div className="text-brand-accent">{icon}</div>}
       </div>
 
       <div className="flex items-end justify-between">
         <div>
-          <p className="text-3xl font-bold text-white mb-1">{value}</p>
+          <p className="mb-1 text-3xl font-bold text-white">{value}</p>
           {subtitle && <p className="text-sm text-brand-muted">{subtitle}</p>}
         </div>
 

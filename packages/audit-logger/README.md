@@ -1,10 +1,12 @@
 # Audit Logger
 
-Comprehensive audit logging system with SIEM integration and compliance support for SOC 2, PCI DSS, HIPAA, and GDPR.
+Comprehensive audit logging system with SIEM integration and compliance support
+for SOC 2, PCI DSS, HIPAA, and GDPR.
 
 ## Features
 
-- **Comprehensive Event Types**: Authentication, authorization, data access, configuration, admin, and security events
+- **Comprehensive Event Types**: Authentication, authorization, data access,
+  configuration, admin, and security events
 - **Multiple Formats**: JSON, CEF (Common Event Format), Syslog RFC 5424
 - **Multiple Transports**: File, PostgreSQL, AWS CloudWatch, SIEM integration
 - **PII Masking**: Automatic masking of sensitive data
@@ -34,11 +36,13 @@ const logger = new AuditLogger({
 });
 
 // Add file transport
-logger.addTransport(new FileTransport({
-  filePath: '/var/log/audit/audit.log',
-  maxSize: 10 * 1024 * 1024, // 10MB
-  maxFiles: 10,
-}));
+logger.addTransport(
+  new FileTransport({
+    filePath: '/var/log/audit/audit.log',
+    maxSize: 10 * 1024 * 1024, // 10MB
+    maxFiles: 10,
+  })
+);
 
 // Initialize
 await logger.initialize();
@@ -48,10 +52,21 @@ await logger.logAuthLogin('user-123', '192.168.1.1');
 await logger.logAuthLoginFailed('user-456', '192.168.1.2', 'Invalid password');
 
 // Log data access
-await logger.logDataAccess('user-123', ResourceType.FILE, 'document-456', 'read');
+await logger.logDataAccess(
+  'user-123',
+  ResourceType.FILE,
+  'document-456',
+  'read'
+);
 
 // Log permission denied
-await logger.logPermissionDenied('user-789', ResourceType.DATABASE, 'customers', 'delete', 'Insufficient permissions');
+await logger.logPermissionDenied(
+  'user-789',
+  ResourceType.DATABASE,
+  'customers',
+  'delete',
+  'Insufficient permissions'
+);
 
 // Close
 await logger.close();
@@ -60,6 +75,7 @@ await logger.close();
 ## Event Types
 
 ### Authentication Events
+
 - `AUTH_LOGIN` - User login
 - `AUTH_LOGOUT` - User logout
 - `AUTH_LOGIN_FAILED` - Failed login attempt
@@ -70,12 +86,14 @@ await logger.close();
 - `AUTH_SESSION_EXPIRED` - Session expiration
 
 ### Authorization Events
+
 - `AUTHZ_PERMISSION_CHECK` - Permission check
 - `AUTHZ_PERMISSION_DENIED` - Permission denied
 - `AUTHZ_ROLE_ASSIGNED` - Role assignment
 - `AUTHZ_ROLE_REVOKED` - Role revocation
 
 ### Data Access Events
+
 - `DATA_READ` - Data read
 - `DATA_CREATE` - Data creation
 - `DATA_UPDATE` - Data update
@@ -84,6 +102,7 @@ await logger.close();
 - `DATA_IMPORT` - Data import
 
 ### Security Events
+
 - `SECURITY_SUSPICIOUS_ACTIVITY` - Suspicious activity detected
 - `SECURITY_RATE_LIMIT_EXCEEDED` - Rate limit exceeded
 - `SECURITY_IP_BLOCKED` - IP address blocked
@@ -96,12 +115,14 @@ await logger.close();
 ```typescript
 import { FileTransport } from '@noa-server/audit-logger';
 
-logger.addTransport(new FileTransport({
-  filePath: '/var/log/audit/audit.log',
-  maxSize: 10 * 1024 * 1024, // 10MB
-  maxFiles: 10, // Keep 10 rotated files
-  compress: true, // Compress rotated files
-}));
+logger.addTransport(
+  new FileTransport({
+    filePath: '/var/log/audit/audit.log',
+    maxSize: 10 * 1024 * 1024, // 10MB
+    maxFiles: 10, // Keep 10 rotated files
+    compress: true, // Compress rotated files
+  })
+);
 ```
 
 ### Database Transport (PostgreSQL)
@@ -109,14 +130,16 @@ logger.addTransport(new FileTransport({
 ```typescript
 import { DatabaseTransport } from '@noa-server/audit-logger';
 
-logger.addTransport(new DatabaseTransport({
-  connectionString: 'postgresql://user:pass@localhost:5432/audit',
-  tableName: 'audit_logs',
-  pool: {
-    min: 2,
-    max: 10,
-  },
-}));
+logger.addTransport(
+  new DatabaseTransport({
+    connectionString: 'postgresql://user:pass@localhost:5432/audit',
+    tableName: 'audit_logs',
+    pool: {
+      min: 2,
+      max: 10,
+    },
+  })
+);
 ```
 
 ### CloudWatch Transport
@@ -124,14 +147,16 @@ logger.addTransport(new DatabaseTransport({
 ```typescript
 import { CloudWatchTransport } from '@noa-server/audit-logger';
 
-logger.addTransport(new CloudWatchTransport({
-  region: 'us-east-1',
-  logGroupName: '/app/audit',
-  logStreamName: 'production',
-  // Optional: credentials (uses IAM role if not provided)
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-}));
+logger.addTransport(
+  new CloudWatchTransport({
+    region: 'us-east-1',
+    logGroupName: '/app/audit',
+    logStreamName: 'production',
+    // Optional: credentials (uses IAM role if not provided)
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  })
+);
 ```
 
 ### SIEM Transport
@@ -142,13 +167,15 @@ import { SIEMTransport, CEFFormatter } from '@noa-server/audit-logger';
 // Add CEF formatter for SIEM
 logger.addFormatter('cef', new CEFFormatter());
 
-logger.addTransport(new SIEMTransport({
-  endpoint: 'https://siem.example.com/api/events',
-  format: 'cef',
-  apiKey: process.env.SIEM_API_KEY,
-  batchSize: 100,
-  flushInterval: 5000, // 5 seconds
-}));
+logger.addTransport(
+  new SIEMTransport({
+    endpoint: 'https://siem.example.com/api/events',
+    format: 'cef',
+    apiKey: process.env.SIEM_API_KEY,
+    batchSize: 100,
+    flushInterval: 5000, // 5 seconds
+  })
+);
 ```
 
 ## Formatters
@@ -331,7 +358,11 @@ for (const event of events) {
 
 ```typescript
 import express from 'express';
-import { createAuditLogger, AuditEventType, ActorType } from '@noa-server/audit-logger';
+import {
+  createAuditLogger,
+  AuditEventType,
+  ActorType,
+} from '@noa-server/audit-logger';
 
 const app = express();
 const auditLogger = createAuditLogger();
@@ -401,7 +432,8 @@ CREATE INDEX idx_audit_ip ON audit_logs(ip_address);
 
 ## Best Practices
 
-1. **Always log authentication events** - Track all login attempts, successes, and failures
+1. **Always log authentication events** - Track all login attempts, successes,
+   and failures
 2. **Log permission denials** - Critical for security monitoring
 3. **Use appropriate event types** - Makes querying and compliance easier
 4. **Enable PII masking** - Protect sensitive data in logs
@@ -415,17 +447,20 @@ CREATE INDEX idx_audit_ip ON audit_logs(ip_address);
 ## Compliance Mapping
 
 ### SOC 2 Requirements
+
 - CC6.2: Monitor system activity
 - CC6.3: Detect and respond to security events
 - CC7.2: Logging and monitoring
 
 ### PCI DSS Requirements
+
 - 10.1: Implement audit trails
 - 10.2: Log all security events
 - 10.3: Record audit trail entries
 - 10.5: Secure audit trails
 
 ### HIPAA Requirements
+
 - 164.308(a)(1)(ii)(D): Information system activity review
 - 164.312(b): Audit controls
 - 164.312(d): Person or entity authentication

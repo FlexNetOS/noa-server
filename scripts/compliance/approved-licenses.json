@@ -106,22 +106,9 @@
       "Unlicense",
       "0BSD"
     ],
-    "copyleft": [
-      "GPL-3.0",
-      "LGPL-3.0",
-      "AGPL-3.0",
-      "MPL-2.0",
-      "EPL-2.0"
-    ],
-    "publicDomain": [
-      "CC0-1.0",
-      "Unlicense"
-    ],
-    "proprietary": [
-      "BUSL-1.1",
-      "Elastic-2.0",
-      "SSPL-1.0"
-    ]
+    "copyleft": ["GPL-3.0", "LGPL-3.0", "AGPL-3.0", "MPL-2.0", "EPL-2.0"],
+    "publicDomain": ["CC0-1.0", "Unlicense"],
+    "proprietary": ["BUSL-1.1", "Elastic-2.0", "SSPL-1.0"]
   },
   "complianceNotes": {
     "distribution": "This project may be distributed as open source or proprietary software",

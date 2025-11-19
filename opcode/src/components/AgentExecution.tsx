@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { 
-  ArrowLeft, 
-  Play, 
-  StopCircle, 
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  ArrowLeft,
+  Play,
+  StopCircle,
   Terminal,
   AlertCircle,
   Loader2,
@@ -11,29 +11,24 @@ import {
   ChevronDown,
   Maximize2,
   X,
-  Settings2
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Popover } from "@/components/ui/popover";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { api, type Agent } from "@/lib/api";
-import { cn } from "@/lib/utils";
-import { listen, type UnlistenFn } from "@tauri-apps/api/event";
-import { StreamMessage } from "./StreamMessage";
-import { ExecutionControlBar } from "./ExecutionControlBar";
-import { ErrorBoundary } from "./ErrorBoundary";
-import { useVirtualizer } from "@tanstack/react-virtual";
-import { HooksEditor } from "./HooksEditor";
-import { useTrackEvent, useComponentMetrics, useFeatureAdoptionTracking } from "@/hooks";
-import { useTabState } from "@/hooks/useTabState";
+  Settings2,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Popover } from '@/components/ui/popover';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { api, type Agent } from '@/lib/api';
+import { cn } from '@/lib/utils';
+import { listen, type UnlistenFn } from '@tauri-apps/api/event';
+import { StreamMessage } from './StreamMessage';
+import { ExecutionControlBar } from './ExecutionControlBar';
+import { ErrorBoundary } from './ErrorBoundary';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import { HooksEditor } from './HooksEditor';
+import { useTrackEvent, useComponentMetrics, useFeatureAdoptionTracking } from '@/hooks';
+import { useTabState } from '@/hooks/useTabState';
 
 interface AgentExecutionProps {
   /**
@@ -59,7 +54,7 @@ interface AgentExecutionProps {
 }
 
 export interface ClaudeStreamMessage {
-  type: "system" | "assistant" | "user" | "result";
+  type: 'system' | 'assistant' | 'user' | 'result';
   subtype?: string;
   message?: {
     content?: any[];
@@ -77,7 +72,7 @@ export interface ClaudeStreamMessage {
 
 /**
  * AgentExecution component for running CC agents
- * 
+ *
  * @example
  * <AgentExecution agent={agent} onBack={() => setView('list')} />
  */
@@ -88,29 +83,29 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
   onBack,
   className,
 }) => {
-  const [projectPath] = useState(initialProjectPath || "");
-  const [task, setTask] = useState(agent.default_task || "");
-  const [model, setModel] = useState(agent.model || "sonnet");
+  const [projectPath] = useState(initialProjectPath || '');
+  const [task, setTask] = useState(agent.default_task || '');
+  const [model, setModel] = useState(agent.model || 'sonnet');
   const [isRunning, setIsRunning] = useState(false);
-  
+
   // Get tab state functions
   const { updateTabStatus } = useTabState();
   const [messages, setMessages] = useState<ClaudeStreamMessage[]>([]);
   const [rawJsonlOutput, setRawJsonlOutput] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [copyPopoverOpen, setCopyPopoverOpen] = useState(false);
-  
+
   // Analytics tracking
   const trackEvent = useTrackEvent();
   useComponentMetrics('AgentExecution');
   const agentFeatureTracking = useFeatureAdoptionTracking(`agent_${agent.name || 'custom'}`);
-  
+
   // Hooks configuration state
   const [isHooksDialogOpen, setIsHooksDialogOpen] = useState(false);
 
   // IME composition state
   const isIMEComposingRef = useRef(false);
-  const [activeHooksTab, setActiveHooksTab] = useState("project");
+  const [activeHooksTab, setActiveHooksTab] = useState('project');
 
   // Execution stats
   const [executionStartTime, setExecutionStartTime] = useState<number | null>(null);
@@ -118,7 +113,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
   const [elapsedTime, setElapsedTime] = useState(0);
   const [hasUserScrolled, setHasUserScrolled] = useState(false);
   const [isFullscreenModalOpen, setIsFullscreenModalOpen] = useState(false);
-  
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -137,39 +132,54 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
       }
 
       // Skip empty user messages
-      if (message.type === "user" && message.message) {
+      if (message.type === 'user' && message.message) {
         if (message.isMeta) return false;
-        
+
         const msg = message.message;
         if (!msg.content || (Array.isArray(msg.content) && msg.content.length === 0)) {
           return false;
         }
-        
+
         // Check if user message has visible content by checking its parts
         if (Array.isArray(msg.content)) {
           let hasVisibleContent = false;
           for (const content of msg.content) {
-            if (content.type === "text") {
+            if (content.type === 'text') {
               hasVisibleContent = true;
               break;
-            } else if (content.type === "tool_result") {
+            } else if (content.type === 'tool_result') {
               // Check if this tool result will be skipped by a widget
               let willBeSkipped = false;
               if (content.tool_use_id) {
                 // Look for the matching tool_use in previous assistant messages
                 for (let i = index - 1; i >= 0; i--) {
                   const prevMsg = messages[i];
-                  if (prevMsg.type === 'assistant' && prevMsg.message?.content && Array.isArray(prevMsg.message.content)) {
-                    const toolUse = prevMsg.message.content.find((c: any) => 
-                      c.type === 'tool_use' && c.id === content.tool_use_id
+                  if (
+                    prevMsg.type === 'assistant' &&
+                    prevMsg.message?.content &&
+                    Array.isArray(prevMsg.message.content)
+                  ) {
+                    const toolUse = prevMsg.message.content.find(
+                      (c: any) => c.type === 'tool_use' && c.id === content.tool_use_id
                     );
                     if (toolUse) {
                       const toolName = toolUse.name?.toLowerCase();
                       const toolsWithWidgets = [
-                        'task', 'edit', 'multiedit', 'todowrite', 'ls', 'read', 
-                        'glob', 'bash', 'write', 'grep'
+                        'task',
+                        'edit',
+                        'multiedit',
+                        'todowrite',
+                        'ls',
+                        'read',
+                        'glob',
+                        'bash',
+                        'write',
+                        'grep',
                       ];
-                      if (toolsWithWidgets.includes(toolName) || toolUse.name?.startsWith('mcp__')) {
+                      if (
+                        toolsWithWidgets.includes(toolName) ||
+                        toolUse.name?.startsWith('mcp__')
+                      ) {
                         willBeSkipped = true;
                       }
                       break;
@@ -177,14 +187,14 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                   }
                 }
               }
-              
+
               if (!willBeSkipped) {
                 hasVisibleContent = true;
                 break;
               }
             }
           }
-          
+
           if (!hasVisibleContent) {
             return false;
           }
@@ -213,7 +223,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
   useEffect(() => {
     // Clean up listeners on unmount
     return () => {
-      unlistenRefs.current.forEach(unlisten => unlisten());
+      unlistenRefs.current.forEach((unlisten) => unlisten());
       if (elapsedTimeIntervalRef.current) {
         clearInterval(elapsedTimeIntervalRef.current);
       }
@@ -222,7 +232,9 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
 
   // Check if user is at the very bottom of the scrollable container
   const isAtBottom = () => {
-    const container = isFullscreenModalOpen ? fullscreenScrollRef.current : scrollContainerRef.current;
+    const container = isFullscreenModalOpen
+      ? fullscreenScrollRef.current
+      : scrollContainerRef.current;
     if (container) {
       const { scrollTop, scrollHeight, clientHeight } = container;
       const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
@@ -239,12 +251,24 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
 
     if (shouldAutoScroll) {
       if (isFullscreenModalOpen) {
-        fullscreenRowVirtualizer.scrollToIndex(displayableMessages.length - 1, { align: "end", behavior: "smooth" });
+        fullscreenRowVirtualizer.scrollToIndex(displayableMessages.length - 1, {
+          align: 'end',
+          behavior: 'smooth',
+        });
       } else {
-        rowVirtualizer.scrollToIndex(displayableMessages.length - 1, { align: "end", behavior: "smooth" });
+        rowVirtualizer.scrollToIndex(displayableMessages.length - 1, {
+          align: 'end',
+          behavior: 'smooth',
+        });
       }
     }
-  }, [displayableMessages.length, hasUserScrolled, isFullscreenModalOpen, rowVirtualizer, fullscreenRowVirtualizer]);
+  }, [
+    displayableMessages.length,
+    hasUserScrolled,
+    isFullscreenModalOpen,
+    rowVirtualizer,
+    fullscreenRowVirtualizer,
+  ]);
 
   // Update elapsed time while running
   useEffect(() => {
@@ -257,7 +281,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
         clearInterval(elapsedTimeIntervalRef.current);
       }
     }
-    
+
     return () => {
       if (elapsedTimeIntervalRef.current) {
         clearInterval(elapsedTimeIntervalRef.current);
@@ -279,7 +303,6 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
     setTotalTokens(tokens);
   }, [messages]);
 
-
   // Project path selection is handled upstream when opening an execution tab
 
   const handleOpenHooksDialog = async () => {
@@ -298,84 +321,87 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
       setMessages([]);
       setRawJsonlOutput([]);
       setRunId(null);
-      
+
       // Clear any existing listeners
-      unlistenRefs.current.forEach(unlisten => unlisten());
+      unlistenRefs.current.forEach((unlisten) => unlisten());
       unlistenRefs.current = [];
-      
+
       // Execute the agent and get the run ID
       const executionRunId = await api.executeAgent(agent.id!, projectPath, task, model);
-      console.log("Agent execution started with run ID:", executionRunId);
+      console.log('Agent execution started with run ID:', executionRunId);
       setRunId(executionRunId);
-      
+
       // Track agent execution start
       trackEvent.agentStarted({
         agent_type: agent.name || 'custom',
         agent_name: agent.name,
-        has_custom_prompt: task !== agent.default_task
+        has_custom_prompt: task !== agent.default_task,
       });
-      
+
       // Track feature adoption
       agentFeatureTracking.trackUsage();
-      
+
       // Set up event listeners with run ID isolation
       const outputUnlisten = await listen<string>(`agent-output:${executionRunId}`, (event) => {
         try {
           // Store raw JSONL
-          setRawJsonlOutput(prev => [...prev, event.payload]);
-          
+          setRawJsonlOutput((prev) => [...prev, event.payload]);
+
           // Parse and display
           const message = JSON.parse(event.payload) as ClaudeStreamMessage;
-          setMessages(prev => [...prev, message]);
+          setMessages((prev) => [...prev, message]);
         } catch (err) {
-          console.error("Failed to parse message:", err, event.payload);
+          console.error('Failed to parse message:', err, event.payload);
         }
       });
 
       const errorUnlisten = await listen<string>(`agent-error:${executionRunId}`, (event) => {
-        console.error("Agent error:", event.payload);
+        console.error('Agent error:', event.payload);
         setError(event.payload);
-        
+
         // Track agent error
         trackEvent.agentError({
           error_type: 'runtime_error',
           error_stage: 'execution',
           retry_count: 0,
-          agent_type: agent.name || 'custom'
+          agent_type: agent.name || 'custom',
         });
       });
 
-      const completeUnlisten = await listen<boolean>(`agent-complete:${executionRunId}`, (event) => {
-        setIsRunning(false);
-        const duration = executionStartTime ? Date.now() - executionStartTime : undefined;
-        setExecutionStartTime(null);
-        if (!event.payload) {
-          setError("Agent execution failed");
-          // Update tab status to error
-          if (tabId) {
-            updateTabStatus(tabId, 'error');
+      const completeUnlisten = await listen<boolean>(
+        `agent-complete:${executionRunId}`,
+        (event) => {
+          setIsRunning(false);
+          const duration = executionStartTime ? Date.now() - executionStartTime : undefined;
+          setExecutionStartTime(null);
+          if (!event.payload) {
+            setError('Agent execution failed');
+            // Update tab status to error
+            if (tabId) {
+              updateTabStatus(tabId, 'error');
+            }
+            // Track both the old event for compatibility and the new error event
+            trackEvent.agentExecuted(agent.name || 'custom', false, agent.name, duration);
+            trackEvent.agentError({
+              error_type: 'execution_failed',
+              error_stage: 'completion',
+              retry_count: 0,
+              agent_type: agent.name || 'custom',
+            });
+          } else {
+            // Update tab status to complete on success
+            if (tabId) {
+              updateTabStatus(tabId, 'complete');
+            }
+            trackEvent.agentExecuted(agent.name || 'custom', true, agent.name, duration);
           }
-          // Track both the old event for compatibility and the new error event
-          trackEvent.agentExecuted(agent.name || 'custom', false, agent.name, duration);
-          trackEvent.agentError({
-            error_type: 'execution_failed',
-            error_stage: 'completion',
-            retry_count: 0,
-            agent_type: agent.name || 'custom'
-          });
-        } else {
-          // Update tab status to complete on success
-          if (tabId) {
-            updateTabStatus(tabId, 'complete');
-          }
-          trackEvent.agentExecuted(agent.name || 'custom', true, agent.name, duration);
         }
-      });
+      );
 
       const cancelUnlisten = await listen<boolean>(`agent-cancelled:${executionRunId}`, () => {
         setIsRunning(false);
         setExecutionStartTime(null);
-        setError("Agent execution was cancelled");
+        setError('Agent execution was cancelled');
         // Update tab status to idle when cancelled
         if (tabId) {
           updateTabStatus(tabId, 'idle');
@@ -384,7 +410,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
 
       unlistenRefs.current = [outputUnlisten, errorUnlisten, completeUnlisten, cancelUnlisten];
     } catch (err) {
-      console.error("Failed to execute agent:", err);
+      console.error('Failed to execute agent:', err);
       setIsRunning(false);
       setExecutionStartTime(null);
       setRunId(null);
@@ -393,24 +419,27 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
         updateTabStatus(tabId, 'error');
       }
       // Show error in messages
-      setMessages(prev => [...prev, {
-        type: "result",
-        subtype: "error",
-        is_error: true,
-        result: `Failed to execute agent: ${err instanceof Error ? err.message : 'Unknown error'}`,
-        duration_ms: 0,
-        usage: {
-          input_tokens: 0,
-          output_tokens: 0
-        }
-      }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          type: 'result',
+          subtype: 'error',
+          is_error: true,
+          result: `Failed to execute agent: ${err instanceof Error ? err.message : 'Unknown error'}`,
+          duration_ms: 0,
+          usage: {
+            input_tokens: 0,
+            output_tokens: 0,
+          },
+        },
+      ]);
     }
   };
 
   const handleStop = async () => {
     try {
       if (!runId) {
-        console.error("No run ID available to stop");
+        console.error('No run ID available to stop');
         return;
       }
 
@@ -427,7 +456,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
       setIsRunning(false);
       setExecutionStartTime(null);
     } catch (err) {
-      console.error("Failed to stop agent:", err);
+      console.error('Failed to stop agent:', err);
     }
   };
 
@@ -451,11 +480,11 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
         return;
       }
     }
-    
+
     // Clean up listeners but don't stop the actual agent process
-    unlistenRefs.current.forEach(unlisten => unlisten());
+    unlistenRefs.current.forEach((unlisten) => unlisten());
     unlistenRefs.current = [];
-    
+
     // Navigate back
     onBack();
   };
@@ -474,19 +503,19 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
     markdown += `---\n\n`;
 
     for (const msg of messages) {
-      if (msg.type === "system" && msg.subtype === "init") {
+      if (msg.type === 'system' && msg.subtype === 'init') {
         markdown += `## System Initialization\n\n`;
         markdown += `- Session ID: \`${msg.session_id || 'N/A'}\`\n`;
         markdown += `- Model: \`${msg.model || 'default'}\`\n`;
         if (msg.cwd) markdown += `- Working Directory: \`${msg.cwd}\`\n`;
         if (msg.tools?.length) markdown += `- Tools: ${msg.tools.join(', ')}\n`;
         markdown += `\n`;
-      } else if (msg.type === "assistant" && msg.message) {
+      } else if (msg.type === 'assistant' && msg.message) {
         markdown += `## Assistant\n\n`;
         for (const content of msg.message.content || []) {
-          if (content.type === "text") {
+          if (content.type === 'text') {
             markdown += `${content.text}\n\n`;
-          } else if (content.type === "tool_use") {
+          } else if (content.type === 'tool_use') {
             markdown += `### Tool: ${content.name}\n\n`;
             markdown += `\`\`\`json\n${JSON.stringify(content.input, null, 2)}\n\`\`\`\n\n`;
           }
@@ -494,17 +523,17 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
         if (msg.message.usage) {
           markdown += `*Tokens: ${msg.message.usage.input_tokens} in, ${msg.message.usage.output_tokens} out*\n\n`;
         }
-      } else if (msg.type === "user" && msg.message) {
+      } else if (msg.type === 'user' && msg.message) {
         markdown += `## User\n\n`;
         for (const content of msg.message.content || []) {
-          if (content.type === "text") {
+          if (content.type === 'text') {
             markdown += `${content.text}\n\n`;
-          } else if (content.type === "tool_result") {
+          } else if (content.type === 'tool_result') {
             markdown += `### Tool Result\n\n`;
             markdown += `\`\`\`\n${content.content}\n\`\`\`\n\n`;
           }
         }
-      } else if (msg.type === "result") {
+      } else if (msg.type === 'result') {
         markdown += `## Execution Result\n\n`;
         if (msg.result) {
           markdown += `${msg.result}\n\n`;
@@ -532,28 +561,28 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
     setCopyPopoverOpen(false);
   };
 
-
   return (
-    <div className={cn("flex flex-col h-full bg-background", className)}>
+    <div className={cn('bg-background flex h-full flex-col', className)}>
       {/* Fixed container that takes full height */}
-      <div className="h-full flex flex-col bg-background">
+      <div className="bg-background flex h-full flex-col">
         {/* Header */}
-        <div className="p-6 border-b border-border">
+        <div className="border-border border-b p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={handleBackWithConfirmation}
-                className="h-9 w-9 -ml-2"
+                className="-ml-2 h-9 w-9"
                 title="Back"
               >
                 <ArrowLeft className="h-4 w-4" />
               </Button>
               <div>
                 <h1 className="text-heading-1">{agent.name}</h1>
-                <p className="mt-1 text-body-small text-muted-foreground">
-                  {isRunning ? 'Running' : messages.length > 0 ? 'Complete' : 'Ready'} • {model === 'opus' ? 'Claude 4 Opus' : 'Claude 4 Sonnet'}
+                <p className="text-body-small text-muted-foreground mt-1">
+                  {isRunning ? 'Running' : messages.length > 0 ? 'Complete' : 'Ready'} •{' '}
+                  {model === 'opus' ? 'Claude 4 Opus' : 'Claude 4 Sonnet'}
                 </p>
               </div>
             </div>
@@ -564,17 +593,17 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                   size="default"
                   onClick={() => setIsFullscreenModalOpen(true)}
                 >
-                  <Maximize2 className="h-4 w-4 mr-2" />
+                  <Maximize2 className="mr-2 h-4 w-4" />
                   Fullscreen
                 </Button>
               )}
             </div>
           </div>
         </div>
-        
+
         {/* Configuration Section */}
-        <div className="p-6 border-b border-border">
-          <div className="max-w-4xl mx-auto space-y-4">
+        <div className="border-border border-b p-6">
+          <div className="mx-auto max-w-4xl space-y-4">
             {/* Error display */}
             {error && (
               <motion.div
@@ -582,9 +611,9 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -4 }}
                 transition={{ duration: 0.15 }}
-                className="p-3 rounded-md bg-destructive/10 border border-destructive/50 flex items-center gap-2"
+                className="bg-destructive/10 border-destructive/50 flex items-center gap-2 rounded-md border p-3"
               >
-                <AlertCircle className="h-3.5 w-3.5 text-destructive flex-shrink-0" />
+                <AlertCircle className="text-destructive h-3.5 w-3.5 flex-shrink-0" />
                 <span className="text-caption text-destructive">{error}</span>
               </motion.div>
             )}
@@ -595,26 +624,26 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
               <div className="flex gap-2">
                 <motion.button
                   type="button"
-                  onClick={() => !isRunning && setModel("sonnet")}
+                  onClick={() => !isRunning && setModel('sonnet')}
                   whileTap={{ scale: 0.97 }}
                   transition={{ duration: 0.15 }}
                   className={cn(
-                    "flex-1 px-4 py-3 rounded-md border transition-all",
-                    model === "sonnet" 
-                      ? "border-primary bg-primary/10 text-primary" 
-                      : "border-border hover:border-primary/50 hover:bg-accent",
-                    isRunning && "opacity-50 cursor-not-allowed"
+                    'flex-1 rounded-md border px-4 py-3 transition-all',
+                    model === 'sonnet'
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-border hover:border-primary/50 hover:bg-accent',
+                    isRunning && 'cursor-not-allowed opacity-50'
                   )}
                   disabled={isRunning}
                 >
                   <div className="flex items-center gap-3">
-                    <div className={cn(
-                      "w-4 h-4 rounded-full border-2 flex items-center justify-center",
-                      model === "sonnet" ? "border-primary" : "border-muted-foreground"
-                    )}>
-                      {model === "sonnet" && (
-                        <div className="w-2 h-2 rounded-full bg-primary" />
+                    <div
+                      className={cn(
+                        'flex h-4 w-4 items-center justify-center rounded-full border-2',
+                        model === 'sonnet' ? 'border-primary' : 'border-muted-foreground'
                       )}
+                    >
+                      {model === 'sonnet' && <div className="bg-primary h-2 w-2 rounded-full" />}
                     </div>
                     <div className="text-left">
                       <div className="text-body-small font-medium">Claude 4 Sonnet</div>
@@ -622,29 +651,29 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                     </div>
                   </div>
                 </motion.button>
-                
+
                 <motion.button
                   type="button"
-                  onClick={() => !isRunning && setModel("opus")}
+                  onClick={() => !isRunning && setModel('opus')}
                   whileTap={{ scale: 0.97 }}
                   transition={{ duration: 0.15 }}
                   className={cn(
-                    "flex-1 px-4 py-3 rounded-md border transition-all",
-                    model === "opus" 
-                      ? "border-primary bg-primary/10 text-primary" 
-                      : "border-border hover:border-primary/50 hover:bg-accent",
-                    isRunning && "opacity-50 cursor-not-allowed"
+                    'flex-1 rounded-md border px-4 py-3 transition-all',
+                    model === 'opus'
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-border hover:border-primary/50 hover:bg-accent',
+                    isRunning && 'cursor-not-allowed opacity-50'
                   )}
                   disabled={isRunning}
                 >
                   <div className="flex items-center gap-3">
-                    <div className={cn(
-                      "w-4 h-4 rounded-full border-2 flex items-center justify-center",
-                      model === "opus" ? "border-primary" : "border-muted-foreground"
-                    )}>
-                      {model === "opus" && (
-                        <div className="w-2 h-2 rounded-full bg-primary" />
+                    <div
+                      className={cn(
+                        'flex h-4 w-4 items-center justify-center rounded-full border-2',
+                        model === 'opus' ? 'border-primary' : 'border-muted-foreground'
                       )}
+                    >
+                      {model === 'opus' && <div className="bg-primary h-2 w-2 rounded-full" />}
                     </div>
                     <div className="text-left">
                       <div className="text-body-small font-medium">Claude 4 Opus</div>
@@ -665,9 +694,9 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                     size="sm"
                     onClick={handleOpenHooksDialog}
                     disabled={isRunning}
-                    className="h-8 -mr-2"
+                    className="-mr-2 h-8"
                   >
-                    <Settings2 className="h-3.5 w-3.5 mr-1.5" />
+                    <Settings2 className="mr-1.5 h-3.5 w-3.5" />
                     <span className="text-caption">Configure Hooks</span>
                   </Button>
                 )}
@@ -678,9 +707,9 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                   onChange={(e) => setTask(e.target.value)}
                   placeholder="What would you like the agent to do?"
                   disabled={isRunning}
-                  className="flex-1 h-9"
+                  className="h-9 flex-1"
                   onKeyDown={(e) => {
-                    if (e.key === "Enter" && !isRunning && projectPath && task.trim()) {
+                    if (e.key === 'Enter' && !isRunning && projectPath && task.trim()) {
                       if (e.nativeEvent.isComposing || isIMEComposingRef.current) {
                         return;
                       }
@@ -690,14 +719,11 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                   onCompositionStart={handleCompositionStart}
                   onCompositionEnd={handleCompositionEnd}
                 />
-                <motion.div
-                  whileTap={{ scale: 0.97 }}
-                  transition={{ duration: 0.15 }}
-                >
+                <motion.div whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }}>
                   <Button
                     onClick={isRunning ? handleStop : handleExecute}
                     disabled={!projectPath || !task.trim()}
-                    variant={isRunning ? "destructive" : "default"}
+                    variant={isRunning ? 'destructive' : 'default'}
                     size="default"
                   >
                     {isRunning ? (
@@ -716,7 +742,8 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
               </div>
               {projectPath && (
                 <p className="text-caption text-muted-foreground">
-                  Working in: <span className="font-mono">{projectPath.split('/').pop() || projectPath}</span>
+                  Working in:{' '}
+                  <span className="font-mono">{projectPath.split('/').pop() || projectPath}</span>
                 </p>
               )}
             </div>
@@ -725,16 +752,16 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
 
         {/* Scrollable Output Display */}
         <div className="flex-1 overflow-hidden">
-          <div className="w-full max-w-5xl mx-auto h-full">
-            <div 
+          <div className="mx-auto h-full w-full max-w-5xl">
+            <div
               ref={scrollContainerRef}
-              className="h-full overflow-y-auto p-6 space-y-8"
+              className="h-full space-y-8 overflow-y-auto p-6"
               onScroll={() => {
                 // Mark that user has scrolled manually
                 if (!hasUserScrolled) {
                   setHasUserScrolled(true);
                 }
-                
+
                 // If user scrolls back to bottom, re-enable auto-scroll
                 if (isAtBottom()) {
                   setHasUserScrolled(false);
@@ -742,53 +769,51 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
               }}
             >
               <div ref={messagesContainerRef}>
-              {messages.length === 0 && !isRunning && (
-                <div className="flex flex-col items-center justify-center h-full text-center">
-                  <Terminal className="h-16 w-16 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium mb-2">Ready to Execute</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Enter a task to run the agent
-                  </p>
-                </div>
-              )}
-
-              {isRunning && messages.length === 0 && (
-                <div className="flex items-center justify-center h-full">
-                  <div className="flex items-center gap-3">
-                    <Loader2 className="h-6 w-6 animate-spin" />
-                    <span className="text-sm text-muted-foreground">Initializing agent...</span>
+                {messages.length === 0 && !isRunning && (
+                  <div className="flex h-full flex-col items-center justify-center text-center">
+                    <Terminal className="text-muted-foreground mb-4 h-16 w-16" />
+                    <h3 className="mb-2 text-lg font-medium">Ready to Execute</h3>
+                    <p className="text-muted-foreground text-sm">Enter a task to run the agent</p>
                   </div>
-                </div>
-              )}
+                )}
 
-              <div
-                className="relative w-full"
-                style={{ height: `${rowVirtualizer.getTotalSize()}px` }}
-              >
-                <AnimatePresence>
-                  {rowVirtualizer.getVirtualItems().map((virtualItem) => {
-                    const message = displayableMessages[virtualItem.index];
-                    return (
-                      <motion.div
-                        key={virtualItem.key}
-                        data-index={virtualItem.index}
-                        ref={(el) => el && rowVirtualizer.measureElement(el)}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute inset-x-4 pb-4"
-                        style={{ top: virtualItem.start }}
-                      >
-                        <ErrorBoundary>
-                          <StreamMessage message={message} streamMessages={messages} />
-                        </ErrorBoundary>
-                      </motion.div>
-                    );
-                  })}
-                </AnimatePresence>
-              </div>
-              
-              <div ref={messagesEndRef} />
+                {isRunning && messages.length === 0 && (
+                  <div className="flex h-full items-center justify-center">
+                    <div className="flex items-center gap-3">
+                      <Loader2 className="h-6 w-6 animate-spin" />
+                      <span className="text-muted-foreground text-sm">Initializing agent...</span>
+                    </div>
+                  </div>
+                )}
+
+                <div
+                  className="relative w-full"
+                  style={{ height: `${rowVirtualizer.getTotalSize()}px` }}
+                >
+                  <AnimatePresence>
+                    {rowVirtualizer.getVirtualItems().map((virtualItem) => {
+                      const message = displayableMessages[virtualItem.index];
+                      return (
+                        <motion.div
+                          key={virtualItem.key}
+                          data-index={virtualItem.index}
+                          ref={(el) => el && rowVirtualizer.measureElement(el)}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="absolute inset-x-4 pb-4"
+                          style={{ top: virtualItem.start }}
+                        >
+                          <ErrorBoundary>
+                            <StreamMessage message={message} streamMessages={messages} />
+                          </ErrorBoundary>
+                        </motion.div>
+                      );
+                    })}
+                  </AnimatePresence>
+                </div>
+
+                <div ref={messagesEndRef} />
               </div>
             </div>
           </div>
@@ -805,26 +830,22 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
 
       {/* Fullscreen Modal */}
       {isFullscreenModalOpen && (
-        <div className="fixed inset-0 z-50 bg-background flex flex-col">
+        <div className="bg-background fixed inset-0 z-50 flex flex-col">
           {/* Modal Header */}
-          <div className="flex items-center justify-between p-4 border-b border-border">
+          <div className="border-border flex items-center justify-between border-b p-4">
             <div className="flex items-center gap-2">
               <h2 className="text-lg font-semibold">{agent.name} - Output</h2>
               {isRunning && (
                 <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-xs text-green-600 font-medium">Running</span>
+                  <div className="h-2 w-2 animate-pulse rounded-full bg-green-500"></div>
+                  <span className="text-xs font-medium text-green-600">Running</span>
                 </div>
               )}
             </div>
             <div className="flex items-center gap-2">
               <Popover
                 trigger={
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="flex items-center gap-2"
-                  >
+                  <Button variant="ghost" size="sm" className="flex items-center gap-2">
                     <Copy className="h-4 w-4" />
                     Copy Output
                     <ChevronDown className="h-3 w-3" />
@@ -868,15 +889,15 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
 
           {/* Modal Content */}
           <div className="flex-1 overflow-hidden p-6">
-            <div 
+            <div
               ref={fullscreenScrollRef}
-              className="h-full overflow-y-auto space-y-8"
+              className="h-full space-y-8 overflow-y-auto"
               onScroll={() => {
                 // Mark that user has scrolled manually
                 if (!hasUserScrolled) {
                   setHasUserScrolled(true);
                 }
-                
+
                 // If user scrolls back to bottom, re-enable auto-scroll
                 if (isAtBottom()) {
                   setHasUserScrolled(false);
@@ -884,26 +905,24 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
               }}
             >
               {messages.length === 0 && !isRunning && (
-                <div className="flex flex-col items-center justify-center h-full text-center">
-                  <Terminal className="h-16 w-16 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium mb-2">Ready to Execute</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Enter a task to run the agent
-                  </p>
+                <div className="flex h-full flex-col items-center justify-center text-center">
+                  <Terminal className="text-muted-foreground mb-4 h-16 w-16" />
+                  <h3 className="mb-2 text-lg font-medium">Ready to Execute</h3>
+                  <p className="text-muted-foreground text-sm">Enter a task to run the agent</p>
                 </div>
               )}
 
               {isRunning && messages.length === 0 && (
-                <div className="flex items-center justify-center h-full">
+                <div className="flex h-full items-center justify-center">
                   <div className="flex items-center gap-3">
                     <Loader2 className="h-6 w-6 animate-spin" />
-                    <span className="text-sm text-muted-foreground">Initializing agent...</span>
+                    <span className="text-muted-foreground text-sm">Initializing agent...</span>
                   </div>
                 </div>
               )}
 
               <div
-                className="relative w-full max-w-5xl mx-auto"
+                className="relative mx-auto w-full max-w-5xl"
                 style={{ height: `${fullscreenRowVirtualizer.getTotalSize()}px` }}
               >
                 <AnimatePresence>
@@ -928,7 +947,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                   })}
                 </AnimatePresence>
               </div>
-              
+
               <div ref={fullscreenMessagesEndRef} />
             </div>
           </div>
@@ -936,59 +955,59 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
       )}
 
       {/* Hooks Configuration Dialog */}
-      <Dialog 
-        open={isHooksDialogOpen} 
-        onOpenChange={setIsHooksDialogOpen}
-      >
-        <DialogContent className="max-w-4xl max-h-[85vh] overflow-hidden flex flex-col gap-0 p-0">
-          <div className="px-6 py-4 border-b border-border">
+      <Dialog open={isHooksDialogOpen} onOpenChange={setIsHooksDialogOpen}>
+        <DialogContent className="flex max-h-[85vh] max-w-4xl flex-col gap-0 overflow-hidden p-0">
+          <div className="border-border border-b px-6 py-4">
             <DialogTitle className="text-heading-2">Configure Hooks</DialogTitle>
-            <DialogDescription className="mt-1 text-body-small text-muted-foreground">
+            <DialogDescription className="text-body-small text-muted-foreground mt-1">
               Configure hooks that run before, during, and after tool executions
             </DialogDescription>
           </div>
-          
-          <Tabs value={activeHooksTab} onValueChange={setActiveHooksTab} className="flex-1 flex flex-col overflow-hidden">
+
+          <Tabs
+            value={activeHooksTab}
+            onValueChange={setActiveHooksTab}
+            className="flex flex-1 flex-col overflow-hidden"
+          >
             <div className="px-6 pt-4">
-              <TabsList className="grid w-full grid-cols-2 h-auto p-1">
-                <TabsTrigger value="project" className="py-2.5 px-3 text-body-small">
+              <TabsList className="grid h-auto w-full grid-cols-2 p-1">
+                <TabsTrigger value="project" className="text-body-small px-3 py-2.5">
                   Project Settings
                 </TabsTrigger>
-                <TabsTrigger value="local" className="py-2.5 px-3 text-body-small">
+                <TabsTrigger value="local" className="text-body-small px-3 py-2.5">
                   Local Settings
                 </TabsTrigger>
               </TabsList>
             </div>
-            
-            <TabsContent value="project" className="flex-1 overflow-auto px-6 pb-6 mt-0">
+
+            <TabsContent value="project" className="mt-0 flex-1 overflow-auto px-6 pb-6">
               <div className="space-y-4 pt-4">
-                <div className="rounded-lg bg-muted/50 p-3">
+                <div className="bg-muted/50 rounded-lg p-3">
                   <p className="text-caption text-muted-foreground">
-                    Project hooks are stored in <code className="font-mono text-xs bg-background px-1.5 py-0.5 rounded">.claude/settings.json</code> and 
-                    are committed to version control, allowing team members to share configurations.
+                    Project hooks are stored in{' '}
+                    <code className="bg-background rounded px-1.5 py-0.5 font-mono text-xs">
+                      .claude/settings.json
+                    </code>{' '}
+                    and are committed to version control, allowing team members to share
+                    configurations.
                   </p>
                 </div>
-                <HooksEditor
-                  projectPath={projectPath}
-                  scope="project"
-                  className="border-0"
-                />
+                <HooksEditor projectPath={projectPath} scope="project" className="border-0" />
               </div>
             </TabsContent>
-            
-            <TabsContent value="local" className="flex-1 overflow-auto px-6 pb-6 mt-0">
+
+            <TabsContent value="local" className="mt-0 flex-1 overflow-auto px-6 pb-6">
               <div className="space-y-4 pt-4">
-                <div className="rounded-lg bg-muted/50 p-3">
+                <div className="bg-muted/50 rounded-lg p-3">
                   <p className="text-caption text-muted-foreground">
-                    Local hooks are stored in <code className="font-mono text-xs bg-background px-1.5 py-0.5 rounded">.claude/settings.local.json</code> and 
-                    are not committed to version control, perfect for personal preferences.
+                    Local hooks are stored in{' '}
+                    <code className="bg-background rounded px-1.5 py-0.5 font-mono text-xs">
+                      .claude/settings.local.json
+                    </code>{' '}
+                    and are not committed to version control, perfect for personal preferences.
                   </p>
                 </div>
-                <HooksEditor
-                  projectPath={projectPath}
-                  scope="local"
-                  className="border-0"
-                />
+                <HooksEditor projectPath={projectPath} scope="local" className="border-0" />
               </div>
             </TabsContent>
           </Tabs>

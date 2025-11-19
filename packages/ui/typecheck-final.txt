@@ -1,0 +1,13 @@
+
+> @noa/ui@1.0.0 typecheck /home/deflex/noa-server/packages/ui
+> tsc --noEmit
+
+src/pages/AnalyticsPage.tsx(153,17): error TS2322: Type 'AggregationResult[] | { id: number; name: string; value: number; category: string; date: string; }[]' is not assignable to type 'AggregationResult[]'.
+  Type '{ id: number; name: string; value: number; category: string; date: string; }[]' is not assignable to type 'AggregationResult[]'.
+    Type '{ id: number; name: string; value: number; category: string; date: string; }' is missing the following properties from type 'AggregationResult': groupKey, values, count
+src/pages/ConversationPage.tsx(26,25): error TS2345: Argument of type 'string' is not assignable to parameter of type '"" | ((prev: "") => "")'.
+src/pages/ConversationPage.tsx(73,61): error TS2339: Property 'toLowerCase' does not exist on type 'never'.
+src/stores/chatHistory.ts(435,13): error TS6133: 'migrations' is declared but its value is never read.
+src/utils/performance.ts(37,7): error TS6133: 'lastResult' is declared but its value is never read.
+src/utils/performance.ts(256,17): error TS2339: Property 'setTimeout' does not exist on type 'never'.
+ ELIFECYCLE  Command failed with exit code 2.

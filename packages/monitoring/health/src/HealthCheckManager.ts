@@ -22,12 +22,12 @@ export class HealthCheckManager {
     this.options = {
       enableAutoRefresh: options.enableAutoRefresh || false,
       refreshInterval: options.refreshInterval || 30000, // 30 seconds
-      parallelExecution: options.parallelExecution !== false
+      parallelExecution: options.parallelExecution !== false,
     };
 
     this.aggregator = new HealthAggregator({
       parallelExecution: this.options.parallelExecution,
-      continueOnError: true
+      continueOnError: true,
     });
 
     if (this.options.enableAutoRefresh) {
@@ -182,14 +182,14 @@ export class HealthCheckManager {
     const unhealthyChecks = metadata.unhealthyChecks;
 
     // Calculate health score (0-100)
-    const healthScore = totalChecks > 0
-      ? ((healthyChecks + (degradedChecks * 0.5)) / totalChecks) * 100
-      : 0;
+    const healthScore =
+      totalChecks > 0 ? ((healthyChecks + degradedChecks * 0.5) / totalChecks) * 100 : 0;
 
     // Calculate average check duration
-    const avgDuration = checks.length > 0
-      ? checks.reduce((sum, check) => sum + check.duration, 0) / checks.length
-      : 0;
+    const avgDuration =
+      checks.length > 0
+        ? checks.reduce((sum, check) => sum + check.duration, 0) / checks.length
+        : 0;
 
     return {
       healthScore,
@@ -197,7 +197,7 @@ export class HealthCheckManager {
       checksHealthy: healthyChecks,
       checksDegraded: degradedChecks,
       checksUnhealthy: unhealthyChecks,
-      averageCheckDuration: avgDuration
+      averageCheckDuration: avgDuration,
     };
   }
 }

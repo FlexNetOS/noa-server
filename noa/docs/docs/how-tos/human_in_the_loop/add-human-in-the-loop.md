@@ -11,7 +11,10 @@ hide:
 
 # Enable human intervention
 
-To review, edit, and approve tool calls in an agent or workflow, use interrupts to pause a graph and wait for human input. Interrupts use LangGraph's [persistence](../../concepts/persistence.md) layer, which saves the graph state, to indefinitely pause graph execution until you resume.
+To review, edit, and approve tool calls in an agent or workflow, use interrupts
+to pause a graph and wait for human input. Interrupts use LangGraph's
+[persistence](../../concepts/persistence.md) layer, which saves the graph state,
+to indefinitely pause graph execution until you resume.
 
 !!! info
 
@@ -20,7 +23,12 @@ To review, edit, and approve tool calls in an agent or workflow, use interrupts 
 ## Pause using `interrupt`
 
 :::python
-[Dynamic interrupts](../../concepts/human_in_the_loop.md#key-capabilities) (also known as dynamic breakpoints) are triggered based on the current state of the graph. You can set dynamic interrupts by calling @[`interrupt` function][interrupt] in the appropriate place. The graph will pause, which allows for human intervention, and then resumes the graph with their input. It's useful for tasks like approvals, edits, or gathering additional context.
+[Dynamic interrupts](../../concepts/human_in_the_loop.md#key-capabilities) (also
+known as dynamic breakpoints) are triggered based on the current state of the
+graph. You can set dynamic interrupts by calling @[`interrupt`
+function][interrupt] in the appropriate place. The graph will pause, which
+allows for human intervention, and then resumes the graph with their input. It's
+useful for tasks like approvals, edits, or gathering additional context.
 
 !!! note
 
@@ -28,16 +36,24 @@ To review, edit, and approve tool calls in an agent or workflow, use interrupts 
 
 :::
 
-:::js
-[Dynamic interrupts](../../concepts/human_in_the_loop.md#key-capabilities) (also known as dynamic breakpoints) are triggered based on the current state of the graph. You can set dynamic interrupts by calling @[`interrupt` function][interrupt] in the appropriate place. The graph will pause, which allows for human intervention, and then resumes the graph with their input. It's useful for tasks like approvals, edits, or gathering additional context.
-:::
+:::js [Dynamic interrupts](../../concepts/human_in_the_loop.md#key-capabilities)
+(also known as dynamic breakpoints) are triggered based on the current state of
+the graph. You can set dynamic interrupts by calling @[`interrupt`
+function][interrupt] in the appropriate place. The graph will pause, which
+allows for human intervention, and then resumes the graph with their input. It's
+useful for tasks like approvals, edits, or gathering additional context. :::
 
 To use `interrupt` in your graph, you need to:
 
-1. [**Specify a checkpointer**](../../concepts/persistence.md#checkpoints) to save the graph state after each step.
-2. **Call `interrupt()`** in the appropriate place. See the [Common Patterns](#common-patterns) section for examples.
-3. **Run the graph** with a [**thread ID**](../../concepts/persistence.md#threads) until the `interrupt` is hit.
-4. **Resume execution** using `invoke`/`stream` (see [**The `Command` primitive**](#resume-using-the-command-primitive)).
+1. [**Specify a checkpointer**](../../concepts/persistence.md#checkpoints) to
+   save the graph state after each step.
+2. **Call `interrupt()`** in the appropriate place. See the
+   [Common Patterns](#common-patterns) section for examples.
+3. **Run the graph** with a
+   [**thread ID**](../../concepts/persistence.md#threads) until the `interrupt`
+   is hit.
+4. **Resume execution** using `invoke`/`stream` (see
+   [**The `Command` primitive**](#resume-using-the-command-primitive)).
 
 :::python
 
@@ -76,23 +92,28 @@ print(graph.invoke(Command(resume="Edited text"), config=config)) # (7)!
 # > {'some_text': 'Edited text'}
 ```
 
-1. `interrupt(...)` pauses execution at `human_node`, surfacing the given payload to a human.
-2. Any JSON serializable value can be passed to the `interrupt` function. Here, a dict containing the text to revise.
-3. Once resumed, the return value of `interrupt(...)` is the human-provided input, which is used to update the state.
-4. A checkpointer is required to persist graph state. In production, this should be durable (e.g., backed by a database).
+1. `interrupt(...)` pauses execution at `human_node`, surfacing the given
+   payload to a human.
+2. Any JSON serializable value can be passed to the `interrupt` function. Here,
+   a dict containing the text to revise.
+3. Once resumed, the return value of `interrupt(...)` is the human-provided
+   input, which is used to update the state.
+4. A checkpointer is required to persist graph state. In production, this should
+   be durable (e.g., backed by a database).
 5. The graph is invoked with some initial state.
-6. When the graph hits the interrupt, it returns an `Interrupt` object with the payload and metadata.
-7. The graph is resumed with a `Command(resume=...)`, injecting the human's input and continuing execution.
-   :::
+6. When the graph hits the interrupt, it returns an `Interrupt` object with the
+   payload and metadata.
+7. The graph is resumed with a `Command(resume=...)`, injecting the human's
+   input and continuing execution. :::
 
 :::js
 
 ```typescript
 // highlight-next-line
-import { interrupt, Command } from "@langchain/langgraph";
+import { interrupt, Command } from '@langchain/langgraph';
 
 const graph = graphBuilder
-  .addNode("humanNode", (state) => {
+  .addNode('humanNode', (state) => {
     // highlight-next-line
     const value = interrupt(
       // (1)!
@@ -104,12 +125,12 @@ const graph = graphBuilder
       someText: value, // (3)!
     };
   })
-  .addEdge(START, "humanNode")
+  .addEdge(START, 'humanNode')
   .compile({ checkpointer }); // (4)!
 
 // Run the graph until the interrupt is hit.
-const config = { configurable: { thread_id: "some_id" } };
-const result = await graph.invoke({ someText: "original text" }, config); // (5)!
+const config = { configurable: { thread_id: 'some_id' } };
+const result = await graph.invoke({ someText: 'original text' }, config); // (5)!
 console.log(result.__interrupt__); // (6)!
 // > [
 // >   {
@@ -121,18 +142,23 @@ console.log(result.__interrupt__); // (6)!
 // > ]
 
 // highlight-next-line
-console.log(await graph.invoke(new Command({ resume: "Edited text" }), config)); // (7)!
+console.log(await graph.invoke(new Command({ resume: 'Edited text' }), config)); // (7)!
 // > { someText: 'Edited text' }
 ```
 
-1. `interrupt(...)` pauses execution at `humanNode`, surfacing the given payload to a human.
-2. Any JSON serializable value can be passed to the `interrupt` function. Here, an object containing the text to revise.
-3. Once resumed, the return value of `interrupt(...)` is the human-provided input, which is used to update the state.
-4. A checkpointer is required to persist graph state. In production, this should be durable (e.g., backed by a database).
+1. `interrupt(...)` pauses execution at `humanNode`, surfacing the given payload
+   to a human.
+2. Any JSON serializable value can be passed to the `interrupt` function. Here,
+   an object containing the text to revise.
+3. Once resumed, the return value of `interrupt(...)` is the human-provided
+   input, which is used to update the state.
+4. A checkpointer is required to persist graph state. In production, this should
+   be durable (e.g., backed by a database).
 5. The graph is invoked with some initial state.
-6. When the graph hits the interrupt, it returns an object with `__interrupt__` containing the payload and metadata.
-7. The graph is resumed with a `Command({ resume: ... })`, injecting the human's input and continuing execution.
-   :::
+6. When the graph hits the interrupt, it returns an object with `__interrupt__`
+   containing the payload and metadata.
+7. The graph is resumed with a `Command({ resume: ... })`, injecting the human's
+   input and continuing execution. :::
 
 ??? example "Extended example: using `interrupt`"
 
@@ -281,17 +307,21 @@ console.log(await graph.invoke(new Command({ resume: "Edited text" }), config));
 
 ## Resume using the `Command` primitive
 
-:::python
-!!! warning
+:::python !!! warning
 
     Resuming from an `interrupt` is different from Python's `input()` function, where execution resumes from the exact point where the `input()` function was called.
 
 :::
 
-When the `interrupt` function is used within a graph, execution pauses at that point and awaits user input.
+When the `interrupt` function is used within a graph, execution pauses at that
+point and awaits user input.
 
-:::python
-To resume execution, use the @[`Command`][Command] primitive, which can be supplied via the `invoke` or `stream` methods. The graph resumes execution from the beginning of the node where `interrupt(...)` was initially called. This time, the `interrupt` function will return the value provided in `Command(resume=value)` rather than pausing again. All code from the beginning of the node to the `interrupt` will be re-executed.
+:::python To resume execution, use the @[`Command`][Command] primitive, which
+can be supplied via the `invoke` or `stream` methods. The graph resumes
+execution from the beginning of the node where `interrupt(...)` was initially
+called. This time, the `interrupt` function will return the value provided in
+`Command(resume=value)` rather than pausing again. All code from the beginning
+of the node to the `interrupt` will be re-executed.
 
 ```python
 # Resume graph execution by providing the user's input.
@@ -300,27 +330,33 @@ graph.invoke(Command(resume={"age": "25"}), thread_config)
 
 :::
 
-:::js
-To resume execution, use the @[`Command`][Command] primitive, which can be supplied via the `invoke` or `stream` methods. The graph resumes execution from the beginning of the node where `interrupt(...)` was initially called. This time, the `interrupt` function will return the value provided in `Command(resume=value)` rather than pausing again. All code from the beginning of the node to the `interrupt` will be re-executed.
+:::js To resume execution, use the @[`Command`][Command] primitive, which can be
+supplied via the `invoke` or `stream` methods. The graph resumes execution from
+the beginning of the node where `interrupt(...)` was initially called. This
+time, the `interrupt` function will return the value provided in
+`Command(resume=value)` rather than pausing again. All code from the beginning
+of the node to the `interrupt` will be re-executed.
 
 ```typescript
 // Resume graph execution by providing the user's input.
-await graph.invoke(new Command({ resume: { age: "25" } }), threadConfig);
+await graph.invoke(new Command({ resume: { age: '25' } }), threadConfig);
 ```
 
 :::
 
 ### Resume multiple interrupts with one invocation
 
-When nodes with interrupt conditions are run in parallel, it's possible to have multiple interrupts in the task queue.
-For example, the following graph has two nodes run in parallel that require human input:
+When nodes with interrupt conditions are run in parallel, it's possible to have
+multiple interrupts in the task queue. For example, the following graph has two
+nodes run in parallel that require human input:
 
 <figure markdown="1">
 ![image](../assets/human_in_loop_parallel.png){: style="max-height:400px"}
 </figure>
 
-:::python
-Once your graph has been interrupted and is stalled, you can resume all the interrupts at once with `Command.resume`, passing a dictionary mapping of interrupt ids to resume values.
+:::python Once your graph has been interrupted and is stalled, you can resume
+all the interrupts at once with `Command.resume`, passing a dictionary mapping
+of interrupt ids to resume values.
 
 ```python
 from typing import TypedDict
@@ -393,7 +429,8 @@ await parentGraph.invoke(new Command({ resume: resumeMap }), threadConfig);
 
 ## Common patterns
 
-Below we show different design patterns that can be implemented using `interrupt` and `Command`.
+Below we show different design patterns that can be implemented using
+`interrupt` and `Command`.
 
 ### Approve or reject
 
@@ -402,7 +439,9 @@ Below we show different design patterns that can be implemented using `interrupt
 <figcaption>Depending on the human's approval or rejection, the graph can proceed with the action or take an alternative path.</figcaption>
 </figure>
 
-Pause the graph before a critical step, such as an API call, to review and approve the action. If the action is rejected, you can prevent the graph from executing the step, and potentially take an alternative action.
+Pause the graph before a critical step, such as an API call, to review and
+approve the action. If the action is rejected, you can prevent the graph from
+executing the step, and potentially take an alternative action.
 
 :::python
 
@@ -441,29 +480,29 @@ graph.invoke(Command(resume=True), config=thread_config)
 :::js
 
 ```typescript
-import { interrupt, Command } from "@langchain/langgraph";
+import { interrupt, Command } from '@langchain/langgraph';
 
 // Add the node to the graph in an appropriate location
 // and connect it to the relevant nodes.
-graphBuilder.addNode("humanApproval", (state) => {
+graphBuilder.addNode('humanApproval', (state) => {
   const isApproved = interrupt({
-    question: "Is this correct?",
+    question: 'Is this correct?',
     // Surface the output that should be
     // reviewed and approved by the human.
     llmOutput: state.llmOutput,
   });
 
   if (isApproved) {
-    return new Command({ goto: "someNode" });
+    return new Command({ goto: 'someNode' });
   } else {
-    return new Command({ goto: "anotherNode" });
+    return new Command({ goto: 'anotherNode' });
   }
 });
 const graph = graphBuilder.compile({ checkpointer });
 
 // After running the graph and hitting the interrupt, the graph will pause.
 // Resume it with either an approval or rejection.
-const threadConfig = { configurable: { thread_id: "some_id" } };
+const threadConfig = { configurable: { thread_id: 'some_id' } };
 await graph.invoke(new Command({ resume: true }), threadConfig);
 ```
 
@@ -686,13 +725,13 @@ graph.invoke(
 :::js
 
 ```typescript
-import { interrupt } from "@langchain/langgraph";
+import { interrupt } from '@langchain/langgraph';
 
 function humanEditing(state: z.infer<typeof StateAnnotation>) {
   const result = interrupt({
     // Interrupt information to surface to the client.
     // Can be any JSON serializable value.
-    task: "Review the output from the LLM and make any necessary edits.",
+    task: 'Review the output from the LLM and make any necessary edits.',
     llmGeneratedSummary: state.llmGeneratedSummary,
   });
 
@@ -704,14 +743,14 @@ function humanEditing(state: z.infer<typeof StateAnnotation>) {
 
 // Add the node to the graph in an appropriate location
 // and connect it to the relevant nodes.
-graphBuilder.addNode("humanEditing", humanEditing);
+graphBuilder.addNode('humanEditing', humanEditing);
 const graph = graphBuilder.compile({ checkpointer });
 
 // After running the graph and hitting the interrupt, the graph will pause.
 // Resume it with the edited text.
-const threadConfig = { configurable: { thread_id: "some_id" } };
+const threadConfig = { configurable: { thread_id: 'some_id' } };
 await graph.invoke(
-  new Command({ resume: { editedText: "The edited text" } }),
+  new Command({ resume: { editedText: 'The edited text' } }),
   threadConfig
 );
 ```
@@ -927,19 +966,28 @@ agent = create_react_agent(
 )
 ```
 
-1. The @[`interrupt` function][interrupt] pauses the agent graph at a specific node. In this case, we call `interrupt()` at the beginning of the tool function, which pauses the graph at the node that executes the tool. The information inside `interrupt()` (e.g., tool calls) can be presented to a human, and the graph can be resumed with the user input (tool call approval, edit or feedback).
-2. The `InMemorySaver` is used to store the agent state at every step in the tool calling loop. This enables [short-term memory](../memory/add-memory.md#add-short-term-memory) and [human-in-the-loop](../../concepts/human_in_the_loop.md) capabilities. In this example, we use `InMemorySaver` to store the agent state in memory. In a production application, the agent state will be stored in a database.
-3. Initialize the agent with the `checkpointer`.
-   :::
+1. The @[`interrupt` function][interrupt] pauses the agent graph at a specific
+   node. In this case, we call `interrupt()` at the beginning of the tool
+   function, which pauses the graph at the node that executes the tool. The
+   information inside `interrupt()` (e.g., tool calls) can be presented to a
+   human, and the graph can be resumed with the user input (tool call approval,
+   edit or feedback).
+2. The `InMemorySaver` is used to store the agent state at every step in the
+   tool calling loop. This enables
+   [short-term memory](../memory/add-memory.md#add-short-term-memory) and
+   [human-in-the-loop](../../concepts/human_in_the_loop.md) capabilities. In
+   this example, we use `InMemorySaver` to store the agent state in memory. In a
+   production application, the agent state will be stored in a database.
+3. Initialize the agent with the `checkpointer`. :::
 
 :::js
 
 ```typescript
-import { MemorySaver } from "@langchain/langgraph";
-import { interrupt } from "@langchain/langgraph";
-import { createReactAgent } from "@langchain/langgraph/prebuilt";
-import { tool } from "@langchain/core/tools";
-import { z } from "zod";
+import { MemorySaver } from '@langchain/langgraph';
+import { interrupt } from '@langchain/langgraph';
+import { createReactAgent } from '@langchain/langgraph/prebuilt';
+import { tool } from '@langchain/core/tools';
+import { z } from 'zod';
 
 // An example of a sensitive tool that requires human review / approval
 const bookHotel = tool(
@@ -948,11 +996,11 @@ const bookHotel = tool(
     const response = interrupt(
       // (1)!
       `Trying to call \`bookHotel\` with args {"hotelName": "${hotelName}"}. ` +
-        "Please approve or suggest edits."
+        'Please approve or suggest edits.'
     );
-    if (response.type === "accept") {
+    if (response.type === 'accept') {
       // Continue with original args
-    } else if (response.type === "edit") {
+    } else if (response.type === 'edit') {
       hotelName = response.args.hotelName;
     } else {
       throw new Error(`Unknown response type: ${response.type}`);
@@ -960,8 +1008,8 @@ const bookHotel = tool(
     return `Successfully booked a stay at ${hotelName}.`;
   },
   {
-    name: "bookHotel",
-    description: "Book a hotel",
+    name: 'bookHotel',
+    description: 'Book a hotel',
     schema: z.object({
       hotelName: z.string(),
     }),
@@ -979,12 +1027,23 @@ const agent = createReactAgent({
 });
 ```
 
-1. The @[`interrupt` function][interrupt] pauses the agent graph at a specific node. In this case, we call `interrupt()` at the beginning of the tool function, which pauses the graph at the node that executes the tool. The information inside `interrupt()` (e.g., tool calls) can be presented to a human, and the graph can be resumed with the user input (tool call approval, edit or feedback).
-2. The `MemorySaver` is used to store the agent state at every step in the tool calling loop. This enables [short-term memory](../memory/add-memory.md#add-short-term-memory) and [human-in-the-loop](../../concepts/human_in_the_loop.md) capabilities. In this example, we use `MemorySaver` to store the agent state in memory. In a production application, the agent state will be stored in a database.
-3. Initialize the agent with the `checkpointSaver`.
-   :::
+1. The @[`interrupt` function][interrupt] pauses the agent graph at a specific
+   node. In this case, we call `interrupt()` at the beginning of the tool
+   function, which pauses the graph at the node that executes the tool. The
+   information inside `interrupt()` (e.g., tool calls) can be presented to a
+   human, and the graph can be resumed with the user input (tool call approval,
+   edit or feedback).
+2. The `MemorySaver` is used to store the agent state at every step in the tool
+   calling loop. This enables
+   [short-term memory](../memory/add-memory.md#add-short-term-memory) and
+   [human-in-the-loop](../../concepts/human_in_the_loop.md) capabilities. In
+   this example, we use `MemorySaver` to store the agent state in memory. In a
+   production application, the agent state will be stored in a database.
+3. Initialize the agent with the `checkpointSaver`. :::
 
-Run the agent with the `stream()` method, passing the `config` object to specify the thread ID. This allows the agent to resume the same conversation on future invocations.
+Run the agent with the `stream()` method, passing the `config` object to specify
+the thread ID. This allows the agent to resume the same conversation on future
+invocations.
 
 :::python
 
@@ -1013,25 +1072,26 @@ for chunk in agent.stream(
 const config = {
   configurable: {
     // highlight-next-line
-    thread_id: "1",
+    thread_id: '1',
   },
 };
 
 const stream = await agent.stream(
-  { messages: [{ role: "user", content: "book a stay at McKittrick hotel" }] },
+  { messages: [{ role: 'user', content: 'book a stay at McKittrick hotel' }] },
   // highlight-next-line
   config
 );
 
 for await (const chunk of stream) {
   console.log(chunk);
-  console.log("\n");
+  console.log('\n');
 }
 ```
 
 :::
 
-> You should see that the agent runs until it reaches the `interrupt()` call, at which point it pauses and waits for human input.
+> You should see that the agent runs until it reaches the `interrupt()` call, at
+> which point it pauses and waits for human input.
 
 Resume the agent with a `Command` to continue based on human input.
 
@@ -1050,33 +1110,38 @@ for chunk in agent.stream(
     print("\n")
 ```
 
-1. The @[`interrupt` function][interrupt] is used in conjunction with the @[`Command`][Command] object to resume the graph with a value provided by the human.
-   :::
+1. The @[`interrupt` function][interrupt] is used in conjunction with the
+   @[`Command`][Command] object to resume the graph with a value provided by the
+   human. :::
 
 :::js
 
 ```typescript
-import { Command } from "@langchain/langgraph";
+import { Command } from '@langchain/langgraph';
 
 const resumeStream = await agent.stream(
   // highlight-next-line
-  new Command({ resume: { type: "accept" } }), // (1)!
+  new Command({ resume: { type: 'accept' } }), // (1)!
   // new Command({ resume: { type: "edit", args: { hotelName: "McKittrick Hotel" } } }),
   config
 );
 
 for await (const chunk of resumeStream) {
   console.log(chunk);
-  console.log("\n");
+  console.log('\n');
 }
 ```
 
-1. The @[`interrupt` function][interrupt] is used in conjunction with the @[`Command`][Command] object to resume the graph with a value provided by the human.
-   :::
+1. The @[`interrupt` function][interrupt] is used in conjunction with the
+   @[`Command`][Command] object to resume the graph with a value provided by the
+   human. :::
 
 ### Add interrupts to any tool
 
-You can create a wrapper to add interrupts to _any_ tool. The example below provides a reference implementation compatible with [Agent Inbox UI](https://github.com/langchain-ai/agent-inbox) and [Agent Chat UI](https://github.com/langchain-ai/agent-chat-ui).
+You can create a wrapper to add interrupts to _any_ tool. The example below
+provides a reference implementation compatible with
+[Agent Inbox UI](https://github.com/langchain-ai/agent-inbox) and
+[Agent Chat UI](https://github.com/langchain-ai/agent-chat-ui).
 
 :::python
 
@@ -1138,16 +1203,20 @@ def add_human_in_the_loop(
     return call_tool_with_interrupt
 ```
 
-1. This wrapper creates a new tool that calls `interrupt()` **before** executing the wrapped tool.
-2. `interrupt()` is using special input and output format that's expected by [Agent Inbox UI](https://github.com/langchain-ai/agent-inbox): - a list of @[`HumanInterrupt`][HumanInterrupt] objects is sent to `AgentInbox` render interrupt information to the end user - resume value is provided by `AgentInbox` as a list (i.e., `Command(resume=[...])`)
-   :::
+1. This wrapper creates a new tool that calls `interrupt()` **before** executing
+   the wrapped tool.
+2. `interrupt()` is using special input and output format that's expected by
+   [Agent Inbox UI](https://github.com/langchain-ai/agent-inbox): - a list of
+   @[`HumanInterrupt`][HumanInterrupt] objects is sent to `AgentInbox` render
+   interrupt information to the end user - resume value is provided by
+   `AgentInbox` as a list (i.e., `Command(resume=[...])`) :::
 
 :::js
 
 ```typescript title="Wrapper that adds human-in-the-loop to any tool"
-import { StructuredTool, tool } from "@langchain/core/tools";
-import { RunnableConfig } from "@langchain/core/runnables";
-import { interrupt } from "@langchain/langgraph";
+import { StructuredTool, tool } from '@langchain/core/tools';
+import { RunnableConfig } from '@langchain/core/runnables';
+import { interrupt } from '@langchain/langgraph';
 
 interface HumanInterruptConfig {
   allowAccept?: boolean;
@@ -1182,23 +1251,23 @@ function addHumanInTheLoop(
           args: toolInput,
         },
         config: interruptConfig,
-        description: "Please review the tool call",
+        description: 'Please review the tool call',
       };
 
       // highlight-next-line
       const response = interrupt([request])[0]; // (2)!
 
       // approve the tool call
-      if (response.type === "accept") {
+      if (response.type === 'accept') {
         return await originalTool.invoke(toolInput, config);
       }
       // update tool call args
-      else if (response.type === "edit") {
+      else if (response.type === 'edit') {
         const updatedArgs = response.args.args;
         return await originalTool.invoke(updatedArgs, config);
       }
       // respond to the LLM with user feedback
-      else if (response.type === "response") {
+      else if (response.type === 'response') {
         return response.args;
       } else {
         throw new Error(
@@ -1215,11 +1284,16 @@ function addHumanInTheLoop(
 }
 ```
 
-1. This wrapper creates a new tool that calls `interrupt()` **before** executing the wrapped tool.
-2. `interrupt()` is using special input and output format that's expected by [Agent Inbox UI](https://github.com/langchain-ai/agent-inbox): - a list of [`HumanInterrupt`] objects is sent to `AgentInbox` render interrupt information to the end user - resume value is provided by `AgentInbox` as a list (i.e., `Command({ resume: [...] })`)
-   :::
+1. This wrapper creates a new tool that calls `interrupt()` **before** executing
+   the wrapped tool.
+2. `interrupt()` is using special input and output format that's expected by
+   [Agent Inbox UI](https://github.com/langchain-ai/agent-inbox): - a list of
+   [`HumanInterrupt`] objects is sent to `AgentInbox` render interrupt
+   information to the end user - resume value is provided by `AgentInbox` as a
+   list (i.e., `Command({ resume: [...] })`) :::
 
-You can use the wrapper to add `interrupt()` to any tool without having to add it _inside_ the tool:
+You can use the wrapper to add `interrupt()` to any tool without having to add
+it _inside_ the tool:
 
 :::python
 
@@ -1257,16 +1331,17 @@ for chunk in agent.stream(
     print("\n")
 ```
 
-1. The `add_human_in_the_loop` wrapper is used to add `interrupt()` to the tool. This allows the agent to pause execution and wait for human input before proceeding with the tool call.
-   :::
+1. The `add_human_in_the_loop` wrapper is used to add `interrupt()` to the tool.
+   This allows the agent to pause execution and wait for human input before
+   proceeding with the tool call. :::
 
 :::js
 
 ```typescript
-import { MemorySaver } from "@langchain/langgraph";
-import { createReactAgent } from "@langchain/langgraph/prebuilt";
-import { tool } from "@langchain/core/tools";
-import { z } from "zod";
+import { MemorySaver } from '@langchain/langgraph';
+import { createReactAgent } from '@langchain/langgraph/prebuilt';
+import { tool } from '@langchain/core/tools';
+import { z } from 'zod';
 
 // highlight-next-line
 const checkpointer = new MemorySaver();
@@ -1276,8 +1351,8 @@ const bookHotel = tool(
     return `Successfully booked a stay at ${hotelName}.`;
   },
   {
-    name: "bookHotel",
-    description: "Book a hotel",
+    name: 'bookHotel',
+    description: 'Book a hotel',
     schema: z.object({
       hotelName: z.string(),
     }),
@@ -1294,26 +1369,27 @@ const agent = createReactAgent({
   checkpointSaver: checkpointer,
 });
 
-const config = { configurable: { thread_id: "1" } };
+const config = { configurable: { thread_id: '1' } };
 
 // Run the agent
 const stream = await agent.stream(
-  { messages: [{ role: "user", content: "book a stay at McKittrick hotel" }] },
+  { messages: [{ role: 'user', content: 'book a stay at McKittrick hotel' }] },
   // highlight-next-line
   config
 );
 
 for await (const chunk of stream) {
   console.log(chunk);
-  console.log("\n");
+  console.log('\n');
 }
 ```
 
-1. The `addHumanInTheLoop` wrapper is used to add `interrupt()` to the tool. This allows the agent to pause execution and wait for human input before proceeding with the tool call.
-   :::
+1. The `addHumanInTheLoop` wrapper is used to add `interrupt()` to the tool.
+   This allows the agent to pause execution and wait for human input before
+   proceeding with the tool call. :::
 
-> You should see that the agent runs until it reaches the `interrupt()` call,
-> at which point it pauses and waits for human input.
+> You should see that the agent runs until it reaches the `interrupt()` call, at
+> which point it pauses and waits for human input.
 
 Resume the agent with a `Command` to continue based on human input.
 
@@ -1337,18 +1413,18 @@ for chunk in agent.stream(
 :::js
 
 ```typescript
-import { Command } from "@langchain/langgraph";
+import { Command } from '@langchain/langgraph';
 
 const resumeStream = await agent.stream(
   // highlight-next-line
-  new Command({ resume: [{ type: "accept" }] }),
+  new Command({ resume: [{ type: 'accept' }] }),
   // new Command({ resume: [{ type: "edit", args: { args: { hotelName: "McKittrick Hotel" } } }] }),
   config
 );
 
 for await (const chunk of resumeStream) {
   console.log(chunk);
-  console.log("\n");
+  console.log('\n');
 }
 ```
 
@@ -1356,7 +1432,9 @@ for await (const chunk of resumeStream) {
 
 ### Validate human input
 
-If you need to validate the input provided by the human within the graph itself (rather than on the client side), you can achieve this by using multiple interrupt calls within a single node.
+If you need to validate the input provided by the human within the graph itself
+(rather than on the client side), you can achieve this by using multiple
+interrupt calls within a single node.
 
 :::python
 
@@ -1390,17 +1468,17 @@ def human_node(state: State):
 :::js
 
 ```typescript
-import { interrupt } from "@langchain/langgraph";
+import { interrupt } from '@langchain/langgraph';
 
-graphBuilder.addNode("humanNode", (state) => {
+graphBuilder.addNode('humanNode', (state) => {
   // Human node with validation.
-  let question = "What is your age?";
+  let question = 'What is your age?';
 
   while (true) {
     const answer = interrupt(question);
 
     // Validate answer, if the answer isn't valid ask for input again.
-    if (typeof answer !== "number" || answer < 0) {
+    if (typeof answer !== 'number' || answer < 0) {
       question = `'${answer}' is not a valid age. What is your age?`;
       continue;
     } else {
@@ -1568,7 +1646,13 @@ graphBuilder.addNode("humanNode", (state) => {
 
 ## Debug with interrupts
 
-To debug and test a graph, use [static interrupts](../../concepts/human_in_the_loop.md#key-capabilities) (also known as static breakpoints) to step through the graph execution one node at a time or to pause the graph execution at specific nodes. Static interrupts are triggered at defined points either before or after a node executes. You can set static interrupts by specifying `interrupt_before` and `interrupt_after` at compile time or run time.
+To debug and test a graph, use
+[static interrupts](../../concepts/human_in_the_loop.md#key-capabilities) (also
+known as static breakpoints) to step through the graph execution one node at a
+time or to pause the graph execution at specific nodes. Static interrupts are
+triggered at defined points either before or after a node executes. You can set
+static interrupts by specifying `interrupt_before` and `interrupt_after` at
+compile time or run time.
 
 !!! warning
 
@@ -1716,17 +1800,28 @@ To debug and test a graph, use [static interrupts](../../concepts/human_in_the_l
 
 ### Use static interrupts in LangGraph Studio
 
-You can use [LangGraph Studio](../../concepts/langgraph_studio.md) to debug your graph. You can set static breakpoints in the UI and then run the graph. You can also use the UI to inspect the graph state at any point in the execution.
+You can use [LangGraph Studio](../../concepts/langgraph_studio.md) to debug your
+graph. You can set static breakpoints in the UI and then run the graph. You can
+also use the UI to inspect the graph state at any point in the execution.
 
-![image](../../concepts/img/human_in_the_loop/static-interrupt.png){: style="max-height:400px"}
+![image](../../concepts/img/human_in_the_loop/static-interrupt.png){:
+style="max-height:400px"}
 
-LangGraph Studio is free with [locally deployed applications](../../tutorials/langgraph-platform/local-server.md) using `langgraph dev`.
+LangGraph Studio is free with
+[locally deployed applications](../../tutorials/langgraph-platform/local-server.md)
+using `langgraph dev`.
 
 :::
 
 ## Debug with interrupts
 
-To debug and test a graph, use [static interrupts](../../concepts/human_in_the_loop.md#key-capabilities) (also known as static breakpoints) to step through the graph execution one node at a time or to pause the graph execution at specific nodes. Static interrupts are triggered at defined points either before or after a node executes. You can set static interrupts by specifying `interrupt_before` and `interrupt_after` at compile time or run time.
+To debug and test a graph, use
+[static interrupts](../../concepts/human_in_the_loop.md#key-capabilities) (also
+known as static breakpoints) to step through the graph execution one node at a
+time or to pause the graph execution at specific nodes. Static interrupts are
+triggered at defined points either before or after a node executes. You can set
+static interrupts by specifying `interrupt_before` and `interrupt_after` at
+compile time or run time.
 
 !!! warning
 
@@ -1874,11 +1969,16 @@ To debug and test a graph, use [static interrupts](../../concepts/human_in_the_l
 
 ### Use static interrupts in LangGraph Studio
 
-You can use [LangGraph Studio](../../concepts/langgraph_studio.md) to debug your graph. You can set static breakpoints in the UI and then run the graph. You can also use the UI to inspect the graph state at any point in the execution.
+You can use [LangGraph Studio](../../concepts/langgraph_studio.md) to debug your
+graph. You can set static breakpoints in the UI and then run the graph. You can
+also use the UI to inspect the graph state at any point in the execution.
 
-![image](../../concepts/img/human_in_the_loop/static-interrupt.png){: style="max-height:400px"}
+![image](../../concepts/img/human_in_the_loop/static-interrupt.png){:
+style="max-height:400px"}
 
-LangGraph Studio is free with [locally deployed applications](../../tutorials/langgraph-platform/local-server.md) using `langgraph dev`.
+LangGraph Studio is free with
+[locally deployed applications](../../tutorials/langgraph-platform/local-server.md)
+using `langgraph dev`.
 
 ## Considerations
 
@@ -1886,7 +1986,9 @@ When using human-in-the-loop, there are some considerations to keep in mind.
 
 ### Using with code with side-effects
 
-Place code with side effects, such as API calls, after the `interrupt` or in a separate node to avoid duplication, as these are re-triggered every time the node is resumed.
+Place code with side effects, such as API calls, after the `interrupt` or in a
+separate node to avoid duplication, as these are re-triggered every time the
+node is resumed.
 
 === "Side effects after interrupt"
 
@@ -1959,7 +2061,10 @@ Place code with side effects, such as API calls, after the `interrupt` or in a s
 
 ### Using with subgraphs called as functions
 
-When invoking a subgraph as a function, the parent graph will resume execution from the **beginning of the node** where the subgraph was invoked where the `interrupt` was triggered. Similarly, the **subgraph** will resume from the **beginning of the node** where the `interrupt()` function was called.
+When invoking a subgraph as a function, the parent graph will resume execution
+from the **beginning of the node** where the subgraph was invoked where the
+`interrupt` was triggered. Similarly, the **subgraph** will resume from the
+**beginning of the node** where the `interrupt()` function was called.
 
 :::python
 
@@ -2209,14 +2314,27 @@ async function nodeInParentGraph(state: z.infer<typeof StateAnnotation>) {
 
 ### Using multiple interrupts in a single node
 
-Using multiple interrupts within a **single** node can be helpful for patterns like [validating human input](#validate-human-input). However, using multiple interrupts in the same node can lead to unexpected behavior if not handled carefully.
+Using multiple interrupts within a **single** node can be helpful for patterns
+like [validating human input](#validate-human-input). However, using multiple
+interrupts in the same node can lead to unexpected behavior if not handled
+carefully.
 
-When a node contains multiple interrupt calls, LangGraph keeps a list of resume values specific to the task executing the node. Whenever execution resumes, it starts at the beginning of the node. For each interrupt encountered, LangGraph checks if a matching value exists in the task's resume list. Matching is **strictly index-based**, so the order of interrupt calls within the node is critical.
+When a node contains multiple interrupt calls, LangGraph keeps a list of resume
+values specific to the task executing the node. Whenever execution resumes, it
+starts at the beginning of the node. For each interrupt encountered, LangGraph
+checks if a matching value exists in the task's resume list. Matching is
+**strictly index-based**, so the order of interrupt calls within the node is
+critical.
 
-To avoid issues, refrain from dynamically changing the node's structure between executions. This includes adding, removing, or reordering interrupt calls, as such changes can result in mismatched indices. These problems often arise from unconventional patterns, such as mutating state via `Command(resume=..., update=SOME_STATE_MUTATION)` or relying on global variables to modify the node's structure dynamically.
+To avoid issues, refrain from dynamically changing the node's structure between
+executions. This includes adding, removing, or reordering interrupt calls, as
+such changes can result in mismatched indices. These problems often arise from
+unconventional patterns, such as mutating state via
+`Command(resume=..., update=SOME_STATE_MUTATION)` or relying on global variables
+to modify the node's structure dynamically.
 
-:::python
-??? example "Extended example: incorrect code that introduces non-determinism"
+:::python ??? example "Extended example: incorrect code that introduces
+non-determinism"
 
     ```python
     import uuid

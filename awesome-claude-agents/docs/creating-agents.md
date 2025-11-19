@@ -1,6 +1,7 @@
 # Creating Claude Agents
 
-Learn how to create powerful, interconnected Claude sub-agents using advanced patterns.
+Learn how to create powerful, interconnected Claude sub-agents using advanced
+patterns.
 
 ## Quick Start
 
@@ -9,7 +10,7 @@ Learn how to create powerful, interconnected Claude sub-agents using advanced pa
 name: your-agent-name
 description: |
   One-line description of expertise.
-  
+
   Examples:
   - <example>
     Context: When this agent should be used
@@ -43,7 +44,7 @@ Claude uses XML-style examples in descriptions for intelligent agent selection:
 ```yaml
 description: |
   Expert backend developer specializing in APIs and security.
-  
+
   Examples:
   - <example>
     Context: User needs to build an API
@@ -82,15 +83,18 @@ Agents work together through the main Claude agent coordination. Focus on:
 
 ### Understanding Tool Inheritance
 
-The `tools` field in the agent frontmatter is **optional**. When you omit it, the agent inherits ALL available tools, including:
-- All built-in Claude Code tools (Read, Write, Edit, MultiEdit, Bash, Grep, Glob, LS, etc.)
+The `tools` field in the agent frontmatter is **optional**. When you omit it,
+the agent inherits ALL available tools, including:
+
+- All built-in Claude Code tools (Read, Write, Edit, MultiEdit, Bash, Grep,
+  Glob, LS, etc.)
 - WebFetch for accessing documentation and web resources
 - Any MCP (Model Context Protocol) tools from connected servers
 
 ```yaml
 ---
 name: my-agent
-description: "My agent description"
+description: 'My agent description'
 # No tools field = inherits everything!
 ---
 ```
@@ -102,30 +106,34 @@ Only specify tools when you want to **restrict** an agent's capabilities:
 ```yaml
 ---
 name: code-reviewer
-description: "Reviews code without making changes"
-tools: Read, Grep, Glob, Bash  # Read-only tools for safety
+description: 'Reviews code without making changes'
+tools: Read, Grep, Glob, Bash # Read-only tools for safety
 ---
 ```
 
 ### Best Practices
 
 1. **Most agents should omit the tools field** - This gives maximum flexibility
-2. **Security-sensitive agents** - Explicitly list tools (e.g., reviewers get read-only)
+2. **Security-sensitive agents** - Explicitly list tools (e.g., reviewers get
+   read-only)
 3. **Future-proof** - Omitting tools means new tools are automatically available
 
 ## Essential Components
 
 ### 1. Focused Expertise
+
 - Single domain mastery
 - Clear boundaries
 - Specific use cases
 
 ### 2. Smart Examples
+
 - 2-3 examples covering different scenarios
 - Include edge cases
 - Show when NOT to use this agent
 
 ### 3. Clear Output
+
 - Provide structured results
 - Identify next steps
 - Include relevant context
@@ -139,16 +147,19 @@ tools: Read, Grep, Glob, Bash  # Read-only tools for safety
 ## Common Patterns
 
 ### Backend → Frontend Flow
+
 ```
 @agent-backend-developer → API Complete → @agent-frontend-developer → UI Built → @agent-code-reviewer
 ```
 
 ### Full Stack Development
+
 ```
 @agent-tech-lead-orchestrator → @agent-backend-developer + @agent-frontend-developer → Integration → Testing
 ```
 
 ### Review Pipeline
+
 ```
 @agent-backend-developer → Code Complete → @agent-code-reviewer → @agent-performance-optimizer
 ```

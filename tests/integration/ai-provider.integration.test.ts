@@ -1,8 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ProviderFactory } from '../../packages/ai-provider/src/utils/factory';
-import { ConfigurationManager, createDefaultConfig } from '../../packages/ai-provider/src/utils/config';
-import { ProviderType, type ModelInfo, type StreamingChunk } from '../../packages/ai-provider/src/types';
+import {
+  ConfigurationManager,
+  createDefaultConfig,
+} from '../../packages/ai-provider/src/utils/config';
+import {
+  ProviderType,
+  type ModelInfo,
+  type StreamingChunk,
+} from '../../packages/ai-provider/src/types';
 
 const mockLlamaPost = vi.fn(async (url: string, body: any) => {
   if (body?.stream) {
@@ -82,7 +89,12 @@ describe('AI Provider integration', () => {
       },
     });
     Reflect.set(llamaProvider as unknown as Record<string, unknown>, 'availableModels', [
-      { id: llamaModel.id, name: llamaModel.name, contextWindow: llamaModel.contextWindow, maxTokens: llamaModel.maxTokens },
+      {
+        id: llamaModel.id,
+        name: llamaModel.name,
+        contextWindow: llamaModel.contextWindow,
+        maxTokens: llamaModel.maxTokens,
+      },
     ]);
     Reflect.set(llamaProvider as unknown as Record<string, unknown>, 'models', [llamaModel]);
 

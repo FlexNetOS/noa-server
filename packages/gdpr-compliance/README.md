@@ -5,6 +5,7 @@ Comprehensive GDPR compliance framework for Noa Server.
 ## Features
 
 ### Data Subject Rights (Articles 15-21)
+
 - ✅ Right to Access (SAR)
 - ✅ Right to Erasure ("Right to be Forgotten")
 - ✅ Right to Rectification
@@ -13,17 +14,20 @@ Comprehensive GDPR compliance framework for Noa Server.
 - ✅ Right to Object
 
 ### Consent Management
+
 - Granular consent tracking
 - Cookie consent management
 - Consent withdrawal with automated cleanup
 - Audit trail of all consent changes
 
 ### Processing Activities (Article 30)
+
 - Record of Processing Activities (ROPA)
 - Processing activity documentation
 - ROPA report generation
 
 ### Breach Management (Articles 33-34)
+
 - Automated breach detection
 - 72-hour notification workflow
 - DPO and supervisory authority notifications
@@ -52,7 +56,7 @@ import {
   ConsentManager,
   RightToAccess,
   RightToErasure,
-  BreachDetection
+  BreachDetection,
 } from '@noa-server/gdpr-compliance';
 
 const db = new Pool({ connectionString: process.env.DATABASE_URL });
@@ -66,7 +70,10 @@ const breachDetection = new BreachDetection(db);
 ### Check Consent
 
 ```typescript
-const hasConsent = await consentManager.hasConsent(userId, ConsentType.MARKETING);
+const hasConsent = await consentManager.hasConsent(
+  userId,
+  ConsentType.MARKETING
+);
 
 if (hasConsent) {
   // Proceed with marketing activity
@@ -88,7 +95,7 @@ const userData = await rightToAccess.exportUserData(userId, {
   format: 'json',
   includeMetadata: true,
   pseudonymize: false,
-  compress: false
+  compress: false,
 });
 ```
 
@@ -141,14 +148,32 @@ const dsrController = new DSRController(db);
 const consentController = new ConsentController(db);
 
 // Data Subject Rights endpoints
-app.post('/api/gdpr/dsr/access', dsrController.createAccessRequest.bind(dsrController));
-app.get('/api/gdpr/dsr/export', dsrController.exportUserData.bind(dsrController));
-app.post('/api/gdpr/dsr/erasure', dsrController.createErasureRequest.bind(dsrController));
+app.post(
+  '/api/gdpr/dsr/access',
+  dsrController.createAccessRequest.bind(dsrController)
+);
+app.get(
+  '/api/gdpr/dsr/export',
+  dsrController.exportUserData.bind(dsrController)
+);
+app.post(
+  '/api/gdpr/dsr/erasure',
+  dsrController.createErasureRequest.bind(dsrController)
+);
 
 // Consent endpoints
-app.post('/api/gdpr/consent/grant', consentController.grantConsent.bind(consentController));
-app.post('/api/gdpr/consent/withdraw', consentController.withdrawConsent.bind(consentController));
-app.get('/api/gdpr/consent', consentController.getUserConsents.bind(consentController));
+app.post(
+  '/api/gdpr/consent/grant',
+  consentController.grantConsent.bind(consentController)
+);
+app.post(
+  '/api/gdpr/consent/withdraw',
+  consentController.withdrawConsent.bind(consentController)
+);
+app.get(
+  '/api/gdpr/consent',
+  consentController.getUserConsents.bind(consentController)
+);
 ```
 
 ## Configuration
@@ -159,15 +184,15 @@ export const GDPRConfig = {
   dpo: {
     name: process.env.DPO_NAME || 'Data Protection Officer',
     email: process.env.DPO_EMAIL || 'dpo@example.com',
-    phone: process.env.DPO_PHONE || '+1-555-0100'
+    phone: process.env.DPO_PHONE || '+1-555-0100',
   },
   supervisoryAuthority: {
     name: 'Data Protection Commission',
     email: process.env.SUPERVISORY_AUTHORITY_EMAIL || 'authority@example.com',
-    country: 'IE'
+    country: 'IE',
   },
   notificationDeadlineHours: 72,
-  sarResponseDays: 30
+  sarResponseDays: 30,
 };
 ```
 
@@ -180,7 +205,9 @@ npm run test:coverage
 
 ## Documentation
 
-See [/docs/compliance/GDPR_COMPLIANCE.md](/home/deflex/noa-server/docs/compliance/GDPR_COMPLIANCE.md) for comprehensive documentation.
+See
+[/docs/compliance/GDPR_COMPLIANCE.md](/home/deflex/noa-server/docs/compliance/GDPR_COMPLIANCE.md)
+for comprehensive documentation.
 
 ## License
 

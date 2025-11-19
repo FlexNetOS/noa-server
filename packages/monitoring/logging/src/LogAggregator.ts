@@ -16,20 +16,24 @@ const LogAggregatorConfigSchema = z.object({
   enableConsole: z.boolean().default(true),
   enableFile: z.boolean().default(true),
   enableElasticsearch: z.boolean().default(false),
-  elasticsearch: z.object({
-    node: z.string().default('http://localhost:9200'),
-    index: z.string().default('logs'),
-    username: z.string().optional(),
-    password: z.string().optional(),
-  }).optional(),
-  file: z.object({
-    directory: z.string().default('./logs'),
-    filename: z.string().default('application-%DATE%.log'),
-    datePattern: z.string().default('YYYY-MM-DD'),
-    maxSize: z.string().default('20m'),
-    maxFiles: z.string().default('14d'),
-    compress: z.boolean().default(true),
-  }).optional(),
+  elasticsearch: z
+    .object({
+      node: z.string().default('http://localhost:9200'),
+      index: z.string().default('logs'),
+      username: z.string().optional(),
+      password: z.string().optional(),
+    })
+    .optional(),
+  file: z
+    .object({
+      directory: z.string().default('./logs'),
+      filename: z.string().default('application-%DATE%.log'),
+      datePattern: z.string().default('YYYY-MM-DD'),
+      maxSize: z.string().default('20m'),
+      maxFiles: z.string().default('14d'),
+      compress: z.boolean().default(true),
+    })
+    .optional(),
 });
 
 export type LogAggregatorConfig = z.infer<typeof LogAggregatorConfigSchema>;
@@ -292,9 +296,7 @@ export class LogAggregator {
     search?: string;
     limit?: number;
   }): Promise<any[]> {
-    const esTransport = this.transportInstances.find(
-      (t) => t instanceof ElasticsearchTransport
-    );
+    const esTransport = this.transportInstances.find((t) => t instanceof ElasticsearchTransport);
 
     if (!esTransport) {
       throw new Error('Elasticsearch transport not enabled');

@@ -18,22 +18,22 @@ describe('MetricsCollector', () => {
           retentionDays: 30,
           storage: {
             type: 'file',
-            path: './data/metrics'
+            path: './data/metrics',
           },
           categories: {
             system: { enabled: true },
             application: { enabled: true },
-            business: { enabled: true }
-          }
+            business: { enabled: true },
+          },
         },
         alerting: {
           enabled: true,
           channels: {
-            console: { enabled: true }
+            console: { enabled: true },
           },
-          rules: []
-        }
-      }
+          rules: [],
+        },
+      },
     };
 
     collector = new MetricsCollector(mockConfig);
@@ -172,10 +172,9 @@ describe('MetricsCollector', () => {
       collector.incrementCounter('requests_total', 100);
       collector.incrementCounter('requests_errors', 10);
 
-      const result = collector.evaluateCondition(
-        'error_rate > 0.05',
-        { application: { latency: { average: 100 } } }
-      );
+      const result = collector.evaluateCondition('error_rate > 0.05', {
+        application: { latency: { average: 100 } },
+      });
 
       expect(result).toBe(true);
     });

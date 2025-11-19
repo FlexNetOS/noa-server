@@ -23,7 +23,7 @@ import {
   DatabaseHealthCheck,
   CacheHealthCheck,
   MemoryHealthCheck,
-  HealthEndpoints
+  HealthEndpoints,
 } from '@noa-server/monitoring/health';
 
 const app = express();
@@ -31,12 +31,12 @@ const app = express();
 // Initialize health manager
 const healthManager = new HealthCheckManager({
   enableAutoRefresh: true,
-  refreshInterval: 30000 // 30 seconds
+  refreshInterval: 30000, // 30 seconds
 });
 
 // Add database check
 const dbPool = new Pool({
-  connectionString: process.env.DATABASE_URL
+  connectionString: process.env.DATABASE_URL,
 });
 healthManager.register(new DatabaseHealthCheck({ pool: dbPool }));
 
@@ -45,10 +45,12 @@ const redis = new Redis(process.env.REDIS_URL);
 healthManager.register(new CacheHealthCheck({ client: redis }));
 
 // Add memory check
-healthManager.register(new MemoryHealthCheck({
-  warningThreshold: 80,
-  criticalThreshold: 90
-}));
+healthManager.register(
+  new MemoryHealthCheck({
+    warningThreshold: 80,
+    criticalThreshold: 90,
+  })
+);
 
 // Mount health endpoints
 app.use('/health', HealthEndpoints.createMiddleware(healthManager));
@@ -87,7 +89,7 @@ import express from 'express';
 import {
   ErrorTracker,
   ExpressErrorHandler,
-  ProcessErrorHandler
+  ProcessErrorHandler,
 } from '@noa-server/monitoring/errors';
 
 const app = express();
@@ -99,7 +101,7 @@ const errorTracker = new ErrorTracker({
   environment: process.env.NODE_ENV || 'development',
   release: process.env.APP_VERSION || '1.0.0',
   sampleRate: 1.0,
-  tracesSampleRate: 0.1
+  tracesSampleRate: 0.1,
 });
 
 // Setup Express handlers
@@ -156,7 +158,7 @@ app.get('/api/manual', async (req, res) => {
   } catch (error) {
     await errorTracker.captureError(error as Error, {
       tags: { feature: 'test' },
-      user: { id: '123' }
+      user: { id: '123' },
     });
     res.status(500).json({ error: 'Failed' });
   }
@@ -177,7 +179,7 @@ app.use((req, res, next) => {
   if (req.user) {
     errorTracker.setUser({
       id: req.user.id,
-      email: req.user.email
+      email: req.user.email,
     });
   }
   next();
@@ -186,7 +188,7 @@ app.use((req, res, next) => {
 // Add tags
 errorTracker.setTags({
   version: '1.0.0',
-  server: 'api-1'
+  server: 'api-1',
 });
 
 // Add breadcrumbs
@@ -194,7 +196,7 @@ errorTracker.addBreadcrumb({
   timestamp: new Date(),
   category: 'user-action',
   message: 'User clicked checkout',
-  level: ErrorSeverity.INFO
+  level: ErrorSeverity.INFO,
 });
 ```
 
@@ -212,28 +214,28 @@ spec:
   template:
     spec:
       containers:
-      - name: app
-        image: noa-server:latest
-        env:
-        - name: SENTRY_DSN
-          valueFrom:
-            secretKeyRef:
-              name: sentry-secret
-              key: dsn
-        ports:
-        - containerPort: 3000
-        livenessProbe:
-          httpGet:
-            path: /health/live
-            port: 3000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health/ready
-            port: 3000
-          initialDelaySeconds: 10
-          periodSeconds: 5
+        - name: app
+          image: noa-server:latest
+          env:
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: sentry-secret
+                  key: dsn
+          ports:
+            - containerPort: 3000
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5
 ```
 
 ## 5. Complete Example
@@ -247,13 +249,13 @@ import {
   DatabaseHealthCheck,
   CacheHealthCheck,
   MemoryHealthCheck,
-  HealthEndpoints
+  HealthEndpoints,
 } from '@noa-server/monitoring/health';
 import {
   ErrorTracker,
   ExpressErrorHandler,
   ProcessErrorHandler,
-  ErrorSeverity
+  ErrorSeverity,
 } from '@noa-server/monitoring/errors';
 
 const app = express();
@@ -262,7 +264,7 @@ app.use(express.json());
 // Health Checks
 const healthManager = new HealthCheckManager({
   enableAutoRefresh: true,
-  refreshInterval: 30000
+  refreshInterval: 30000,
 });
 
 const dbPool = new Pool({ connectionString: process.env.DATABASE_URL });
@@ -280,7 +282,7 @@ const errorTracker = new ErrorTracker({
   environment: process.env.NODE_ENV || 'development',
   release: process.env.APP_VERSION || '1.0.0',
   sampleRate: 1.0,
-  tracesSampleRate: 0.1
+  tracesSampleRate: 0.1,
 });
 
 const expressHandler = new ExpressErrorHandler(errorTracker);
@@ -301,11 +303,13 @@ app.get('/api/users/:id', async (req, res) => {
       timestamp: new Date(),
       category: 'database',
       message: `Fetching user ${req.params.id}`,
-      level: ErrorSeverity.INFO
+      level: ErrorSeverity.INFO,
     });
 
     // Your business logic
-    const user = await dbPool.query('SELECT * FROM users WHERE id = $1', [req.params.id]);
+    const user = await dbPool.query('SELECT * FROM users WHERE id = $1', [
+      req.params.id,
+    ]);
 
     if (user.rows.length === 0) {
       return res.status(404).json({ error: 'User not found' });
@@ -391,8 +395,10 @@ curl http://localhost:3000/health/metrics
 
 ## 7. Next Steps
 
-- **[Health Checks Guide](./HEALTH_CHECKS.md)** - Deep dive into health monitoring
-- **[Error Tracking Guide](./ERROR_TRACKING.md)** - Complete error tracking documentation
+- **[Health Checks Guide](./HEALTH_CHECKS.md)** - Deep dive into health
+  monitoring
+- **[Error Tracking Guide](./ERROR_TRACKING.md)** - Complete error tracking
+  documentation
 - **[Examples](../examples/)** - More comprehensive examples
 
 ## Common Issues
@@ -403,7 +409,7 @@ curl http://localhost:3000/health/metrics
 // Increase timeout
 const dbCheck = new DatabaseHealthCheck({
   pool: dbPool,
-  queryTimeout: 5000  // Increase to 5 seconds
+  queryTimeout: 5000, // Increase to 5 seconds
 });
 ```
 
@@ -420,7 +426,7 @@ const dbCheck = new DatabaseHealthCheck({
 // Adjust thresholds
 const memoryCheck = new MemoryHealthCheck({
   warningThreshold: 90,
-  criticalThreshold: 95
+  criticalThreshold: 95,
 });
 ```
 

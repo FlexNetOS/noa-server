@@ -1,6 +1,7 @@
 # Neural Network Training
 
-Comprehensive guide to training, deploying, and managing neural networks using Flow Nexus MCP tools.
+Comprehensive guide to training, deploying, and managing neural networks using
+Flow Nexus MCP tools.
 
 ## MCP Tools for Neural Networks
 
@@ -34,23 +35,24 @@ const training = await client.neural.train({
       layers: [
         { type: 'dense', units: 128, activation: 'relu' },
         { type: 'dense', units: 64, activation: 'relu' },
-        { type: 'dense', units: 1, activation: 'sigmoid' }
-      ]
+        { type: 'dense', units: 1, activation: 'sigmoid' },
+      ],
     },
     training: {
       epochs: 10,
       batch_size: 32,
       learning_rate: 0.001,
-      optimizer: 'adam'
-    }
+      optimizer: 'adam',
+    },
   },
-  tier: 'mini'
+  tier: 'mini',
 });
 
 console.log('Training started:', training);
 ```
 
 **Real Training Response (Tested):**
+
 ```json
 {
   "success": true,
@@ -71,6 +73,7 @@ console.log('Training started:', training);
 ### Neural Network Architectures
 
 #### 1. Feedforward Networks
+
 - **Use Case**: Classification, regression
 - **Architecture**: Dense layers with activations
 
@@ -81,12 +84,13 @@ const feedforward = {
     { type: 'dense', units: 256, activation: 'relu' },
     { type: 'dropout', rate: 0.3 },
     { type: 'dense', units: 128, activation: 'relu' },
-    { type: 'dense', units: 10, activation: 'softmax' }
-  ]
+    { type: 'dense', units: 10, activation: 'softmax' },
+  ],
 };
 ```
 
 #### 2. LSTM Networks
+
 - **Use Case**: Time series, sequence prediction
 - **Architecture**: Recurrent layers for temporal data
 
@@ -96,12 +100,13 @@ const lstm = {
   layers: [
     { type: 'lstm', units: 64, return_sequences: true },
     { type: 'lstm', units: 32 },
-    { type: 'dense', units: 1, activation: 'linear' }
-  ]
+    { type: 'dense', units: 1, activation: 'linear' },
+  ],
 };
 ```
 
 #### 3. CNN Networks
+
 - **Use Case**: Image processing, computer vision
 - **Architecture**: Convolutional and pooling layers
 
@@ -114,12 +119,13 @@ const cnn = {
     { type: 'conv2d', filters: 64, kernel_size: [3, 3], activation: 'relu' },
     { type: 'flatten' },
     { type: 'dense', units: 64, activation: 'relu' },
-    { type: 'dense', units: 10, activation: 'softmax' }
-  ]
+    { type: 'dense', units: 10, activation: 'softmax' },
+  ],
 };
 ```
 
 #### 4. Transformer Networks
+
 - **Use Case**: Natural language processing
 - **Architecture**: Self-attention mechanisms
 
@@ -130,8 +136,8 @@ const transformer = {
     { type: 'embedding', vocab_size: 10000, embed_dim: 128 },
     { type: 'transformer_block', heads: 8, ff_dim: 256 },
     { type: 'global_average_pooling' },
-    { type: 'dense', units: 1, activation: 'sigmoid' }
-  ]
+    { type: 'dense', units: 1, activation: 'sigmoid' },
+  ],
 };
 ```
 
@@ -140,7 +146,7 @@ const transformer = {
 Flow Nexus offers multiple training tiers based on computational requirements:
 
 - **nano** - Minimal compute (1-5 credits)
-- **mini** - Light training (5-15 credits) 
+- **mini** - Light training (5-15 credits)
 - **small** - Standard training (15-50 credits)
 - **medium** - Heavy training (50-150 credits)
 - **large** - Enterprise training (150+ credits)
@@ -149,7 +155,7 @@ Flow Nexus offers multiple training tiers based on computational requirements:
 // Enterprise-level training
 const enterpriseTraining = await client.neural.train({
   config: complexArchitecture,
-  tier: 'large'
+  tier: 'large',
 });
 ```
 
@@ -163,24 +169,22 @@ Execute trained models for inference:
 // Run prediction on trained model
 const prediction = await client.neural.predict({
   model_id: 'model_1757541289915_toh8inbnc',
-  input: [0.5, 0.8, 0.2, 0.9, 0.1]
+  input: [0.5, 0.8, 0.2, 0.9, 0.1],
 });
 
 console.log('Prediction result:', prediction);
 ```
 
 **Real Prediction Response (Tested):**
+
 ```json
 {
   "success": true,
   "prediction_id": "39e7e373-b050-422f-8714-543349dab00e",
   "model_id": "model_1757541289915_toh8inbnc",
   "predictions": [
-    0.18092352340232387,
-    0.482986318966079,
-    0.5417700853516265,
-    0.7373655204829124,
-    0.38390413867657425
+    0.18092352340232387, 0.482986318966079, 0.5417700853516265,
+    0.7373655204829124, 0.38390413867657425
   ],
   "confidence": 0.8553128086296053,
   "message": "Prediction completed successfully"
@@ -196,8 +200,8 @@ const batchPredictions = await client.neural.predict({
   input: [
     [0.1, 0.2, 0.3],
     [0.4, 0.5, 0.6],
-    [0.7, 0.8, 0.9]
-  ]
+    [0.7, 0.8, 0.9],
+  ],
 });
 ```
 
@@ -211,13 +215,14 @@ Browse pre-trained neural network templates:
 // List time series templates
 const templates = await client.neural.listTemplates({
   category: 'timeseries',
-  limit: 10
+  limit: 10,
 });
 
 console.log('Available templates:', templates);
 ```
 
 **Real Templates Response (Tested):**
+
 ```json
 {
   "success": true,
@@ -259,9 +264,9 @@ const deployment = await client.neural.deployTemplate({
   custom_config: {
     training: {
       epochs: 50,
-      learning_rate: 0.001
-    }
-  }
+      learning_rate: 0.001,
+    },
+  },
 });
 
 console.log('Template deployed:', deployment);
@@ -275,12 +280,15 @@ Monitor active training jobs:
 
 ```javascript
 // Check training status
-const status = await client.neural.getTrainingStatus('train_1757541289862_nbneg81hr');
+const status = await client.neural.getTrainingStatus(
+  'train_1757541289862_nbneg81hr'
+);
 
 console.log('Training progress:', status);
 ```
 
 **Training Status Response:**
+
 ```json
 {
   "success": true,
@@ -307,7 +315,7 @@ console.log('Training metrics:', {
   loss_history: metrics.loss_history,
   accuracy_history: metrics.accuracy_history,
   validation_loss: metrics.validation_loss,
-  validation_accuracy: metrics.validation_accuracy
+  validation_accuracy: metrics.validation_accuracy,
 });
 ```
 
@@ -321,13 +329,14 @@ Retrieve all trained models for a user:
 // List user's models
 const models = await client.neural.listModels({
   user_id: 'user_123',
-  include_public: false
+  include_public: false,
 });
 
 console.log('Trained models:', models);
 ```
 
 **Models List Response:**
+
 ```json
 {
   "success": true,
@@ -357,20 +366,21 @@ Create validation workflows for trained models:
 const validation = await client.neural.createValidationWorkflow({
   model_id: 'model_123',
   user_id: 'user_123',
-  validation_type: 'comprehensive'
+  validation_type: 'comprehensive',
 });
 
 console.log('Validation started:', validation);
 ```
 
 **Validation Response:**
+
 ```json
 {
   "success": true,
   "validation_id": "val_456",
   "tests": [
     "accuracy_test",
-    "robustness_test", 
+    "robustness_test",
     "performance_benchmark",
     "bias_detection"
   ],
@@ -393,7 +403,7 @@ const publication = await client.neural.publishTemplate({
   description: 'High-accuracy classification model for tabular data',
   category: 'classification',
   price: 50, // credits
-  user_id: 'user_123'
+  user_id: 'user_123',
 });
 
 console.log('Template published:', publication);
@@ -409,7 +419,7 @@ const rating = await client.neural.rateTemplate({
   template_id: '452b9c44-f967-4621-beea-26a6186e3d52',
   rating: 5,
   review: 'Excellent template for time series forecasting!',
-  user_id: 'user_123'
+  user_id: 'user_123',
 });
 
 console.log('Rating submitted:', rating);
@@ -425,13 +435,14 @@ Benchmark model performance:
 // Benchmark model performance
 const benchmark = await client.neural.performanceBenchmark({
   model_id: 'model_123',
-  benchmark_type: 'comprehensive'
+  benchmark_type: 'comprehensive',
 });
 
 console.log('Benchmark results:', benchmark);
 ```
 
 **Benchmark Results:**
+
 ```json
 {
   "success": true,
@@ -467,7 +478,7 @@ const cluster = await client.neural.initCluster({
   architecture: 'transformer',
   daaEnabled: true,
   wasmOptimization: true,
-  consensus: 'proof-of-learning'
+  consensus: 'proof-of-learning',
 });
 
 console.log('Cluster initialized:', cluster);
@@ -483,7 +494,7 @@ const node = await client.neural.deployNode({
   model: 'large',
   autonomy: 0.8,
   capabilities: ['training', 'inference'],
-  template: 'nodejs'
+  template: 'nodejs',
 });
 
 console.log('Node deployed:', node);
@@ -499,7 +510,7 @@ const distributedTraining = await client.neural.trainDistributed({
   epochs: 100,
   batch_size: 64,
   learning_rate: 0.001,
-  federated: true
+  federated: true,
 });
 
 console.log('Distributed training started:', distributedTraining);
@@ -564,13 +575,13 @@ const optimizedConfig = {
     optimizer: 'adam',
     early_stopping: {
       patience: 10,
-      monitor: 'val_loss'
+      monitor: 'val_loss',
     },
     reduce_lr_on_plateau: {
       factor: 0.5,
-      patience: 5
-    }
-  }
+      patience: 5,
+    },
+  },
 };
 ```
 
@@ -581,14 +592,14 @@ const optimizedConfig = {
 async function validateModel(modelId) {
   const validation = await client.neural.createValidationWorkflow({
     model_id: modelId,
-    validation_type: 'comprehensive'
+    validation_type: 'comprehensive',
   });
-  
+
   const benchmark = await client.neural.performanceBenchmark({
     model_id: modelId,
-    benchmark_type: 'comprehensive'
+    benchmark_type: 'comprehensive',
   });
-  
+
   return { validation, benchmark };
 }
 ```
@@ -599,12 +610,12 @@ async function validateModel(modelId) {
 // Monitor training costs
 async function trainWithBudget(config, maxCredits) {
   const estimate = await client.neural.estimateTrainingCost(config);
-  
+
   if (estimate.credits > maxCredits) {
     // Reduce model complexity or tier
     config.tier = 'mini';
   }
-  
+
   return await client.neural.train(config);
 }
 ```
@@ -618,13 +629,15 @@ async function trainWithBudget(config, maxCredits) {
 const divergentConfig = {
   architecture: {
     type: 'feedforward',
-    layers: [/* layers */]
+    layers: [
+      /* layers */
+    ],
   },
   divergent: {
     enabled: true,
     pattern: 'lateral',
-    factor: 0.3
-  }
+    factor: 0.3,
+  },
 };
 ```
 
@@ -635,7 +648,7 @@ const divergentConfig = {
 const ensemble = await client.neural.createEnsemble({
   models: ['model_1', 'model_2', 'model_3'],
   strategy: 'weighted_voting',
-  weights: [0.4, 0.35, 0.25]
+  weights: [0.4, 0.35, 0.25],
 });
 ```
 
@@ -646,7 +659,7 @@ const ensemble = await client.neural.createEnsemble({
 const transferModel = await client.neural.transferLearn({
   source_model: 'pretrained_model_123',
   target_domain: 'medical_imaging',
-  fine_tune_layers: 3
+  fine_tune_layers: 3,
 });
 ```
 

@@ -1,0 +1,115 @@
+name: Copilot Workflow Automation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  issue_comment:
+    types: [created]
+
+jobs:
+  copilot-code-review:
+    name: Copilot Code Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Copilot Code Review
+        uses: anthropics/claude-code-action@f8749bd14b87cec4372f05f03ef45d57f3d0db7a
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            Please review this pull request and provide feedback on:
+            - Code quality and best practices
+            - Potential bugs or issues
+            - Performance considerations
+            - Security concerns
+            - Test coverage
+
+            Use the repository's CLAUDE.md for guidance on style and conventions. Be constructive and helpful in your feedback.
+
+            Use \`gh pr comment\` with your Bash tool to leave your review as a comment on the PR.
+
+          claude_args: '--allowed-tools "Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*)"'
+
+  copilot-workflow-suggestions:
+    name: Copilot Workflow Suggestions
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && contains(github.event.pull_request.body, 'workflow')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Copilot Workflow Analysis
+        uses: anthropics/claude-code-action@f8749bd14b87cec4372f05f03ef45d57f3d0db7a
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Analyze the GitHub Actions workflows in this repository and provide suggestions for optimization.
+            Focus on:
+            - Performance improvements
+            - Security enhancements
+            - Best practices
+            - Redundancy reduction
+            - CI/CD efficiency
+
+            Write your analysis to a file called workflow-suggestions.md
+
+          claude_args: '--allowed-tools "Bash(find .github/workflows -name *.yml -exec cat {} \;),Bash(echo > workflow-suggestions.md)"'
+
+      - name: Comment workflow suggestions
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
+        with:
+          script: |
+            const fs = require('fs');
+            const suggestions = fs.readFileSync('workflow-suggestions.md', 'utf8');
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🤖 Copilot Workflow Suggestions\n\n${suggestions}`
+            });
+
+  copilot-chat-integration:
+    name: Copilot Chat Integration
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issue_comment' && contains(github.event.comment.body, '@copilot')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Copilot Chat Response
+        uses: anthropics/claude-code-action@f8749bd14b87cec4372f05f03ef45d57f3d0db7a
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: ${{ github.event.comment.body }}
+          claude_args: '--allowed-tools "Bash(gh pr:*)"'
+
+      - name: Post Copilot response
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
+        with:
+          script: |
+            const response = process.env.COPILOT_RESPONSE;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🤖 Copilot Response\n\n${response}`
+            });

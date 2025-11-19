@@ -19,6 +19,7 @@ Complete guide to setting up a development environment for Noa Server.
 ### Required Software
 
 **Node.js and npm**:
+
 ```bash
 # Install Node.js 18+ (using nvm recommended)
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -31,6 +32,7 @@ npm --version   # Should be 9.x or higher
 ```
 
 **Git**:
+
 ```bash
 # Check installation
 git --version
@@ -41,6 +43,7 @@ git config --global user.email "your.email@example.com"
 ```
 
 **PostgreSQL** (for database):
+
 ```bash
 # Ubuntu/Debian
 sudo apt-get install postgresql postgresql-contrib
@@ -57,6 +60,7 @@ psql --version
 ```
 
 **Python 3.9+** (for llama.cpp):
+
 ```bash
 # Check installation
 python3 --version
@@ -69,6 +73,7 @@ brew install python3              # macOS
 ### Optional Software
 
 **Docker** (for containerized development):
+
 ```bash
 # Install Docker
 curl -fsSL https://get.docker.com -o get-docker.sh
@@ -80,6 +85,7 @@ docker-compose --version
 ```
 
 **Claude Code** (for MCP development):
+
 ```bash
 # Install Claude Code
 # Visit https://claude.ai/download
@@ -211,11 +217,13 @@ noa-server/
 ### Development Workflow
 
 **1. Create Feature Branch**:
+
 ```bash
 git checkout -b feature/your-feature-name
 ```
 
 **2. Make Changes**:
+
 ```bash
 # Edit files
 # Run tests continuously
@@ -223,18 +231,21 @@ npm run test:watch
 ```
 
 **3. Run Linting**:
+
 ```bash
 npm run lint
 npm run lint:fix
 ```
 
 **4. Commit Changes**:
+
 ```bash
 git add .
 git commit -m "feat: add your feature description"
 ```
 
 **5. Push and Create PR**:
+
 ```bash
 git push origin feature/your-feature-name
 # Create PR on GitHub
@@ -243,6 +254,7 @@ git push origin feature/your-feature-name
 ### Package Development
 
 **Add New Package**:
+
 ```bash
 # Create package directory
 mkdir -p packages/new-package/src
@@ -288,6 +300,7 @@ EOF
 ```
 
 **Link Packages Locally**:
+
 ```bash
 # From root
 npm install
@@ -300,6 +313,7 @@ npm install
 ### Visual Studio Code
 
 **Recommended Extensions**:
+
 ```json
 // .vscode/extensions.json
 {
@@ -317,6 +331,7 @@ npm install
 ```
 
 **Settings**:
+
 ```json
 // .vscode/settings.json
 {
@@ -340,6 +355,7 @@ npm install
 ```
 
 **Launch Configuration**:
+
 ```json
 // .vscode/launch.json
 {
@@ -372,16 +388,19 @@ npm install
 ### WebStorm/IntelliJ IDEA
 
 **Configure TypeScript**:
+
 1. Settings → Languages & Frameworks → TypeScript
 2. Enable TypeScript language service
 3. Set TypeScript version to project version
 
 **Configure ESLint**:
+
 1. Settings → Languages & Frameworks → JavaScript → Code Quality Tools → ESLint
 2. Enable ESLint
 3. Automatic ESLint configuration
 
 **Configure Jest**:
+
 1. Settings → Languages & Frameworks → JavaScript → Jest
 2. Set Jest package to project node_modules
 3. Enable auto-run tests
@@ -429,6 +448,7 @@ psql -U noa_dev -d noa_server_dev < scripts/seed-data.sql
 ### Database Tools
 
 **pgAdmin** (GUI):
+
 ```bash
 # Install
 sudo apt-get install pgadmin4  # Linux
@@ -438,6 +458,7 @@ brew install --cask pgadmin4   # macOS
 ```
 
 **DBeaver** (Universal):
+
 ```bash
 # Download from https://dbeaver.io/download/
 ```
@@ -500,18 +521,15 @@ module.exports = {
   testEnvironment: 'node',
   roots: ['<rootDir>/packages'],
   testMatch: ['**/__tests__/**/*.ts', '**/*.test.ts'],
-  collectCoverageFrom: [
-    'packages/*/src/**/*.ts',
-    '!packages/*/src/**/*.d.ts'
-  ],
+  collectCoverageFrom: ['packages/*/src/**/*.ts', '!packages/*/src/**/*.d.ts'],
   coverageThreshold: {
     global: {
       branches: 80,
       functions: 80,
       lines: 80,
-      statements: 80
-    }
-  }
+      statements: 80,
+    },
+  },
 };
 ```
 
@@ -552,6 +570,7 @@ dropdb noa_server_test
 ### Node.js Debugging
 
 **Enable Inspector**:
+
 ```bash
 # Start with debugging
 node --inspect dist/server.js
@@ -561,6 +580,7 @@ node --inspect-brk dist/server.js
 ```
 
 **Connect Debugger**:
+
 - Chrome: Navigate to `chrome://inspect`
 - VS Code: Use launch configuration above
 - WebStorm: Click debug button
@@ -682,4 +702,6 @@ claude mcp logs claude-flow-dev
 
 ---
 
-**Need Help?** Ask in [GitHub Discussions](https://github.com/your-org/noa-server/discussions) or [open an issue](https://github.com/your-org/noa-server/issues).
+**Need Help?** Ask in
+[GitHub Discussions](https://github.com/your-org/noa-server/discussions) or
+[open an issue](https://github.com/your-org/noa-server/issues).

@@ -1,0 +1,89 @@
+{
+  "ci": {
+    "collect": {
+      "url": ["http://localhost:5173"],
+      "numberOfRuns": 3,
+      "settings": {
+        "preset": "desktop",
+        "throttling": {
+          "rttMs": 40,
+          "throughputKbps": 10240,
+          "cpuSlowdownMultiplier": 1
+        },
+        "screenEmulation": {
+          "mobile": false,
+          "width": 1920,
+          "height": 1080,
+          "deviceScaleFactor": 1,
+          "disabled": false
+        }
+      }
+    },
+    "assert": {
+      "preset": "lighthouse:recommended",
+      "assertions": {
+        "categories:performance": ["error", { "minScore": 0.9 }],
+        "categories:accessibility": ["error", { "minScore": 0.9 }],
+        "categories:best-practices": ["error", { "minScore": 0.9 }],
+        "categories:seo": ["warn", { "minScore": 0.8 }],
+        "categories:pwa": ["warn", { "minScore": 0.8 }],
+
+        "first-contentful-paint": ["error", { "maxNumericValue": 1800 }],
+        "largest-contentful-paint": ["error", { "maxNumericValue": 2500 }],
+        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
+        "total-blocking-time": ["error", { "maxNumericValue": 300 }],
+        "speed-index": ["error", { "maxNumericValue": 3000 }],
+        "interactive": ["error", { "maxNumericValue": 3800 }],
+
+        "viewport": "error",
+        "document-title": "error",
+        "meta-description": "warn",
+        "http-status-code": "error",
+        "crawlable-anchors": "warn",
+
+        "color-contrast": "warn",
+        "image-alt": "warn",
+        "label": "warn",
+        "tabindex": "warn",
+        "duplicate-id-aria": "error",
+
+        "uses-responsive-images": "warn",
+        "offscreen-images": "warn",
+        "unminified-css": "error",
+        "unminified-javascript": "error",
+        "unused-css-rules": "warn",
+        "unused-javascript": "warn",
+        "modern-image-formats": "warn",
+        "uses-optimized-images": "warn",
+        "uses-text-compression": "error",
+        "uses-rel-preconnect": "warn",
+        "uses-rel-preload": "warn",
+        "font-display": "warn",
+        "network-requests": ["warn", { "maxLength": 50 }],
+        "total-byte-weight": ["error", { "maxNumericValue": 512000 }],
+        "dom-size": ["warn", { "maxNumericValue": 1500 }],
+
+        "bootup-time": ["warn", { "maxNumericValue": 3500 }],
+        "mainthread-work-breakdown": ["warn", { "maxNumericValue": 4000 }],
+        "max-potential-fid": ["warn", { "maxNumericValue": 130 }],
+
+        "is-on-https": "error",
+        "redirects-http": "warn",
+        "geolocation-on-start": "warn",
+        "notification-on-start": "warn",
+        "no-vulnerable-libraries": "error",
+        "csp-xss": "warn"
+      }
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    },
+    "server": {
+      "port": 9001,
+      "storage": {
+        "storageMethod": "sql",
+        "sqlDatabasePath": "./docs/lhci-data.sql"
+      }
+    }
+  }
+}

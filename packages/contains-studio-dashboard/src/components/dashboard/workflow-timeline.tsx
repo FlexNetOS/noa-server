@@ -32,7 +32,7 @@ export function WorkflowTimeline({ workflow }: WorkflowTimelineProps) {
     (workflow.phases.filter((p) => p.status === 'completed').length / workflow.phases.length) * 100;
 
   return (
-    <Card className="hover:shadow-lg transition-shadow">
+    <Card className="transition-shadow hover:shadow-lg">
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="flex-1">
@@ -71,7 +71,7 @@ export function WorkflowTimeline({ workflow }: WorkflowTimelineProps) {
         </div>
 
         <div className="space-y-4">
-          <h4 className="font-semibold text-sm">Workflow Phases</h4>
+          <h4 className="text-sm font-semibold">Workflow Phases</h4>
           <div className="space-y-3">
             {workflow.phases.map((phase, index) => {
               const Icon = phaseIcons[phase.status];
@@ -81,22 +81,22 @@ export function WorkflowTimeline({ workflow }: WorkflowTimelineProps) {
                 <div
                   key={index}
                   className={cn(
-                    'flex items-start gap-3 p-3 rounded-lg transition-colors',
-                    isActive && 'bg-primary/5 border border-primary/20'
+                    'flex items-start gap-3 rounded-lg p-3 transition-colors',
+                    isActive && 'border border-primary/20 bg-primary/5'
                   )}
                 >
                   <Icon
                     className={cn(
-                      'w-5 h-5 mt-0.5',
+                      'mt-0.5 h-5 w-5',
                       phase.status === 'completed' && 'text-green-600',
                       phase.status === 'in-progress' && 'text-blue-600',
                       phase.status === 'failed' && 'text-red-600',
                       phase.status === 'pending' && 'text-gray-400'
                     )}
                   />
-                  <div className="flex-1 min-w-0">
+                  <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between">
-                      <p className={cn('font-medium text-sm', isActive && 'text-primary')}>
+                      <p className={cn('text-sm font-medium', isActive && 'text-primary')}>
                         {phase.name}
                       </p>
                       {phase.actualDuration && (
@@ -106,7 +106,7 @@ export function WorkflowTimeline({ workflow }: WorkflowTimelineProps) {
                       )}
                     </div>
                     {phase.assignedAgents.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-2">
+                      <div className="mt-2 flex flex-wrap gap-1">
                         {phase.assignedAgents.map((agent) => (
                           <Badge key={agent} variant="outline" className="text-xs">
                             {agent}
@@ -123,7 +123,7 @@ export function WorkflowTimeline({ workflow }: WorkflowTimelineProps) {
 
         {workflow.requirements.length > 0 && (
           <div className="space-y-2">
-            <h4 className="font-semibold text-sm">Requirements</h4>
+            <h4 className="text-sm font-semibold">Requirements</h4>
             <ul className="space-y-1 text-sm">
               {workflow.requirements.map((req, index) => (
                 <li key={index} className="flex items-start gap-2">

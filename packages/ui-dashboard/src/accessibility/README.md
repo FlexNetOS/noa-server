@@ -1,15 +1,20 @@
 # Accessibility Module
 
-Complete WCAG 2.1 Level AA accessibility infrastructure for the Noa Server UI Dashboard.
+Complete WCAG 2.1 Level AA accessibility infrastructure for the Noa Server UI
+Dashboard.
 
 ## Overview
 
-This module provides a comprehensive set of tools, hooks, and components to ensure full accessibility compliance and an excellent user experience for all users, including those using assistive technologies.
+This module provides a comprehensive set of tools, hooks, and components to
+ensure full accessibility compliance and an excellent user experience for all
+users, including those using assistive technologies.
 
 ## Features
 
-- **WCAG 2.1 Level AA Compliant**: 100% compliance with all applicable success criteria
-- **Screen Reader Support**: Full support for NVDA, JAWS, VoiceOver, TalkBack, and Narrator
+- **WCAG 2.1 Level AA Compliant**: 100% compliance with all applicable success
+  criteria
+- **Screen Reader Support**: Full support for NVDA, JAWS, VoiceOver, TalkBack,
+  and Narrator
 - **Keyboard Navigation**: All functionality accessible via keyboard
 - **High Contrast Mode**: Toggle for maximum visibility
 - **Font Scaling**: Resize text from 100% to 200%
@@ -19,7 +24,8 @@ This module provides a comprehensive set of tools, hooks, and components to ensu
 
 ## Installation
 
-The accessibility module is part of the UI Dashboard package. No additional installation required.
+The accessibility module is part of the UI Dashboard package. No additional
+installation required.
 
 ## Quick Start
 
@@ -27,7 +33,12 @@ The accessibility module is part of the UI Dashboard package. No additional inst
 
 ```tsx
 import { AccessibilityProvider } from './accessibility';
-import { SkipLinks, FocusOutline, AriaAnnouncer, A11yControls } from './accessibility';
+import {
+  SkipLinks,
+  FocusOutline,
+  AriaAnnouncer,
+  A11yControls,
+} from './accessibility';
 
 function App() {
   return (
@@ -81,6 +92,7 @@ Provides skip navigation links for keyboard users.
 ```
 
 Default skip links:
+
 - Skip to main content
 - Skip to navigation
 - Skip to search
@@ -95,6 +107,7 @@ Floating accessibility control panel.
 ```
 
 Features:
+
 - Font size adjustment
 - High contrast toggle
 - Reduced motion toggle
@@ -121,10 +134,7 @@ High contrast mode component.
 Font size adjustment controls.
 
 ```tsx
-<FontSizeControls
-  orientation="horizontal"
-  showLabels={true}
-/>
+<FontSizeControls orientation="horizontal" showLabels={true} />
 ```
 
 ### ReducedMotion
@@ -150,7 +160,8 @@ Global ARIA announcer for screen reader messages.
 Main hook for accessing accessibility context.
 
 ```tsx
-const { settings, updateSettings, announce, resetSettings } = useAccessibility();
+const { settings, updateSettings, announce, resetSettings } =
+  useAccessibility();
 
 // Update settings
 updateSettings({ fontSize: 125, highContrast: true });
@@ -175,7 +186,7 @@ const modalRef = useFocusTrap({
 
 <div ref={modalRef} role="dialog">
   {/* Modal content */}
-</div>
+</div>;
 ```
 
 ### useKeyboardNav
@@ -192,9 +203,7 @@ useKeyboardNav(containerRef, {
   onEscape: () => close(),
 });
 
-<div ref={containerRef}>
-  {/* Content */}
-</div>
+<div ref={containerRef}>{/* Content */}</div>;
 ```
 
 ### useRovingTabIndex
@@ -210,9 +219,13 @@ useRovingTabIndex(listRef, 'li[role="option"]', {
 });
 
 <ul ref={listRef} role="listbox">
-  <li role="option" tabIndex={0}>Item 1</li>
-  <li role="option" tabIndex={-1}>Item 2</li>
-</ul>
+  <li role="option" tabIndex={0}>
+    Item 1
+  </li>
+  <li role="option" tabIndex={-1}>
+    Item 2
+  </li>
+</ul>;
 ```
 
 ### useScreenReader
@@ -259,7 +272,9 @@ announce('5 new notifications');
 Announce progress at intervals.
 
 ```tsx
-const { announceProgress, reset } = useProgressAnnouncement([0, 25, 50, 75, 100]);
+const { announceProgress, reset } = useProgressAnnouncement([
+  0, 25, 50, 75, 100,
+]);
 
 // Announce at thresholds
 announceProgress(45, 'Upload'); // Announces "Upload: 25% complete"
@@ -530,6 +545,8 @@ Part of the Noa Server UI Dashboard project.
 ## Support
 
 For accessibility issues or questions:
+
 - **Email**: accessibility@noa-server.io
-- **Documentation**: [/docs/compliance/ACCESSIBILITY.md](../../../docs/compliance/ACCESSIBILITY.md)
+- **Documentation**:
+  [/docs/compliance/ACCESSIBILITY.md](../../../docs/compliance/ACCESSIBILITY.md)
 - **GitHub Issues**: Tag with [a11y]

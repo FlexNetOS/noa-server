@@ -1,27 +1,38 @@
 # Make conversations private
 
-In this tutorial, you will extend [the chatbot created in the last tutorial](getting_started.md) to give each user their own private conversations. You'll add [resource-level access control](../../concepts/auth.md#single-owner-resources) so users can only see their own threads.
+In this tutorial, you will extend
+[the chatbot created in the last tutorial](getting_started.md) to give each user
+their own private conversations. You'll add
+[resource-level access control](../../concepts/auth.md#single-owner-resources)
+so users can only see their own threads.
 
 ![Authorization handlers](./img/authorization.png)
 
 ## Prerequisites
 
-Before you start this tutorial, ensure you have the [bot from the first tutorial](getting_started.md) running without errors.
+Before you start this tutorial, ensure you have the
+[bot from the first tutorial](getting_started.md) running without errors.
 
 ## 1. Add resource authorization
 
-:::python
-Recall that in the last tutorial, the [`Auth`](../../cloud/reference/sdk/python_sdk_ref.md#langgraph_sdk.auth.Auth) object lets you register an [authentication function](../../concepts/auth.md#authentication), which LangGraph Platform uses to validate the bearer tokens in incoming requests. Now you'll use it to register an **authorization** handler.
-:::
+:::python Recall that in the last tutorial, the
+[`Auth`](../../cloud/reference/sdk/python_sdk_ref.md#langgraph_sdk.auth.Auth)
+object lets you register an
+[authentication function](../../concepts/auth.md#authentication), which
+LangGraph Platform uses to validate the bearer tokens in incoming requests. Now
+you'll use it to register an **authorization** handler. :::
 
-:::js
-Recall that in the last tutorial, the @[`Auth`][Auth] object lets you register an [authentication function](../../concepts/auth.md#authentication), which LangGraph Platform uses to validate the bearer tokens in incoming requests. Now you'll use it to register an **authorization** handler.
-:::
+:::js Recall that in the last tutorial, the @[`Auth`][Auth] object lets you
+register an [authentication function](../../concepts/auth.md#authentication),
+which LangGraph Platform uses to validate the bearer tokens in incoming
+requests. Now you'll use it to register an **authorization** handler. :::
 
-Authorization handlers are functions that run **after** authentication succeeds. These handlers can add [metadata](../../concepts/auth.md#filter-operations) to resources (like who owns them) and filter what each user can see.
+Authorization handlers are functions that run **after** authentication succeeds.
+These handlers can add [metadata](../../concepts/auth.md#filter-operations) to
+resources (like who owns them) and filter what each user can see.
 
-:::python
-Update your `src/security/auth.py` and add one authorization handler to run on every request:
+:::python Update your `src/security/auth.py` and add one authorization handler
+to run on every request:
 
 ```python hl_lines="29-39" title="src/security/auth.py"
 from langgraph_sdk import Auth
@@ -112,33 +123,33 @@ async def add_owner(
 
 :::
 
-:::js
-Update your `src/security/auth.ts` and add one authorization handler to run on every request:
+:::js Update your `src/security/auth.ts` and add one authorization handler to
+run on every request:
 
 ```typescript hl_lines="29-39" title="src/security/auth.ts"
-import { Auth, HTTPException } from "@langchain/langgraph-sdk";
+import { Auth, HTTPException } from '@langchain/langgraph-sdk';
 
 // Keep our test users from the previous tutorial
 const VALID_TOKENS: Record<string, { id: string; name: string }> = {
-  "user1-token": { id: "user1", name: "Alice" },
-  "user2-token": { id: "user2", name: "Bob" },
+  'user1-token': { id: 'user1', name: 'Alice' },
+  'user2-token': { id: 'user2', name: 'Bob' },
 };
 
 const auth = new Auth()
   .authenticate(async (request) => {
     // Our authentication handler from the previous tutorial.
-    const apiKey = request.headers.get("x-api-key");
+    const apiKey = request.headers.get('x-api-key');
     if (!apiKey || !isValidKey(apiKey)) {
-      throw new HTTPException(401, "Invalid API key");
+      throw new HTTPException(401, 'Invalid API key');
     }
 
-    const [scheme, token] = apiKey.split(" ");
-    if (scheme.toLowerCase() !== "bearer") {
-      throw new Error("Bearer token required");
+    const [scheme, token] = apiKey.split(' ');
+    if (scheme.toLowerCase() !== 'bearer') {
+      throw new Error('Bearer token required');
     }
 
     if (!VALID_TOKENS[token]) {
-      throw new HTTPException(401, "Invalid token");
+      throw new HTTPException(401, 'Invalid token');
     }
 
     const userData = VALID_TOKENS[token];
@@ -146,7 +157,7 @@ const auth = new Auth()
       identity: userData.id,
     };
   })
-  .on("*", ({ value, user }) => {
+  .on('*', ({ value, user }) => {
     // This handler makes resources private to their creator by doing 2 things:
     // 1. Add the user's ID to the resource's metadata. Each LangGraph resource has a `metadata` object that persists with the resource.
     // this metadata is useful for filtering in read and update operations
@@ -202,20 +213,28 @@ export { auth };
 
 :::
 
-:::python
-The handler receives two parameters:
+:::python The handler receives two parameters:
 
-1. `ctx` ([AuthContext](../../cloud/reference/sdk/python_sdk_ref.md#langgraph_sdk.auth.types.AuthContext)): contains info about the current `user`, the user's `permissions`, the `resource` ("threads", "crons", "assistants"), and the `action` being taken ("create", "read", "update", "delete", "search", "create_run")
-2. `value` (`dict`): data that is being created or accessed. The contents of this dict depend on the resource and action being accessed. See [adding scoped authorization handlers](#scoped-authorization) below for information on how to get more tightly scoped access control.
-   :::
+1. `ctx`
+   ([AuthContext](../../cloud/reference/sdk/python_sdk_ref.md#langgraph_sdk.auth.types.AuthContext)):
+   contains info about the current `user`, the user's `permissions`, the
+   `resource` ("threads", "crons", "assistants"), and the `action` being taken
+   ("create", "read", "update", "delete", "search", "create_run")
+2. `value` (`dict`): data that is being created or accessed. The contents of
+   this dict depend on the resource and action being accessed. See
+   [adding scoped authorization handlers](#scoped-authorization) below for
+   information on how to get more tightly scoped access control. :::
 
-:::js
-The handler receives an object with the following properties:
+:::js The handler receives an object with the following properties:
 
-1. `user` contains info about the current `user`, the user's `permissions`, the `resource` ("threads", "crons", "assistants")
-2. `action` contains information about the action being taken ("create", "read", "update", "delete", "search", "create_run")
-3. `value` (`Record<string, any>`): data that is being created or accessed. The contents of this object depend on the resource and action being accessed. See [adding scoped authorization handlers](#scoped-authorization) below for information on how to get more tightly scoped access control.
-   :::
+1. `user` contains info about the current `user`, the user's `permissions`, the
+   `resource` ("threads", "crons", "assistants")
+2. `action` contains information about the action being taken ("create", "read",
+   "update", "delete", "search", "create_run")
+3. `value` (`Record<string, any>`): data that is being created or accessed. The
+   contents of this object depend on the resource and action being accessed. See
+   [adding scoped authorization handlers](#scoped-authorization) below for
+   information on how to get more tightly scoped access control. :::
 
 Notice that the simple handler does two things:
 
@@ -224,7 +243,9 @@ Notice that the simple handler does two things:
 
 ## 2. Test private conversations
 
-Test your authorization. If you have set things up correctly, you will see all ✅ messages. Be sure to have your development server running (run `langgraph dev`):
+Test your authorization. If you have set things up correctly, you will see all
+✅ messages. Be sure to have your development server running (run
+`langgraph dev`):
 
 :::python
 
@@ -284,17 +305,17 @@ print(f"✅ Bob sees {len(bob_threads)} thread")
 :::js
 
 ```typescript
-import { getClient } from "@langgraph/sdk";
+import { getClient } from '@langgraph/sdk';
 
 // Create clients for both users
 const alice = getClient({
-  url: "http://localhost:2024",
-  headers: { Authorization: "Bearer user1-token" },
+  url: 'http://localhost:2024',
+  headers: { Authorization: 'Bearer user1-token' },
 });
 
 const bob = getClient({
-  url: "http://localhost:2024",
-  headers: { Authorization: "Bearer user2-token" },
+  url: 'http://localhost:2024',
+  headers: { Authorization: 'Bearer user2-token' },
 });
 
 // Alice creates an assistant
@@ -305,9 +326,9 @@ console.log(`✅ Alice created assistant: ${aliceAssistant.assistant_id}`);
 const aliceThread = await alice.threads.create();
 console.log(`✅ Alice created thread: ${aliceThread.thread_id}`);
 
-await alice.runs.create(aliceThread.thread_id, "agent", {
+await alice.runs.create(aliceThread.thread_id, 'agent', {
   input: {
-    messages: [{ role: "user", content: "Hi, this is Alice's private chat" }],
+    messages: [{ role: 'user', content: "Hi, this is Alice's private chat" }],
   },
 });
 
@@ -316,14 +337,14 @@ try {
   await bob.threads.get(aliceThread.thread_id);
   console.log("❌ Bob shouldn't see Alice's thread!");
 } catch (error) {
-  console.log("✅ Bob correctly denied access:", error);
+  console.log('✅ Bob correctly denied access:', error);
 }
 
 // Bob creates his own thread
 const bobThread = await bob.threads.create();
-await bob.runs.create(bobThread.thread_id, "agent", {
+await bob.runs.create(bobThread.thread_id, 'agent', {
   input: {
-    messages: [{ role: "user", content: "Hi, this is Bob's private chat" }],
+    messages: [{ role: 'user', content: "Hi, this is Bob's private chat" }],
   },
 });
 console.log(`✅ Bob created his own thread: ${bobThread.thread_id}`);
@@ -357,8 +378,11 @@ This means:
 
 ## 3. Add scoped authorization handlers {#scoped-authorization}
 
-:::python
-The broad `@auth.on` handler matches on all [authorization events](../../concepts/auth.md#supported-resources). This is concise, but it means the contents of the `value` dict are not well-scoped, and the same user-level access control is applied to every resource. If you want to be more fine-grained, you can also control specific actions on resources.
+:::python The broad `@auth.on` handler matches on all
+[authorization events](../../concepts/auth.md#supported-resources). This is
+concise, but it means the contents of the `value` dict are not well-scoped, and
+the same user-level access control is applied to every resource. If you want to
+be more fine-grained, you can also control specific actions on resources.
 
 Update `src/security/auth.py` to add handlers for specific resource types:
 
@@ -432,17 +456,20 @@ async def authorize_store(ctx: Auth.types.AuthContext, value: dict):
 
 :::
 
-:::js
-The broad `auth.on("*")` handler matches on all [authorization events](../../concepts/auth.md#supported-resources). This is concise, but it means the contents of the `value` object are not well-scoped, and the same user-level access control is applied to every resource. If you want to be more fine-grained, you can also control specific actions on resources.
+:::js The broad `auth.on("*")` handler matches on all
+[authorization events](../../concepts/auth.md#supported-resources). This is
+concise, but it means the contents of the `value` object are not well-scoped,
+and the same user-level access control is applied to every resource. If you want
+to be more fine-grained, you can also control specific actions on resources.
 
 Update `src/security/auth.ts` to add handlers for specific resource types:
 
 ```typescript
 // Keep our previous handlers...
 
-import { Auth, HTTPException } from "@langchain/langgraph-sdk";
+import { Auth, HTTPException } from '@langchain/langgraph-sdk';
 
-auth.on("threads:create", async ({ user, value }) => {
+auth.on('threads:create', async ({ user, value }) => {
   // Add owner when creating threads.
   // This handler runs when creating new threads and does two things:
   // 1. Sets metadata on the thread being created to track ownership
@@ -461,7 +488,7 @@ auth.on("threads:create", async ({ user, value }) => {
   return { owner: user.identity };
 });
 
-auth.on("threads:read", async ({ user, value }) => {
+auth.on('threads:read', async ({ user, value }) => {
   // Only let users read their own threads.
   // This handler runs on read operations. We don't need to set
   // metadata since the thread already exists - we just need to
@@ -469,7 +496,7 @@ auth.on("threads:read", async ({ user, value }) => {
   return { owner: user.identity };
 });
 
-auth.on("assistants", async ({ user, value }) => {
+auth.on('assistants', async ({ user, value }) => {
   // For illustration purposes, we will deny all requests
   // that touch the assistants resource
   // Example value:
@@ -480,14 +507,14 @@ auth.on("assistants", async ({ user, value }) => {
   //     'metadata': {},
   //     'name': 'Untitled'
   // }
-  throw new HTTPException(403, "User lacks the required permissions.");
+  throw new HTTPException(403, 'User lacks the required permissions.');
 });
 
-auth.on("store", async ({ user, value }) => {
+auth.on('store', async ({ user, value }) => {
   // The "namespace" field for each store item is a tuple you can think of as the directory of an item.
   const namespace: string[] = value.namespace;
   if (namespace[0] !== user.identity) {
-    throw new Error("Not authorized");
+    throw new Error('Not authorized');
   }
 });
 ```
@@ -500,13 +527,20 @@ Notice that instead of one global handler, you now have specific handlers for:
 2. Reading threads
 3. Accessing assistants
 
-:::python
-The first three of these match specific **actions** on each resource (see [resource actions](../../concepts/auth.md#resource-specific-handlers)), while the last one (`@auth.on.assistants`) matches _any_ action on the `assistants` resource. For each request, LangGraph will run the most specific handler that matches the resource and action being accessed. This means that the four handlers above will run rather than the broadly scoped "`@auth.on`" handler.
-:::
+:::python The first three of these match specific **actions** on each resource
+(see [resource actions](../../concepts/auth.md#resource-specific-handlers)),
+while the last one (`@auth.on.assistants`) matches _any_ action on the
+`assistants` resource. For each request, LangGraph will run the most specific
+handler that matches the resource and action being accessed. This means that the
+four handlers above will run rather than the broadly scoped "`@auth.on`"
+handler. :::
 
-:::js
-The first three of these match specific **actions** on each resource (see [resource actions](../../concepts/auth.md#resource-specific-handlers)), while the last one (`auth.on.assistants`) matches _any_ action on the `assistants` resource. For each request, LangGraph will run the most specific handler that matches the resource and action being accessed. This means that the four handlers above will run rather than the broadly scoped "`auth.on`" handler.
-:::
+:::js The first three of these match specific **actions** on each resource (see
+[resource actions](../../concepts/auth.md#resource-specific-handlers)), while
+the last one (`auth.on.assistants`) matches _any_ action on the `assistants`
+resource. For each request, LangGraph will run the most specific handler that
+matches the resource and action being accessed. This means that the four
+handlers above will run rather than the broadly scoped "`auth.on`" handler. :::
 
 Try adding the following test code to your test file:
 
@@ -541,10 +575,10 @@ print(f"✅ Alice created thread: {alice_thread['thread_id']}")
 // ... Same as before
 // Try creating an assistant. This should fail
 try {
-  await alice.assistants.create("agent");
+  await alice.assistants.create('agent');
   console.log("❌ Alice shouldn't be able to create assistants!");
 } catch (error) {
-  console.log("✅ Alice correctly denied access:", error);
+  console.log('✅ Alice correctly denied access:', error);
 }
 
 // Try searching for assistants. This also should fail
@@ -553,7 +587,7 @@ try {
   console.log("❌ Alice shouldn't be able to search assistants!");
 } catch (error) {
   console.log(
-    "✅ Alice correctly denied access to searching assistants:",
+    '✅ Alice correctly denied access to searching assistants:',
     error
   );
 }
@@ -579,23 +613,33 @@ For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/St
 ✅ Alice correctly denied access to searching assistants:
 ```
 
-Congratulations! You've built a chatbot where each user has their own private conversations. While this system uses simple token-based authentication, these authorization patterns will work with implementing any real authentication system. In the next tutorial, you'll replace your test users with real user accounts using OAuth2.
+Congratulations! You've built a chatbot where each user has their own private
+conversations. While this system uses simple token-based authentication, these
+authorization patterns will work with implementing any real authentication
+system. In the next tutorial, you'll replace your test users with real user
+accounts using OAuth2.
 
 ## What's Next?
 
 Now that you can control access to resources, you might want to:
 
-1. Move on to [Connect an authentication provider](add_auth_server.md) to add real user accounts.
-2. Read more about [authorization patterns](../../concepts/auth.md#authorization).
+1. Move on to [Connect an authentication provider](add_auth_server.md) to add
+   real user accounts.
+2. Read more about
+   [authorization patterns](../../concepts/auth.md#authorization).
 
 :::python
 
-3. Check out the [API reference](../../cloud/reference/sdk/python_sdk_ref.md#langgraph_sdk.auth.Auth) for details about the interfaces and methods used in this tutorial.
+3. Check out the
+   [API reference](../../cloud/reference/sdk/python_sdk_ref.md#langgraph_sdk.auth.Auth)
+   for details about the interfaces and methods used in this tutorial.
 
 :::
 
 :::js
 
-3. Check out the [API reference](../../cloud/reference/sdk/js_sdk_ref.md#langgraph_sdk.auth.Auth) for details about the interfaces and methods used in this tutorial.
+3. Check out the
+   [API reference](../../cloud/reference/sdk/js_sdk_ref.md#langgraph_sdk.auth.Auth)
+   for details about the interfaces and methods used in this tutorial.
 
 :::

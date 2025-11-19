@@ -90,7 +90,7 @@ const tracing = new TracingManager({
     type: 'otlp',
     endpoint: 'http://localhost:4318/v1/traces',
     headers: {
-      'Authorization': 'Bearer token',
+      Authorization: 'Bearer token',
     },
   },
 });
@@ -341,7 +341,8 @@ TRACING_SAMPLING_RATIO=0.1
 
 ## Best Practices
 
-1. **Span Naming**: Use descriptive, hierarchical names (e.g., `http.GET./api/users`)
+1. **Span Naming**: Use descriptive, hierarchical names (e.g.,
+   `http.GET./api/users`)
 2. **Attributes**: Add meaningful attributes for filtering and analysis
 3. **Error Recording**: Always record exceptions in spans
 4. **Sampling**: Use appropriate sampling rates for production
@@ -349,7 +350,8 @@ TRACING_SAMPLING_RATIO=0.1
 
 ## Integration with Jaeger
 
-1. Run Jaeger: `docker run -d -p 16686:16686 -p 14268:14268 jaegertracing/all-in-one:latest`
+1. Run Jaeger:
+   `docker run -d -p 16686:16686 -p 14268:14268 jaegertracing/all-in-one:latest`
 2. Access UI: `http://localhost:16686`
 3. Search traces by service name, operation, or tags
 

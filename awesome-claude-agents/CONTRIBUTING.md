@@ -1,10 +1,14 @@
 # Contributing to Awesome Claude Agents
 
-Thank you for your interest in contributing to Awesome Claude Agents! This document provides guidelines and instructions for contributing to our collection of specialized Claude sub-agents.
+Thank you for your interest in contributing to Awesome Claude Agents! This
+document provides guidelines and instructions for contributing to our collection
+of specialized Claude sub-agents.
 
 ## 🎯 Our Mission
 
-We aim to build the most comprehensive, high-quality collection of Claude sub-agents that enhance productivity across various domains. Every contribution helps make Claude Code more powerful for the community.
+We aim to build the most comprehensive, high-quality collection of Claude
+sub-agents that enhance productivity across various domains. Every contribution
+helps make Claude Code more powerful for the community.
 
 ## 📋 Table of Contents
 
@@ -77,6 +81,7 @@ Then create a Pull Request on GitHub.
 ### Agent File Structure
 
 Place your agent in the appropriate category:
+
 ```
 agents/
 ├── development/
@@ -171,30 +176,27 @@ For each new agent, create:
 ### Issue Template
 
 ```markdown
-**Agent Name**: [agent-name]
-**Issue Type**: Bug / Enhancement / Feature Request
+**Agent Name**: [agent-name] **Issue Type**: Bug / Enhancement / Feature Request
 **Claude Code Version**: [version]
 
-**Description**:
-[Clear description of the issue]
+**Description**: [Clear description of the issue]
 
 **Steps to Reproduce**:
+
 1. [Step 1]
 2. [Step 2]
 
-**Expected Behavior**:
-[What should happen]
+**Expected Behavior**: [What should happen]
 
-**Actual Behavior**:
-[What actually happens]
+**Actual Behavior**: [What actually happens]
 
-**Additional Context**:
-[Any other relevant information]
+**Additional Context**: [Any other relevant information]
 ```
 
 ## 🔄 Pull Request Process
 
 ### PR Title Format
+
 - `feat: add [agent-name] agent for [purpose]`
 - `fix: correct [issue] in [agent-name]`
 - `docs: update [what] for [agent-name]`
@@ -204,20 +206,24 @@ For each new agent, create:
 
 ```markdown
 ## Description
+
 [Describe your changes]
 
 ## Type of Change
+
 - [ ] New agent
 - [ ] Bug fix
 - [ ] Enhancement
 - [ ] Documentation update
 
 ## Testing
+
 - [ ] Tested with Claude Code locally
 - [ ] Added/updated examples
 - [ ] Updated documentation
 
 ## Checklist
+
 - [ ] Follows agent format guidelines
 - [ ] Includes meaningful examples
 - [ ] Tools are appropriate for the task
@@ -225,6 +231,7 @@ For each new agent, create:
 - [ ] Commits follow conventional format
 
 ## Related Issues
+
 Closes #[issue-number]
 ```
 
@@ -263,11 +270,13 @@ Closes #[issue-number]
 ### Local Testing
 
 1. **Install your agent locally**:
+
    ```bash
    cp agents/category/your-agent.md ~/.claude/agents/
    ```
 
 2. **Test auto-invocation**:
+
    ```bash
    claude "Task that should trigger your agent"
    ```
@@ -280,6 +289,7 @@ Closes #[issue-number]
 ### Test Scenarios
 
 Create test cases for:
+
 - Common use cases
 - Edge cases
 - Error scenarios
@@ -289,6 +299,7 @@ Create test cases for:
 ### Validation Script
 
 Before submitting, run:
+
 ```bash
 python tests/validate_agents.py agents/category/your-agent.md
 ```
@@ -296,6 +307,7 @@ python tests/validate_agents.py agents/category/your-agent.md
 ## 🎉 Recognition
 
 Contributors will be:
+
 - Listed in our [Contributors](CONTRIBUTORS.md) file
 - Credited in agent metadata
 - Mentioned in release notes
@@ -318,4 +330,5 @@ Contributors will be:
 
 ---
 
-Thank you for contributing to Awesome Claude Agents! Your expertise helps make Claude Code more powerful for everyone. 🚀
+Thank you for contributing to Awesome Claude Agents! Your expertise helps make
+Claude Code more powerful for everyone. 🚀

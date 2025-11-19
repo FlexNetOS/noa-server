@@ -5,6 +5,7 @@ Enterprise-grade authentication and authorization service for Noa Server.
 ## Features
 
 ### Authentication
+
 - **JWT**: HS256, RS256, ES256 algorithms
 - **OAuth 2.0 / OpenID Connect**: Google, GitHub, Microsoft, custom providers
 - **SAML 2.0**: Enterprise SSO integration
@@ -13,6 +14,7 @@ Enterprise-grade authentication and authorization service for Noa Server.
 - **WebAuthn**: FIDO2 / biometric authentication (coming soon)
 
 ### Multi-Factor Authentication
+
 - **TOTP**: Google Authenticator, Authy compatible
 - **SMS**: Phone-based verification
 - **Email**: Email-based codes
@@ -20,12 +22,14 @@ Enterprise-grade authentication and authorization service for Noa Server.
 - **Backup Codes**: Recovery codes for MFA
 
 ### Authorization
+
 - **RBAC**: Role-based access control with wildcards
 - **ABAC**: Attribute-based access control (coming soon)
 - **Permissions**: Fine-grained resource:action permissions
 - **Conditional Access**: Context-aware authorization
 
 ### Security
+
 - **Password Hashing**: Argon2id (OWASP recommended)
 - **Breach Checking**: HaveIBeenPwned API integration
 - **Rate Limiting**: Redis-backed adaptive rate limiting
@@ -51,43 +55,47 @@ const db = new Pool({ connectionString: process.env.DATABASE_URL });
 const redis = new Redis(process.env.REDIS_URL);
 
 // Configure auth service
-const authService = new AuthService({
-  jwt: {
-    algorithm: 'HS256',
-    secret: process.env.JWT_SECRET,
-    issuer: 'noa-server',
-    audience: 'noa-client',
-    accessTokenExpiry: '15m',
-    refreshTokenExpiry: '7d'
-  },
-  password: {
-    minLength: 12,
-    requireUppercase: true,
-    requireLowercase: true,
-    requireNumbers: true,
-    requireSpecialChars: true,
-    preventBreached: true
-  },
-  mfa: {
-    enabled: true,
-    issuer: 'Noa Server',
-    window: 1
-  },
-  session: {
-    redis: {
-      host: 'localhost',
-      port: 6379,
-      password: process.env.REDIS_PASSWORD,
-      db: 0
+const authService = new AuthService(
+  {
+    jwt: {
+      algorithm: 'HS256',
+      secret: process.env.JWT_SECRET,
+      issuer: 'noa-server',
+      audience: 'noa-client',
+      accessTokenExpiry: '15m',
+      refreshTokenExpiry: '7d',
     },
-    maxAge: 24 * 60 * 60 * 1000
-  }
-}, db, redis);
+    password: {
+      minLength: 12,
+      requireUppercase: true,
+      requireLowercase: true,
+      requireNumbers: true,
+      requireSpecialChars: true,
+      preventBreached: true,
+    },
+    mfa: {
+      enabled: true,
+      issuer: 'Noa Server',
+      window: 1,
+    },
+    session: {
+      redis: {
+        host: 'localhost',
+        port: 6379,
+        password: process.env.REDIS_PASSWORD,
+        db: 0,
+      },
+      maxAge: 24 * 60 * 60 * 1000,
+    },
+  },
+  db,
+  redis
+);
 
 // Register user
 const result = await authService.register({
   email: 'user@example.com',
-  password: 'SecurePassword123!'
+  password: 'SecurePassword123!',
 });
 
 // Login
@@ -95,7 +103,7 @@ const loginResult = await authService.login({
   email: 'user@example.com',
   password: 'SecurePassword123!',
   ipAddress: req.ip,
-  userAgent: req.headers['user-agent']
+  userAgent: req.headers['user-agent'],
 });
 
 console.log('Access Token:', loginResult.token.accessToken);
@@ -128,17 +136,23 @@ import { createFastifyAuthPlugin } from '@noa/auth-service';
 
 const fastify = Fastify();
 
-fastify.register(createFastifyAuthPlugin({
-  jwtProvider,
-  sessionManager
-}));
+fastify.register(
+  createFastifyAuthPlugin({
+    jwtProvider,
+    sessionManager,
+  })
+);
 
 // Protected route
-fastify.get('/profile', {
-  config: { auth: true }
-}, async (request, reply) => {
-  return { user: request.user };
-});
+fastify.get(
+  '/profile',
+  {
+    config: { auth: true },
+  },
+  async (request, reply) => {
+    return { user: request.user };
+  }
+);
 ```
 
 ## Configuration
@@ -181,8 +195,8 @@ const config = {
     preventUserInfo: true,
     preventReuse: 5,
     maxAge: 90, // days
-    minAge: 1
-  }
+    minAge: 1,
+  },
 };
 ```
 

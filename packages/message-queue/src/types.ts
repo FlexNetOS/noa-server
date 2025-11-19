@@ -7,7 +7,7 @@ export enum JobStatus {
   COMPLETED = 'completed',
   FAILED = 'failed',
   CANCELLED = 'cancelled',
-  RETRY = 'retry'
+  RETRY = 'retry',
 }
 
 // Job priority enum
@@ -15,7 +15,7 @@ export enum JobPriority {
   LOW = 1,
   NORMAL = 5,
   HIGH = 10,
-  URGENT = 15
+  URGENT = 15,
 }
 
 // Job options interface
@@ -114,8 +114,8 @@ export const QueueMessageSchema = z.object({
     delay: z.number().optional(),
     ttl: z.number().optional(),
     retryCount: z.number().min(0),
-    maxRetries: z.number().min(0)
-  })
+    maxRetries: z.number().min(0),
+  }),
 });
 
 export const QueueJobSchema = z.object({
@@ -136,36 +136,44 @@ export const QueueJobSchema = z.object({
   timeout: z.number().min(0).optional(),
   scheduledFor: z.date().optional(),
   tags: z.array(z.string()).optional(),
-  lastError: z.object({
-    message: z.string(),
-    stack: z.string().optional(),
-    timestamp: z.date()
-  }).optional(),
-  result: z.any().optional()
+  lastError: z
+    .object({
+      message: z.string(),
+      stack: z.string().optional(),
+      timestamp: z.date(),
+    })
+    .optional(),
+  result: z.any().optional(),
 });
 
 export const QueueProviderSchema = z.object({
   name: z.string(),
   type: z.enum(['rabbitmq', 'kafka', 'redis', 'sqs']),
-  config: z.record(z.any())
+  config: z.record(z.any()),
 });
 
 export const QueueConfigSchema = z.object({
   defaultProvider: z.string(),
   providers: z.array(QueueProviderSchema),
-  queues: z.record(z.object({
-    provider: z.string(),
-    options: z.record(z.any()).optional()
-  })),
-  retryPolicy: z.object({
-    maxRetries: z.number().min(0).default(3),
-    retryDelay: z.number().min(0).default(1000),
-    exponentialBackoff: z.boolean().default(true),
-    maxRetryDelay: z.number().min(0).default(30000)
-  }).optional(),
-  monitoring: z.object({
-    enabled: z.boolean().default(true),
-    metricsInterval: z.number().min(1000).default(30000),
-    healthCheckInterval: z.number().min(1000).default(60000)
-  }).optional()
+  queues: z.record(
+    z.object({
+      provider: z.string(),
+      options: z.record(z.any()).optional(),
+    })
+  ),
+  retryPolicy: z
+    .object({
+      maxRetries: z.number().min(0).default(3),
+      retryDelay: z.number().min(0).default(1000),
+      exponentialBackoff: z.boolean().default(true),
+      maxRetryDelay: z.number().min(0).default(30000),
+    })
+    .optional(),
+  monitoring: z
+    .object({
+      enabled: z.boolean().default(true),
+      metricsInterval: z.number().min(1000).default(30000),
+      healthCheckInterval: z.number().min(1000).default(60000),
+    })
+    .optional(),
 });

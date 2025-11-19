@@ -6,10 +6,10 @@ on:
       working-directory:
         required: true
         type: string
-        description: "From which folder this pipeline executes"
+        description: 'From which folder this pipeline executes'
 
 env:
-  PYTHON_VERSION: "3.10"
+  PYTHON_VERSION: '3.10'
 
 permissions:
   contents: read
@@ -31,7 +31,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
-          cache-suffix: "release"
+          cache-suffix: 'release'
 
       # We want to keep this build stage *separate* from the release stage,
       # so that there's no sharing of permissions between them.

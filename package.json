@@ -3,11 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "description": "Integrated Claude Suite monorepo with automation pipeline, MCP tooling, agents, llama.cpp, and UI.",
-  "workspaces": [
-    "packages/*",
-    "servers/*",
-    "apps/*"
-  ],
+  "workspaces": ["packages/*", "servers/*", "apps/*"],
   "scripts": {
     "hive:init": "bash scripts/automation/hive-mind-init.sh",
     "hive:test": "bash scripts/tasks/hive-mind-test.sh",
@@ -125,6 +121,7 @@
     "license-checker": "^25.0.1",
     "pg": "^8.16.3",
     "prettier": "^3.3.3",
+    "prettier-plugin-svelte": "^3.4.0",
     "prom-client": "^15.1.0",
     "redis": "^5.9.0",
     "ruv-swarm": "^1.0.20",
@@ -132,5 +129,11 @@
     "vitest": "^3.2.4",
     "winston": "^3.18.3",
     "zod": "^4.1.12"
+  },
+  "pnpm": {
+    "overrides": {
+      "@types/react": "^18.3.26",
+      "@types/react-dom": "^18.3.5"
+    }
   }
 }

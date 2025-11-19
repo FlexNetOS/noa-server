@@ -1,0 +1,633 @@
+openapi: 3.1.0
+info:
+  title: NOA Server Monitoring API
+  version: 1.0.0
+  description: |
+    Comprehensive monitoring and observability API.
+
+    Features:
+    - Kubernetes-compatible health probes
+    - Prometheus metrics exposition
+    - Real-time log streaming
+    - Performance metrics
+    - Custom metric collection
+    - Alert management
+
+  contact:
+    name: API Support
+    email: support@noa-server.io
+  license:
+    name: MIT
+
+servers:
+  - url: https://api.noa-server.io
+    description: Production
+  - url: http://localhost:3000
+    description: Development
+  - url: ws://localhost:3000
+    description: WebSocket (Development)
+
+tags:
+  - name: Health
+    description: Health check endpoints
+  - name: Metrics
+    description: Metrics and statistics
+  - name: Logs
+    description: Log management
+  - name: Status
+    description: System status
+
+paths:
+  /health:
+    get:
+      summary: Overall health check
+      description: |
+        Aggregated health status of all system components.
+        Returns HTTP 200 if healthy, 503 if unhealthy.
+      operationId: getHealth
+      tags:
+        - Health
+      security: []
+      responses:
+        '200':
+          description: System healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
+              examples:
+                healthy:
+                  value:
+                    status: healthy
+                    timestamp: '2024-01-01T00:00:00Z'
+                    checks:
+                      - name: database
+                        status: healthy
+                        duration: 5
+                        message: Connected
+                      - name: redis
+                        status: healthy
+                        duration: 2
+                      - name: message_queue
+                        status: healthy
+                        duration: 3
+                    metadata:
+                      version: 1.0.0
+                      uptime: 3600
+        '503':
+          description: System unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
+              examples:
+                unhealthy:
+                  value:
+                    status: unhealthy
+                    timestamp: '2024-01-01T00:00:00Z'
+                    checks:
+                      - name: database
+                        status: unhealthy
+                        duration: 5000
+                        message: Connection timeout
+                        error: ETIMEDOUT
+
+  /health/live:
+    get:
+      summary: Liveness probe
+      description: |
+        Kubernetes liveness probe.
+        Checks if application is running and responsive.
+        Returns HTTP 200 if alive, 503 if dead.
+      operationId: getLiveness
+      tags:
+        - Health
+      security: []
+      responses:
+        '200':
+          description: Application alive
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy]
+                  timestamp:
+                    type: string
+                    format: date-time
+        '503':
+          description: Application not responsive
+
+  /health/ready:
+    get:
+      summary: Readiness probe
+      description: |
+        Kubernetes readiness probe.
+        Checks if application is ready to accept traffic.
+        Returns HTTP 200 if ready, 503 if not ready.
+      operationId: getReadiness
+      tags:
+        - Health
+      security: []
+      responses:
+        '200':
+          description: Application ready
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy]
+                  timestamp:
+                    type: string
+                    format: date-time
+                  checks:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        status:
+                          type: string
+        '503':
+          description: Application not ready
+
+  /health/startup:
+    get:
+      summary: Startup probe
+      description: |
+        Kubernetes startup probe.
+        Checks if application has completed initialization.
+      operationId: getStartup
+      tags:
+        - Health
+      security: []
+      responses:
+        '200':
+          description: Application started
+        '503':
+          description: Application still starting
+
+  /health/detailed:
+    get:
+      summary: Detailed health status
+      description: |
+        Comprehensive health information with detailed error messages.
+        Includes component-level diagnostics.
+      operationId: getDetailedHealth
+      tags:
+        - Health
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Detailed health status
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/HealthCheck'
+                  - type: object
+                    properties:
+                      checks:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            status:
+                              type: string
+                            duration:
+                              type: number
+                            message:
+                              type: string
+                            metadata:
+                              type: object
+                            error:
+                              type: string
+
+  /metrics:
+    get:
+      summary: Prometheus metrics
+      description: |
+        Prometheus-compatible metrics in text format.
+        Includes custom application metrics and Node.js runtime metrics.
+      operationId: getPrometheusMetrics
+      tags:
+        - Metrics
+      security: []
+      responses:
+        '200':
+          description: Prometheus metrics
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: |
+                # HELP http_requests_total Total HTTP requests
+                # TYPE http_requests_total counter
+                http_requests_total{method="GET",endpoint="/health",status="200"} 1523
+
+                # HELP http_request_duration_seconds HTTP request latency
+                # TYPE http_request_duration_seconds histogram
+                http_request_duration_seconds_bucket{le="0.005"} 100
+                http_request_duration_seconds_bucket{le="0.01"} 200
+                http_request_duration_seconds_bucket{le="0.025"} 350
+                http_request_duration_seconds_sum 45.2
+                http_request_duration_seconds_count 500
+
+                # HELP nodejs_heap_size_used_bytes Node.js heap used
+                # TYPE nodejs_heap_size_used_bytes gauge
+                nodejs_heap_size_used_bytes 50331648
+
+  /metrics/api:
+    get:
+      summary: JSON metrics
+      description: Metrics in JSON format for programmatic access
+      operationId: getJsonMetrics
+      tags:
+        - Metrics
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: JSON metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metrics'
+              examples:
+                metrics:
+                  value:
+                    timestamp: '2024-01-01T00:00:00Z'
+                    http:
+                      requests:
+                        total: 1523
+                        successful: 1498
+                        failed: 25
+                        errorRate: 0.0164
+                      latency:
+                        p50: 12
+                        p95: 45
+                        p99: 120
+                        max: 500
+                    ai:
+                      requests:
+                        total: 523
+                        chat: 350
+                        embeddings: 173
+                      tokensUsed: 125000
+                      providers:
+                        openai: 300
+                        claude: 200
+                        llamacpp: 23
+                    queue:
+                      messagesPublished: 850
+                      messagesProcessed: 823
+                      messagesInQueue: 27
+                      averageProcessingTime: 1250
+                    system:
+                      cpu:
+                        usage: 45.2
+                        cores: 8
+                      memory:
+                        used: 2147483648
+                        total: 8589934592
+                        percentage: 25.0
+                      uptime: 3600
+
+  /status:
+    get:
+      summary: Real-time system status
+      description: Current operational status of all services
+      operationId: getStatus
+      tags:
+        - Status
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: System status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemStatus'
+
+  /logs/stream:
+    get:
+      summary: Stream logs via WebSocket
+      description: |
+        Real-time log streaming using WebSocket.
+        Supports filtering by level and component.
+      operationId: streamLogs
+      tags:
+        - Logs
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: level
+          in: query
+          schema:
+            type: string
+            enum: [debug, info, warn, error]
+          description: Minimum log level
+        - name: component
+          in: query
+          schema:
+            type: string
+          description: Filter by component name
+        - name: since
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Start time for logs
+      responses:
+        '101':
+          description: WebSocket upgrade successful
+
+  /logs:
+    get:
+      summary: Query logs
+      description: Retrieve historical logs with filtering
+      operationId: queryLogs
+      tags:
+        - Logs
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: level
+          in: query
+          schema:
+            type: string
+            enum: [debug, info, warn, error]
+        - name: component
+          in: query
+          schema:
+            type: string
+        - name: start
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: end
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+            maximum: 1000
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Full-text search query
+      responses:
+        '200':
+          description: Log entries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  logs:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LogEntry'
+                  total:
+                    type: integer
+                  hasMore:
+                    type: boolean
+
+  /metrics/custom:
+    post:
+      summary: Submit custom metric
+      description: Record custom application metric
+      operationId: submitCustomMetric
+      tags:
+        - Metrics
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - value
+              properties:
+                name:
+                  type: string
+                  description: Metric name
+                value:
+                  type: number
+                  description: Metric value
+                type:
+                  type: string
+                  enum: [counter, gauge, histogram]
+                  default: gauge
+                labels:
+                  type: object
+                  additionalProperties:
+                    type: string
+                  description: Metric labels
+                timestamp:
+                  type: string
+                  format: date-time
+            examples:
+              counter:
+                value:
+                  name: custom_operations_total
+                  value: 1
+                  type: counter
+                  labels:
+                    operation: user_signup
+              gauge:
+                value:
+                  name: active_connections
+                  value: 42
+                  type: gauge
+      responses:
+        '201':
+          description: Metric recorded
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    HealthCheck:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded, unhealthy, unknown]
+        timestamp:
+          type: string
+          format: date-time
+        checks:
+          type: array
+          items:
+            type: object
+            required:
+              - name
+              - status
+            properties:
+              name:
+                type: string
+              status:
+                type: string
+                enum: [healthy, degraded, unhealthy, unknown]
+              duration:
+                type: number
+                description: Check duration in milliseconds
+              message:
+                type: string
+        metadata:
+          type: object
+          properties:
+            version:
+              type: string
+            uptime:
+              type: number
+              description: Uptime in seconds
+
+    Metrics:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        http:
+          type: object
+          properties:
+            requests:
+              type: object
+              properties:
+                total:
+                  type: integer
+                successful:
+                  type: integer
+                failed:
+                  type: integer
+                errorRate:
+                  type: number
+            latency:
+              type: object
+              properties:
+                p50:
+                  type: number
+                p95:
+                  type: number
+                p99:
+                  type: number
+                max:
+                  type: number
+        ai:
+          type: object
+          properties:
+            requests:
+              type: object
+              additionalProperties:
+                type: integer
+            tokensUsed:
+              type: integer
+            providers:
+              type: object
+              additionalProperties:
+                type: integer
+        queue:
+          type: object
+          properties:
+            messagesPublished:
+              type: integer
+            messagesProcessed:
+              type: integer
+            messagesInQueue:
+              type: integer
+            averageProcessingTime:
+              type: number
+        system:
+          type: object
+          properties:
+            cpu:
+              type: object
+              properties:
+                usage:
+                  type: number
+                cores:
+                  type: integer
+            memory:
+              type: object
+              properties:
+                used:
+                  type: integer
+                total:
+                  type: integer
+                percentage:
+                  type: number
+            uptime:
+              type: number
+
+    SystemStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [operational, degraded, outage]
+        timestamp:
+          type: string
+          format: date-time
+        services:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              status:
+                type: string
+                enum: [operational, degraded, down]
+              latency:
+                type: number
+              uptime:
+                type: number
+              lastIncident:
+                type: string
+                format: date-time
+                nullable: true
+
+    LogEntry:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        level:
+          type: string
+          enum: [debug, info, warn, error]
+        component:
+          type: string
+        message:
+          type: string
+        metadata:
+          type: object
+        traceId:
+          type: string
+        spanId:
+          type: string

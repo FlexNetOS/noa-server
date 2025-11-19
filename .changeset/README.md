@@ -1,6 +1,7 @@
 # Changesets
 
-This folder contains changeset files that describe changes to be included in the next release.
+This folder contains changeset files that describe changes to be included in the
+next release.
 
 ## Creating a Changeset
 
@@ -11,6 +12,7 @@ pnpm changeset
 ```
 
 Follow the prompts to:
+
 1. Select packages that have changed
 2. Choose version bump type (major, minor, patch)
 3. Write a summary of changes
@@ -19,8 +21,8 @@ Follow the prompts to:
 
 ```markdown
 ---
-"@noa/api-gateway": minor
-"@noa/auth-service": patch
+'@noa/api-gateway': minor
+'@noa/auth-service': patch
 ---
 
 Add new authentication endpoint and fix token validation bug

@@ -9,84 +9,114 @@ import { QueueJob } from '../types';
 export const BackupJobDataSchema = z.object({
   source: z.object({
     type: z.enum(['database', 'filesystem', 'api', 'memory']),
-    targets: z.array(z.object({
-      name: z.string(),
-      path: z.string().optional(),
-      table: z.string().optional(),
-      endpoint: z.string().optional(),
-      filters: z.object({
-        include: z.array(z.string()).optional(),
-        exclude: z.array(z.string()).optional(),
-        dateRange: z.object({
-          start: z.date(),
-          end: z.date()
-        }).optional()
-      }).optional()
-    }))
+    targets: z.array(
+      z.object({
+        name: z.string(),
+        path: z.string().optional(),
+        table: z.string().optional(),
+        endpoint: z.string().optional(),
+        filters: z
+          .object({
+            include: z.array(z.string()).optional(),
+            exclude: z.array(z.string()).optional(),
+            dateRange: z
+              .object({
+                start: z.date(),
+                end: z.date(),
+              })
+              .optional(),
+          })
+          .optional(),
+      })
+    ),
   }),
   destination: z.object({
     type: z.enum(['filesystem', 'cloud', 'database', 'api']),
     path: z.string().optional(),
     bucket: z.string().optional(),
     endpoint: z.string().optional(),
-    credentials: z.record(z.string()).optional()
+    credentials: z.record(z.string()).optional(),
   }),
-  options: z.object({
-    compression: z.object({
-      enabled: z.boolean().optional(),
-      algorithm: z.enum(['gzip', 'brotli', 'zip', 'tar']).optional(),
-      level: z.number().optional()
-    }).optional(),
-    encryption: z.object({
-      enabled: z.boolean().optional(),
-      algorithm: z.enum(['aes-256-gcm', 'aes-128-cbc']).optional(),
-      key: z.string().optional()
-    }).optional(),
-    retention: z.object({
-      days: z.number().optional(),
-      count: z.number().optional(),
-      cleanup: z.boolean().optional()
-    }).optional(),
-    verification: z.object({
-      enabled: z.boolean().optional(),
-      checksum: z.enum(['md5', 'sha256', 'sha512']).optional()
-    }).optional(),
-    incremental: z.boolean().optional(),
-    parallel: z.boolean().optional(),
-    timeout: z.number().optional()
-  }).optional(),
+  options: z
+    .object({
+      compression: z
+        .object({
+          enabled: z.boolean().optional(),
+          algorithm: z.enum(['gzip', 'brotli', 'zip', 'tar']).optional(),
+          level: z.number().optional(),
+        })
+        .optional(),
+      encryption: z
+        .object({
+          enabled: z.boolean().optional(),
+          algorithm: z.enum(['aes-256-gcm', 'aes-128-cbc']).optional(),
+          key: z.string().optional(),
+        })
+        .optional(),
+      retention: z
+        .object({
+          days: z.number().optional(),
+          count: z.number().optional(),
+          cleanup: z.boolean().optional(),
+        })
+        .optional(),
+      verification: z
+        .object({
+          enabled: z.boolean().optional(),
+          checksum: z.enum(['md5', 'sha256', 'sha512']).optional(),
+        })
+        .optional(),
+      incremental: z.boolean().optional(),
+      parallel: z.boolean().optional(),
+      timeout: z.number().optional(),
+    })
+    .optional(),
   metadata: z.object({
     name: z.string(),
     description: z.string().optional(),
     tags: z.array(z.string()).optional(),
-    createdBy: z.string().optional()
+    createdBy: z.string().optional(),
   }),
-  notifications: z.object({
-    onSuccess: z.object({
-      email: z.object({
-        to: z.union([z.string(), z.array(z.string())]),
-        subject: z.string().optional(),
-        template: z.string().optional()
-      }).optional(),
-      webhook: z.object({
-        url: z.string(),
-        method: z.enum(['POST', 'PUT']).optional(),
-        headers: z.record(z.string()).optional()
-      }).optional()
-    }).optional(),
-    onFailure: z.object({
-      email: z.object({
-        to: z.union([z.string(), z.array(z.string())]),
-        subject: z.string().optional(),
-        template: z.string().optional()
-      }).optional(),
-      webhook: z.object({
-        url: z.string(),
-        method: z.enum(['POST', 'PUT']).optional(),
-        headers: z.record(z.string()).optional()
-      }).optional()
-    }).optional()
-  }).optional()
+  notifications: z
+    .object({
+      onSuccess: z
+        .object({
+          email: z
+            .object({
+              to: z.union([z.string(), z.array(z.string())]),
+              subject: z.string().optional(),
+              template: z.string().optional(),
+            })
+            .optional(),
+          webhook: z
+            .object({
+              url: z.string(),
+              method: z.enum(['POST', 'PUT']).optional(),
+              headers: z.record(z.string()).optional(),
+            })
+            .optional(),
+        })
+        .optional(),
+      onFailure: z
+        .object({
+          email: z
+            .object({
+              to: z.union([z.string(), z.array(z.string())]),
+              subject: z.string().optional(),
+              template: z.string().optional(),
+            })
+            .optional(),
+          webhook: z
+            .object({
+              url: z.string(),
+              method: z.enum(['POST', 'PUT']).optional(),
+              headers: z.record(z.string()).optional(),
+            })
+            .optional(),
+        })
+        .optional(),
+    })
+    .optional(),
 });
 
 export type BackupJobData = z.infer<typeof BackupJobDataSchema>;
@@ -175,7 +205,7 @@ export class BackupJob {
         jobId: job.id,
         sourceType: backupData.source.type,
         destinationType: backupData.destination.type,
-        targets: backupData.source.targets.length
+        targets: backupData.source.targets.length,
       });
 
       const results: BackupResult[] = [];
@@ -190,33 +220,33 @@ export class BackupJob {
             this.logger.warn('Backup failed for target', {
               jobId: job.id,
               target: target.name,
-              error: result.error
+              error: result.error,
             });
           }
         } catch (error) {
           this.logger.error('Backup failed for target', {
             jobId: job.id,
             target: target.name,
-            error: (error as Error).message
+            error: (error as Error).message,
           });
 
           results.push({
             success: false,
             error: (error as Error).message,
-            size: 0
+            size: 0,
           });
         }
       }
 
       // Aggregate results
-      const successCount = results.filter(r => r.success).length;
+      const successCount = results.filter((r) => r.success).length;
       const totalSize = results.reduce((sum, r) => sum + r.size, 0);
       const overallSuccess = successCount === backupData.source.targets.length;
 
       const finalResult: BackupResult = {
         success: overallSuccess,
         size: totalSize,
-        cleanupPerformed: false
+        cleanupPerformed: false,
       };
 
       // Perform retention cleanup if configured
@@ -235,22 +265,21 @@ export class BackupJob {
         totalTargets: backupData.source.targets.length,
         totalSize,
         duration,
-        cleanupPerformed: finalResult.cleanupPerformed
+        cleanupPerformed: finalResult.cleanupPerformed,
       });
 
       return finalResult;
-
     } catch (error) {
       this.logger.error('Backup operation failed', {
         jobId: job.id,
         error: (error as Error).message,
-        sourceType: backupData.source.type
+        sourceType: backupData.source.type,
       });
 
       const failureResult: BackupResult = {
         success: false,
         size: 0,
-        error: (error as Error).message
+        error: (error as Error).message,
       };
 
       // Send failure notifications
@@ -286,7 +315,10 @@ export class BackupJob {
 
     // Generate verification checksum if enabled
     if (backupData.options?.verification?.enabled) {
-      processedData.checksum = this.generateChecksum(processedData.data, backupData.options.verification.checksum);
+      processedData.checksum = this.generateChecksum(
+        processedData.data,
+        backupData.options.verification.checksum
+      );
     }
 
     // Create metadata
@@ -302,7 +334,7 @@ export class BackupJob {
       encryption: backupData.options?.encryption?.algorithm,
       checksum: processedData.checksum,
       size: processedData.size,
-      duration: 0 // Will be set by destination
+      duration: 0, // Will be set by destination
     };
 
     // Get the destination handler
@@ -343,15 +375,12 @@ export class BackupJob {
 
     // In real implementation, use crypto libraries for proper encryption
     const cipher = crypto.createCipher(algorithm, key);
-    const encrypted = Buffer.concat([
-      cipher.update(data.data),
-      cipher.final()
-    ]);
+    const encrypted = Buffer.concat([cipher.update(data.data), cipher.final()]);
 
     return {
       ...data,
       data: encrypted,
-      size: encrypted.length
+      size: encrypted.length,
     };
   }
 
@@ -373,7 +402,7 @@ export class BackupJob {
       // In real implementation, list and remove old backups based on retention policy
       this.logger.info('Performing retention cleanup', {
         days: retention.days,
-        count: retention.count
+        count: retention.count,
       });
 
       // Placeholder cleanup logic
@@ -397,7 +426,7 @@ export class BackupJob {
       location: result.location,
       error: result.error,
       metadata: backupData.metadata,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     const notificationType = result.success ? 'onSuccess' : 'onFailure';
@@ -408,7 +437,7 @@ export class BackupJob {
       this.logger.info('Sending email notification', {
         type: notificationType,
         to: config.email.to,
-        data: notificationData
+        data: notificationData,
       });
     }
 
@@ -417,7 +446,7 @@ export class BackupJob {
       this.logger.info('Sending webhook notification', {
         type: notificationType,
         url: config.webhook.url,
-        data: notificationData
+        data: notificationData,
       });
     }
   }
@@ -444,11 +473,11 @@ export class BackupJob {
           metadata: {
             path: filePath,
             modified: stats.mtime,
-            permissions: stats.mode
-          }
+            permissions: stats.mode,
+          },
         };
       },
-      getType: () => 'filesystem'
+      getType: () => 'filesystem',
     });
 
     // Register filesystem destination
@@ -463,10 +492,10 @@ export class BackupJob {
           success: true,
           location: filePath,
           size: data.size,
-          checksum: data.checksum
+          checksum: data.checksum,
         };
       },
-      getType: () => 'filesystem'
+      getType: () => 'filesystem',
     });
 
     // Register database source (placeholder)
@@ -475,18 +504,20 @@ export class BackupJob {
         // In real implementation, connect to database and export data
         this.logger.info('Backing up database', { table: config.table });
 
-        const mockData = Buffer.from(`-- Backup of ${config.table}\n-- Generated at ${new Date()}\n`);
+        const mockData = Buffer.from(
+          `-- Backup of ${config.table}\n-- Generated at ${new Date()}\n`
+        );
         return {
           name: config.name,
           data: mockData,
           size: mockData.length,
           metadata: {
             table: config.table,
-            recordCount: 0
-          }
+            recordCount: 0,
+          },
         };
       },
-      getType: () => 'database'
+      getType: () => 'database',
     });
   }
 
@@ -573,15 +604,15 @@ export class BackupJob {
     return BackupJobDataSchema.parse({
       source: {
         type: 'filesystem',
-        targets
+        targets,
       },
       destination: {
         type: 'filesystem',
-        ...destination
+        ...destination,
       },
       options,
       metadata,
-      notifications
+      notifications,
     });
   }
 
@@ -635,15 +666,15 @@ export class BackupJob {
     return BackupJobDataSchema.parse({
       source: {
         type: 'database',
-        targets
+        targets,
       },
       destination: {
         type: 'filesystem',
-        ...destination
+        ...destination,
       },
       options,
       metadata,
-      notifications: undefined
+      notifications: undefined,
     });
   }
 }

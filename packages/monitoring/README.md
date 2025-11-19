@@ -1,10 +1,12 @@
 # Noa Server Monitoring Package
 
-Comprehensive monitoring solution for Noa Server including health checks and error tracking with Sentry integration.
+Comprehensive monitoring solution for Noa Server including health checks and
+error tracking with Sentry integration.
 
 ## Features
 
 ### Health Checks (mon-004)
+
 - **Multiple Check Types**: Database, cache, memory, disk, external services
 - **Kubernetes Compatible**: Liveness, readiness, and startup probes
 - **HTTP Endpoints**: Express middleware for health monitoring
@@ -13,6 +15,7 @@ Comprehensive monitoring solution for Noa Server including health checks and err
 - **Auto-refresh**: Configurable automatic health check updates
 
 ### Error Tracking (mon-005)
+
 - **Sentry Integration**: Full Sentry SDK with performance monitoring
 - **Error Grouping**: Intelligent error deduplication
 - **Context Management**: User, request, and custom context
@@ -41,7 +44,7 @@ import {
   HealthCheckManager,
   DatabaseHealthCheck,
   CacheHealthCheck,
-  HealthEndpoints
+  HealthEndpoints,
 } from '@noa-server/monitoring/health';
 import express from 'express';
 
@@ -64,13 +67,13 @@ app.listen(3000);
 import {
   ErrorTracker,
   ExpressErrorHandler,
-  ProcessErrorHandler
+  ProcessErrorHandler,
 } from '@noa-server/monitoring/errors';
 
 const tracker = new ErrorTracker({
   dsn: process.env.SENTRY_DSN!,
   environment: 'production',
-  release: '1.0.0'
+  release: '1.0.0',
 });
 
 const expressHandler = new ExpressErrorHandler(tracker);
@@ -83,12 +86,15 @@ processHandler.register();
 
 ## Documentation
 
-- **[Health Checks Guide](./docs/HEALTH_CHECKS.md)** - Complete health monitoring documentation
-- **[Error Tracking Guide](./docs/ERROR_TRACKING.md)** - Comprehensive error tracking guide
+- **[Health Checks Guide](./docs/HEALTH_CHECKS.md)** - Complete health
+  monitoring documentation
+- **[Error Tracking Guide](./docs/ERROR_TRACKING.md)** - Comprehensive error
+  tracking guide
 
 ## Examples
 
 See the [examples](./examples/) directory for complete working examples:
+
 - `health-check-example.ts` - Full health monitoring setup
 - `error-tracking-example.ts` - Complete error tracking integration
 
@@ -158,9 +164,9 @@ const recent = tracker.getRecentErrors(limit);
 
 ```typescript
 {
-  enableAutoRefresh: boolean;     // Auto-refresh health checks
-  refreshInterval: number;        // Refresh interval (ms)
-  parallelExecution: boolean;     // Run checks in parallel
+  enableAutoRefresh: boolean; // Auto-refresh health checks
+  refreshInterval: number; // Refresh interval (ms)
+  parallelExecution: boolean; // Run checks in parallel
 }
 ```
 
@@ -241,6 +247,7 @@ MIT
 ## Support
 
 For issues and questions:
+
 - GitHub Issues: [noa-server/issues](https://github.com/noa-server/issues)
 - Documentation: [docs/](./docs/)
 - Examples: [examples/](./examples/)

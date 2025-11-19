@@ -13,7 +13,10 @@
 
     Custom auth is supported for all deployments in the **managed LangGraph Platform**, as well as **Enterprise** self-hosted plans.
 
-This guide shows how to add custom authentication to your LangGraph Platform application. This guide applies to both LangGraph Platform and self-hosted deployments. It does not apply to isolated usage of the LangGraph open source library in your own custom server.
+This guide shows how to add custom authentication to your LangGraph Platform
+application. This guide applies to both LangGraph Platform and self-hosted
+deployments. It does not apply to isolated usage of the LangGraph open source
+library in your own custom server.
 
 !!! note
 
@@ -21,7 +24,12 @@ This guide shows how to add custom authentication to your LangGraph Platform app
 
 ## Add custom authentication to your deployment
 
-To leverage custom authentication and access user-level metadata in your deployments, set up custom authentication to automatically populate the `config["configurable"]["langgraph_auth_user"]` object through a custom authentication handler. You can then access this object in your graph with the `langgraph_auth_user` key to [allow an agent to perform authenticated actions on behalf of the user](#enable-agent-authentication).
+To leverage custom authentication and access user-level metadata in your
+deployments, set up custom authentication to automatically populate the
+`config["configurable"]["langgraph_auth_user"]` object through a custom
+authentication handler. You can then access this object in your graph with the
+`langgraph_auth_user` key to
+[allow an agent to perform authenticated actions on behalf of the user](#enable-agent-authentication).
 
 :::python
 
@@ -58,8 +66,10 @@ To leverage custom authentication and access user-level metadata in your deploym
         }
     ```
 
-    1. This handler receives the request (headers, etc.), validates the user, and returns a dictionary with at least an identity field.
-    2. You can add any custom fields you want (e.g., OAuth tokens, roles, org IDs, etc.).
+    1. This handler receives the request (headers, etc.), validates the user,
+       and returns a dictionary with at least an identity field.
+    2. You can add any custom fields you want (e.g., OAuth tokens, roles, org
+       IDs, etc.).
 
 2.  In your `langgraph.json`, add the path to your auth file:
 
@@ -76,7 +86,10 @@ To leverage custom authentication and access user-level metadata in your deploym
     }
     ```
 
-3.  Once you've set up authentication in your server, requests must include the required authorization information based on your chosen scheme. Assuming you are using JWT token authentication, you could access your deployments using any of the following methods:
+3.  Once you've set up authentication in your server, requests must include the
+    required authorization information based on your chosen scheme. Assuming you
+    are using JWT token authentication, you could access your deployments using
+    any of the following methods:
 
     === "Python Client"
 
@@ -124,9 +137,14 @@ To leverage custom authentication and access user-level metadata in your deploym
 
 ## Enable agent authentication
 
-After [authentication](#add-custom-authentication-to-your-deployment), the platform creates a special configuration object (`config`) that is passed to LangGraph Platform deployment. This object contains information about the current user, including any custom fields you return from your `@auth.authenticate` handler.
+After [authentication](#add-custom-authentication-to-your-deployment), the
+platform creates a special configuration object (`config`) that is passed to
+LangGraph Platform deployment. This object contains information about the
+current user, including any custom fields you return from your
+`@auth.authenticate` handler.
 
-To allow an agent to perform authenticated actions on behalf of the user, access this object in your graph with the `langgraph_auth_user` key:
+To allow an agent to perform authenticated actions on behalf of the user, access
+this object in your graph with the `langgraph_auth_user` key:
 
 ```python
 def my_node(state, config):
@@ -142,10 +160,14 @@ def my_node(state, config):
 
 ### Authorizing a Studio user
 
-By default, if you add custom authorization on your resources, this will also apply to interactions made from the Studio. If you want, you can handle logged-in Studio users differently by checking [is_studio_user()](../../reference/functions/sdk_auth.isStudioUser.html).
+By default, if you add custom authorization on your resources, this will also
+apply to interactions made from the Studio. If you want, you can handle
+logged-in Studio users differently by checking
+[is_studio_user()](../../reference/functions/sdk_auth.isStudioUser.html).
 
-!!! note
-    `is_studio_user` was added in version 0.1.73 of the langgraph-sdk. If you're on an older version, you can still check whether `isinstance(ctx.user, StudioUser)`.
+!!! note `is_studio_user` was added in version 0.1.73 of the langgraph-sdk. If
+you're on an older version, you can still check whether
+`isinstance(ctx.user, StudioUser)`.
 
 ```python
 from langgraph_sdk.auth import is_studio_user, Auth
@@ -167,7 +189,8 @@ async def add_owner(
     return filters
 ```
 
-Only use this if you want to permit developer access to a graph deployed on the managed LangGraph Platform SaaS.
+Only use this if you want to permit developer access to a graph deployed on the
+managed LangGraph Platform SaaS.
 
 :::
 
@@ -180,40 +203,42 @@ Only use this if you want to permit developer access to a graph deployed on the 
         Without a custom `authenticate` handler, LangGraph sees only the API-key owner (usually the developer), so requests aren’t scoped to individual end-users. To propagate custom tokens, you must implement your own handler.
 
     ```typescript
-    import { Auth, HTTPException } from "@langchain/langgraph-sdk/auth";
+    import { Auth, HTTPException } from '@langchain/langgraph-sdk/auth';
 
     const auth = new Auth()
       .authenticate(async (request) => {
-        const authorization = request.headers.get("Authorization");
-        const token = authorization?.split(" ")[1]; // "Bearer <token>"
+        const authorization = request.headers.get('Authorization');
+        const token = authorization?.split(' ')[1]; // "Bearer <token>"
         if (!token) {
-          throw new HTTPException(401, "No token provided");
+          throw new HTTPException(401, 'No token provided');
         }
         try {
           const user = await verifyToken(token);
           return user;
         } catch (error) {
-          throw new HTTPException(401, "Invalid token");
+          throw new HTTPException(401, 'Invalid token');
         }
       })
       // Add authorization rules to actually control access to resources
-      .on("*", async ({ user, value }) => {
+      .on('*', async ({ user, value }) => {
         const filters = { owner: user.identity };
         const metadata = value.metadata ?? {};
         metadata.update(filters);
         return filters;
       })
       // Assumes you organize information in store like (user_id, resource_type, resource_id)
-      .on("store", async ({ user, value }) => {
+      .on('store', async ({ user, value }) => {
         const namespace = value.namespace;
         if (namespace[0] !== user.identity) {
-          throw new HTTPException(403, "Not authorized");
+          throw new HTTPException(403, 'Not authorized');
         }
       });
     ```
 
-    1. This handler receives the request (headers, etc.), validates the user, and returns an object with at least an identity field.
-    2. You can add any custom fields you want (e.g., OAuth tokens, roles, org IDs, etc.).
+    1. This handler receives the request (headers, etc.), validates the user,
+       and returns an object with at least an identity field.
+    2. You can add any custom fields you want (e.g., OAuth tokens, roles, org
+       IDs, etc.).
 
 2.  In your `langgraph.json`, add the path to your auth file:
 
@@ -230,7 +255,10 @@ Only use this if you want to permit developer access to a graph deployed on the 
     }
     ```
 
-3.  Once you've set up authentication in your server, requests must include the required authorization information based on your chosen scheme. Assuming you are using JWT token authentication, you could access your deployments using any of the following methods:
+3.  Once you've set up authentication in your server, requests must include the
+    required authorization information based on your chosen scheme. Assuming you
+    are using JWT token authentication, you could access your deployments using
+    any of the following methods:
 
     === "SDK Client"
 
@@ -267,9 +295,14 @@ Only use this if you want to permit developer access to a graph deployed on the 
 
 ## Enable agent authentication
 
-After [authentication](#add-custom-authentication-to-your-deployment), the platform creates a special configuration object (`config`) that is passed to LangGraph Platform deployment. This object contains information about the current user, including any custom fields you return from your `authenticate` handler.
+After [authentication](#add-custom-authentication-to-your-deployment), the
+platform creates a special configuration object (`config`) that is passed to
+LangGraph Platform deployment. This object contains information about the
+current user, including any custom fields you return from your `authenticate`
+handler.
 
-To allow an agent to perform authenticated actions on behalf of the user, access this object in your graph with the `langgraph_auth_user` key:
+To allow an agent to perform authenticated actions on behalf of the user, access
+this object in your graph with the `langgraph_auth_user` key:
 
 ```ts
 async function myNode(state, config) {

@@ -1,0 +1,439 @@
+{
+  "info": {
+    "name": "NOA Server API Collection",
+    "description": "Complete API collection for NOA Server - AI Inference, Authentication, Message Queue, and Monitoring",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{authToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "apiKey",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has user data\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.eql(true);",
+                  "    pm.expect(jsonData.user).to.have.property('id');",
+                  "    pm.expect(jsonData.user).to.have.property('email');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"SecureP@ssw0rd123!\",\n  \"metadata\": {\n    \"firstName\": \"Test\",\n    \"lastName\": \"User\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has tokens\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.eql(true);",
+                  "    pm.expect(jsonData.token).to.have.property('accessToken');",
+                  "    pm.expect(jsonData.token).to.have.property('refreshToken');",
+                  "    ",
+                  "    // Store tokens for subsequent requests",
+                  "    pm.collectionVariables.set('authToken', jsonData.token.accessToken);",
+                  "    pm.collectionVariables.set('refreshToken', jsonData.token.refreshToken);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"SecureP@ssw0rd123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "refresh"]
+            }
+          }
+        },
+        {
+          "name": "Setup MFA",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/mfa/setup",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "mfa", "setup"]
+            }
+          }
+        },
+        {
+          "name": "Create API Key",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('apiKey', jsonData.key);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test API Key\",\n  \"expiresIn\": 31536000,\n  \"scopes\": [\"inference:read\", \"inference:write\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/api-keys",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "api-keys"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "AI Inference",
+      "item": [
+        {
+          "name": "Chat Completion",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has completion\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('choices');",
+                  "    pm.expect(jsonData.choices.length).to.be.above(0);",
+                  "    pm.expect(jsonData.choices[0].message).to.have.property('content');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a helpful AI assistant.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"What is the capital of France?\"\n    }\n  ],\n  \"model\": \"gpt-4\",\n  \"config\": {\n    \"temperature\": 0.7,\n    \"max_tokens\": 1000\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inference/chat",
+              "host": ["{{baseUrl}}"],
+              "path": ["inference", "chat"]
+            }
+          }
+        },
+        {
+          "name": "Generate Embeddings",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"input\": \"The quick brown fox jumps over the lazy dog\",\n  \"model\": \"text-embedding-ada-002\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inference/embeddings",
+              "host": ["{{baseUrl}}"],
+              "path": ["inference", "embeddings"]
+            }
+          }
+        },
+        {
+          "name": "List Models",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/models",
+              "host": ["{{baseUrl}}"],
+              "path": ["models"]
+            }
+          }
+        },
+        {
+          "name": "Switch Model",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"provider\": \"claude\",\n  \"model\": \"claude-3-5-sonnet-20241022\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/models/switch",
+              "host": ["{{baseUrl}}"],
+              "path": ["models", "switch"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Message Queue",
+      "item": [
+        {
+          "name": "Publish Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"queue\": \"ai-inference\",\n  \"payload\": {\n    \"type\": \"chat_completion\",\n    \"model\": \"gpt-4\",\n    \"messages\": [\n      {\n        \"role\": \"user\",\n        \"content\": \"Process this in the background\"\n      }\n    ]\n  },\n  \"priority\": \"high\",\n  \"ttl\": 3600\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/queue/publish",
+              "host": ["{{baseUrl}}"],
+              "path": ["queue", "publish"]
+            }
+          }
+        },
+        {
+          "name": "Consume Messages",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/queue/consume?queue=ai-inference&limit=5&timeout=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["queue", "consume"],
+              "query": [
+                {
+                  "key": "queue",
+                  "value": "ai-inference"
+                },
+                {
+                  "key": "limit",
+                  "value": "5"
+                },
+                {
+                  "key": "timeout",
+                  "value": "20"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Queue Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/queue/status?queue=ai-inference",
+              "host": ["{{baseUrl}}"],
+              "path": ["queue", "status"],
+              "query": [
+                {
+                  "key": "queue",
+                  "value": "ai-inference"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Monitoring",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/../../health",
+              "host": ["{{baseUrl}}"],
+              "path": ["..", "..", "health"]
+            }
+          }
+        },
+        {
+          "name": "Readiness Probe",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/../../health/ready",
+              "host": ["{{baseUrl}}"],
+              "path": ["..", "..", "health", "ready"]
+            }
+          }
+        },
+        {
+          "name": "Prometheus Metrics",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/../../metrics",
+              "host": ["{{baseUrl}}"],
+              "path": ["..", "..", "metrics"]
+            }
+          }
+        },
+        {
+          "name": "JSON Metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/../../metrics/api",
+              "host": ["{{baseUrl}}"],
+              "path": ["..", "..", "metrics", "api"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

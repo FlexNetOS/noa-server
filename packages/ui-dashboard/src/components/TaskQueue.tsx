@@ -18,12 +18,12 @@ export function TaskQueue({ tasks, onCancel }: TaskQueueProps) {
   };
 
   return (
-    <div className="bg-brand-card border border-brand-border rounded-lg p-6">
-      <h2 className="text-xl font-bold text-white mb-4">Task Queue</h2>
+    <div className="rounded-lg border border-brand-border bg-brand-card p-6">
+      <h2 className="mb-4 text-xl font-bold text-white">Task Queue</h2>
 
-      <div className="space-y-2 max-h-96 overflow-y-auto">
+      <div className="max-h-96 space-y-2 overflow-y-auto">
         {tasks.length === 0 ? (
-          <p className="text-center text-brand-muted py-8">No tasks in queue</p>
+          <p className="py-8 text-center text-brand-muted">No tasks in queue</p>
         ) : (
           tasks.map((task, index) => (
             <motion.div
@@ -31,11 +31,11 @@ export function TaskQueue({ tasks, onCancel }: TaskQueueProps) {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.05 }}
-              className="bg-brand-bg/50 border border-brand-border rounded-lg p-3 hover:border-brand-accent/50 transition-colors"
+              className="rounded-lg border border-brand-border bg-brand-bg/50 p-3 transition-colors hover:border-brand-accent/50"
             >
-              <div className="flex items-start justify-between mb-2">
+              <div className="mb-2 flex items-start justify-between">
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
+                  <div className="mb-1 flex items-center gap-2">
                     <h4 className="font-medium text-white">{task.type}</h4>
                     <span className={`text-xs font-semibold ${priorityColors[task.priority]}`}>
                       {task.priority.toUpperCase()}
@@ -46,7 +46,7 @@ export function TaskQueue({ tasks, onCancel }: TaskQueueProps) {
                   </p>
                 </div>
                 <span
-                  className={`px-2 py-1 rounded text-xs font-medium border ${getStatusBadgeClass(task.status)}`}
+                  className={`rounded border px-2 py-1 text-xs font-medium ${getStatusBadgeClass(task.status)}`}
                 >
                   {task.status}
                 </span>
@@ -54,13 +54,13 @@ export function TaskQueue({ tasks, onCancel }: TaskQueueProps) {
 
               {task.progress !== undefined && (
                 <div className="mb-2">
-                  <div className="w-full bg-brand-border rounded-full h-1.5">
+                  <div className="h-1.5 w-full rounded-full bg-brand-border">
                     <div
-                      className="bg-brand-accent h-1.5 rounded-full transition-all duration-300"
+                      className="h-1.5 rounded-full bg-brand-accent transition-all duration-300"
                       style={{ width: `${task.progress}%` }}
                     />
                   </div>
-                  <p className="text-xs text-brand-muted mt-1">{task.progress}% complete</p>
+                  <p className="mt-1 text-xs text-brand-muted">{task.progress}% complete</p>
                 </div>
               )}
 

@@ -136,38 +136,38 @@ export class AutomationConfigLoader {
         threshold: 7.0,
         blockBelowThreshold: false,
         autoRetryOnFailure: true,
-        maxRetries: 2
+        maxRetries: 2,
       },
       bypass: {
         enabled: true,
         prefixes: ['@raw:', '@skip:', '@direct:', '@noopt:'],
-        allowAdminOverride: true
+        allowAdminOverride: true,
       },
       caching: {
         enabled: true,
         ttl: 3600,
         maxEntries: 1000,
-        strategy: 'lru'
+        strategy: 'lru',
       },
       strategies: {
         default: 'auto-detect',
         fallback: 'technical',
-        forceStrategy: null
+        forceStrategy: null,
       },
       integrations: {
         claudeCode: {
           enabled: true,
-          hookPriority: 'high'
+          hookPriority: 'high',
         },
         api: {
           enabled: true,
           endpoints: ['*'],
-          excludeEndpoints: []
+          excludeEndpoints: [],
         },
         terminal: {
           enabled: false,
-          commands: ['ai', 'claude', 'chat']
-        }
+          commands: ['ai', 'claude', 'chat'],
+        },
       },
       logging: {
         enabled: true,
@@ -176,30 +176,30 @@ export class AutomationConfigLoader {
         logOptimized: true,
         logMetrics: true,
         logBypass: true,
-        destination: 'console'
+        destination: 'console',
       },
       monitoring: {
         enabled: true,
         trackMetrics: true,
         trackPerformance: true,
         trackCacheHits: true,
-        alertOnFailures: false
+        alertOnFailures: false,
       },
       performance: {
         maxProcessingTime: 5000,
         timeoutAction: 'passthrough',
-        parallelOptimization: false
+        parallelOptimization: false,
       },
       abTesting: {
         enabled: false,
         sampleRate: 0.1,
-        compareResults: true
+        compareResults: true,
       },
       emergency: {
         overrideEnabled: false,
         overrideKey: null,
-        disableOnError: false
-      }
+        disableOnError: false,
+      },
     };
   }
 
@@ -214,11 +214,7 @@ export class AutomationConfigLoader {
 
   private saveConfig(): void {
     try {
-      fs.writeFileSync(
-        this.configPath,
-        JSON.stringify(this.config, null, 2),
-        'utf-8'
-      );
+      fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 2), 'utf-8');
     } catch (error) {
       console.error('Failed to save automation config:', error);
     }
@@ -235,9 +231,7 @@ export class AutomationConfigLoader {
   isBypassAllowed(prompt: string): boolean {
     if (!this.config.bypass.enabled) return false;
 
-    return this.config.bypass.prefixes.some(prefix =>
-      prompt.trim().startsWith(prefix)
-    );
+    return this.config.bypass.prefixes.some((prefix) => prompt.trim().startsWith(prefix));
   }
 
   removeBypassPrefix(prompt: string): string {

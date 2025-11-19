@@ -20,16 +20,18 @@ const { main: startServer, AgenticMarketingServer } = require('./main');
 // Version and description
 program
   .version('2.0.0')
-  .description('Agentic Marketing - Autonomous Media Planning & Marketing Operations Platform\n\n' +
-    '  Powered by Flow Nexus MCP with modular architecture\n\n' +
-    '  Quick Start:\n' +
-    '    $ npx agentic-marketing init          # Initialize project\n' +
-    '    $ npx agentic-marketing start         # Start with MCP integration\n\n' +
-    '  Features:\n' +
-    '    • Flow Nexus MCP SDK integration\n' +
-    '    • Cross-platform SQLite persistence\n' +
-    '    • Auto-initialize swarms and workflows\n' +
-    '    • Modular, scalable architecture');
+  .description(
+    'Agentic Marketing - Autonomous Media Planning & Marketing Operations Platform\n\n' +
+      '  Powered by Flow Nexus MCP with modular architecture\n\n' +
+      '  Quick Start:\n' +
+      '    $ npx agentic-marketing init          # Initialize project\n' +
+      '    $ npx agentic-marketing start         # Start with MCP integration\n\n' +
+      '  Features:\n' +
+      '    • Flow Nexus MCP SDK integration\n' +
+      '    • Cross-platform SQLite persistence\n' +
+      '    • Auto-initialize swarms and workflows\n' +
+      '    • Modular, scalable architecture'
+  );
 
 // Init command
 program
@@ -41,27 +43,27 @@ program
   .action(async (options) => {
     console.log(chalk.cyan('\n' + getAsciiLogo()));
     console.log(chalk.green('Agentic Marketing Platform v2.0 - Modular Architecture\n'));
-    
+
     const spinner = ora('Initializing platform...').start();
-    
+
     try {
       // Create project directory
       const projectPath = path.join(process.cwd(), options.name);
       if (!fs.existsSync(projectPath)) {
         fs.mkdirSync(projectPath, { recursive: true });
       }
-      
+
       // Create subdirectories
       const dirs = ['src', 'config', 'data', 'logs'];
-      dirs.forEach(dir => {
+      dirs.forEach((dir) => {
         const dirPath = path.join(projectPath, dir);
         if (!fs.existsSync(dirPath)) {
           fs.mkdirSync(dirPath, { recursive: true });
         }
       });
-      
+
       spinner.succeed('Project directory structure created');
-      
+
       // Copy source files
       spinner.start('Copying application files...');
       const sourceFiles = [
@@ -71,26 +73,26 @@ program
         { src: 'src/MediaPlanningAPI.js', dest: 'src/MediaPlanningAPI.js' },
         { src: 'main.js', dest: 'main.js' },
         { src: 'schema.sql', dest: 'schema.sql' },
-        { src: 'package.json', dest: 'package.json' }
+        { src: 'package.json', dest: 'package.json' },
       ];
-      
+
       sourceFiles.forEach(({ src, dest }) => {
         const sourcePath = path.join(__dirname, src);
         const destPath = path.join(projectPath, dest);
-        
+
         if (fs.existsSync(sourcePath)) {
           // Ensure destination directory exists
           const destDir = path.dirname(destPath);
           if (!fs.existsSync(destDir)) {
             fs.mkdirSync(destDir, { recursive: true });
           }
-          
+
           fs.copyFileSync(sourcePath, destPath);
         } else {
           console.warn(chalk.yellow(`Source file not found: ${sourcePath}`));
         }
       });
-      
+
       // Update package.json
       const packageJsonPath = path.join(projectPath, 'package.json');
       if (fs.existsSync(packageJsonPath)) {
@@ -102,50 +104,50 @@ program
           ...packageJson.scripts,
           start: 'node main.js',
           dev: 'nodemon main.js',
-          test: 'echo "No tests specified"'
+          test: 'echo "No tests specified"',
         };
         fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
       }
-      
+
       spinner.succeed('Application files copied');
-      
+
       // Create cross-platform startup scripts
       createStartupScripts(projectPath, options.port);
       spinner.succeed('Startup scripts created');
-      
+
       // Create config file
       const config = {
         name: options.name,
         port: parseInt(options.port),
         database: {
           path: path.join('data', 'mediaspend.db').replace(/\\/g, '/'), // Use forward slashes for cross-platform
-          mode: 'WAL'
+          mode: 'WAL',
         },
         flowNexus: {
           authenticated: false,
-          autoInitialize: true
+          autoInitialize: true,
         },
         logging: {
           level: 'info',
-          file: path.join('logs', 'app.log').replace(/\\/g, '/')
-        }
+          file: path.join('logs', 'app.log').replace(/\\/g, '/'),
+        },
       };
-      
+
       fs.writeFileSync(
         path.join(projectPath, 'config', 'config.json'),
         JSON.stringify(config, null, 2)
       );
       spinner.succeed('Configuration created');
-      
+
       // Install dependencies
       spinner.start('Installing dependencies...');
       await new Promise((resolve) => {
         const npmInstall = spawn('npm', ['install'], {
           cwd: projectPath,
           shell: true,
-          stdio: 'pipe'
+          stdio: 'pipe',
         });
-        
+
         npmInstall.on('close', (code) => {
           if (code === 0) {
             spinner.succeed('Dependencies installed');
@@ -154,18 +156,18 @@ program
           }
           resolve();
         });
-        
+
         npmInstall.on('error', () => {
           spinner.warn('Could not auto-install dependencies - run npm install manually');
           resolve();
         });
       });
-      
+
       // Initialize SQLite database with cross-platform path handling
       spinner.start('Initializing cross-platform SQLite database...');
       const dbPath = path.join(projectPath, 'data', 'mediaspend.db');
       const schemaPath = path.join(projectPath, 'schema.sql');
-      
+
       if (fs.existsSync(schemaPath)) {
         try {
           // Use sqlite3 node module for cross-platform compatibility
@@ -190,12 +192,12 @@ program
       } else {
         spinner.warn('Schema file not found - database will be created on first run');
       }
-      
+
       // Flow Nexus authentication (if not skipped)
       if (!options.skipAuth) {
         await handleFlowNexusAuth(projectPath);
       }
-      
+
       // Success message
       console.log(chalk.green('\n✨ Agentic Marketing Platform v2.0 initialized successfully!\n'));
       console.log(chalk.white('🚀 Features:'));
@@ -203,7 +205,7 @@ program
       console.log(chalk.gray('   • Cross-platform SQLite persistence'));
       console.log(chalk.gray('   • Auto-initializing AI swarms'));
       console.log(chalk.gray('   • Modular, scalable architecture'));
-      
+
       console.log(chalk.white('\n📁 Project Structure:'));
       console.log(chalk.cyan(`   ${options.name}/`));
       console.log(chalk.gray('   ├── src/                # Application modules'));
@@ -211,12 +213,13 @@ program
       console.log(chalk.gray('   ├── data/               # SQLite database'));
       console.log(chalk.gray('   ├── logs/               # Application logs'));
       console.log(chalk.gray('   └── main.js             # Entry point'));
-      
+
       console.log(chalk.white('\n🎯 Next Steps:'));
       console.log(chalk.cyan(`   cd ${options.name}`));
       console.log(chalk.cyan('   npm start'));
-      console.log(chalk.white(`\n   Dashboard: ${chalk.yellow(`http://localhost:${options.port}`)}`));
-      
+      console.log(
+        chalk.white(`\n   Dashboard: ${chalk.yellow(`http://localhost:${options.port}`)}`)
+      );
     } catch (error) {
       spinner.fail('Initialization failed');
       console.error(chalk.red(error.message));
@@ -234,21 +237,24 @@ program
   .action(async (options) => {
     console.log(chalk.cyan(getAsciiLogo()));
     console.log(chalk.green('Starting Agentic Marketing Platform v2.0...\n'));
-    
+
     // Load config if available
     let config = { port: parseInt(options.port) };
     if (fs.existsSync(options.config)) {
       try {
-        config = { ...JSON.parse(fs.readFileSync(options.config, 'utf8')), port: parseInt(options.port) };
+        config = {
+          ...JSON.parse(fs.readFileSync(options.config, 'utf8')),
+          port: parseInt(options.port),
+        };
       } catch (error) {
         console.warn(chalk.yellow('Could not load config, using defaults'));
       }
     }
-    
+
     try {
       // Check if we're in MCP-enabled environment
       let mcpTools = null;
-      
+
       if (options.mock) {
         console.log(chalk.yellow('🧪 Using mock MCP tools for development'));
       } else {
@@ -261,10 +267,9 @@ program
           console.log(chalk.yellow('⚠️  MCP tools not detected - using simulation mode'));
         }
       }
-      
+
       // Start server with MCP tools
       await startServer(mcpTools);
-      
     } catch (error) {
       console.error(chalk.red('❌ Failed to start server:'), error.message);
       process.exit(1);
@@ -279,10 +284,10 @@ program
   .action(async (options) => {
     try {
       const http = require('http');
-      
+
       const req = http.get(`http://localhost:${options.port}/health`, (res) => {
         let data = '';
-        res.on('data', (chunk) => data += chunk);
+        res.on('data', (chunk) => (data += chunk));
         res.on('end', () => {
           try {
             const status = JSON.parse(data);
@@ -297,12 +302,12 @@ program
           }
         });
       });
-      
+
       req.on('error', () => {
         console.log(chalk.red('\n❌ Server Status: OFFLINE'));
         console.log(chalk.yellow('   Run "npx agentic-marketing start" to start the server\n'));
       });
-      
+
       req.setTimeout(5000, () => {
         req.destroy();
         console.log(chalk.red('\n❌ Server Status: TIMEOUT'));
@@ -340,17 +345,17 @@ export NODE_ENV=\${NODE_ENV:-production}
 # Start the application
 node main.js
 `;
-  
+
   const startShPath = path.join(projectPath, 'start.sh');
   fs.writeFileSync(startShPath, startSh);
-  
+
   // Make executable on Unix-like systems
   try {
     fs.chmodSync(startShPath, '755');
   } catch (error) {
     // Ignore chmod errors on Windows
   }
-  
+
   // Windows batch file
   const startBat = `@echo off
 echo Starting Agentic Marketing Platform v2.0...
@@ -366,9 +371,9 @@ REM Start the application
 node main.js
 pause
 `;
-  
+
   fs.writeFileSync(path.join(projectPath, 'start.bat'), startBat);
-  
+
   // PowerShell script for Windows
   const startPs1 = `# Agentic Marketing Platform v2.0 - PowerShell Launcher
 Write-Host "Starting Agentic Marketing Platform v2.0..." -ForegroundColor Cyan
@@ -385,13 +390,13 @@ if (-not $env:NODE_ENV) {
 # Start the application
 node main.js
 `;
-  
+
   fs.writeFileSync(path.join(projectPath, 'start.ps1'), startPs1);
 }
 
 async function handleFlowNexusAuth(projectPath) {
   console.log(chalk.cyan('\n🔐 Flow Nexus Authentication Setup\n'));
-  
+
   try {
     const { authAction } = await inquirer.prompt([
       {
@@ -401,16 +406,16 @@ async function handleFlowNexusAuth(projectPath) {
         choices: [
           { name: 'Login with existing account', value: 'login' },
           { name: 'Register new account (256 free credits)', value: 'register' },
-          { name: 'Configure later', value: 'skip' }
-        ]
-      }
+          { name: 'Configure later', value: 'skip' },
+        ],
+      },
     ]);
-    
+
     if (authAction === 'skip') {
       console.log(chalk.yellow('Authentication skipped - you can login via the dashboard'));
       return;
     }
-    
+
     const { email, password } = await inquirer.prompt([
       {
         type: 'input',
@@ -419,32 +424,31 @@ async function handleFlowNexusAuth(projectPath) {
         validate: (input) => {
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           return emailRegex.test(input) || 'Please enter a valid email';
-        }
+        },
       },
       {
         type: 'password',
         name: 'password',
         message: 'Password:',
-        mask: '*'
-      }
+        mask: '*',
+      },
     ]);
-    
+
     // Save credentials for server startup
     const credentials = {
       email,
       password,
       action: authAction,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
-    
+
     fs.writeFileSync(
       path.join(projectPath, '.flow-nexus-credentials.json'),
       JSON.stringify(credentials, null, 2)
     );
-    
+
     console.log(chalk.green(`✅ Credentials saved for ${authAction}`));
     console.log(chalk.white('Server will authenticate automatically on startup'));
-    
   } catch (error) {
     console.log(chalk.yellow('Authentication setup skipped'));
   }

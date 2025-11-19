@@ -2,7 +2,8 @@
 
 ## :fontawesome-brands-safari:{ .safari } Safari Connection Issues
 
-Safari blocks plain-HTTP traffic on localhost. When running Studio with `langgraph dev`, you may see "Failed to load assistants" errors.
+Safari blocks plain-HTTP traffic on localhost. When running Studio with
+`langgraph dev`, you may see "Failed to load assistants" errors.
 
 ### Solution 1: Use Cloudflare Tunnel
 
@@ -29,15 +30,19 @@ The command outputs a URL in this format:
 https://smith.langchain.com/studio/?baseUrl=https://hamilton-praise-heart-costumes.trycloudflare.com
 ```
 
-Use this URL in Safari to load Studio. Here, the `baseUrl` parameter specifies your agent server endpoint.
+Use this URL in Safari to load Studio. Here, the `baseUrl` parameter specifies
+your agent server endpoint.
 
 ### Solution 2: Use Chromium Browser
 
-Chrome and other Chromium browsers allow HTTP on localhost. Use `langgraph dev` without additional configuration.
+Chrome and other Chromium browsers allow HTTP on localhost. Use `langgraph dev`
+without additional configuration.
 
 ## :fontawesome-brands-brave:{ .brave } Brave Connection Issues
 
-Brave blocks plain-HTTP traffic on localhost when Brave Shields are enabled. When running Studio with `langgraph dev`, you may see "Failed to load assistants" errors.
+Brave blocks plain-HTTP traffic on localhost when Brave Shields are enabled.
+When running Studio with `langgraph dev`, you may see "Failed to load
+assistants" errors.
 
 ### Solution 1: Disable Brave Shields
 
@@ -70,13 +75,15 @@ The command outputs a URL in this format:
 https://smith.langchain.com/studio/?baseUrl=https://hamilton-praise-heart-costumes.trycloudflare.com
 ```
 
-Use this URL in Brave to load Studio. Here, the `baseUrl` parameter specifies your agent server endpoint.
+Use this URL in Brave to load Studio. Here, the `baseUrl` parameter specifies
+your agent server endpoint.
 
 ## Graph Edge Issues
 
-:::python
-Undefined conditional edges may show unexpected connections in your graph. This is
-because without proper definition, LangGraph Studio assumes the conditional edge could access all other nodes. To address this, explicitly define the routing paths using one of these methods:
+:::python Undefined conditional edges may show unexpected connections in your
+graph. This is because without proper definition, LangGraph Studio assumes the
+conditional edge could access all other nodes. To address this, explicitly
+define the routing paths using one of these methods:
 
 ### Solution 1: Path Map
 
@@ -100,14 +107,15 @@ def routing_function(state: GraphState) -> Literal["node_b","node_c"]:
 
 :::
 
-:::js
-Undefined conditional edges may show unexpected connections in your graph. This is because without proper definition, LangGraph Studio assumes the conditional edge could access all other nodes.
-To address this, explicitly define a mapping between router outputs and target nodes:
+:::js Undefined conditional edges may show unexpected connections in your graph.
+This is because without proper definition, LangGraph Studio assumes the
+conditional edge could access all other nodes. To address this, explicitly
+define a mapping between router outputs and target nodes:
 
 ```typescript
-graph.addConditionalEdges("node_a", routingFunction, {
-  true: "node_b",
-  false: "node_c",
+graph.addConditionalEdges('node_a', routingFunction, {
+  true: 'node_b',
+  false: 'node_c',
 });
 ```
 

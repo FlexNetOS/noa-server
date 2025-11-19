@@ -34,15 +34,13 @@ export function useDebouncedCallback<T extends (...args: any[]) => any>(
   // Update callback ref on each render to avoid stale closures
   callbackRef.current = callback;
 
-  return useRef(
-    ((...args: Parameters<T>) => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
+  return useRef(((...args: Parameters<T>) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
 
-      timeoutRef.current = setTimeout(() => {
-        callbackRef.current(...args);
-      }, delay);
-    }) as T
-  ).current;
+    timeoutRef.current = setTimeout(() => {
+      callbackRef.current(...args);
+    }, delay);
+  }) as T).current;
 }

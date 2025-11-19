@@ -34,10 +34,7 @@ export class SentryIntegration {
       denyUrls: this.config.denyUrls,
       maxBreadcrumbs: this.config.maxBreadcrumbs || 100,
       integrations: this.config.enableTracing
-        ? [
-            new Sentry.Integrations.Http({ tracing: true }),
-            new ProfilingIntegration()
-          ]
+        ? [new Sentry.Integrations.Http({ tracing: true }), new ProfilingIntegration()]
         : [],
       tracesSampler: (samplingContext) => {
         // Higher sample rate for errors
@@ -45,7 +42,7 @@ export class SentryIntegration {
           return 1.0;
         }
         return this.config.tracesSampleRate || 0.1;
-      }
+      },
     });
 
     this.initialized = true;
@@ -61,7 +58,7 @@ export class SentryIntegration {
       contexts: this.buildContexts(context),
       user: context?.user,
       tags: context?.tags,
-      extra: context?.extra
+      extra: context?.extra,
     });
   }
 
@@ -76,7 +73,7 @@ export class SentryIntegration {
       contexts: this.buildContexts(context),
       user: context?.user,
       tags: context?.tags,
-      extra: context?.extra
+      extra: context?.extra,
     });
   }
 
@@ -91,7 +88,7 @@ export class SentryIntegration {
       category: breadcrumb.category,
       message: breadcrumb.message,
       level: this.convertSeverity(breadcrumb.level),
-      data: breadcrumb.data
+      data: breadcrumb.data,
     });
   }
 
@@ -193,22 +190,22 @@ export class SentryIntegration {
         method: context.request.method,
         url: context.request.url,
         headers: this.sanitizeHeaders(context.request.headers),
-        query: context.request.query
+        query: context.request.query,
       };
     }
 
     if (context?.environment) {
       contexts.runtime = {
         name: 'node',
-        version: context.environment.nodeVersion
+        version: context.environment.nodeVersion,
       };
       contexts.device = {
         arch: process.arch,
-        processor_count: require('os').cpus().length
+        processor_count: require('os').cpus().length,
       };
       contexts.os = {
         name: context.environment.platform,
-        version: require('os').release()
+        version: require('os').release(),
       };
     }
 
@@ -242,7 +239,7 @@ export class SentryIntegration {
       [ErrorSeverity.ERROR]: 'error',
       [ErrorSeverity.WARNING]: 'warning',
       [ErrorSeverity.INFO]: 'info',
-      [ErrorSeverity.DEBUG]: 'debug'
+      [ErrorSeverity.DEBUG]: 'debug',
     };
     return mapping[severity] || 'error';
   }

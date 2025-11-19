@@ -110,18 +110,14 @@ export abstract class BaseQueueProvider extends EventEmitter implements IQueuePr
       provider: this.name,
       type: this.type,
       timestamp: new Date(),
-      ...data
+      ...data,
     });
   }
 
   /**
    * Create a standardized health status
    */
-  protected createHealthStatus(
-    healthy: boolean,
-    details?: any,
-    error?: Error
-  ): QueueHealthStatus {
+  protected createHealthStatus(healthy: boolean, details?: any, error?: Error): QueueHealthStatus {
     const status: 'healthy' | 'degraded' | 'unhealthy' = healthy ? 'healthy' : 'unhealthy';
     return {
       provider: this.name,
@@ -130,7 +126,7 @@ export abstract class BaseQueueProvider extends EventEmitter implements IQueuePr
       errorRate: 0,
       lastHealthCheck: new Date(),
       details,
-      ...(error && { error: error.message })
+      ...(error && { error: error.message }),
     };
   }
 
@@ -150,7 +146,7 @@ export abstract class BaseQueueProvider extends EventEmitter implements IQueuePr
       errorRate: 0,
       averageProcessingTime: 0,
       timestamp: new Date(),
-      ...additional
+      ...additional,
     };
   }
 }
@@ -164,7 +160,10 @@ export class QueueProviderFactory {
   /**
    * Register a provider class
    */
-  static register(type: string, providerClass: new (name: string, config: any) => IQueueProvider): void {
+  static register(
+    type: string,
+    providerClass: new (name: string, config: any) => IQueueProvider
+  ): void {
     this.providers.set(type, providerClass);
   }
 

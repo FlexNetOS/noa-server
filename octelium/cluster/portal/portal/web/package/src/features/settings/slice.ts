@@ -1,26 +1,20 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { PayloadAction } from "@reduxjs/toolkit";
-import Settings from "@/utils/types/settings";
+import { createSlice } from '@reduxjs/toolkit';
+import { PayloadAction } from '@reduxjs/toolkit';
+import Settings from '@/utils/types/settings';
 
-import * as UserPB from "@/apis/userv1/userv1";
+import * as UserPB from '@/apis/userv1/userv1';
 
 export const slice = createSlice({
-  name: "settings",
+  name: 'settings',
   initialState: {
     itemsPerPage: 10,
   } as Settings,
   reducers: {
-    setItemsPerPage: (
-      state,
-      action: PayloadAction<{ itemsPerPage: number }>
-    ) => {
+    setItemsPerPage: (state, action: PayloadAction<{ itemsPerPage: number }>) => {
       state.itemsPerPage = action.payload.itemsPerPage;
     },
 
-    setStatus: (
-      state,
-      action: PayloadAction<{ status: UserPB.GetStatusResponse }>
-    ) => {
+    setStatus: (state, action: PayloadAction<{ status: UserPB.GetStatusResponse }>) => {
       state.status = action.payload.status;
     },
   },

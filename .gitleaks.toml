@@ -7,19 +7,32 @@ title = "noa-server gitleaks allowlist"
 description = "Allow well-known placeholders and test fixture files"
 # File path allowlist (regex). These paths may intentionally contain fake tokens for tests/examples.
 files = [
-  '''^noa/libs/sdk-py/tests/fixtures/.*$''',
-  '''^noa/libs/sdk-py/tests/.*fixtures.*$''',
-  '''(^|/)tests?/fixtures?/.*$''',
-  '''(^|/)examples?/.*$'''
+    '''^noa/libs/sdk-py/tests/fixtures/.*$''',
+    '''^noa/libs/sdk-py/tests/.*fixtures.*$''',
+    '''(^|/)tests?/fixtures?/.*$''',
+    '''(^|/)examples?/.*$''',
 ]
 # Literal placeholder patterns that should never be treated as secrets
 regexes = [
-  '''YOUR_ACCESS_TOKEN''',
-  '''YOUR_REFRESH_TOKEN''',
-  '''YOUR_API_KEY''',
-  '''YOUR_WEBHOOK_SECRET''',
-  '''FAKE[_-]?SECRET''',
-  '''DUMMY[_-]?(TOKEN|KEY)''',
-  '''SAMPLE[_-]?(TOKEN|KEY)''',
-  '''PLACEHOLDER'''
+    # Placeholder Authorization headers
+    '''Authorization:\s*Bearer\s*(?:YOUR_ACCESS_TOKEN|YOUR_TOKEN|TOKEN|<token>|<admin_token>|<admin-token>|no-key|\$\{?your-token\}?|\$[A-Z_]+)''',
+
+    # Placeholder API keys
+    '''\bnoa_sk_live_[A-Za-z0-9]{6,}\b''',
+    '''\bsk_live_abc123(?:xyz789)?\b''',
+    '''X-API-Key:\s*(?:YOUR_API_KEY|noa_sk_live_[A-Za-z0-9]+)''',
+
+    # Truncated JWT placeholders in docs
+    '''\"?(?:accessToken|refreshToken|token|access_token)\"?\s*[:=]\s*\"(?:eyJhbGci[^\"]*\\.\\.\\.)\"''',
+    '''eyJhbGci[^\"\n]*\\.\\.\\.''',
+
+    # General placeholder patterns
+    '''YOUR_ACCESS_TOKEN''',
+    '''YOUR_REFRESH_TOKEN''',
+    '''YOUR_API_KEY''',
+    '''YOUR_WEBHOOK_SECRET''',
+    '''FAKE[_-]?SECRET''',
+    '''DUMMY[_-]?(TOKEN|KEY)''',
+    '''SAMPLE[_-]?(TOKEN|KEY)''',
+    '''PLACEHOLDER''',
 ]

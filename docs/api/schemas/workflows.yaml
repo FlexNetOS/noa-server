@@ -203,7 +203,7 @@ paths:
                   description: Execution timeout in seconds
             example:
               parameters:
-                inputData: "value"
+                inputData: 'value'
                 option: true
               priority: high
               timeout: 300

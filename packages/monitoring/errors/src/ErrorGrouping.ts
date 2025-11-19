@@ -21,35 +21,35 @@ export class ErrorGrouping {
     this.addRule({
       name: 'database_connection',
       pattern: /database.*connection|ECONNREFUSED.*postgres|connection.*timeout/i,
-      fingerprint: ['database', 'connection']
+      fingerprint: ['database', 'connection'],
     });
 
     // Validation errors
     this.addRule({
       name: 'validation_error',
       pattern: /validation.*failed|invalid.*input|schema.*validation/i,
-      fingerprint: ['validation']
+      fingerprint: ['validation'],
     });
 
     // Authentication errors
     this.addRule({
       name: 'authentication_error',
       pattern: /authentication.*failed|invalid.*token|unauthorized/i,
-      fingerprint: ['authentication']
+      fingerprint: ['authentication'],
     });
 
     // Network errors
     this.addRule({
       name: 'network_error',
       pattern: /ECONNREFUSED|ETIMEDOUT|ENOTFOUND|network.*error/i,
-      fingerprint: ['network']
+      fingerprint: ['network'],
     });
 
     // Rate limiting
     this.addRule({
       name: 'rate_limit',
       pattern: /rate.*limit|too.*many.*requests/i,
-      fingerprint: ['rate_limit']
+      fingerprint: ['rate_limit'],
     });
   }
 
@@ -64,7 +64,7 @@ export class ErrorGrouping {
    * Remove rule by name
    */
   removeRule(name: string): boolean {
-    const index = this.rules.findIndex(r => r.name === name);
+    const index = this.rules.findIndex((r) => r.name === name);
     if (index >= 0) {
       this.rules.splice(index, 1);
       return true;
@@ -92,10 +92,7 @@ export class ErrorGrouping {
     }
 
     // Default fingerprint based on error type and normalized message
-    return [
-      this.normalizeErrorType(error.name),
-      this.normalizeMessage(message)
-    ];
+    return [this.normalizeErrorType(error.name), this.normalizeMessage(message)];
   }
 
   /**
@@ -112,20 +109,22 @@ export class ErrorGrouping {
    * Normalize error message for grouping
    */
   private normalizeMessage(message: string): string {
-    return message
-      // Remove UUIDs
-      .replace(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi, 'UUID')
-      // Remove numbers
-      .replace(/\d+/g, 'N')
-      // Remove file paths
-      .replace(/\/[^\s]+/g, '/PATH')
-      // Remove URLs
-      .replace(/https?:\/\/[^\s]+/gi, 'URL')
-      // Remove timestamps
-      .replace(/\d{4}-\d{2}-\d{2}[T\s]\d{2}:\d{2}:\d{2}/g, 'TIMESTAMP')
-      // Normalize to lowercase and hash
-      .toLowerCase()
-      .substring(0, 100);
+    return (
+      message
+        // Remove UUIDs
+        .replace(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi, 'UUID')
+        // Remove numbers
+        .replace(/\d+/g, 'N')
+        // Remove file paths
+        .replace(/\/[^\s]+/g, '/PATH')
+        // Remove URLs
+        .replace(/https?:\/\/[^\s]+/gi, 'URL')
+        // Remove timestamps
+        .replace(/\d{4}-\d{2}-\d{2}[T\s]\d{2}:\d{2}:\d{2}/g, 'TIMESTAMP')
+        // Normalize to lowercase and hash
+        .toLowerCase()
+        .substring(0, 100)
+    );
   }
 
   /**

@@ -18,25 +18,21 @@ import {
   ModelNotFoundError,
   ContextLengthError,
   CreateChatCompletionRequest,
-  CreateEmbeddingRequest
+  CreateEmbeddingRequest,
 } from '../types';
 
 export interface ProviderEvents {
   'request:start': (requestId: string, provider: ProviderType, operation: string) => void;
   'request:complete': (requestId: string, provider: ProviderType, duration: number) => void;
   'request:error': (requestId: string, provider: ProviderType, error: AIProviderError) => void;
-  'rate_limit': (provider: ProviderType, retryAfter?: number) => void;
+  rate_limit: (provider: ProviderType, retryAfter?: number) => void;
   'model:unavailable': (provider: ProviderType, model: string) => void;
 }
 
 export declare interface BaseProvider {
-  on<U extends keyof ProviderEvents>(
-    event: U, listener: ProviderEvents[U]
-  ): this;
+  on<U extends keyof ProviderEvents>(event: U, listener: ProviderEvents[U]): this;
 
-  emit<U extends keyof ProviderEvents>(
-    event: U, ...args: Parameters<ProviderEvents[U]>
-  ): boolean;
+  emit<U extends keyof ProviderEvents>(event: U, ...args: Parameters<ProviderEvents[U]>): boolean;
 }
 
 export abstract class BaseProvider extends EventEmitter {
@@ -63,15 +59,19 @@ export abstract class BaseProvider extends EventEmitter {
     return {
       info: (message: string, meta?: any) => console.log(`[${this.config.type}] ${message}`, meta),
       warn: (message: string, meta?: any) => console.warn(`[${this.config.type}] ${message}`, meta),
-      error: (message: string, meta?: any) => console.error(`[${this.config.type}] ${message}`, meta),
-      debug: (message: string, meta?: any) => console.debug(`[${this.config.type}] ${message}`, meta)
+      error: (message: string, meta?: any) =>
+        console.error(`[${this.config.type}] ${message}`, meta),
+      debug: (message: string, meta?: any) =>
+        console.debug(`[${this.config.type}] ${message}`, meta),
     } as Logger;
   }
 
   // Abstract methods that each provider must implement
   abstract getModels(): Promise<ModelInfo[]>;
   abstract createChatCompletion(request: CreateChatCompletionRequest): Promise<GenerationResponse>;
-  abstract createChatCompletionStream(request: CreateChatCompletionRequest): AsyncIterable<StreamingChunk>;
+  abstract createChatCompletionStream(
+    request: CreateChatCompletionRequest
+  ): AsyncIterable<StreamingChunk>;
   abstract createEmbedding(request: CreateEmbeddingRequest): Promise<EmbeddingResponse>;
 
   // Common utility methods
@@ -93,7 +93,7 @@ export abstract class BaseProvider extends EventEmitter {
         const startTime = Date.now();
         const result = await Promise.race([
           operation(),
-          this.createTimeoutPromise(this.requestTimeout)
+          this.createTimeoutPromise(this.requestTimeout),
         ]);
 
         const duration = Date.now() - startTime;
@@ -106,7 +106,7 @@ export abstract class BaseProvider extends EventEmitter {
         this.logger.warn(`${operationName} attempt ${attempt} failed:`, {
           error: lastError.message,
           attempt,
-          maxRetries: this.maxRetries
+          maxRetries: this.maxRetries,
         });
 
         // Don't retry on the last attempt or non-retryable errors
@@ -166,19 +166,21 @@ export abstract class BaseProvider extends EventEmitter {
   protected createTimeoutPromise(timeout: number): Promise<never> {
     return new Promise((_, reject) => {
       setTimeout(() => {
-        reject(new AIProviderError(
-          `Request timeout after ${timeout}ms`,
-          this.config.type,
-          'TIMEOUT',
-          408,
-          true
-        ));
+        reject(
+          new AIProviderError(
+            `Request timeout after ${timeout}ms`,
+            this.config.type,
+            'TIMEOUT',
+            408,
+            true
+          )
+        );
       }, timeout);
     });
   }
 
   protected sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   protected validateMessages(messages: Message[]): void {
@@ -206,11 +208,11 @@ export abstract class BaseProvider extends EventEmitter {
   }
 
   protected validateModel(model: string, availableModels: ModelInfo[]): ModelInfo {
-    const modelInfo = availableModels.find(m => m.id === model || m.name === model);
+    const modelInfo = availableModels.find((m) => m.id === model || m.name === model);
 
     if (!modelInfo) {
       throw new ModelNotFoundError(
-        `Model '${model}' not found. Available models: ${availableModels.map(m => m.id).join(', ')}`,
+        `Model '${model}' not found. Available models: ${availableModels.map((m) => m.id).join(', ')}`,
         this.config.type
       );
     }
@@ -221,9 +223,10 @@ export abstract class BaseProvider extends EventEmitter {
   protected estimateTokenCount(messages: Message[]): number {
     // Simple estimation - in practice, you'd use a proper tokenizer
     return messages.reduce((total, message) => {
-      const content = typeof message.content === 'string'
-        ? message.content
-        : message.content.map(c => c.text || '').join('');
+      const content =
+        typeof message.content === 'string'
+          ? message.content
+          : message.content.map((c) => c.text || '').join('');
 
       // Rough estimation: ~4 characters per token
       return total + Math.ceil(content.length / 4);
@@ -245,7 +248,7 @@ export abstract class BaseProvider extends EventEmitter {
       model: params.model,
       messageCount: params.messages?.length,
       temperature: params.temperature,
-      maxTokens: params.max_tokens
+      maxTokens: params.max_tokens,
     });
   }
 
@@ -255,7 +258,7 @@ export abstract class BaseProvider extends EventEmitter {
       model: response.model,
       choices: response.choices?.length,
       usage: response.usage,
-      finishReason: response.choices?.[0]?.finish_reason
+      finishReason: response.choices?.[0]?.finish_reason,
     });
   }
 

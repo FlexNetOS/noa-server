@@ -5,7 +5,7 @@ modules:
     prober: http
     timeout: 5s
     http:
-      valid_http_versions: ["HTTP/1.1", "HTTP/2.0"]
+      valid_http_versions: ['HTTP/1.1', 'HTTP/2.0']
       valid_status_codes: [200, 204]
       method: GET
       no_follow_redirects: false
@@ -13,7 +13,7 @@ modules:
       fail_if_not_ssl: false
       tls_config:
         insecure_skip_verify: false
-      preferred_ip_protocol: "ip4"
+      preferred_ip_protocol: 'ip4'
 
   http_post_2xx:
     prober: http
@@ -33,11 +33,11 @@ modules:
     prober: dns
     timeout: 5s
     dns:
-      query_name: "noa-server.example.com"
-      query_type: "A"
+      query_name: 'noa-server.example.com'
+      query_type: 'A'
 
   icmp_ping:
     prober: icmp
     timeout: 5s
     icmp:
-      preferred_ip_protocol: "ip4"
+      preferred_ip_protocol: 'ip4'

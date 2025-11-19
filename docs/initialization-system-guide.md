@@ -2,16 +2,22 @@
 
 ## Overview
 
-The Noa Server Initialization System provides a comprehensive, automated approach to setting up and managing the Noa Server environment. This system implements advanced design patterns and provides robust error handling, logging, and monitoring capabilities.
+The Noa Server Initialization System provides a comprehensive, automated
+approach to setting up and managing the Noa Server environment. This system
+implements advanced design patterns and provides robust error handling, logging,
+and monitoring capabilities.
 
 ## Architecture
 
 ### Core Components
 
 #### 1. Initialization Controller (`init-controller.js`)
-The main orchestration component that manages the entire initialization process using multiple design patterns:
 
-- **Strategy Pattern**: Allows different initialization strategies (Standard, Fast, Debug)
+The main orchestration component that manages the entire initialization process
+using multiple design patterns:
+
+- **Strategy Pattern**: Allows different initialization strategies (Standard,
+  Fast, Debug)
 - **Builder Pattern**: Flexible construction of initialization configurations
 - **Factory Pattern**: Creates appropriate initializers based on type
 - **Observer Pattern**: Notifies listeners of initialization progress
@@ -20,7 +26,9 @@ The main orchestration component that manages the entire initialization process 
 - **Template Method Pattern**: Defines the skeleton of initialization algorithms
 
 #### 2. Unified Initialization Script (`init-noa-server.sh`)
-Bash script that orchestrates the complete initialization process across 8 phases:
+
+Bash script that orchestrates the complete initialization process across 8
+phases:
 
 1. **Environment Setup**: Validates system requirements and dependencies
 2. **Database Initialization**: Sets up PostgreSQL and Redis
@@ -32,6 +40,7 @@ Bash script that orchestrates the complete initialization process across 8 phase
 8. **Finalization**: Completes setup and provides status report
 
 #### 3. Test Suite (`test-init.js`)
+
 Comprehensive testing framework covering:
 
 - **Unit Tests**: Individual component testing
@@ -59,30 +68,35 @@ cd /home/deflex/noa-server
 #### Using the Node.js Controller
 
 ```javascript
-const { InitializationController, InitializationBuilder, StandardInitializationStrategy, Logger } = require('./scripts/init-controller');
+const {
+  InitializationController,
+  InitializationBuilder,
+  StandardInitializationStrategy,
+  Logger,
+} = require('./scripts/init-controller');
 
 async function initialize() {
-    const logger = new Logger('/var/log/noa-server/init.log');
+  const logger = new Logger('/var/log/noa-server/init.log');
 
-    const controller = await new InitializationBuilder()
-        .setStrategy(new StandardInitializationStrategy(logger))
-        .setLogger(logger)
-        .addPhase({
-            name: 'custom-phase',
-            execute: async (context) => {
-                // Custom initialization logic
-                return true;
-            }
-        })
-        .build();
+  const controller = await new InitializationBuilder()
+    .setStrategy(new StandardInitializationStrategy(logger))
+    .setLogger(logger)
+    .addPhase({
+      name: 'custom-phase',
+      execute: async (context) => {
+        // Custom initialization logic
+        return true;
+      },
+    })
+    .build();
 
-    const result = await controller.initialize();
+  const result = await controller.initialize();
 
-    if (result.success) {
-        console.log('Initialization completed successfully');
-    } else {
-        console.error('Initialization failed:', result.error);
-    }
+  if (result.success) {
+    console.log('Initialization completed successfully');
+  } else {
+    console.error('Initialization failed:', result.error);
+  }
 }
 ```
 
@@ -102,14 +116,14 @@ node scripts/test-init.js --e2e-only
 
 ### Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `NOA_NODE_VERSION` | Required Node.js version | 20.17.0 |
-| `NOA_PYTHON_VERSION` | Required Python version | 3.12+ |
-| `NOA_POSTGRES_PORT` | PostgreSQL port | 5432 |
-| `NOA_REDIS_PORT` | Redis port | 6379 |
-| `NOA_LOG_LEVEL` | Logging level | info |
-| `NOA_INIT_TIMEOUT` | Initialization timeout (seconds) | 300 |
+| Variable             | Description                      | Default |
+| -------------------- | -------------------------------- | ------- |
+| `NOA_NODE_VERSION`   | Required Node.js version         | 20.17.0 |
+| `NOA_PYTHON_VERSION` | Required Python version          | 3.12+   |
+| `NOA_POSTGRES_PORT`  | PostgreSQL port                  | 5432    |
+| `NOA_REDIS_PORT`     | Redis port                       | 6379    |
+| `NOA_LOG_LEVEL`      | Logging level                    | info    |
+| `NOA_INIT_TIMEOUT`   | Initialization timeout (seconds) | 300     |
 
 ### Configuration File
 
@@ -117,42 +131,42 @@ Create a `config/initialization.json` file:
 
 ```json
 {
-    "strategy": "standard",
-    "phases": [
-        {
-            "name": "environment",
-            "enabled": true,
-            "timeout": 60
-        },
-        {
-            "name": "database",
-            "enabled": true,
-            "config": {
-                "postgres": {
-                    "host": "localhost",
-                    "port": 5432,
-                    "database": "noa_server"
-                },
-                "redis": {
-                    "host": "localhost",
-                    "port": 6379
-                }
-            }
-        }
-    ],
-    "logging": {
-        "level": "info",
-        "file": "/var/log/noa-server/init.log",
-        "maxSize": "10m",
-        "maxFiles": 5
+  "strategy": "standard",
+  "phases": [
+    {
+      "name": "environment",
+      "enabled": true,
+      "timeout": 60
     },
-    "monitoring": {
-        "enabled": true,
-        "metrics": {
-            "port": 9090,
-            "path": "/metrics"
+    {
+      "name": "database",
+      "enabled": true,
+      "config": {
+        "postgres": {
+          "host": "localhost",
+          "port": 5432,
+          "database": "noa_server"
+        },
+        "redis": {
+          "host": "localhost",
+          "port": 6379
         }
+      }
     }
+  ],
+  "logging": {
+    "level": "info",
+    "file": "/var/log/noa-server/init.log",
+    "maxSize": "10m",
+    "maxFiles": 5
+  },
+  "monitoring": {
+    "enabled": true,
+    "metrics": {
+      "port": 9090,
+      "path": "/metrics"
+    }
+  }
 }
 ```
 
@@ -161,29 +175,35 @@ Create a `config/initialization.json` file:
 ### InitializationController
 
 #### Constructor
+
 ```javascript
-new InitializationController(strategy, logger, config)
+new InitializationController(strategy, logger, config);
 ```
 
 #### Methods
 
 ##### `initialize(context)`
+
 Executes the complete initialization process.
 
 **Parameters:**
+
 - `context` (Object): Initialization context data
 
 **Returns:** Promise\<InitializationResult\>
 
 **Example:**
+
 ```javascript
 const result = await controller.initialize({ customData: 'value' });
 ```
 
 ##### `rollback(error)`
+
 Rolls back changes in case of initialization failure.
 
 **Parameters:**
+
 - `error` (Error): The error that caused the rollback
 
 **Returns:** Promise\<boolean\>
@@ -193,18 +213,23 @@ Rolls back changes in case of initialization failure.
 #### Methods
 
 ##### `setStrategy(strategy)`
+
 Sets the initialization strategy.
 
 ##### `setLogger(logger)`
+
 Sets the logger instance.
 
 ##### `addPhase(phase)`
+
 Adds a custom initialization phase.
 
 ##### `setConfig(config)`
+
 Sets the initialization configuration.
 
 ##### `build()`
+
 Builds the initialization controller.
 
 **Returns:** Promise\<InitializationController\>
@@ -212,26 +237,34 @@ Builds the initialization controller.
 ### Strategies
 
 #### StandardInitializationStrategy
-Implements the standard initialization workflow with full validation and error handling.
+
+Implements the standard initialization workflow with full validation and error
+handling.
 
 #### FastInitializationStrategy
+
 Optimized for speed, skips non-essential validations.
 
 #### DebugInitializationStrategy
+
 Provides detailed logging and debugging information.
 
 ### Initializers
 
 #### EnvironmentInitializer
+
 Validates system environment and dependencies.
 
 #### DatabaseInitializer
+
 Sets up database connections and schemas.
 
 #### ServiceInitializer
+
 Configures and starts services.
 
 #### SecurityInitializer
+
 Implements security measures and access controls.
 
 ## Error Handling
@@ -249,18 +282,18 @@ The initialization system provides comprehensive error handling:
 
 ```javascript
 try {
-    const result = await controller.initialize();
+  const result = await controller.initialize();
 } catch (error) {
-    if (error instanceof ValidationError) {
-        console.log('Configuration issue:', error.message);
-        // Fix configuration and retry
-    } else if (error instanceof TimeoutError) {
-        console.log('Operation timed out, retrying with extended timeout');
-        // Retry with longer timeout
-    } else {
-        console.error('Critical error:', error.message);
-        await controller.rollback(error);
-    }
+  if (error instanceof ValidationError) {
+    console.log('Configuration issue:', error.message);
+    // Fix configuration and retry
+  } else if (error instanceof TimeoutError) {
+    console.log('Operation timed out, retrying with extended timeout');
+    // Retry with longer timeout
+  } else {
+    console.error('Critical error:', error.message);
+    await controller.rollback(error);
+  }
 }
 ```
 
@@ -295,40 +328,52 @@ Built-in monitoring provides:
 ### Common Issues
 
 #### 1. Node.js Version Mismatch
+
 ```
 Error: Node.js version 20.17.0 required, found 18.15.0
 ```
+
 **Solution:** Update Node.js using nvm:
+
 ```bash
 nvm install 20.17.0
 nvm use 20.17.0
 ```
 
 #### 2. Port Already in Use
+
 ```
 Error: Port 5432 is already in use
 ```
+
 **Solution:** Find and stop the conflicting service:
+
 ```bash
 lsof -i :5432
 kill -9 <PID>
 ```
 
 #### 3. Database Connection Failed
+
 ```
 Error: Unable to connect to PostgreSQL
 ```
+
 **Solution:** Check database status and credentials:
+
 ```bash
 sudo systemctl status postgresql
 psql -U noa_user -d noa_server
 ```
 
 #### 4. Permission Denied
+
 ```
 Error: Permission denied writing to /var/log/noa-server/
 ```
+
 **Solution:** Fix permissions:
+
 ```bash
 sudo chown -R noa:noa /var/log/noa-server/
 ```
@@ -345,6 +390,7 @@ export NOA_LOG_LEVEL=debug
 ### Recovery Procedures
 
 #### Automatic Recovery
+
 The system automatically attempts recovery for certain error types:
 
 - **Network timeouts**: Automatic retry with exponential backoff
@@ -352,14 +398,17 @@ The system automatically attempts recovery for certain error types:
 - **Configuration errors**: Fallback to default configurations
 
 #### Manual Recovery
+
 For critical failures requiring manual intervention:
 
 1. **Stop all services**:
+
    ```bash
    ./scripts/init-noa-server.sh --stop
    ```
 
 2. **Clean state**:
+
    ```bash
    ./scripts/init-noa-server.sh --clean
    ```
@@ -373,7 +422,8 @@ For critical failures requiring manual intervention:
 
 ### Optimization Strategies
 
-1. **Parallel Execution**: Phases that can run concurrently are executed in parallel
+1. **Parallel Execution**: Phases that can run concurrently are executed in
+   parallel
 2. **Caching**: Results of expensive operations are cached
 3. **Lazy Loading**: Components are loaded only when needed
 4. **Resource Pooling**: Database connections and other resources are pooled
@@ -391,12 +441,12 @@ Monitor these key metrics:
 
 ```json
 {
-    "performance": {
-        "parallelPhases": 3,
-        "cacheEnabled": true,
-        "connectionPoolSize": 10,
-        "timeoutMultiplier": 1.5
-    }
+  "performance": {
+    "parallelPhases": 3,
+    "cacheEnabled": true,
+    "connectionPoolSize": 10,
+    "timeoutMultiplier": 1.5
+  }
 }
 ```
 
@@ -421,17 +471,20 @@ Monitor these key metrics:
 ### Development Setup
 
 1. **Clone the repository**:
+
    ```bash
    git clone <repository-url>
    cd noa-server
    ```
 
 2. **Install dependencies**:
+
    ```bash
    npm install
    ```
 
 3. **Run tests**:
+
    ```bash
    npm test
    ```

@@ -7,7 +7,7 @@ export enum ErrorSeverity {
   ERROR = 'error',
   WARNING = 'warning',
   INFO = 'info',
-  DEBUG = 'debug'
+  DEBUG = 'debug',
 }
 
 export enum ErrorCategory {
@@ -19,7 +19,7 @@ export enum ErrorCategory {
   BUSINESS_LOGIC = 'business_logic',
   EXTERNAL_SERVICE = 'external_service',
   SYSTEM = 'system',
-  UNKNOWN = 'unknown'
+  UNKNOWN = 'unknown',
 }
 
 export interface ErrorContext {

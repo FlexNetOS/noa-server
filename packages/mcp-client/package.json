@@ -13,14 +13,7 @@
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build"
   },
-  "keywords": [
-    "mcp",
-    "model-context-protocol",
-    "sdk",
-    "client",
-    "ai",
-    "llm"
-  ],
+  "keywords": ["mcp", "model-context-protocol", "sdk", "client", "ai", "llm"],
   "author": "NOA Server Team",
   "license": "MIT",
   "devDependencies": {

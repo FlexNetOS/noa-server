@@ -1,7 +1,7 @@
-import { getClientUser } from "@/utils/client";
-import { useAppSelector } from "@/utils/hooks";
-import * as React from "react";
-import Meta from "@/components/Meta";
+import { getClientUser } from '@/utils/client';
+import { useAppSelector } from '@/utils/hooks';
+import * as React from 'react';
+import Meta from '@/components/Meta';
 
 import {
   ListNamespaceOptions,
@@ -9,62 +9,64 @@ import {
   Namespace,
   NamespaceList,
   Service_Spec_Type,
-} from "@/apis/userv1/userv1";
-import { useQuery } from "@tanstack/react-query";
+} from '@/apis/userv1/userv1';
+import { useQuery } from '@tanstack/react-query';
 
 import {
   ResourceListItem,
   ResourceListLabel,
   ResourceListWrapper,
-} from "@/components/ResourceList";
-import EmptyList from "@/components/EmptyList";
-import { Service, ServiceList } from "@/apis/userv1/userv1";
-import { getDomain, printResourceNameWithDisplay, toNumOrZero } from "@/utils";
-import Label from "@/components/Label";
-import { match } from "ts-pattern";
-import Paginator from "@/components/Paginator";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { twMerge } from "tailwind-merge";
-import InfoItem from "@/components/InfoItem";
-import CopyText from "@/components/CopyText";
-import { BiLinkExternal } from "react-icons/bi";
+} from '@/components/ResourceList';
+import EmptyList from '@/components/EmptyList';
+import { Service, ServiceList } from '@/apis/userv1/userv1';
+import { getDomain, printResourceNameWithDisplay, toNumOrZero } from '@/utils';
+import Label from '@/components/Label';
+import { match } from 'ts-pattern';
+import Paginator from '@/components/Paginator';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { twMerge } from 'tailwind-merge';
+import InfoItem from '@/components/InfoItem';
+import CopyText from '@/components/CopyText';
+import { BiLinkExternal } from 'react-icons/bi';
 
-import { getServicePrivateFQDN, getServicePublicFQDN } from "@/utils/octelium";
-import { Timestamp } from "@/apis/google/protobuf/timestamp";
+import { getServicePrivateFQDN, getServicePublicFQDN } from '@/utils/octelium';
+import { Timestamp } from '@/apis/google/protobuf/timestamp';
 
-import { GoBrowser } from "react-icons/go";
-import { BiLogoPostgresql } from "react-icons/bi";
-import { HiMiniCommandLine } from "react-icons/hi2";
-import { TbApi } from "react-icons/tb";
-import { SiKubernetes } from "react-icons/si";
-import { SiMysql } from "react-icons/si";
-import { MdHttp } from "react-icons/md";
-import { FaGlobe } from "react-icons/fa";
+import { GoBrowser } from 'react-icons/go';
+import { BiLogoPostgresql } from 'react-icons/bi';
+import { HiMiniCommandLine } from 'react-icons/hi2';
+import { TbApi } from 'react-icons/tb';
+import { SiKubernetes } from 'react-icons/si';
+import { SiMysql } from 'react-icons/si';
+import { MdHttp } from 'react-icons/md';
+import { FaGlobe } from 'react-icons/fa';
 
-import { IoIosDesktop } from "react-icons/io";
-import { Button, Text } from "@mantine/core";
-import { Collapse } from "@mantine/core";
-import parseQuery from "@/utils/parseQuery";
+import { IoIosDesktop } from 'react-icons/io';
+import { Button, Text } from '@mantine/core';
+import { Collapse } from '@mantine/core';
+import parseQuery from '@/utils/parseQuery';
 
 const Item = (props: { item: Namespace; domain: string; skipNS?: boolean }) => {
   const { item } = props;
 
   const md = item.metadata!;
   const qry = useQuery({
-    queryKey: ["user/main.listSvcByNamespace", item.metadata?.name],
+    queryKey: ['user/main.listSvcByNamespace', item.metadata?.name],
     queryFn: async () => {
-      return await getClientUser().listService(ListServiceOptions.create({
-        namespace: item.metadata!.name,
-      }));
+      return await getClientUser().listService(
+        ListServiceOptions.create({
+          namespace: item.metadata!.name,
+        })
+      );
     },
   });
 
   return (
-    <div className="font-semibold w-full">
+    <div className="w-full font-semibold">
       <div className="flex items-start">
-        <div className="flex flex-col flex-1">
+        <div className="flex flex-1 flex-col">
           <div className="flex items-center font-bold">
-            <Text className="mr-2 flex flex-row" size="sm" fw={"bold"}>
+            <Text className="mr-2 flex flex-row" size="sm" fw={'bold'}>
               <CopyText value={item.metadata!.name} />
 
               {md.displayName && (
@@ -74,14 +76,12 @@ const Item = (props: { item: Namespace; domain: string; skipNS?: boolean }) => {
               )}
             </Text>
           </div>
-          <div className="w-full mt-1 flex flex-row">
+          <div className="mt-1 flex w-full flex-row">
             {qry.isSuccess &&
               qry.data &&
               qry.data.response.listResponseMeta &&
               qry.data.response.listResponseMeta.totalCount > 0 && (
-                <ResourceListLabel
-                  to={`/services?namespace=${item.metadata!.name}`}
-                >
+                <ResourceListLabel to={`/services?namespace=${item.metadata!.name}`}>
                   {qry.data.response.listResponseMeta.totalCount} Services
                 </ResourceListLabel>
               )}
@@ -103,16 +103,10 @@ const NamespaceListC = (props: { itemsList: NamespaceList }) => {
       <Paginator meta={props.itemsList.listResponseMeta!} path={path} />
 
       <ResourceListWrapper>
-        {props.itemsList.items.length === 0 && (
-          <EmptyList title="No Namespaces Found"></EmptyList>
-        )}
+        {props.itemsList.items.length === 0 && <EmptyList title="No Namespaces Found"></EmptyList>}
         {props.itemsList.items.map((item) => (
           <ResourceListItem key={item.metadata!.uid}>
-            <Item
-              item={item}
-              domain={domain}
-              skipNS={searchParams.has("namespace")}
-            />
+            <Item item={item} domain={domain} skipNS={searchParams.has('namespace')} />
           </ResourceListItem>
         ))}
       </ResourceListWrapper>
@@ -142,10 +136,7 @@ const Page = () => {
   });
 
   const qry = useQuery({
-    queryKey: [
-      "user/main.listNamespaces",
-      ListNamespaceOptions.toJsonString(o),
-    ],
+    queryKey: ['user/main.listNamespaces', ListNamespaceOptions.toJsonString(o)],
     queryFn: async () => {
       return await getClientUser().listNamespace(o);
     },
@@ -154,20 +145,18 @@ const Page = () => {
   return (
     <>
       <title>Namespaces - Octelium Portal</title>
-      <div className="mt-4 mb-6">
+      <div className="mb-6 mt-4">
         <div
-          className={twMerge("font-bold text-3xl text-gray-800")}
+          className={twMerge('text-3xl font-bold text-gray-800')}
           style={{
-            textShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
+            textShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
           }}
         >
           Namespaces
         </div>
       </div>
 
-      {qry.isSuccess && qry.data && (
-        <NamespaceListC itemsList={qry.data.response} />
-      )}
+      {qry.isSuccess && qry.data && <NamespaceListC itemsList={qry.data.response} />}
     </>
   );
 };

@@ -57,7 +57,7 @@ export function SystemHealth({ systemState }: SystemHealthProps) {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="flex items-center gap-2">
-                <Activity className="w-5 h-5" />
+                <Activity className="h-5 w-5" />
                 System Health
               </CardTitle>
               <CardDescription className="mt-2">
@@ -74,16 +74,16 @@ export function SystemHealth({ systemState }: SystemHealthProps) {
         </CardHeader>
 
         <CardContent className="space-y-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             {metrics.map((metric) => {
               const Icon = metric.icon;
               const isWarning = metric.value >= metric.threshold;
 
               return (
                 <Card key={metric.name} className={cn(isWarning && 'border-destructive')}>
-                  <CardContent className="p-4 space-y-2">
+                  <CardContent className="space-y-2 p-4">
                     <div className="flex items-center justify-between">
-                      <Icon className={cn('w-4 h-4', metric.color)} />
+                      <Icon className={cn('h-4 w-4', metric.color)} />
                       <span className={cn('text-xs font-medium', isWarning && 'text-destructive')}>
                         {formatPercentage(metric.value)}
                       </span>
@@ -99,7 +99,7 @@ export function SystemHealth({ systemState }: SystemHealthProps) {
             })}
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             <div className="space-y-1">
               <p className="text-sm text-muted-foreground">Active Agents</p>
               <p className="text-2xl font-bold">
@@ -127,7 +127,7 @@ export function SystemHealth({ systemState }: SystemHealthProps) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Server className="w-5 h-5" />
+            <Server className="h-5 w-5" />
             Docker Services
           </CardTitle>
           <CardDescription>Status of infrastructure services</CardDescription>
@@ -137,19 +137,19 @@ export function SystemHealth({ systemState }: SystemHealthProps) {
             {systemState.services.map((service) => (
               <div
                 key={service.name}
-                className="flex items-center justify-between p-3 rounded-lg border"
+                className="flex items-center justify-between rounded-lg border p-3"
               >
                 <div className="flex items-center gap-3">
                   <div
                     className={cn(
-                      'w-2 h-2 rounded-full',
+                      'h-2 w-2 rounded-full',
                       service.status === 'healthy' && 'bg-green-500',
                       service.status === 'degraded' && 'bg-yellow-500',
                       service.status === 'down' && 'bg-red-500'
                     )}
                   />
                   <div>
-                    <p className="font-medium text-sm">{service.name}</p>
+                    <p className="text-sm font-medium">{service.name}</p>
                     <p className="text-xs text-muted-foreground">
                       Uptime: {formatDuration(service.uptime)}
                     </p>
@@ -159,12 +159,12 @@ export function SystemHealth({ systemState }: SystemHealthProps) {
                   <Badge variant={service.status === 'healthy' ? 'default' : 'destructive'}>
                     {service.status}
                   </Badge>
-                  <p className="text-xs text-muted-foreground mt-1">{service.responseTime}ms</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{service.responseTime}ms</p>
                 </div>
               </div>
             ))}
             {systemState.services.length === 0 && (
-              <p className="text-sm text-muted-foreground text-center py-4">
+              <p className="py-4 text-center text-sm text-muted-foreground">
                 No services configured
               </p>
             )}

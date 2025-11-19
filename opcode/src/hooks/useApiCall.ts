@@ -37,7 +37,7 @@ export function useApiCall<T>(
     showErrorToast = true,
     showSuccessToast = false,
     successMessage = 'Operation completed successfully',
-    errorMessage
+    errorMessage,
   } = options;
 
   const call = useCallback(
@@ -60,7 +60,7 @@ export function useApiCall<T>(
         if (!isMountedRef.current) return null;
 
         setData(result);
-        
+
         if (showSuccessToast) {
           // TODO: Implement toast notification
           console.log('Success:', successMessage);
@@ -93,7 +93,15 @@ export function useApiCall<T>(
         }
       }
     },
-    [apiFunction, onSuccess, onError, showErrorToast, showSuccessToast, successMessage, errorMessage]
+    [
+      apiFunction,
+      onSuccess,
+      onError,
+      showErrorToast,
+      showSuccessToast,
+      successMessage,
+      errorMessage,
+    ]
   );
 
   const reset = useCallback(() => {

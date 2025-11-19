@@ -24,7 +24,7 @@ export class ProcessErrorHandler {
       exitOnError: options.exitOnError !== false,
       flushTimeout: options.flushTimeout || 2000,
       captureRejections: options.captureRejections !== false,
-      captureExceptions: options.captureExceptions !== false
+      captureExceptions: options.captureExceptions !== false,
     };
   }
 
@@ -81,8 +81,8 @@ export class ProcessErrorHandler {
       await this.tracker.captureError(error, {
         tags: {
           handler: 'uncaughtException',
-          fatal: 'true'
-        }
+          fatal: 'true',
+        },
       });
 
       await this.tracker.flush(this.options.flushTimeout);
@@ -98,18 +98,21 @@ export class ProcessErrorHandler {
   /**
    * Handle unhandled rejection
    */
-  private async handleUnhandledRejection(reason: unknown, promise: Promise<unknown>): Promise<void> {
+  private async handleUnhandledRejection(
+    reason: unknown,
+    promise: Promise<unknown>
+  ): Promise<void> {
     const error = reason instanceof Error ? reason : new Error(String(reason));
     console.error('Unhandled Rejection:', error);
 
     try {
       await this.tracker.captureError(error, {
         tags: {
-          handler: 'unhandledRejection'
+          handler: 'unhandledRejection',
         },
         extra: {
-          promise: String(promise)
-        }
+          promise: String(promise),
+        },
       });
     } catch (trackingError) {
       console.error('Failed to track unhandled rejection:', trackingError);
@@ -125,12 +128,12 @@ export class ProcessErrorHandler {
     try {
       await this.tracker.captureMessage(warning.message, ErrorSeverity.WARNING, {
         tags: {
-          handler: 'warning'
+          handler: 'warning',
         },
         extra: {
           name: warning.name,
-          stack: warning.stack
-        }
+          stack: warning.stack,
+        },
       });
     } catch (trackingError) {
       console.error('Failed to track warning:', trackingError);
@@ -146,8 +149,8 @@ export class ProcessErrorHandler {
     try {
       await this.tracker.captureMessage(`Process shutting down (${signal})`, ErrorSeverity.INFO, {
         tags: {
-          signal
-        }
+          signal,
+        },
       });
 
       await this.tracker.close(this.options.flushTimeout);

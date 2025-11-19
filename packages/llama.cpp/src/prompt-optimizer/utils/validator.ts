@@ -40,7 +40,7 @@ export class PromptValidator {
 
     // Check for unclear pronouns
     const unclearPronouns = ['it', 'this', 'that', 'they'];
-    const hasUnclearPronouns = unclearPronouns.some(pronoun =>
+    const hasUnclearPronouns = unclearPronouns.some((pronoun) =>
       new RegExp(`\\b${pronoun}\\b`, 'i').test(input)
     );
 
@@ -51,9 +51,7 @@ export class PromptValidator {
 
     // Check for missing action verbs
     const actionVerbs = ['create', 'write', 'generate', 'build', 'analyze', 'explain'];
-    const hasActionVerb = actionVerbs.some(verb =>
-      new RegExp(`\\b${verb}\\b`, 'i').test(input)
-    );
+    const hasActionVerb = actionVerbs.some((verb) => new RegExp(`\\b${verb}\\b`, 'i').test(input));
 
     if (!hasActionVerb) {
       warnings.push('No clear action verb found');
@@ -64,7 +62,7 @@ export class PromptValidator {
       isValid: errors.length === 0,
       errors,
       warnings,
-      suggestions
+      suggestions,
     };
   }
 
@@ -93,7 +91,7 @@ export class PromptValidator {
     const hasRole = /you are|as a|role:|persona:/i.test(optimized);
     if (!hasRole) {
       warnings.push('No clear role assignment found');
-      suggestions.push('Define the AI\'s role or expertise area');
+      suggestions.push("Define the AI's role or expertise area");
     }
 
     // Check for constraints
@@ -114,7 +112,7 @@ export class PromptValidator {
       isValid: errors.length === 0,
       errors,
       warnings,
-      suggestions
+      suggestions,
     };
   }
 
@@ -127,9 +125,10 @@ export class PromptValidator {
     const suggestions: string[] = [];
 
     // Check quality improvement
-    const qualityImprovement = result.metrics.clarityImprovement +
-                               result.metrics.specificityImprovement +
-                               result.metrics.completenessImprovement;
+    const qualityImprovement =
+      result.metrics.clarityImprovement +
+      result.metrics.specificityImprovement +
+      result.metrics.completenessImprovement;
 
     if (qualityImprovement < 30) {
       warnings.push('Quality improvement is below expected threshold (30%)');
@@ -166,7 +165,7 @@ export class PromptValidator {
       isValid: errors.length === 0,
       errors,
       warnings,
-      suggestions
+      suggestions,
     };
   }
 
@@ -174,28 +173,23 @@ export class PromptValidator {
    * Check if text contains required elements
    */
   static hasRequiredElements(text: string, elements: string[]): boolean {
-    return elements.every(element =>
-      new RegExp(element, 'i').test(text)
-    );
+    return elements.every((element) => new RegExp(element, 'i').test(text));
   }
 
   /**
    * Calculate quality score (1-10)
    */
-  static calculateQualityScore(
-    clarity: number,
-    specificity: number,
-    completeness: number
-  ): number {
+  static calculateQualityScore(clarity: number, specificity: number, completeness: number): number {
     const weights = {
       clarity: 0.4,
       specificity: 0.35,
-      completeness: 0.25
+      completeness: 0.25,
     };
 
-    const score = (clarity * weights.clarity) +
-                  (specificity * weights.specificity) +
-                  (completeness * weights.completeness);
+    const score =
+      clarity * weights.clarity +
+      specificity * weights.specificity +
+      completeness * weights.completeness;
 
     return Math.min(Math.max(score, 1), 10);
   }
@@ -203,10 +197,7 @@ export class PromptValidator {
   /**
    * Validate strategy selection
    */
-  static validateStrategySelection(
-    type: string,
-    confidence: number
-  ): ValidationResult {
+  static validateStrategySelection(type: string, confidence: number): ValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
     const suggestions: string[] = [];
@@ -224,7 +215,7 @@ export class PromptValidator {
       isValid: errors.length === 0,
       errors,
       warnings,
-      suggestions
+      suggestions,
     };
   }
 
@@ -241,7 +232,7 @@ export class PromptValidator {
       return {
         appropriate: false,
         ratio,
-        recommendation: 'Optimized prompt should be at least 1.5x longer than original'
+        recommendation: 'Optimized prompt should be at least 1.5x longer than original',
       };
     }
 
@@ -249,14 +240,14 @@ export class PromptValidator {
       return {
         appropriate: false,
         ratio,
-        recommendation: 'Optimized prompt may be excessively long (>10x original)'
+        recommendation: 'Optimized prompt may be excessively long (>10x original)',
       };
     }
 
     return {
       appropriate: true,
       ratio,
-      recommendation: 'Length ratio is appropriate'
+      recommendation: 'Length ratio is appropriate',
     };
   }
 }
