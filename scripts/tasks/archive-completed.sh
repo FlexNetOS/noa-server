@@ -6,8 +6,8 @@
 set -euo pipefail
 
 # Configuration
-CURRENT_TODO="./current.todo"
-SOT_FILE="./SOT.md"
+CURRENT_TODO="./.orchestration/docs/current.todo"
+SOT_FILE="./.orchestration/docs/sot.md"
 ARCHIVE_DIR="./.task-archive"
 TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S UTC")
 DATE_ONLY=$(date +"%Y-%m-%d")
@@ -33,12 +33,12 @@ log_error() {
 
 # Verify files exist
 if [[ ! -f "$CURRENT_TODO" ]]; then
-    log_error "current.todo not found at $CURRENT_TODO"
+    log_error "canonical current.todo not found at $CURRENT_TODO"
     exit 1
 fi
 
 if [[ ! -f "$SOT_FILE" ]]; then
-    log_error "SOT.md not found at $SOT_FILE"
+    log_error "canonical sot.md not found at $SOT_FILE"
     exit 1
 fi
 
@@ -54,7 +54,7 @@ log_info "Backup created: $BACKUP_FILE"
 
 # Extract completed tasks (lines starting with "- [x]")
 COMPLETED_TASKS=$(grep -E "^- \[x\]" "$CURRENT_TODO" || true)
-COMPLETED_COUNT=$(echo "$COMPLETED_TASKS" | grep -c "^\- \[x\]" || echo "0")
+COMPLETED_COUNT=$(printf "%s" "$COMPLETED_TASKS" | grep -c "^\- \[x\]" || true)
 
 if [[ "$COMPLETED_COUNT" -eq 0 ]]; then
     log_warn "No completed tasks found to archive"
@@ -88,7 +88,8 @@ while IFS= read -r task_line; do
     TASK_DESC=$(echo "$task_line" | sed -E 's/^- \[x\] \[P[0-3]\] //' | sed -E 's/ @.*//' || echo "Unknown")
 
     # Extract category (after @)
-    CATEGORY=$(echo "$task_line" | grep -oP '@\S+' | sed 's/@//' || echo "uncategorized")
+    # CATEGORY extracted but currently unused; comment out to avoid lint warning
+    # CATEGORY=$(echo "$task_line" | grep -oP '@\S+' | sed 's/@//' || echo "uncategorized")
 
     # Extract estimated time (search for "Estimated: X hours")
     # This would need context from following lines in actual implementation
@@ -108,42 +109,68 @@ python3 << EOF
 import re
 from datetime import datetime
 
-sot_file = "$SOT_FILE"
-archive_entries = """$ARCHIVE_ENTRIES"""
+sot_file = r"$SOT_FILE"
+archive_entries = r"""$ARCHIVE_ENTRIES""".strip() + "\n"
 
-# Read SOT.md
-with open(sot_file, 'r') as f:
+with open(sot_file, 'r', encoding='utf-8') as f:
     content = f.read()
 
-# Find the current month section in Completed Tasks Archive
-current_month = datetime.now().strftime("%B %Y")
-current_year = datetime.now().strftime("%Y")
+# Determine headings
+now = datetime.utcnow()
+month_name = now.strftime('%B')
+year = now.strftime('%Y')
+month_heading = f"#### {month_name} {year}"
+year_heading_regex = re.compile(rf"^### .*{year}.*$", re.MULTILINE)
+table_header = "| Date | ID | Task | Outcome | Time | Lead | Artifacts |"
+table_sep = "|------|-----|------|---------|------|------|-----------|"
 
-# Pattern to find the month section
-month_pattern = f"#### {current_month}"
+def insert_after_table_header(text, start_idx):
+    # Find the table header and separator lines after start_idx
+    header_idx = text.find(table_header, start_idx)
+    if header_idx == -1:
+        # No header present; create one under month heading
+        insert_at = text.find('\n', start_idx)
+        if insert_at == -1:
+            insert_at = len(text)
+        header_block = f"\n{table_header}\n{table_sep}\n"
+        return text[:insert_at+1] + header_block + archive_entries + text[insert_at+1:]
+    # Find end of separator line
+    sep_idx = text.find('\n', header_idx + len(table_header))
+    if sep_idx == -1:
+        sep_idx = header_idx + len(table_header)
+    # Expect separator on next line; ensure it exists or insert
+    if not text[sep_idx+1:sep_idx+1+len(table_sep)] == table_sep:
+        # Insert separator line
+        insert_at = sep_idx + 1
+        return text[:insert_at] + table_sep + "\n" + archive_entries + text[insert_at:]
+    # Insert entries after separator line newline
+    after_sep_newline = sep_idx + 1 + len(table_sep) + 1
+    return text[:after_sep_newline] + archive_entries + text[after_sep_newline:]
 
-if month_pattern in content:
-    # Month section exists, add entries
-    content = content.replace(
-        month_pattern,
-        f"{month_pattern}\n{archive_entries.strip()}"
-    )
+updated = content
+
+if month_heading in content:
+    # Insert new entries at top of month table (after header)
+    start = content.find(month_heading)
+    updated = insert_after_table_header(content, start)
 else:
-    # Month section doesn't exist, create it
-    year_pattern = f"### {current_year}"
-    if year_pattern in content:
-        # Add new month section under year
-        replacement = f"{year_pattern}\n\n#### {current_month}\n| Date | ID | Task | Outcome | Time | Lead | Artifacts |\n|------|-----|------|---------|------|------|-----------|\n{archive_entries.strip()}"
-        content = content.replace(year_pattern, replacement)
+    # Ensure we have a year heading to attach this month section under
+    m = year_heading_regex.search(content)
+    if m:
+        insert_at = m.end()
+        month_block = f"\n\n{month_heading}\n{table_header}\n{table_sep}\n{archive_entries}"
+        updated = content[:insert_at] + month_block + content[insert_at:]
     else:
-        # Year doesn't exist, would need to create it
-        print("Warning: Year section not found in SOT.md")
+        # Fallback: append to end under a minimal year heading
+        month_block = f"\n\n### {year}\n\n{month_heading}\n{table_header}\n{table_sep}\n{archive_entries}"
+        updated = content.rstrip() + month_block + "\n"
 
-# Write updated SOT.md
-with open(sot_file, 'w') as f:
-    f.write(content)
+with open(sot_file, 'w', encoding='utf-8') as f:
+    f.write(updated)
 
-print(f"Updated {sot_file} with {archive_entries.count('|')//7} completed tasks")
+# Count number of rows inserted by counting lines starting with '| ' in entries
+rows = sum(1 for line in archive_entries.splitlines() if line.strip().startswith('|'))
+print(f"Updated {sot_file} with {rows} completed tasks")
 EOF
 
 # Update statistics in current.todo
@@ -174,7 +201,7 @@ sed -i "s/- \*\*P3 Low\*\*:.*/- **P3 Low**: $P3_COUNT/" "$CURRENT_TODO"
 sed -i "s/<!-- Last Updated: .* -->/<!-- Last Updated: $TIMESTAMP -->/" "$CURRENT_TODO"
 
 log_info "✅ Archive process complete!"
-log_info "Archived $COMPLETED_COUNT tasks to $SOT_FILE"
+log_info "Archived $COMPLETED_COUNT tasks to canonical $SOT_FILE"
 log_info "Backup saved to $BACKUP_FILE"
 
 # Optional: Show summary

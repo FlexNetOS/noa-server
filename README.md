@@ -96,11 +96,23 @@ Local neural processing with CUDA acceleration.
 - MCP integration
 - CUDA-enabled inference
 
-**Setup:**
+**Setup (project-local Python env):**
 ```bash
+# From repo root
+cd noa-server
+
+# Create and activate local virtual environment (do NOT use ~/praisonai_env)
+python3 -m venv .venv
+source .venv/bin/activate  # Windows: .venv\\Scripts\\activate
+
+# Install MCP / llama.cpp Python deps as needed
+pip install -U pip
+pip install mcp anthropic
+
+# Build llama.cpp (CUDA optional)
 cd packages/llama.cpp
-# Activate environment
-source ~/praisonai_env/bin/activate
+make LLAMA_CUDA=1
+
 # Launch Claude Code with MCP
 claude --dangerously-skip-permissions
 ```
@@ -165,6 +177,8 @@ cp .env.example .env
 # Archon configuration
 cp packages/archon/.env.example packages/archon/.env
 ```
+
+All Python virtual environments for `noa-server` must reside inside the repository (e.g. `noa-server/.venv`). Remove or ignore any legacy references to `~/praisonai_env`.
 
 **Never commit .env files!** They are already in .gitignore.
 

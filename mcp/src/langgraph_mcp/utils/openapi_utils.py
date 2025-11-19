@@ -14,9 +14,7 @@ from langchain_core.prompts import BasePromptTemplate, ChatPromptTemplate
 from langchain_core.utils.input import get_colored_text
 from requests import Response
 
-from langchain.chains.base import Chain
-from langchain.chains.llm import LLMChain
-from langchain.chains.sequential import SequentialChain
+from langchain_core.runnables import Runnable
 
 if TYPE_CHECKING:
     from langgraph_mcp.utils.openapi_spec import OpenAPISpec
@@ -197,7 +195,7 @@ def openapi_spec_to_openai_fn(
     return functions, default_call_api
 
 
-class SimpleRequestChain(Chain):
+class SimpleRequestChain(Runnable):
     """Chain for making a simple request to an API endpoint."""
 
     request_method: Callable
@@ -256,13 +254,13 @@ def get_openapi_chain(
     spec: Union[OpenAPISpec, str],
     llm: Optional[BaseLanguageModel] = None,
     prompt: Optional[BasePromptTemplate] = None,
-    request_chain: Optional[Chain] = None,
+    request_chain: Optional[Runnable] = None,
     llm_chain_kwargs: Optional[Dict] = None,
     verbose: bool = False,
     headers: Optional[Dict] = None,
     params: Optional[Dict] = None,
     **kwargs: Any,
-) -> SequentialChain:
+) -> Runnable:
     """Create a chain for querying an API from a OpenAPI spec.
 
     Note: this class is deprecated. See below for a replacement implementation.
@@ -275,7 +273,7 @@ def get_openapi_chain(
 
             from typing import Any
 
-            from langchain.chains.openai_functions.openapi import openapi_spec_to_openai_fn
+            from langgraph_mcp.utils.openapi_utils import openapi_spec_to_openai_fn
             from langgraph_mcp.utils.openapi_spec import OpenAPISpec
             from langchain_core.prompts import ChatPromptTemplate
             from langchain_openai import ChatOpenAI
@@ -371,35 +369,13 @@ def get_openapi_chain(
                 pass
         if isinstance(spec, str):
             raise ValueError(f"Unable to parse spec from source {spec}")
-    openai_fns, call_api_fn = openapi_spec_to_openai_fn(spec)
-    if not llm:
-        raise ValueError(
-            "Must provide an LLM for this chain.For example,\n"
-            "from langchain_openai import ChatOpenAI\n"
-            "llm = ChatOpenAI()\n"
-        )
-    prompt = prompt or ChatPromptTemplate.from_template(
-        "Use the provided API's to respond to this user query:\n\n{query}"
-    )
-    llm_chain = LLMChain(
-        llm=llm,
-        prompt=prompt,
-        llm_kwargs={"functions": openai_fns},
-        output_parser=JsonOutputFunctionsParser(args_only=False),
-        output_key="function",
-        verbose=verbose,
-        **(llm_chain_kwargs or {}),
-    )
-    request_chain = request_chain or SimpleRequestChain(
-        request_method=lambda name, args: call_api_fn(
-            name, args, headers=headers, params=params
-        ),
-        verbose=verbose,
-    )
-    return SequentialChain(
-        chains=[llm_chain, request_chain],
-        input_variables=llm_chain.input_keys,
-        output_variables=["response"],
-        verbose=verbose,
-        **kwargs,
+    # This function is deprecated and removed in langchain-community >= 0.3.0
+    # LLMChain and SequentialChain have been removed from the new API.
+    # Use the replacement implementation shown in the docstring above.
+    raise NotImplementedError(
+        "get_openapi_chain is deprecated and removed in langchain-community >= 0.3.0. "
+        "LLMChain and SequentialChain have been removed from the new API. "
+        "Please use the replacement implementation shown in the docstring above, "
+        "which uses LLM tool calling features and the LCEL syntax. "
+        "See: https://api.python.langchain.com/en/latest/chains/langchain.chains.openai_functions.openapi.get_openapi_chain.html"
     )

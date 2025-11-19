@@ -1,0 +1,32 @@
+Task Management Backup Report
+==============================
+Date: Tue Nov 11 13:56:10 CST 2025
+Type: daily
+Location: ./.task-backups/daily/2025-11-11
+
+Summary:
+--------
+Files Backed Up: 4
+Total Size: 87238 bytes
+Archive: task-backup-2025-11-11-2025-11-11_13-56-10.tar.gz
+Archive Size: 0.03 MB
+Verification: PASSED
+
+Retention Policy:
+-----------------
+Daily Backups: 1 days
+Weekly Backups: 90 days
+Monthly Backups: Forever
+
+Disk Usage:
+-----------
+260K	./.task-backups
+
+Recent Backups:
+---------------
+-rw-r--r-- 1 deflex deflex 27K Nov 11 13:55 ./.task-backups/task-backup-2025-11-11-2025-11-11_13-55-45.tar.gz
+-rw-r--r-- 1 deflex deflex 27K Nov 11 13:55 ./.task-backups/task-backup-2025-11-11-2025-11-11_13-55-24.tar.gz
+-rw-r--r-- 1 deflex deflex 27K Nov 11 13:54 ./.task-backups/task-backup-2025-11-11-2025-11-11_13-54-53.tar.gz
+-rw-r--r-- 1 deflex deflex 27K Nov 11 13:56 ./.task-backups/task-backup-2025-11-11-2025-11-11_13-56-10.tar.gz
+-rw-r--r-- 1 deflex deflex 26K Nov 11 13:54 ./.task-backups/task-backup-2025-11-11-2025-11-11_13-54-49.tar.gz
+

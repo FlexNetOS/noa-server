@@ -102,7 +102,7 @@ list_model_keys() {
   for entry in "${MODELS[@]}"; do
     IFS='|' read -r key _repo _prefs _port _ctx _big <<<"$entry"
     echo "$key"
-  done | tr '\n' ',' | sed 's/,$\n//' || true
+  done | tr '\n' ',' | sed 's/,\$//' || true
 }
 
 hf_files_json() {
@@ -283,4 +283,3 @@ Examples:
 USAGE
     ;;
 esac
-

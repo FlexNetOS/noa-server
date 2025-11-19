@@ -7,7 +7,7 @@ all: help
 TEST_FILE ?= tests/unit_tests/
 
 test:
-	python -m pytest $(TEST_FILE)
+	. .venv/bin/activate && python -m pytest $(TEST_FILE)
 
 test_watch:
 	python -m ptw --snapshot-update --now . -- -vv tests/unit_tests

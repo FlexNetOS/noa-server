@@ -6,7 +6,7 @@
 set -euo pipefail
 
 # Configuration
-CURRENT_TODO="${1:-./current.todo}"
+CURRENT_TODO="${1:-./.orchestration/docs/current.todo}"
 BACKUP_SUFFIX=".pre-sort.backup"
 TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
 
@@ -191,7 +191,7 @@ echo "---" >> "$WORK_DIR/new_current.todo"
 # Find footer (statistics and below)
 FOOTER_START=$(grep -n "^## 📊 Statistics & Metrics" "$CURRENT_TODO" | head -1 | cut -d: -f1)
 if [[ -n "$FOOTER_START" ]]; then
-    tail -n +$FOOTER_START "$CURRENT_TODO" >> "$WORK_DIR/new_current.todo"
+    tail -n +"$FOOTER_START" "$CURRENT_TODO" >> "$WORK_DIR/new_current.todo"
 fi
 
 # Replace original file

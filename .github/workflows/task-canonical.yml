@@ -1,0 +1,41 @@
+name: task-canonical-guardrail
+
+on:
+  push:
+    paths:
+      - ".orchestration/docs/current.todo"
+      - ".orchestration/docs/backlog.todo"
+      - ".orchestration/docs/sop.md"
+      - ".orchestration/docs/sot.md"
+      - ".orchestration/docs/HASHES.txt"
+      - "scripts/ci/validate-task-canonical.sh"
+      - "scripts/ci/update-doc-hashes.sh"
+      - ".github/workflows/task-canonical.yml"
+  pull_request:
+    paths:
+      - ".orchestration/docs/**"
+      - "scripts/ci/validate-task-canonical.sh"
+      - "scripts/ci/update-doc-hashes.sh"
+
+jobs:
+  guardrail:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate canonical task docs
+        run: bash scripts/ci/validate-task-canonical.sh
+
+      - name: Fail if baseline needs update
+        run: |
+          echo "[INFO] Checking for intentional doc changes requiring hash update..."
+          # Recompute hashes and compare; if mismatch but HASHES.txt unchanged, fail.
+          bash scripts/ci/update-doc-hashes.sh
+          git diff --exit-code .orchestration/docs/HASHES.txt || {
+            echo "[ERROR] HASHES.txt out of date. Run: pnpm docs:hash:update" >&2
+            exit 1
+          }
+
+      - name: Summary
+        run: echo "Canonical task doc guardrail PASS"

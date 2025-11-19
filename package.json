@@ -82,7 +82,9 @@
     "monitor:health": "node scripts/monitoring/health-check.js once",
     "monitor:metrics": "node scripts/monitoring/metrics-collector.js once",
     "monitor:dashboard": "node scripts/monitoring/dashboard.js",
-    "monitor:test": "npm run test tests/monitoring/"
+    "monitor:test": "npm run test tests/monitoring/",
+    "docs:hash:update": "bash scripts/ci/update-doc-hashes.sh",
+    "verify:task-canonical": "bash scripts/ci/validate-task-canonical.sh"
   },
   "engines": {
     "node": ">=20.0.0"

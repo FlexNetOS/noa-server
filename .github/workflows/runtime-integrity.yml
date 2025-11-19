@@ -1,0 +1,37 @@
+name: runtime-integrity
+
+on:
+  push:
+    paths:
+      - "scripts/runtime/**"
+      - "docs/runtime-portability.md"
+      - ".github/workflows/runtime-integrity.yml"
+  pull_request:
+    paths:
+      - "scripts/runtime/**"
+      - "docs/runtime-portability.md"
+      - ".github/workflows/runtime-integrity.yml"
+
+jobs:
+  verify-runtime:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Bootstrap Node (integrity verified)
+        run: bash scripts/runtime/bootstrap_node.sh
+
+      - name: Verify integrity manifest
+        run: |
+          test -f .runtime/node-integrity.json || { echo "Integrity manifest missing"; exit 1; }
+          grep -q '"verified": true' .runtime/node-integrity.json || { echo "Integrity verification failed"; cat .runtime/node-integrity.json; exit 1; }
+
+      - name: Bootstrap Python
+        run: bash scripts/runtime/bootstrap_python.sh
+
+      - name: Record versions
+        run: bash scripts/runtime/record_versions.sh
+
+      - name: Show runtime ledger
+        run: cat EvidenceLedger/runtime.json
