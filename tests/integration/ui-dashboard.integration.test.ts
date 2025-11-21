@@ -20,9 +20,7 @@ const mockQueues = [
   {
     name: 'jobs-email',
     provider: 'mock',
-    jobs: [
-      { id: 'job-1', type: 'email', status: 'running', progress: 50 },
-    ],
+    jobs: [{ id: 'job-1', type: 'email', status: 'running', progress: 50 }],
   },
 ];
 
@@ -50,7 +48,8 @@ describe('UI Dashboard integration', () => {
   });
 
   it('hydrates store from telemetry endpoint and updates via WebSocket events', async () => {
-    const fetchMock = vi.fn()
+    const fetchMock = vi
+      .fn()
       .mockResolvedValueOnce({ ok: true, json: async () => mockStats })
       .mockResolvedValueOnce({ ok: true, json: async () => mockProviders })
       .mockResolvedValueOnce({ ok: true, json: async () => mockQueues });
@@ -102,7 +101,7 @@ describe('UI Dashboard integration', () => {
 
     api.connectWebSocket(onMessage);
 
-    const socket = (MockSocket.instances[0]);
+    const socket = MockSocket.instances[0];
     socket.trigger('0{"sid":"mock-sid","pingInterval":25000,"pingTimeout":60000}');
     socket.trigger('40');
     socket.trigger('42["message-sent",{"queueName":"telemetry","message":{"count":1}}]');

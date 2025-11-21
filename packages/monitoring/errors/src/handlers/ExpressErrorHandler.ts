@@ -22,7 +22,7 @@ export class ExpressErrorHandler {
     this.options = {
       exposeErrors: options.exposeErrors || process.env.NODE_ENV !== 'production',
       logErrors: options.logErrors !== false,
-      captureUnhandled: options.captureUnhandled !== false
+      captureUnhandled: options.captureUnhandled !== false,
     };
   }
 
@@ -40,8 +40,8 @@ export class ExpressErrorHandler {
         data: {
           method: req.method,
           url: req.url,
-          query: req.query
-        }
+          query: req.query,
+        },
       });
 
       // Set request context
@@ -51,8 +51,8 @@ export class ExpressErrorHandler {
           url: req.originalUrl || req.url,
           headers: this.sanitizeHeaders(req.headers as Record<string, string>),
           query: req.query as Record<string, unknown>,
-          body: this.sanitizeBody(req.body)
-        }
+          body: this.sanitizeBody(req.body),
+        },
       };
 
       this.tracker.setContext(context);
@@ -71,8 +71,8 @@ export class ExpressErrorHandler {
           level: this.getLogLevel(res.statusCode),
           data: {
             statusCode: res.statusCode,
-            duration
-          }
+            duration,
+          },
         });
       });
 
@@ -96,8 +96,8 @@ export class ExpressErrorHandler {
             method: req.method,
             url: req.originalUrl || req.url,
             headers: this.sanitizeHeaders(req.headers as Record<string, string>),
-            query: req.query as Record<string, unknown>
-          }
+            query: req.query as Record<string, unknown>,
+          },
         });
       } catch (trackingError) {
         console.error('Failed to track error:', trackingError);
@@ -108,8 +108,8 @@ export class ExpressErrorHandler {
       const response: any = {
         error: {
           message: this.options.exposeErrors ? err.message : 'Internal server error',
-          statusCode
-        }
+          statusCode,
+        },
       };
 
       if (this.options.exposeErrors) {
@@ -169,7 +169,7 @@ export class ExpressErrorHandler {
     const sanitized = { ...body };
 
     for (const key of Object.keys(sanitized)) {
-      if (sensitiveFields.some(field => key.toLowerCase().includes(field.toLowerCase()))) {
+      if (sensitiveFields.some((field) => key.toLowerCase().includes(field.toLowerCase()))) {
         sanitized[key] = '[REDACTED]';
       }
     }

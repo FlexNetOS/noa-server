@@ -1,6 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, Reorder } from 'framer-motion';
-import { X, Plus, MessageSquare, Bot, AlertCircle, Loader2, Folder, BarChart, Server, Settings, FileText } from 'lucide-react';
+import {
+  X,
+  Plus,
+  MessageSquare,
+  Bot,
+  AlertCircle,
+  Loader2,
+  Folder,
+  BarChart,
+  Server,
+  Settings,
+  FileText,
+} from 'lucide-react';
 import { useTabState } from '@/hooks/useTabState';
 import { Tab, useTabContext } from '@/contexts/TabContext';
 import { cn } from '@/lib/utils';
@@ -15,9 +27,16 @@ interface TabItemProps {
   setDraggedTabId?: (id: string | null) => void;
 }
 
-const TabItem: React.FC<TabItemProps> = ({ tab, isActive, onClose, onClick, isDragging = false, setDraggedTabId }) => {
+const TabItem: React.FC<TabItemProps> = ({
+  tab,
+  isActive,
+  onClose,
+  onClick,
+  isDragging = false,
+  setDraggedTabId,
+}) => {
   const [isHovered, setIsHovered] = useState(false);
-  
+
   const getIcon = () => {
     switch (tab.type) {
       case 'chat':
@@ -48,9 +67,9 @@ const TabItem: React.FC<TabItemProps> = ({ tab, isActive, onClose, onClick, isDr
   const getStatusIcon = () => {
     switch (tab.status) {
       case 'running':
-        return <Loader2 className="w-3 h-3 animate-spin" />;
+        return <Loader2 className="h-3 w-3 animate-spin" />;
       case 'error':
-        return <AlertCircle className="w-3 h-3 text-red-500" />;
+        return <AlertCircle className="h-3 w-3 text-red-500" />;
       default:
         return null;
     }
@@ -66,14 +85,14 @@ const TabItem: React.FC<TabItemProps> = ({ tab, isActive, onClose, onClick, isDr
       dragListener={true}
       transition={{ duration: 0.1 }} // Snappy reorder animation
       className={cn(
-        "relative flex items-center gap-2 text-sm cursor-pointer select-none group",
-        "transition-colors duration-100 overflow-hidden border-r border-border/20",
-        "before:absolute before:bottom-0 before:left-0 before:right-0 before:h-0.5 before:transition-colors before:duration-100",
+        'group relative flex cursor-pointer items-center gap-2 text-sm select-none',
+        'border-border/20 overflow-hidden border-r transition-colors duration-100',
+        'before:absolute before:right-0 before:bottom-0 before:left-0 before:h-0.5 before:transition-colors before:duration-100',
         isActive
-          ? "bg-card text-card-foreground before:bg-primary"
-          : "bg-transparent text-muted-foreground hover:bg-muted/40 hover:text-foreground before:bg-transparent",
-        isDragging && "bg-card border-primary/50 shadow-sm z-50",
-        "min-w-[120px] max-w-[220px] h-8 px-3"
+          ? 'bg-card text-card-foreground before:bg-primary'
+          : 'text-muted-foreground hover:bg-muted/40 hover:text-foreground bg-transparent before:bg-transparent',
+        isDragging && 'bg-card border-primary/50 z-50 shadow-sm',
+        'h-8 max-w-[220px] min-w-[120px] px-3'
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -83,27 +102,18 @@ const TabItem: React.FC<TabItemProps> = ({ tab, isActive, onClose, onClick, isDr
     >
       {/* Tab Icon */}
       <div className="flex-shrink-0">
-        <Icon className="w-4 h-4" />
+        <Icon className="h-4 w-4" />
       </div>
-      
+
       {/* Tab Title */}
-      <span className="flex-1 truncate text-xs font-medium min-w-0">
-        {tab.title}
-      </span>
+      <span className="min-w-0 flex-1 truncate text-xs font-medium">{tab.title}</span>
 
       {/* Status Indicators - always takes up space */}
-      <div className="flex items-center gap-1.5 flex-shrink-0 w-6 justify-end">
-        {statusIcon && (
-          <span className="flex items-center justify-center">
-            {statusIcon}
-          </span>
-        )}
+      <div className="flex w-6 flex-shrink-0 items-center justify-end gap-1.5">
+        {statusIcon && <span className="flex items-center justify-center">{statusIcon}</span>}
 
         {tab.hasUnsavedChanges && !statusIcon && (
-          <span 
-            className="w-1.5 h-1.5 bg-primary rounded-full"
-            title="Unsaved changes"
-          />
+          <span className="bg-primary h-1.5 w-1.5 rounded-full" title="Unsaved changes" />
         )}
       </div>
 
@@ -114,17 +124,16 @@ const TabItem: React.FC<TabItemProps> = ({ tab, isActive, onClose, onClick, isDr
           onClose(tab.id);
         }}
         className={cn(
-          "flex-shrink-0 w-4 h-4 flex items-center justify-center rounded-sm",
-          "transition-all duration-100 hover:bg-destructive/20 hover:text-destructive",
-          "focus:outline-none focus:ring-1 focus:ring-destructive/50",
-          (isHovered || isActive) ? "opacity-100" : "opacity-0"
+          'flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-sm',
+          'hover:bg-destructive/20 hover:text-destructive transition-all duration-100',
+          'focus:ring-destructive/50 focus:ring-1 focus:outline-none',
+          isHovered || isActive ? 'opacity-100' : 'opacity-0'
         )}
         title={`Close ${tab.title}`}
         tabIndex={-1}
       >
-        <X className="w-3 h-3" />
+        <X className="h-3 w-3" />
       </button>
-
     </Reorder.Item>
   );
 };
@@ -134,15 +143,8 @@ interface TabManagerProps {
 }
 
 export const TabManager: React.FC<TabManagerProps> = ({ className }) => {
-  const {
-    tabs,
-    activeTabId,
-    createChatTab,
-    createProjectsTab,
-    closeTab,
-    switchToTab,
-    canAddTab
-  } = useTabState();
+  const { tabs, activeTabId, createChatTab, createProjectsTab, closeTab, switchToTab, canAddTab } =
+    useTabState();
 
   // Access reorderTabs from context
   const { reorderTabs } = useTabContext();
@@ -151,7 +153,7 @@ export const TabManager: React.FC<TabManagerProps> = ({ className }) => {
   const [showLeftScroll, setShowLeftScroll] = useState(false);
   const [showRightScroll, setShowRightScroll] = useState(false);
   const [draggedTabId, setDraggedTabId] = useState<string | null>(null);
-  
+
   // Analytics tracking
   const trackEvent = useTrackEvent();
 
@@ -177,7 +179,7 @@ export const TabManager: React.FC<TabManagerProps> = ({ className }) => {
 
     const handleCloseTab = async () => {
       if (activeTabId) {
-        const tab = tabs.find(t => t.id === activeTabId);
+        const tab = tabs.find((t) => t.id === activeTabId);
         if (tab) {
           trackEvent.tabClosed(tab.type);
         }
@@ -186,7 +188,7 @@ export const TabManager: React.FC<TabManagerProps> = ({ className }) => {
     };
 
     const handleNextTab = () => {
-      const currentIndex = tabs.findIndex(tab => tab.id === activeTabId);
+      const currentIndex = tabs.findIndex((tab) => tab.id === activeTabId);
       const nextIndex = (currentIndex + 1) % tabs.length;
       if (tabs[nextIndex]) {
         switchToTab(tabs[nextIndex].id);
@@ -194,7 +196,7 @@ export const TabManager: React.FC<TabManagerProps> = ({ className }) => {
     };
 
     const handlePreviousTab = () => {
-      const currentIndex = tabs.findIndex(tab => tab.id === activeTabId);
+      const currentIndex = tabs.findIndex((tab) => tab.id === activeTabId);
       const previousIndex = currentIndex === 0 ? tabs.length - 1 : currentIndex - 1;
       if (tabs[previousIndex]) {
         switchToTab(tabs[previousIndex].id);
@@ -249,29 +251,29 @@ export const TabManager: React.FC<TabManagerProps> = ({ className }) => {
 
   const handleReorder = (newOrder: Tab[]) => {
     // Find the positions that changed
-    const oldOrder = tabs.map(tab => tab.id);
-    const newOrderIds = newOrder.map(tab => tab.id);
-    
+    const oldOrder = tabs.map((tab) => tab.id);
+    const newOrderIds = newOrder.map((tab) => tab.id);
+
     // Find what moved
     const movedTabId = newOrderIds.find((id, index) => oldOrder[index] !== id);
     if (!movedTabId) return;
-    
+
     const oldIndex = oldOrder.indexOf(movedTabId);
     const newIndex = newOrderIds.indexOf(movedTabId);
-    
+
     if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
       // Use the context's reorderTabs function
       reorderTabs(oldIndex, newIndex);
       // Track the reorder event
-      trackEvent.featureUsed?.('tab_reorder', 'drag_drop', { 
-        from_index: oldIndex, 
-        to_index: newIndex 
+      trackEvent.featureUsed?.('tab_reorder', 'drag_drop', {
+        from_index: oldIndex,
+        to_index: newIndex,
       });
     }
   };
 
   const handleCloseTab = async (id: string) => {
-    const tab = tabs.find(t => t.id === id);
+    const tab = tabs.find((t) => t.id === id);
     if (tab) {
       trackEvent.tabClosed(tab.type);
     }
@@ -290,23 +292,26 @@ export const TabManager: React.FC<TabManagerProps> = ({ className }) => {
     if (!container) return;
 
     const scrollAmount = 200;
-    const newScrollLeft = direction === 'left'
-      ? container.scrollLeft - scrollAmount
-      : container.scrollLeft + scrollAmount;
+    const newScrollLeft =
+      direction === 'left'
+        ? container.scrollLeft - scrollAmount
+        : container.scrollLeft + scrollAmount;
 
     container.scrollTo({
       left: newScrollLeft,
-      behavior: 'smooth'
+      behavior: 'smooth',
     });
   };
 
   return (
-    <div className={cn("flex items-stretch bg-muted/15 relative border-b border-border/50", className)}>
+    <div
+      className={cn('bg-muted/15 border-border/50 relative flex items-stretch border-b', className)}
+    >
       {/* Left fade gradient */}
       {showLeftScroll && (
-        <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-muted/15 to-transparent pointer-events-none z-10" />
+        <div className="from-muted/15 pointer-events-none absolute top-0 bottom-0 left-0 z-10 w-8 bg-gradient-to-r to-transparent" />
       )}
-      
+
       {/* Left scroll button */}
       <AnimatePresence>
         {showLeftScroll && (
@@ -316,14 +321,19 @@ export const TabManager: React.FC<TabManagerProps> = ({ className }) => {
             exit={{ opacity: 0 }}
             onClick={() => scrollTabs('left')}
             className={cn(
-              "p-1.5 hover:bg-muted/80 rounded-sm z-20 ml-1",
-              "transition-colors duration-200 flex items-center justify-center",
-              "bg-background/80 backdrop-blur-sm shadow-sm border border-border/50"
+              'hover:bg-muted/80 z-20 ml-1 rounded-sm p-1.5',
+              'flex items-center justify-center transition-colors duration-200',
+              'bg-background/80 border-border/50 border shadow-sm backdrop-blur-sm'
             )}
             title="Scroll tabs left"
           >
-            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M15 18l-6-6 6-6" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+            <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path
+                d="M15 18l-6-6 6-6"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </motion.button>
         )}
@@ -332,10 +342,10 @@ export const TabManager: React.FC<TabManagerProps> = ({ className }) => {
       {/* Tabs container */}
       <div
         ref={scrollContainerRef}
-        className="flex-1 flex overflow-x-auto scrollbar-hide"
+        className="scrollbar-hide flex flex-1 overflow-x-auto"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        <div className="flex items-stretch h-8">
+        <div className="flex h-8 items-stretch">
           <Reorder.Group
             axis="x"
             values={tabs}
@@ -355,7 +365,7 @@ export const TabManager: React.FC<TabManagerProps> = ({ className }) => {
               />
             ))}
           </Reorder.Group>
-          
+
           {/* New tab button - positioned right after tabs */}
           <motion.button
             onClick={handleNewTab}
@@ -363,22 +373,22 @@ export const TabManager: React.FC<TabManagerProps> = ({ className }) => {
             whileTap={canAddTab() ? { scale: 0.97 } : {}}
             transition={{ duration: 0.15 }}
             className={cn(
-              "px-2 mx-1 rounded-md flex items-center justify-center flex-shrink-0",
-              "bg-background/50 backdrop-blur-sm h-8",
+              'mx-1 flex flex-shrink-0 items-center justify-center rounded-md px-2',
+              'bg-background/50 h-8 backdrop-blur-sm',
               canAddTab()
-                ? "hover:bg-muted/60 text-muted-foreground hover:text-foreground"
-                : "opacity-50 cursor-not-allowed text-muted-foreground"
+                ? 'hover:bg-muted/60 text-muted-foreground hover:text-foreground'
+                : 'text-muted-foreground cursor-not-allowed opacity-50'
             )}
-            title={canAddTab() ? "New project (Ctrl+T)" : "Maximum tabs reached"}
+            title={canAddTab() ? 'New project (Ctrl+T)' : 'Maximum tabs reached'}
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="h-4 w-4" />
           </motion.button>
         </div>
       </div>
 
       {/* Right fade gradient */}
       {showRightScroll && (
-        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-muted/15 to-transparent pointer-events-none z-10" />
+        <div className="from-muted/15 pointer-events-none absolute top-0 right-0 bottom-0 z-10 w-8 bg-gradient-to-l to-transparent" />
       )}
 
       {/* Right scroll button */}
@@ -390,19 +400,23 @@ export const TabManager: React.FC<TabManagerProps> = ({ className }) => {
             exit={{ opacity: 0 }}
             onClick={() => scrollTabs('right')}
             className={cn(
-              "p-1.5 hover:bg-muted/80 rounded-sm z-20 mr-1",
-              "transition-colors duration-200 flex items-center justify-center",
-              "bg-background/80 backdrop-blur-sm shadow-sm border border-border/50"
+              'hover:bg-muted/80 z-20 mr-1 rounded-sm p-1.5',
+              'flex items-center justify-center transition-colors duration-200',
+              'bg-background/80 border-border/50 border shadow-sm backdrop-blur-sm'
             )}
             title="Scroll tabs right"
           >
-            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M9 18l6-6-6-6" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+            <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path
+                d="M9 18l6-6-6-6"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </motion.button>
         )}
       </AnimatePresence>
-
     </div>
   );
 };

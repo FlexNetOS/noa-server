@@ -13,7 +13,7 @@ import {
   MemoryHealthCheck,
   DiskHealthCheck,
   ServiceHealthCheck,
-  HealthEndpoints
+  HealthEndpoints,
 } from '../health/src';
 
 // Initialize Express
@@ -26,21 +26,21 @@ const dbPool = new Pool({
   database: process.env.DB_NAME || 'noa',
   user: process.env.DB_USER || 'postgres',
   password: process.env.DB_PASSWORD,
-  max: 20
+  max: 20,
 });
 
 // Initialize Redis client
 const redis = new Redis({
   host: process.env.REDIS_HOST || 'localhost',
   port: parseInt(process.env.REDIS_PORT || '6379'),
-  password: process.env.REDIS_PASSWORD
+  password: process.env.REDIS_PASSWORD,
 });
 
 // Initialize Health Check Manager
 const healthManager = new HealthCheckManager({
   enableAutoRefresh: true,
   refreshInterval: 30000, // 30 seconds
-  parallelExecution: true
+  parallelExecution: true,
 });
 
 // Register Database Health Check
@@ -50,7 +50,7 @@ healthManager.register(
       pool: dbPool,
       queryTimeout: 3000,
       warningLatency: 100,
-      criticalLatency: 500
+      criticalLatency: 500,
     },
     'database'
   )
@@ -63,7 +63,7 @@ healthManager.register(
       client: redis,
       warningHitRate: 70,
       criticalHitRate: 50,
-      warningLatency: 50
+      warningLatency: 50,
     },
     'cache'
   )
@@ -75,7 +75,7 @@ healthManager.register(
     {
       warningThreshold: 80,
       criticalThreshold: 90,
-      checkHeapMemory: true
+      checkHeapMemory: true,
     },
     'memory'
   )
@@ -88,7 +88,7 @@ healthManager.register(
       paths: ['/tmp', process.cwd()],
       warningThreshold: 80,
       criticalThreshold: 90,
-      testWrite: true
+      testWrite: true,
     },
     'disk'
   )
@@ -103,7 +103,7 @@ healthManager.register(
       expectedStatus: [200, 204],
       warningResponseTime: 1000,
       maxConsecutiveFailures: 3,
-      timeout: 5000
+      timeout: 5000,
     },
     'external-api'
   )
@@ -115,7 +115,7 @@ app.use(
   HealthEndpoints.createMiddleware(healthManager, {
     basePath: '/health',
     enableDetailedErrors: process.env.NODE_ENV !== 'production',
-    enableMetrics: true
+    enableMetrics: true,
   })
 );
 

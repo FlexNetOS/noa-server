@@ -1,0 +1,15 @@
+{
+  "allow": [
+    {"from": "rtt://agent/*", "to": "rtt://mcp/claude/*"},
+    {"from": "rtt://core/*", "to": "rtt://obs/*"}
+  ],
+  "deny": [],
+  "qos": {
+    "rtt://agent/api/search@1.0.0": {
+      "latency_budget_ms": 400,
+      "throughput_qps": 20
+    }
+  },
+  "pins": {},
+  "failover": {}
+}

@@ -9,9 +9,7 @@
 /**
  * Common result type for operations that can succeed or fail
  */
-export type Result<T, E = Error> =
-  | { success: true; data: T }
-  | { success: false; error: E };
+export type Result<T, E = Error> = { success: true; data: T } | { success: false; error: E };
 
 /**
  * Async result type
@@ -157,7 +155,7 @@ export interface TimeoutConfig {
 /**
  * Logger levels
  */
-export type LogLevel = 'error' | 'warn' | 'info' | 'http' | 'verbose' | 'debug' | 'silly';
+// export type LogLevel = 'error' | 'warn' | 'info' | 'http' | 'verbose' | 'debug' | 'silly';
 
 /**
  * Correlation context for distributed tracing

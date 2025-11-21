@@ -23,18 +23,18 @@ export function SystemHealth({ health }: SystemHealthProps) {
   ];
 
   return (
-    <div className="bg-brand-card border border-brand-border rounded-lg p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="rounded-lg border border-brand-border bg-brand-card p-6">
+      <div className="mb-6 flex items-center justify-between">
         <h2 className="text-xl font-bold text-white">System Health</h2>
         <span
-          className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusBadgeClass(health.status)}`}
+          className={`rounded-full border px-3 py-1 text-sm font-medium ${getStatusBadgeClass(health.status)}`}
         >
           {health.status.toUpperCase()}
         </span>
       </div>
 
       {/* Resource Metrics */}
-      <div className="space-y-4 mb-6">
+      <div className="mb-6 space-y-4">
         {metrics.map((metric, index) => (
           <motion.div
             key={metric.label}
@@ -42,11 +42,11 @@ export function SystemHealth({ health }: SystemHealthProps) {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.1 }}
           >
-            <div className="flex items-center justify-between mb-1">
+            <div className="mb-1 flex items-center justify-between">
               <span className="text-sm font-medium text-brand-muted">{metric.label}</span>
               <span className="text-sm font-semibold text-white">{metric.value}%</span>
             </div>
-            <div className="w-full bg-brand-border rounded-full h-2">
+            <div className="h-2 w-full rounded-full bg-brand-border">
               <motion.div
                 className={`${metric.color} h-2 rounded-full`}
                 initial={{ width: 0 }}
@@ -59,20 +59,20 @@ export function SystemHealth({ health }: SystemHealthProps) {
       </div>
 
       {/* Network Metrics */}
-      <div className="grid grid-cols-2 gap-4 mb-6 pb-6 border-b border-brand-border">
+      <div className="mb-6 grid grid-cols-2 gap-4 border-b border-brand-border pb-6">
         <div>
-          <p className="text-xs text-brand-muted mb-1">Network Latency</p>
+          <p className="mb-1 text-xs text-brand-muted">Network Latency</p>
           <p className="text-lg font-semibold text-white">{health.network.latency}ms</p>
         </div>
         <div>
-          <p className="text-xs text-brand-muted mb-1">Throughput</p>
+          <p className="mb-1 text-xs text-brand-muted">Throughput</p>
           <p className="text-lg font-semibold text-white">{health.network.throughput} MB/s</p>
         </div>
       </div>
 
       {/* Services Status */}
       <div>
-        <h3 className="text-sm font-semibold text-brand-muted uppercase tracking-wide mb-3">
+        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-brand-muted">
           Services
         </h3>
         <div className="grid grid-cols-2 gap-2">
@@ -82,10 +82,10 @@ export function SystemHealth({ health }: SystemHealthProps) {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: index * 0.05 }}
-              className="flex items-center gap-2 p-2 bg-brand-bg/50 rounded"
+              className="flex items-center gap-2 rounded bg-brand-bg/50 p-2"
             >
               <div
-                className={`w-2 h-2 rounded-full ${service.enabled ? 'bg-brand-success' : 'bg-brand-danger'} animate-pulse`}
+                className={`h-2 w-2 rounded-full ${service.enabled ? 'bg-brand-success' : 'bg-brand-danger'} animate-pulse`}
               />
               <span className="text-xs text-white">{service.label}</span>
             </motion.div>

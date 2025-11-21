@@ -1,6 +1,7 @@
 # Credit Management & Payments
 
-Comprehensive credit system for managing payments, balances, and billing in Flow Nexus applications.
+Comprehensive credit system for managing payments, balances, and billing in Flow
+Nexus applications.
 
 ## MCP Tools for Credit Management
 
@@ -25,6 +26,7 @@ console.log('Account balance:', balance);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -51,20 +53,20 @@ console.log('Account balance:', balance);
 // Monitor balance with alerts
 async function monitorBalance() {
   const balance = await client.credits.checkBalance();
-  
+
   if (balance.low_balance_warning) {
     console.warn('Low balance detected:', balance.balance);
-    
+
     // Optionally enable auto-refill
     if (!balance.auto_refill_enabled) {
       await client.credits.configureAutoRefill({
         enabled: true,
         threshold: 50,
-        amount: 200
+        amount: 200,
       });
     }
   }
-  
+
   return balance;
 }
 ```
@@ -78,13 +80,14 @@ Generate secure payment links for credit purchases:
 ```javascript
 // Create payment link for credit purchase
 const paymentLink = await client.credits.createPaymentLink({
-  amount: 100 // USD amount (minimum $10)
+  amount: 100, // USD amount (minimum $10)
 });
 
 console.log('Payment link created:', paymentLink);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -102,7 +105,7 @@ console.log('Payment link created:', paymentLink);
   ],
   supported_methods: [
     'credit_card',
-    'paypal', 
+    'paypal',
     'apple_pay',
     'google_pay'
   ]
@@ -118,11 +121,11 @@ const customPaymentLink = await client.credits.createPaymentLink({
   metadata: {
     user_id: 'user_123',
     project: 'ai-research',
-    team: 'ml-engineering'
+    team: 'ml-engineering',
   },
   success_url: 'https://myapp.com/payment-success',
   cancel_url: 'https://myapp.com/payment-cancelled',
-  description: 'Credits for AI model training project'
+  description: 'Credits for AI model training project',
 });
 ```
 
@@ -133,7 +136,7 @@ const customPaymentLink = await client.credits.createPaymentLink({
 const bulkPayments = await Promise.all([
   client.credits.createPaymentLink({ amount: 50 }),
   client.credits.createPaymentLink({ amount: 100 }),
-  client.credits.createPaymentLink({ amount: 200 })
+  client.credits.createPaymentLink({ amount: 200 }),
 ]);
 
 console.log('Payment links created:', bulkPayments.length);
@@ -150,13 +153,14 @@ Configure automatic credit refills to prevent service interruptions:
 const autoRefillConfig = await client.credits.configureAutoRefill({
   enabled: true,
   threshold: 100, // Refill when balance drops below 100 credits
-  amount: 500 // Refill with $50 (500 credits)
+  amount: 500, // Refill with $50 (500 credits)
 });
 
 console.log('Auto-refill configured:', autoRefillConfig);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -193,7 +197,7 @@ const smartAutoRefill = await client.credits.configureAutoRefill({
   maximum_per_month: 5, // Limit refills per month
   notification_webhook: 'https://api.myapp.com/webhooks/credits',
   business_hours_only: true, // Only refill during business hours
-  weekend_refill: false
+  weekend_refill: false,
 });
 ```
 
@@ -202,7 +206,7 @@ const smartAutoRefill = await client.credits.configureAutoRefill({
 ```javascript
 // Disable automatic refills
 const disableAutoRefill = await client.credits.configureAutoRefill({
-  enabled: false
+  enabled: false,
 });
 
 console.log('Auto-refill disabled:', disableAutoRefill);
@@ -220,13 +224,14 @@ const paymentHistory = await client.credits.getPaymentHistory({
   limit: 20,
   include_usage: true,
   start_date: '2024-11-01',
-  end_date: '2024-12-01'
+  end_date: '2024-12-01',
 });
 
 console.log('Payment history:', paymentHistory);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -246,7 +251,7 @@ console.log('Payment history:', paymentHistory);
       }
     },
     {
-      id: 'txn_def456', 
+      id: 'txn_def456',
       type: 'usage',
       credits_used: 45.6,
       status: 'completed',
@@ -296,13 +301,14 @@ console.log('Payment history:', paymentHistory);
 const usageAnalytics = await client.credits.getUsageAnalytics({
   timeframe: '30d',
   breakdown_by: ['service', 'day'],
-  include_forecasting: true
+  include_forecasting: true,
 });
 
 console.log('Usage analytics:', usageAnalytics);
 ```
 
 **SDK Response Example:**
+
 ```javascript
 {
   success: true,
@@ -355,7 +361,7 @@ const financialExport = await client.credits.exportFinancialData({
   start_date: '2024-01-01',
   end_date: '2024-12-31',
   include_tax_details: true,
-  include_usage_breakdown: true
+  include_usage_breakdown: true,
 });
 
 console.log('Financial export:', financialExport);
@@ -377,8 +383,8 @@ const invoice = await client.credits.generateInvoice({
     city: 'San Francisco',
     state: 'CA',
     zip: '94102',
-    country: 'US'
-  }
+    country: 'US',
+  },
 });
 
 console.log('Invoice generated:', invoice);
@@ -393,7 +399,7 @@ const subscription = await client.credits.manageSubscription({
   plan: 'enterprise',
   billing_cycle: 'monthly',
   auto_renewal: true,
-  credit_allowance: 10000 // Monthly allowance
+  credit_allowance: 10000, // Monthly allowance
 });
 ```
 
@@ -409,16 +415,16 @@ const allocation = await client.credits.allocateCredits({
       user_id: 'user_123',
       credits: 500,
       purpose: 'neural_training',
-      expiry: '2024-12-31'
+      expiry: '2024-12-31',
     },
     {
-      user_id: 'user_456', 
+      user_id: 'user_456',
       credits: 300,
       purpose: 'sandbox_development',
-      expiry: '2024-12-31'
-    }
+      expiry: '2024-12-31',
+    },
   ],
-  notify_users: true
+  notify_users: true,
 });
 
 console.log('Credits allocated:', allocation);
@@ -433,7 +439,7 @@ const transfer = await client.credits.transferCredits({
   to_user: 'user_456',
   amount: 100,
   reason: 'project_collaboration',
-  require_approval: true
+  require_approval: true,
 });
 ```
 
@@ -480,40 +486,40 @@ class CreditMonitor {
     this.thresholds = thresholds;
     this.setupMonitoring();
   }
-  
+
   async setupMonitoring() {
     // Check balance every hour
     setInterval(() => {
       this.checkBalance();
     }, 3600000);
   }
-  
+
   async checkBalance() {
     const balance = await this.client.credits.checkBalance();
-    
+
     if (balance.balance <= this.thresholds.critical) {
       await this.handleCriticalBalance(balance);
     } else if (balance.balance <= this.thresholds.warning) {
       await this.handleLowBalance(balance);
     }
   }
-  
+
   async handleCriticalBalance(balance) {
     console.error('CRITICAL: Low credit balance', balance.balance);
-    
+
     // Auto-enable refill if not enabled
     if (!balance.auto_refill_enabled) {
       await this.client.credits.configureAutoRefill({
         enabled: true,
         threshold: this.thresholds.warning,
-        amount: 500
+        amount: 500,
       });
     }
-    
+
     // Notify team
     await this.notifyTeam('critical', balance);
   }
-  
+
   async handleLowBalance(balance) {
     console.warn('WARNING: Low credit balance', balance.balance);
     await this.notifyTeam('warning', balance);
@@ -528,16 +534,16 @@ class CreditMonitor {
 async function optimizeCreditUsage() {
   const analytics = await client.credits.getUsageAnalytics({
     timeframe: '7d',
-    breakdown_by: ['service']
+    breakdown_by: ['service'],
   });
-  
+
   // Identify expensive services
   const expensiveServices = Object.entries(analytics.breakdown_by_service)
     .filter(([_, data]) => data.percentage > 30)
     .map(([service, data]) => ({ service, ...data }));
-  
+
   console.log('High-cost services:', expensiveServices);
-  
+
   // Suggest optimizations
   for (const service of expensiveServices) {
     if (service.service === 'neural_training') {
@@ -558,15 +564,15 @@ class BudgetManager {
     this.client = client;
     this.monthlyBudget = monthlyBudget;
   }
-  
+
   async checkBudgetCompliance() {
     const analytics = await this.client.credits.getUsageAnalytics({
-      timeframe: '30d'
+      timeframe: '30d',
     });
-    
+
     const currentSpend = analytics.total_credits_used * 0.1; // $0.10 per credit
     const budgetUsed = (currentSpend / this.monthlyBudget) * 100;
-    
+
     if (budgetUsed > 90) {
       console.warn('Budget 90% utilized');
       await this.implementSpendingControls();
@@ -574,21 +580,21 @@ class BudgetManager {
       console.warn('Budget 80% utilized');
       await this.sendBudgetAlert();
     }
-    
+
     return {
       budget: this.monthlyBudget,
       spent: currentSpend,
       remaining: this.monthlyBudget - currentSpend,
-      percentage_used: budgetUsed
+      percentage_used: budgetUsed,
     };
   }
-  
+
   async implementSpendingControls() {
     // Reduce auto-refill amounts
     await this.client.credits.configureAutoRefill({
       enabled: true,
       amount: 100, // Smaller refill amounts
-      threshold: 50
+      threshold: 50,
     });
   }
 }
@@ -601,38 +607,42 @@ class BudgetManager {
 async function generateMonthlyReport(month, year) {
   const startDate = `${year}-${month.toString().padStart(2, '0')}-01`;
   const endDate = new Date(year, month, 0).toISOString().split('T')[0];
-  
+
   const [paymentHistory, usageAnalytics] = await Promise.all([
     client.credits.getPaymentHistory({
       start_date: startDate,
       end_date: endDate,
-      limit: 1000
+      limit: 1000,
     }),
     client.credits.getUsageAnalytics({
       start_date: startDate,
       end_date: endDate,
-      breakdown_by: ['service', 'day']
-    })
+      breakdown_by: ['service', 'day'],
+    }),
   ]);
-  
+
   const report = {
     period: `${year}-${month}`,
     financial_summary: {
       total_spent: paymentHistory.period_stats.total_spend,
       credits_purchased: paymentHistory.period_stats.credits_purchased,
       credits_used: paymentHistory.period_stats.credits_used,
-      efficiency_ratio: paymentHistory.period_stats.credits_used / paymentHistory.period_stats.credits_purchased
+      efficiency_ratio:
+        paymentHistory.period_stats.credits_used /
+        paymentHistory.period_stats.credits_purchased,
     },
     usage_breakdown: usageAnalytics.breakdown_by_service,
     cost_per_service: {},
-    recommendations: []
+    recommendations: [],
   };
-  
+
   // Calculate cost per service
-  for (const [service, data] of Object.entries(usageAnalytics.breakdown_by_service)) {
+  for (const [service, data] of Object.entries(
+    usageAnalytics.breakdown_by_service
+  )) {
     report.cost_per_service[service] = data.credits * 0.1; // $0.10 per credit
   }
-  
+
   return report;
 }
 ```
@@ -649,10 +659,10 @@ const webhookConfig = await client.credits.configureWebhooks({
     'payment.failed',
     'balance.low',
     'auto_refill.completed',
-    'auto_refill.failed'
+    'auto_refill.failed',
   ],
   webhook_url: 'https://api.myapp.com/webhooks/payments',
-  secret_key: 'webhook_secret_123'
+  secret_key: 'webhook_secret_123',
 });
 ```
 
@@ -666,12 +676,12 @@ function handlePaymentWebhook(event) {
       console.log('Payment successful:', event.data);
       // Update user account, send confirmation
       break;
-      
+
     case 'balance.low':
       console.log('Low balance alert:', event.data);
       // Send notification to team
       break;
-      
+
     case 'auto_refill.failed':
       console.error('Auto-refill failed:', event.data);
       // Alert administrators, disable auto-refill

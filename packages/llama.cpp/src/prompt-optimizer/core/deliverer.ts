@@ -12,7 +12,7 @@ import {
   Section,
   DeconstructResult,
   DiagnoseResult,
-  DevelopResult
+  DevelopResult,
 } from '../types/interfaces';
 import { PromptFormatter } from '../utils/formatter';
 
@@ -32,10 +32,7 @@ export class PromptDeliverer {
       diagnoseResult,
       developResult
     );
-    const verificationProtocol = this.createVerificationProtocol(
-      deconstructResult,
-      developResult
-    );
+    const verificationProtocol = this.createVerificationProtocol(deconstructResult, developResult);
 
     const finalOptimizedPrompt = this.assembleFinalPrompt(
       roleAssignment,
@@ -49,7 +46,7 @@ export class PromptDeliverer {
       contextImplementation,
       structureFormatting,
       verificationProtocol,
-      finalOptimizedPrompt
+      finalOptimizedPrompt,
     };
   }
 
@@ -68,22 +65,22 @@ export class PromptDeliverer {
       'software development': 'Senior Software Engineer and System Architect',
       'data science': 'Expert Data Scientist and ML Researcher',
       'creative writing': 'Professional Creative Writer and Storyteller',
-      'business': 'Strategic Business Consultant and Analyst',
-      'education': 'Expert Educator and Learning Specialist',
-      'research': 'Senior Research Scientist and Academic',
-      'design': 'Senior UX/UI Designer and Creative Director',
+      business: 'Strategic Business Consultant and Analyst',
+      education: 'Expert Educator and Learning Specialist',
+      research: 'Senior Research Scientist and Academic',
+      design: 'Senior UX/UI Designer and Creative Director',
       'technical documentation': 'Technical Writer and Documentation Specialist',
-      'general': 'Expert Professional Specialist'
+      general: 'Expert Professional Specialist',
     };
 
     const persona = domainPersonas[domain] || domainPersonas['general'];
 
     // Determine expertise level based on complexity
     const expertiseLevels: Record<string, string> = {
-      'simple': 'intermediate to advanced',
-      'moderate': 'advanced',
-      'complex': 'expert-level',
-      'expert': 'world-class expert'
+      simple: 'intermediate to advanced',
+      moderate: 'advanced',
+      complex: 'expert-level',
+      expert: 'world-class expert',
     };
 
     const expertiseLevel = expertiseLevels[complexity] || 'advanced';
@@ -98,7 +95,7 @@ export class PromptDeliverer {
       persona,
       expertiseLevel,
       perspective,
-      capabilities
+      capabilities,
     };
   }
 
@@ -108,15 +105,15 @@ export class PromptDeliverer {
   private static determinePerspective(deconstructResult: DeconstructResult): string {
     const actionVerbs = deconstructResult.coreIntent.actionVerbs;
 
-    if (actionVerbs.some(v => ['analyze', 'evaluate', 'assess'].includes(v))) {
+    if (actionVerbs.some((v) => ['analyze', 'evaluate', 'assess'].includes(v))) {
       return 'analytical and objective';
     }
 
-    if (actionVerbs.some(v => ['create', 'design', 'build'].includes(v))) {
+    if (actionVerbs.some((v) => ['create', 'design', 'build'].includes(v))) {
       return 'creative and solution-oriented';
     }
 
-    if (actionVerbs.some(v => ['explain', 'teach', 'describe'].includes(v))) {
+    if (actionVerbs.some((v) => ['explain', 'teach', 'describe'].includes(v))) {
       return 'educational and clear';
     }
 
@@ -138,40 +135,40 @@ export class PromptDeliverer {
         'Design scalable architectures',
         'Write clean, maintainable code',
         'Implement best practices and design patterns',
-        'Debug complex issues systematically'
+        'Debug complex issues systematically',
       ],
       'data science': [
         'Analyze complex datasets',
         'Build predictive models',
         'Apply statistical methods',
-        'Visualize insights effectively'
+        'Visualize insights effectively',
       ],
       'creative writing': [
         'Craft compelling narratives',
         'Develop rich characters',
         'Create vivid descriptions',
-        'Maintain consistent tone and style'
+        'Maintain consistent tone and style',
       ],
-      'business': [
+      business: [
         'Analyze market trends',
         'Develop strategic recommendations',
         'Assess risks and opportunities',
-        'Create actionable business plans'
-      ]
+        'Create actionable business plans',
+      ],
     };
 
     const baseCaps = domainCapabilities[domain] || [
       'Analyze requirements thoroughly',
       'Provide expert-level insights',
       'Create comprehensive solutions',
-      'Ensure quality and accuracy'
+      'Ensure quality and accuracy',
     ];
 
     capabilities.push(...baseCaps);
 
     // Add quality criteria as capabilities
     if (deconstructResult.requirements.qualityCriteria.length > 0) {
-      deconstructResult.requirements.qualityCriteria.forEach(criterion => {
+      deconstructResult.requirements.qualityCriteria.forEach((criterion) => {
         capabilities.push(`Ensure ${criterion.toLowerCase()}`);
       });
     }
@@ -224,7 +221,7 @@ export class PromptDeliverer {
       background,
       domainKnowledge,
       edgeCases,
-      assumptions
+      assumptions,
     };
   }
 
@@ -244,7 +241,7 @@ export class PromptDeliverer {
       title: 'ROLE & EXPERTISE',
       content: 'Define AI persona and capabilities',
       order: order++,
-      required: true
+      required: true,
     });
 
     // Objective section
@@ -252,7 +249,7 @@ export class PromptDeliverer {
       title: 'OBJECTIVE',
       content: deconstructResult.coreIntent.primaryObjective,
       order: order++,
-      required: true
+      required: true,
     });
 
     // Requirements section
@@ -260,17 +257,19 @@ export class PromptDeliverer {
       title: 'REQUIREMENTS',
       content: 'Define format, length, tone, and quality criteria',
       order: order++,
-      required: true
+      required: true,
     });
 
     // Context section (if needed)
-    if (deconstructResult.keyEntities.context.length > 0 ||
-        deconstructResult.keyEntities.domain !== 'general') {
+    if (
+      deconstructResult.keyEntities.context.length > 0 ||
+      deconstructResult.keyEntities.domain !== 'general'
+    ) {
       sections.push({
         title: 'CONTEXT',
         content: 'Background and domain knowledge',
         order: order++,
-        required: false
+        required: false,
       });
     }
 
@@ -280,7 +279,7 @@ export class PromptDeliverer {
         title: 'CONSTRAINTS',
         content: 'Limitations and boundaries',
         order: order++,
-        required: true
+        required: true,
       });
     }
 
@@ -289,7 +288,7 @@ export class PromptDeliverer {
       title: 'INSTRUCTIONS',
       content: 'Step-by-step process or methodology',
       order: order++,
-      required: true
+      required: true,
     });
 
     // Output Format section
@@ -298,7 +297,7 @@ export class PromptDeliverer {
         title: 'OUTPUT FORMAT',
         content: `Structured ${deconstructResult.requirements.format} format`,
         order: order++,
-        required: true
+        required: true,
       });
     }
 
@@ -307,19 +306,22 @@ export class PromptDeliverer {
       title: 'VERIFICATION',
       content: 'Quality checks and success criteria',
       order: order++,
-      required: true
+      required: true,
     });
 
     // Determine formatting type
-    const formatting = deconstructResult.requirements.format === 'json' ? 'json' :
-                      deconstructResult.requirements.format === 'code' ? 'code' :
-                      'markdown';
+    const formatting =
+      deconstructResult.requirements.format === 'json'
+        ? 'json'
+        : deconstructResult.requirements.format === 'code'
+          ? 'code'
+          : 'markdown';
 
     return {
       sections,
       hierarchy: diagnoseResult.complexityAssessment.level,
       visualClarity: true,
-      formatting: formatting as any
+      formatting: formatting as any,
     };
   }
 
@@ -349,7 +351,7 @@ export class PromptDeliverer {
     }
 
     // Success criteria
-    deconstructResult.requirements.qualityCriteria.forEach(criterion => {
+    deconstructResult.requirements.qualityCriteria.forEach((criterion) => {
       successCriteria.push(`Achieves ${criterion.toLowerCase()}`);
     });
 
@@ -375,7 +377,7 @@ export class PromptDeliverer {
       qualityChecks,
       successCriteria,
       selfValidation,
-      edgeCaseHandling
+      edgeCaseHandling,
     };
   }
 
@@ -391,24 +393,30 @@ export class PromptDeliverer {
     const sections: string[] = [];
 
     // Role section
-    sections.push(PromptFormatter.formatRoleAssignment(
-      roleAssignment.persona,
-      roleAssignment.expertiseLevel,
-      roleAssignment.capabilities
-    ));
+    sections.push(
+      PromptFormatter.formatRoleAssignment(
+        roleAssignment.persona,
+        roleAssignment.expertiseLevel,
+        roleAssignment.capabilities
+      )
+    );
 
     // Context section (if applicable)
-    if (contextImplementation.background.length > 0 ||
-        contextImplementation.domainKnowledge.length > 0) {
-      sections.push(PromptFormatter.formatContext(
-        contextImplementation.background,
-        contextImplementation.domainKnowledge,
-        contextImplementation.assumptions
-      ));
+    if (
+      contextImplementation.background.length > 0 ||
+      contextImplementation.domainKnowledge.length > 0
+    ) {
+      sections.push(
+        PromptFormatter.formatContext(
+          contextImplementation.background,
+          contextImplementation.domainKnowledge,
+          contextImplementation.assumptions
+        )
+      );
     }
 
     // Instructions from structure sections
-    structureFormatting.sections.forEach(section => {
+    structureFormatting.sections.forEach((section) => {
       if (section.title !== 'ROLE & EXPERTISE' && section.title !== 'CONTEXT') {
         sections.push(`# ${section.title}\n`);
         sections.push(`${section.content}\n`);
@@ -416,10 +424,12 @@ export class PromptDeliverer {
     });
 
     // Verification protocol
-    sections.push(PromptFormatter.formatVerificationProtocol(
-      verificationProtocol.qualityChecks,
-      verificationProtocol.successCriteria
-    ));
+    sections.push(
+      PromptFormatter.formatVerificationProtocol(
+        verificationProtocol.qualityChecks,
+        verificationProtocol.successCriteria
+      )
+    );
 
     // Assemble and format
     let finalPrompt = sections.join('\n');

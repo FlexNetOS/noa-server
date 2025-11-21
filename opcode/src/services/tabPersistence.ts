@@ -53,21 +53,21 @@ export class TabPersistenceService {
   static saveTabs(tabs: Tab[], activeTabId: string | null): void {
     // Don't save if persistence is disabled
     if (!this.isEnabled()) return;
-    
+
     try {
       // Filter out tabs that shouldn't be persisted
-      const persistableTabs = tabs.filter(tab => {
+      const persistableTabs = tabs.filter((tab) => {
         // Don't persist tabs with running status (they're likely stale)
         if (tab.status === 'running') return false;
-        
+
         // Don't persist create/import agent tabs (they're temporary)
         if (tab.type === 'create-agent' || tab.type === 'import-agent') return false;
-        
+
         return true;
       });
 
       // Serialize tabs (excluding complex objects)
-      const serializedTabs: SerializedTab[] = persistableTabs.map(tab => ({
+      const serializedTabs: SerializedTab[] = persistableTabs.map((tab) => ({
         id: tab.id,
         type: tab.type,
         title: tab.title,
@@ -81,13 +81,13 @@ export class TabPersistenceService {
         order: tab.order,
         icon: tab.icon,
         createdAt: tab.createdAt instanceof Date ? tab.createdAt.toISOString() : tab.createdAt,
-        updatedAt: tab.updatedAt instanceof Date ? tab.updatedAt.toISOString() : tab.updatedAt
+        updatedAt: tab.updatedAt instanceof Date ? tab.updatedAt.toISOString() : tab.updatedAt,
       }));
 
       localStorage.setItem(STORAGE_KEY, JSON.stringify(serializedTabs));
-      
+
       // Save active tab ID
-      if (activeTabId && persistableTabs.some(tab => tab.id === activeTabId)) {
+      if (activeTabId && persistableTabs.some((tab) => tab.id === activeTabId)) {
         localStorage.setItem(ACTIVE_TAB_KEY, activeTabId);
       }
     } catch (error) {
@@ -98,37 +98,37 @@ export class TabPersistenceService {
   /**
    * Load tabs from localStorage
    */
-  static loadTabs(): { tabs: Tab[], activeTabId: string | null } {
+  static loadTabs(): { tabs: Tab[]; activeTabId: string | null } {
     // Don't load if persistence is disabled
     if (!this.isEnabled()) {
       return { tabs: [], activeTabId: null };
     }
-    
+
     try {
       const savedTabsJson = localStorage.getItem(STORAGE_KEY);
       const savedActiveTabId = localStorage.getItem(ACTIVE_TAB_KEY);
-      
+
       if (!savedTabsJson) {
         return { tabs: [], activeTabId: null };
       }
 
       const serializedTabs: SerializedTab[] = JSON.parse(savedTabsJson);
-      
+
       // Deserialize tabs
-      const tabs: Tab[] = serializedTabs.map(serialized => ({
+      const tabs: Tab[] = serializedTabs.map((serialized) => ({
         ...serialized,
         createdAt: new Date(serialized.createdAt),
         updatedAt: new Date(serialized.updatedAt),
         sessionData: undefined, // Will be loaded when tab is activated
         agentData: undefined, // Will be loaded when tab is activated
-        status: serialized.status === 'running' ? 'idle' : serialized.status // Ensure no running status
+        status: serialized.status === 'running' ? 'idle' : serialized.status, // Ensure no running status
       }));
 
       // Validate and filter out any invalid tabs
-      const validTabs = tabs.filter(tab => {
+      const validTabs = tabs.filter((tab) => {
         // Basic validation
         if (!tab.id || !tab.type || !tab.title) return false;
-        
+
         // Type-specific validation
         switch (tab.type) {
           case 'chat':
@@ -157,9 +157,12 @@ export class TabPersistenceService {
         .map((tab, index) => ({ ...tab, order: index }));
 
       // Validate active tab ID
-      const activeTabId = savedActiveTabId && orderedTabs.some(tab => tab.id === savedActiveTabId)
-        ? savedActiveTabId
-        : orderedTabs.length > 0 ? orderedTabs[0].id : null;
+      const activeTabId =
+        savedActiveTabId && orderedTabs.some((tab) => tab.id === savedActiveTabId)
+          ? savedActiveTabId
+          : orderedTabs.length > 0
+            ? orderedTabs[0].id
+            : null;
 
       return { tabs: orderedTabs, activeTabId };
     } catch (error) {
@@ -186,7 +189,7 @@ export class TabPersistenceService {
     try {
       const oldKey = 'opcode_tabs';
       const oldData = localStorage.getItem(oldKey);
-      
+
       if (oldData && !localStorage.getItem(STORAGE_KEY)) {
         // Attempt to migrate old data
         localStorage.setItem(STORAGE_KEY, oldData);

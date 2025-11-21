@@ -56,7 +56,7 @@ class SimplePromptOptimizer {
       bypassed: false,
       cached: false,
       processingTime,
-      qualityScore: 0.8 // Placeholder quality score
+      qualityScore: 0.8, // Placeholder quality score
     };
   }
 }
@@ -75,7 +75,7 @@ export class RequestInterceptor {
     bypassedRequests: 0,
     cachedRequests: 0,
     failedRequests: 0,
-    avgProcessingTime: 0
+    avgProcessingTime: 0,
   };
 
   private constructor() {
@@ -104,7 +104,7 @@ export class RequestInterceptor {
         return {
           original: request,
           optimized: request,
-          interceptionResult: this.createNoOpResult()
+          interceptionResult: this.createNoOpResult(),
         };
       }
 
@@ -122,15 +122,14 @@ export class RequestInterceptor {
         optimizedLength: interceptionResult.optimized.length,
         processingTime: interceptionResult.processingTime,
         bypassed: interceptionResult.bypassed,
-        cached: interceptionResult.cached
+        cached: interceptionResult.cached,
       });
 
       return {
         original: request,
         optimized: optimizedRequest,
-        interceptionResult
+        interceptionResult,
       };
-
     } catch (error) {
       this.optimizationStats.failedRequests++;
       this.log('Request interception failed:', error);
@@ -139,7 +138,7 @@ export class RequestInterceptor {
       return {
         original: request,
         optimized: request,
-        interceptionResult: this.createErrorResult(error)
+        interceptionResult: this.createErrorResult(error),
       };
     }
   }
@@ -193,7 +192,7 @@ export class RequestInterceptor {
    */
   private isTextParameter(key: string): boolean {
     const textParams = ['prompt', 'message', 'text', 'query', 'input', 'content', 'search'];
-    return textParams.some(param => key.toLowerCase().includes(param));
+    return textParams.some((param) => key.toLowerCase().includes(param));
   }
 
   /**
@@ -243,7 +242,7 @@ export class RequestInterceptor {
       optimized: '',
       bypassed: true,
       cached: false,
-      processingTime: 0
+      processingTime: 0,
     };
   }
 
@@ -257,7 +256,7 @@ export class RequestInterceptor {
       bypassed: true,
       cached: false,
       processingTime: 0,
-      error: error.message || 'Unknown error'
+      error: error.message || 'Unknown error',
     };
   }
 
@@ -274,7 +273,9 @@ export class RequestInterceptor {
     }
 
     // Update average processing time
-    const totalTime = this.optimizationStats.avgProcessingTime * (this.optimizationStats.totalRequests - 1) + result.processingTime;
+    const totalTime =
+      this.optimizationStats.avgProcessingTime * (this.optimizationStats.totalRequests - 1) +
+      result.processingTime;
     this.optimizationStats.avgProcessingTime = totalTime / this.optimizationStats.totalRequests;
   }
 
@@ -303,7 +304,7 @@ export class RequestInterceptor {
       bypassedRequests: 0,
       cachedRequests: 0,
       failedRequests: 0,
-      avgProcessingTime: 0
+      avgProcessingTime: 0,
     };
     this.log('Statistics reset');
   }

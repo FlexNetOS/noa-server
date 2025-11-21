@@ -1,14 +1,21 @@
 # Noa Server Scalability Infrastructure
 
-> Production-ready horizontal scaling, microservices architecture, database sharding, and message queue integration for handling millions of concurrent users.
+> Production-ready horizontal scaling, microservices architecture, database
+> sharding, and message queue integration for handling millions of concurrent
+> users.
 
 ## Quick Links
 
-- [Implementation Summary](./PHASE_5_IMPLEMENTATION_SUMMARY.md) - Complete overview of Phase 5 implementation
-- [Horizontal Scaling Guide](./HORIZONTAL_SCALING.md) - Kubernetes HPA, AWS ASG, load balancers
-- [Microservices Architecture](./MICROSERVICES_ARCHITECTURE.md) - Service decomposition, API gateway, service discovery
-- [Database Sharding](./DATABASE_SHARDING.md) - Sharding strategies, migration, monitoring
-- [Message Queues](./MESSAGE_QUEUES.md) - Queue integration, workers, job processing
+- [Implementation Summary](./PHASE_5_IMPLEMENTATION_SUMMARY.md) - Complete
+  overview of Phase 5 implementation
+- [Horizontal Scaling Guide](./HORIZONTAL_SCALING.md) - Kubernetes HPA, AWS ASG,
+  load balancers
+- [Microservices Architecture](./MICROSERVICES_ARCHITECTURE.md) - Service
+  decomposition, API gateway, service discovery
+- [Database Sharding](./DATABASE_SHARDING.md) - Sharding strategies, migration,
+  monitoring
+- [Message Queues](./MESSAGE_QUEUES.md) - Queue integration, workers, job
+  processing
 
 ## Overview
 
@@ -55,28 +62,33 @@ The Noa Server scalability infrastructure enables the system to:
 ### 1. Horizontal Scaling (scale-001)
 
 **Kubernetes HPA**: Auto-scaling based on CPU, memory, and custom metrics
+
 - Min: 3 replicas, Max: 20 replicas
 - Scale up: 2x every 30s (aggressive)
 - Scale down: 10% every 5min (conservative)
 
 **AWS Auto Scaling**: Target tracking and step scaling policies
+
 - EC2 Auto Scaling Groups
 - Application Load Balancer with SSL/TLS
 - CloudWatch monitoring and alarms
 
 **Load Balancing**:
+
 - NGINX Ingress Controller with rate limiting
 - HAProxy alternative with advanced algorithms
 - Session affinity (sticky sessions)
 - WebSocket support
 
 **Service Mesh**:
+
 - Istio for traffic management
 - Circuit breakers and retry policies
 - Canary deployments (90/10 split)
 - mTLS between services
 
 **Files**:
+
 ```
 k8s/scaling/
 ├── hpa/
@@ -105,6 +117,7 @@ scripts/scaling/
 ### 2. Microservices Architecture (scale-002)
 
 **8 Independent Services**:
+
 1. User Service - User management
 2. Auth Service - Authentication
 3. MCP Service - Tool execution
@@ -115,6 +128,7 @@ scripts/scaling/
 8. Audit Service - Compliance
 
 **API Gateway**:
+
 - Request routing to microservices
 - JWT authentication
 - Rate limiting (100 req/s per IP)
@@ -122,18 +136,21 @@ scripts/scaling/
 - Request aggregation
 
 **Service Registry (Consul)**:
+
 - Service discovery
 - Health checking
 - Load balancing (round-robin, random, least-connections, weighted)
 - Configuration store
 
 **Inter-Service Communication**:
+
 - HTTP/REST via API Gateway
 - Event-driven with Event Bus
 - Queue-based with RabbitMQ
 - gRPC for high-performance
 
 **Files**:
+
 ```
 packages/microservices/
 ├── service-registry/
@@ -163,23 +180,27 @@ packages/microservices/
 ### 3. Database Sharding (scale-003)
 
 **Sharding Strategies**:
+
 - Hash sharding: `shard = hash(key) % totalShards`
 - Range sharding: Partition by key ranges
 - Geographic sharding: Distribute by region
 - Consistent hashing: Minimal data movement
 
 **Shard Management**:
+
 - Automatic query routing
 - Cross-shard query aggregation
 - Data migration tools
 - Health monitoring
 
 **Database Support**:
+
 - PostgreSQL with Citus extension
 - MongoDB native sharding
 - Read replicas per shard
 
 **Files**:
+
 ```
 packages/database-sharding/
 ├── src/
@@ -203,12 +224,14 @@ packages/database-sharding/
 ### 4. Message Queue Integration (scale-004)
 
 **Queue Providers**:
+
 - RabbitMQ (recommended)
 - Apache Kafka (high throughput)
 - Redis Queue (simple)
 - AWS SQS (managed)
 
 **Queue Patterns**:
+
 - Work Queue
 - Pub/Sub
 - Request-Reply
@@ -216,6 +239,7 @@ packages/database-sharding/
 - Topics
 
 **Job Types**:
+
 - Email delivery
 - Report generation
 - Data exports
@@ -224,12 +248,14 @@ packages/database-sharding/
 - Database backups
 
 **Worker Management**:
+
 - Auto-scaling based on queue depth
 - Retry with exponential backoff
 - Dead letter queues
 - Monitoring dashboard
 
 **Files**:
+
 ```
 packages/message-queue/
 ├── src/
@@ -329,21 +355,21 @@ docker stack ps noa
 
 ### Scalability Targets
 
-| Metric | Current | Target | Max Capacity |
-|--------|---------|--------|--------------|
-| Concurrent Users | 100K | 1M | 5M |
-| Requests/Second | 5,000 | 50,000 | 200,000 |
-| Database Connections | 100 | 1,000 | 10,000 |
-| Queue Throughput | 1,000/min | 10,000/min | 100,000/min |
+| Metric               | Current   | Target     | Max Capacity |
+| -------------------- | --------- | ---------- | ------------ |
+| Concurrent Users     | 100K      | 1M         | 5M           |
+| Requests/Second      | 5,000     | 50,000     | 200,000      |
+| Database Connections | 100       | 1,000      | 10,000       |
+| Queue Throughput     | 1,000/min | 10,000/min | 100,000/min  |
 
 ### Latency Targets
 
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| API Request | < 100ms | < 500ms | < 1000ms |
-| Database Query | < 10ms | < 50ms | < 100ms |
-| Cache Hit | < 1ms | < 5ms | < 10ms |
-| Queue Job | < 1s | < 5s | < 10s |
+| Operation      | P50     | P95     | P99      |
+| -------------- | ------- | ------- | -------- |
+| API Request    | < 100ms | < 500ms | < 1000ms |
+| Database Query | < 10ms  | < 50ms  | < 100ms  |
+| Cache Hit      | < 1ms   | < 5ms   | < 10ms   |
+| Queue Job      | < 1s    | < 5s    | < 10s    |
 
 ## Monitoring
 
@@ -366,6 +392,7 @@ kube_deployment_status_replicas_available
 ### Grafana Dashboards
 
 Pre-configured dashboards available for:
+
 - Application overview
 - Microservices health
 - Database performance
@@ -375,6 +402,7 @@ Pre-configured dashboards available for:
 ### Alerting
 
 Key alerts configured:
+
 - High error rate (> 5%)
 - Slow response time (P95 > 1s)
 - Low instance count
@@ -422,14 +450,14 @@ kubectl apply -f chaos-experiments/network-delay.yaml
 
 ### Monthly Cost Estimate
 
-| Component | Instance Type | Count | Monthly Cost |
-|-----------|---------------|-------|--------------|
-| App Servers | t3.large | 3-20 | $200-$1,400 |
-| Database | db.r5.xlarge | 1 | $350 |
-| Redis | cache.t3.medium | 1 | $50 |
-| RabbitMQ | mq.t3.micro | 1 | $35 |
-| Load Balancer | ALB | 1 | $25 |
-| **Total** | | | **$660-$1,860** |
+| Component     | Instance Type   | Count | Monthly Cost    |
+| ------------- | --------------- | ----- | --------------- |
+| App Servers   | t3.large        | 3-20  | $200-$1,400     |
+| Database      | db.r5.xlarge    | 1     | $350            |
+| Redis         | cache.t3.medium | 1     | $50             |
+| RabbitMQ      | mq.t3.micro     | 1     | $35             |
+| Load Balancer | ALB             | 1     | $25             |
+| **Total**     |                 |       | **$660-$1,860** |
 
 ## Troubleshooting
 
@@ -471,6 +499,4 @@ Copyright (c) 2025 Noa Server. All rights reserved.
 
 ---
 
-**Version**: 1.0.0
-**Last Updated**: 2025-10-22
-**Status**: Production Ready
+**Version**: 1.0.0 **Last Updated**: 2025-10-22 **Status**: Production Ready

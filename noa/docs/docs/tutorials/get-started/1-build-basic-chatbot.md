@@ -1,6 +1,9 @@
 # Build a basic chatbot
 
-In this tutorial, you will build a basic chatbot. This chatbot is the basis for the following series of tutorials where you will progressively add more sophisticated capabilities, and be introduced to key LangGraph concepts along the way. Let's dive in! 🌟
+In this tutorial, you will build a basic chatbot. This chatbot is the basis for
+the following series of tutorials where you will progressively add more
+sophisticated capabilities, and be introduced to key LangGraph concepts along
+the way. Let's dive in! 🌟
 
 ## Prerequisites
 
@@ -21,8 +24,7 @@ pip install -U langgraph langsmith
 
 :::
 
-:::js
-=== "npm"
+:::js === "npm"
 
     ```bash
     npm install @langchain/langgraph @langchain/core zod
@@ -54,9 +56,13 @@ pip install -U langgraph langsmith
 
 ## 2. Create a `StateGraph`
 
-Now you can create a basic chatbot using LangGraph. This chatbot will respond directly to user messages.
+Now you can create a basic chatbot using LangGraph. This chatbot will respond
+directly to user messages.
 
-Start by creating a `StateGraph`. A `StateGraph` object defines the structure of our chatbot as a "state machine". We'll add `nodes` to represent the llm and functions our chatbot can call and `edges` to specify how the bot should transition between these functions.
+Start by creating a `StateGraph`. A `StateGraph` object defines the structure of
+our chatbot as a "state machine". We'll add `nodes` to represent the llm and
+functions our chatbot can call and `edges` to specify how the bot should
+transition between these functions.
 
 :::python
 
@@ -84,8 +90,8 @@ graph_builder = StateGraph(State)
 :::js
 
 ```typescript
-import { StateGraph, MessagesZodState, START } from "@langchain/langgraph";
-import { z } from "zod";
+import { StateGraph, MessagesZodState, START } from '@langchain/langgraph';
+import { z } from 'zod';
 
 const State = z.object({ messages: MessagesZodState.shape.messages });
 
@@ -96,8 +102,10 @@ const graph = new StateGraph(State).compile();
 
 Our graph can now handle two key tasks:
 
-1. Each `node` can receive the current `State` as input and output an update to the state.
-2. Updates to `messages` will be appended to the existing list rather than overwriting it, thanks to the prebuilt reducer function.
+1. Each `node` can receive the current `State` as input and output an update to
+   the state.
+2. Updates to `messages` will be appended to the existing list rather than
+   overwriting it, thanks to the prebuilt reducer function.
 
 !!! tip "Concept"
 
@@ -107,7 +115,8 @@ Our graph can now handle two key tasks:
 
 ## 3. Add a node
 
-Next, add a "`chatbot`" node. **Nodes** represent units of work and are typically regular functions.
+Next, add a "`chatbot`" node. **Nodes** represent units of work and are
+typically regular functions.
 
 Let's first select a chat model:
 
@@ -128,11 +137,11 @@ llm = init_chat_model("anthropic:claude-3-5-sonnet-latest")
 :::js
 
 ```typescript
-import { ChatOpenAI } from "@langchain/openai";
+import { ChatOpenAI } from '@langchain/openai';
 // or import { ChatAnthropic } from "@langchain/anthropic";
 
 const llm = new ChatOpenAI({
-  model: "gpt-4o",
+  model: 'gpt-4o',
   temperature: 0,
 });
 ```
@@ -160,13 +169,13 @@ graph_builder.add_node("chatbot", chatbot)
 :::js
 
 ```typescript hl_lines="7-9"
-import { StateGraph, MessagesZodState, START } from "@langchain/langgraph";
-import { z } from "zod";
+import { StateGraph, MessagesZodState, START } from '@langchain/langgraph';
+import { z } from 'zod';
 
 const State = z.object({ messages: MessagesZodState.shape.messages });
 
 const graph = new StateGraph(State)
-  .addNode("chatbot", async (state: z.infer<typeof State>) => {
+  .addNode('chatbot', async (state: z.infer<typeof State>) => {
     return { messages: [await llm.invoke(state.messages)] };
   })
   .compile();
@@ -174,19 +183,20 @@ const graph = new StateGraph(State)
 
 :::
 
-**Notice** how the `chatbot` node function takes the current `State` as input and returns a dictionary containing an updated `messages` list under the key "messages". This is the basic pattern for all LangGraph node functions.
+**Notice** how the `chatbot` node function takes the current `State` as input
+and returns a dictionary containing an updated `messages` list under the key
+"messages". This is the basic pattern for all LangGraph node functions.
 
-:::python
-The `add_messages` function in our `State` will append the LLM's response messages to whatever messages are already in the state.
-:::
+:::python The `add_messages` function in our `State` will append the LLM's
+response messages to whatever messages are already in the state. :::
 
-:::js
-The `addMessages` function used within `MessagesZodState` will append the LLM's response messages to whatever messages are already in the state.
-:::
+:::js The `addMessages` function used within `MessagesZodState` will append the
+LLM's response messages to whatever messages are already in the state. :::
 
 ## 4. Add an `entry` point
 
-Add an `entry` point to tell the graph **where to start its work** each time it is run:
+Add an `entry` point to tell the graph **where to start its work** each time it
+is run:
 
 :::python
 
@@ -199,16 +209,16 @@ graph_builder.add_edge(START, "chatbot")
 :::js
 
 ```typescript hl_lines="10"
-import { StateGraph, MessagesZodState, START } from "@langchain/langgraph";
-import { z } from "zod";
+import { StateGraph, MessagesZodState, START } from '@langchain/langgraph';
+import { z } from 'zod';
 
 const State = z.object({ messages: MessagesZodState.shape.messages });
 
 const graph = new StateGraph(State)
-  .addNode("chatbot", async (state: z.infer<typeof State>) => {
+  .addNode('chatbot', async (state: z.infer<typeof State>) => {
     return { messages: [await llm.invoke(state.messages)] };
   })
-  .addEdge(START, "chatbot")
+  .addEdge(START, 'chatbot')
   .compile();
 ```
 
@@ -216,7 +226,9 @@ const graph = new StateGraph(State)
 
 ## 5. Add an `exit` point
 
-Add an `exit` point to indicate **where the graph should finish execution**. This is helpful for more complex flows, but even in a simple graph like this, adding an end node improves clarity.
+Add an `exit` point to indicate **where the graph should finish execution**.
+This is helpful for more complex flows, but even in a simple graph like this,
+adding an end node improves clarity.
 
 :::python
 
@@ -229,17 +241,17 @@ graph_builder.add_edge("chatbot", END)
 :::js
 
 ```typescript hl_lines="11"
-import { StateGraph, MessagesZodState, START, END } from "@langchain/langgraph";
-import { z } from "zod";
+import { StateGraph, MessagesZodState, START, END } from '@langchain/langgraph';
+import { z } from 'zod';
 
 const State = z.object({ messages: MessagesZodState.shape.messages });
 
 const graph = new StateGraph(State)
-  .addNode("chatbot", async (state: z.infer<typeof State>) => {
+  .addNode('chatbot', async (state: z.infer<typeof State>) => {
     return { messages: [await llm.invoke(state.messages)] };
   })
-  .addEdge(START, "chatbot")
-  .addEdge("chatbot", END)
+  .addEdge(START, 'chatbot')
+  .addEdge('chatbot', END)
   .compile();
 ```
 
@@ -249,8 +261,9 @@ This tells the graph to terminate after running the chatbot node.
 
 ## 6. Compile the graph
 
-Before running the graph, we'll need to compile it. We can do so by calling `compile()`
-on the graph builder. This creates a `CompiledGraph` we can invoke on our state.
+Before running the graph, we'll need to compile it. We can do so by calling
+`compile()` on the graph builder. This creates a `CompiledGraph` we can invoke
+on our state.
 
 :::python
 
@@ -263,17 +276,17 @@ graph = graph_builder.compile()
 :::js
 
 ```typescript hl_lines="12"
-import { StateGraph, MessagesZodState, START, END } from "@langchain/langgraph";
-import { z } from "zod";
+import { StateGraph, MessagesZodState, START, END } from '@langchain/langgraph';
+import { z } from 'zod';
 
 const State = z.object({ messages: MessagesZodState.shape.messages });
 
 const graph = new StateGraph(State)
-  .addNode("chatbot", async (state: z.infer<typeof State>) => {
+  .addNode('chatbot', async (state: z.infer<typeof State>) => {
     return { messages: [await llm.invoke(state.messages)] };
   })
-  .addEdge(START, "chatbot")
-  .addEdge("chatbot", END)
+  .addEdge(START, 'chatbot')
+  .addEdge('chatbot', END)
   .compile();
 ```
 
@@ -281,8 +294,9 @@ const graph = new StateGraph(State)
 
 ## 7. Visualize the graph (optional)
 
-:::python
-You can visualize the graph using the `get_graph` method and one of the "draw" methods, like `draw_ascii` or `draw_png`. The `draw` methods each require additional dependencies.
+:::python You can visualize the graph using the `get_graph` method and one of
+the "draw" methods, like `draw_ascii` or `draw_png`. The `draw` methods each
+require additional dependencies.
 
 ```python
 from IPython.display import Image, display
@@ -296,17 +310,17 @@ except Exception:
 
 :::
 
-:::js
-You can visualize the graph using the `getGraph` method and render the graph with the `drawMermaidPng` method.
+:::js You can visualize the graph using the `getGraph` method and render the
+graph with the `drawMermaidPng` method.
 
 ```typescript
-import * as fs from "node:fs/promises";
+import * as fs from 'node:fs/promises';
 
 const drawableGraph = await graph.getGraphAsync();
 const image = await drawableGraph.drawMermaidPng();
 const imageBuffer = new Uint8Array(await image.arrayBuffer());
 
-await fs.writeFile("basic-chatbot.png", imageBuffer);
+await fs.writeFile('basic-chatbot.png', imageBuffer);
 ```
 
 :::
@@ -421,7 +435,11 @@ Goodbye!
 
 :::
 
-**Congratulations!** You've built your first chatbot using LangGraph. This bot can engage in basic conversation by taking user input and generating responses using an LLM. You can inspect a [LangSmith Trace](https://smith.langchain.com/public/7527e308-9502-4894-b347-f34385740d5a/r) for the call above.
+**Congratulations!** You've built your first chatbot using LangGraph. This bot
+can engage in basic conversation by taking user input and generating responses
+using an LLM. You can inspect a
+[LangSmith Trace](https://smith.langchain.com/public/7527e308-9502-4894-b347-f34385740d5a/r)
+for the call above.
 
 :::python
 
@@ -492,4 +510,6 @@ const graph = new StateGraph(State);
 
 ## Next steps
 
-You may have noticed that the bot's knowledge is limited to what's in its training data. In the next part, we'll [add a web search tool](./2-add-tools.md) to expand the bot's knowledge and make it more capable.
+You may have noticed that the bot's knowledge is limited to what's in its
+training data. In the next part, we'll [add a web search tool](./2-add-tools.md)
+to expand the bot's knowledge and make it more capable.

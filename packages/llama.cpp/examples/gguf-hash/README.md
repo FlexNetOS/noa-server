@@ -1,4 +1,3 @@
-
 # llama-gguf-hash
 
 CLI to hash GGUF files to detect difference on a per model and per tensor level.
@@ -13,7 +12,7 @@ CLI to hash GGUF files to detect difference on a per model and per tensor level.
 - `--all`: use all hash
 - `--no-layer`: exclude per layer hash
 - `--uuid`: generate UUIDv5 ID
-- `-c`, `--check <manifest>`:  verify against a manifest
+- `-c`, `--check <manifest>`: verify against a manifest
 
 ## About
 
@@ -29,21 +28,24 @@ then the per tensor hash can be used to narrow down the specific tensor layer
 that has inconsistencies.
 
 For Maintainers:
+
 - Detection of tensor inconsistency during development and automated tests
-    - This is served by xxh64 which is fast
-    - This is also served by having per tensor layer to assist in narrowing down
-      the location of the faulty tensor layer
-    - This is also served by sha1 which is much slower but more widely supported
+  - This is served by xxh64 which is fast
+  - This is also served by having per tensor layer to assist in narrowing down
+    the location of the faulty tensor layer
+  - This is also served by sha1 which is much slower but more widely supported
 
 For Model Creators:
+
 - Optional consistent UUID generation based on model tensor content
-    - This is served by UUIDv5 which is useful for databases keys
-        - llama.cpp UUIDv5 Namespace: `ef001206-dadc-5f6d-a15f-3359e577d4e5`
-            - Made via UUIDv5 URL namespace of `en.wikipedia.org/wiki/Llama.cpp`
+  - This is served by UUIDv5 which is useful for databases keys
+    - llama.cpp UUIDv5 Namespace: `ef001206-dadc-5f6d-a15f-3359e577d4e5`
+      - Made via UUIDv5 URL namespace of `en.wikipedia.org/wiki/Llama.cpp`
 
 For Model Users:
+
 - Assurance of tensor layer integrity even if metadata was updated
-    - This is served by sha256 which is still considered very secure as of 2024
+  - This is served by sha256 which is still considered very secure as of 2024
 
 ### Design Note
 
@@ -75,8 +77,9 @@ To generate we may use this command
 ./llama-gguf-hash --all test.gguf > test.gguf.manifest
 ```
 
-Which would generate a manifest that looks like below, which contains multiple hash type and per tensor layer hashes as well
-(This excludes UUID as that is an ID not a hash)
+Which would generate a manifest that looks like below, which contains multiple
+hash type and per tensor layer hashes as well (This excludes UUID as that is an
+ID not a hash)
 
 ```bash
 xxh64     f66e9cd66a4396a0  test.gguf:tensor_0
@@ -114,7 +117,8 @@ sha1      d15be52c4ff213e823cb6dd13af7ee2f978e7042  test.gguf
 sha256    7dd641b32f59b60dbd4b5420c4b0f6321ccf48f58f6ae201a3dbc4a58a27c6e4  test.gguf
 ```
 
-We can then use the normal check command which will by default check for the highest security strength hash and verify against that:
+We can then use the normal check command which will by default check for the
+highest security strength hash and verify against that:
 
 ```bash
 $ ./llama-gguf-hash --check test.gguf.manifest test.gguf
@@ -196,10 +200,10 @@ sha256    7dd641b32f59b60dbd4b5420c4b0f6321ccf48f58f6ae201a3dbc4a58a27c6e4  test
 Verification results for test.gguf.manifest - Success
 ```
 
-
 ## Crypto/Hash Libraries Used
 
-These micro c libraries dependencies was installed via the [clib c package manager](https://github.com/clibs)
+These micro c libraries dependencies was installed via the
+[clib c package manager](https://github.com/clibs)
 
 - https://github.com/Cyan4973/xxHash
 - https://github.com/clibs/sha1/

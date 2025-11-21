@@ -6,8 +6,15 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src')
-    }
+      '@': resolve(__dirname, './src'),
+    },
+  },
+  // Bridge Vite's import.meta.env to process.env so shared code can use
+  // process.env.* (which works naturally in Jest/Node) while Vite replaces
+  // those references at build time for the browser bundle.
+  define: {
+    'process.env.VITE_API_URL': 'import.meta.env.VITE_API_URL',
+    'process.env.VITE_WS_URL': 'import.meta.env.VITE_WS_URL',
   },
   server: {
     host: '0.0.0.0',
@@ -15,13 +22,13 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: 'http://localhost:8081',
-        changeOrigin: true
+        changeOrigin: true,
       },
       '/ws': {
         target: 'ws://localhost:8081',
-        ws: true
-      }
-    }
+        ws: true,
+      },
+    },
   },
   build: {
     outDir: 'dist',
@@ -30,10 +37,10 @@ export default defineConfig({
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom'],
-          'charts': ['recharts'],
-          'motion': ['framer-motion']
-        }
-      }
-    }
-  }
+          charts: ['recharts'],
+          motion: ['framer-motion'],
+        },
+      },
+    },
+  },
 });

@@ -1,6 +1,8 @@
 # Add tools
 
-To handle queries that your chatbot can't answer "from memory", integrate a web search tool. The chatbot can use this tool to find relevant information and provide better responses.
+To handle queries that your chatbot can't answer "from memory", integrate a web
+search tool. The chatbot can use this tool to find relevant information and
+provide better responses.
 
 !!! note
 
@@ -12,20 +14,22 @@ Before you start this tutorial, ensure you have the following:
 
 :::python
 
-- An API key for the [Tavily Search Engine](https://python.langchain.com/docs/integrations/tools/tavily_search/).
+- An API key for the
+  [Tavily Search Engine](https://python.langchain.com/docs/integrations/tools/tavily_search/).
 
 :::
 
 :::js
 
-- An API key for the [Tavily Search Engine](https://js.langchain.com/docs/integrations/tools/tavily_search/).
+- An API key for the
+  [Tavily Search Engine](https://js.langchain.com/docs/integrations/tools/tavily_search/).
 
 :::
 
 ## 1. Install the search engine
 
-:::python
-Install the requirements to use the [Tavily Search Engine](https://python.langchain.com/docs/integrations/tools/tavily_search/):
+:::python Install the requirements to use the
+[Tavily Search Engine](https://python.langchain.com/docs/integrations/tools/tavily_search/):
 
 ```bash
 pip install -U langchain-tavily
@@ -33,8 +37,8 @@ pip install -U langchain-tavily
 
 :::
 
-:::js
-Install the requirements to use the [Tavily Search Engine](https://docs.tavily.com/):
+:::js Install the requirements to use the
+[Tavily Search Engine](https://docs.tavily.com/):
 
 === "npm"
 
@@ -67,17 +71,19 @@ Install the requirements to use the [Tavily Search Engine](https://docs.tavily.c
 Configure your environment with your search engine API key:
 
 :::python
+
 ```python
 import os
 
 os.environ["TAVILY_API_KEY"] = "tvly-..."
 ```
+
 :::
 
 :::js
 
 ```typescript
-process.env.TAVILY_API_KEY = "tvly-...";
+process.env.TAVILY_API_KEY = 'tvly-...';
 ```
 
 :::
@@ -101,7 +107,7 @@ tool.invoke("What's a 'node' in LangGraph?")
 :::js
 
 ```typescript
-import { TavilySearch } from "@langchain/tavily";
+import { TavilySearch } from '@langchain/tavily';
 
 const tool = new TavilySearch({ maxResults: 2 });
 const tools = [tool];
@@ -167,18 +173,19 @@ The results are page summaries our chat bot can use to answer questions:
 
 ## 4. Define the graph
 
-:::python
-For the `StateGraph` you created in the [first tutorial](./1-build-basic-chatbot.md), add `bind_tools` on the LLM. This lets the LLM know the correct JSON format to use if it wants to use the search engine.
-:::
+:::python For the `StateGraph` you created in the
+[first tutorial](./1-build-basic-chatbot.md), add `bind_tools` on the LLM. This
+lets the LLM know the correct JSON format to use if it wants to use the search
+engine. :::
 
-:::js
-For the `StateGraph` you created in the [first tutorial](./1-build-basic-chatbot.md), add `bindTools` on the LLM. This lets the LLM know the correct JSON format to use if it wants to use the search engine.
-:::
+:::js For the `StateGraph` you created in the
+[first tutorial](./1-build-basic-chatbot.md), add `bindTools` on the LLM. This
+lets the LLM know the correct JSON format to use if it wants to use the search
+engine. :::
 
 Let's first select our LLM:
 
-:::python
-{% include-markdown "../../../snippets/chat_model_tabs.md" %}
+:::python {% include-markdown "../../../snippets/chat_model_tabs.md" %}
 
 <!---
 ```python
@@ -193,9 +200,9 @@ llm = init_chat_model("anthropic:claude-3-5-sonnet-latest")
 :::js
 
 ```typescript
-import { ChatAnthropic } from "@langchain/anthropic";
+import { ChatAnthropic } from '@langchain/anthropic';
 
-const llm = new ChatAnthropic({ model: "claude-3-5-sonnet-latest" });
+const llm = new ChatAnthropic({ model: 'claude-3-5-sonnet-latest' });
 ```
 
 :::
@@ -232,8 +239,8 @@ graph_builder.add_node("chatbot", chatbot)
 :::js
 
 ```typescript hl_lines="7-8"
-import { StateGraph, MessagesZodState } from "@langchain/langgraph";
-import { z } from "zod";
+import { StateGraph, MessagesZodState } from '@langchain/langgraph';
+import { z } from 'zod';
 
 const State = z.object({ messages: MessagesZodState.shape.messages });
 
@@ -251,7 +258,11 @@ const chatbot = async (state: z.infer<typeof State>) => {
 
 :::python
 
-Now, create a function to run the tools if they are called. Do this by adding the tools to a new node called `BasicToolNode` that checks the most recent message in the state and calls tools if the message contains `tool_calls`. It relies on the LLM's `tool_calling` support, which is available in Anthropic, OpenAI, Google Gemini, and a number of other LLM providers.
+Now, create a function to run the tools if they are called. Do this by adding
+the tools to a new node called `BasicToolNode` that checks the most recent
+message in the state and calls tools if the message contains `tool_calls`. It
+relies on the LLM's `tool_calling` support, which is available in Anthropic,
+OpenAI, Google Gemini, and a number of other LLM providers.
 
 ```python
 import json
@@ -297,11 +308,15 @@ graph_builder.add_node("tools", tool_node)
 
 :::js
 
-Now, create a function to run the tools if they are called. Do this by adding the tools to a new node called `"tools"` that checks the most recent message in the state and calls tools if the message contains `tool_calls`. It relies on the LLM's tool calling support, which is available in Anthropic, OpenAI, Google Gemini, and a number of other LLM providers.
+Now, create a function to run the tools if they are called. Do this by adding
+the tools to a new node called `"tools"` that checks the most recent message in
+the state and calls tools if the message contains `tool_calls`. It relies on the
+LLM's tool calling support, which is available in Anthropic, OpenAI, Google
+Gemini, and a number of other LLM providers.
 
 ```typescript
-import type { StructuredToolInterface } from "@langchain/core/tools";
-import { isAIMessage, ToolMessage } from "@langchain/core/messages";
+import type { StructuredToolInterface } from '@langchain/core/tools';
+import { isAIMessage, ToolMessage } from '@langchain/core/messages';
 
 function createToolNode(tools: StructuredToolInterface[]) {
   const toolByName: Record<string, StructuredToolInterface> = {};
@@ -312,17 +327,17 @@ function createToolNode(tools: StructuredToolInterface[]) {
   return async (inputs: z.infer<typeof State>) => {
     const { messages } = inputs;
     if (!messages || messages.length === 0) {
-      throw new Error("No message found in input");
+      throw new Error('No message found in input');
     }
 
     const message = messages.at(-1);
     if (!message || !isAIMessage(message) || !message.tool_calls) {
-      throw new Error("Last message is not an AI message with tool calls");
+      throw new Error('Last message is not an AI message with tool calls');
     }
 
     const outputs: ToolMessage[] = [];
     for (const toolCall of message.tool_calls) {
-      if (!toolCall.id) throw new Error("Tool call ID is required");
+      if (!toolCall.id) throw new Error('Tool call ID is required');
 
       const tool = toolByName[toolCall.name];
       if (!tool) throw new Error(`Tool ${toolCall.name} not found`);
@@ -353,17 +368,25 @@ function createToolNode(tools: StructuredToolInterface[]) {
 
 With the tool node added, now you can define the `conditional_edges`.
 
-**Edges** route the control flow from one node to the next. **Conditional edges** start from a single node and usually contain "if" statements to route to different nodes depending on the current graph state. These functions receive the current graph `state` and return a string or list of strings indicating which node(s) to call next.
+**Edges** route the control flow from one node to the next. **Conditional
+edges** start from a single node and usually contain "if" statements to route to
+different nodes depending on the current graph state. These functions receive
+the current graph `state` and return a string or list of strings indicating
+which node(s) to call next.
 
-:::python
-Next, define a router function called `route_tools` that checks for `tool_calls` in the chatbot's output. Provide this function to the graph by calling `add_conditional_edges`, which tells the graph that whenever the `chatbot` node completes to check this function to see where to go next.
-:::
+:::python Next, define a router function called `route_tools` that checks for
+`tool_calls` in the chatbot's output. Provide this function to the graph by
+calling `add_conditional_edges`, which tells the graph that whenever the
+`chatbot` node completes to check this function to see where to go next. :::
 
-:::js
-Next, define a router function called `routeTools` that checks for `tool_calls` in the chatbot's output. Provide this function to the graph by calling `addConditionalEdges`, which tells the graph that whenever the `chatbot` node completes to check this function to see where to go next.
-:::
+:::js Next, define a router function called `routeTools` that checks for
+`tool_calls` in the chatbot's output. Provide this function to the graph by
+calling `addConditionalEdges`, which tells the graph that whenever the `chatbot`
+node completes to check this function to see where to go next. :::
 
-The condition will route to `tools` if tool calls are present and `END` if not. Because the condition can return `END`, you do not need to explicitly set a `finish_point` this time.
+The condition will route to `tools` if tool calls are present and `END` if not.
+Because the condition can return `END`, you do not need to explicitly set a
+`finish_point` this time.
 
 :::python
 
@@ -413,7 +436,7 @@ graph = graph_builder.compile()
 :::js
 
 ```typescript
-import { END, START } from "@langchain/langgraph";
+import { END, START } from '@langchain/langgraph';
 
 const routeTools = (state: z.infer<typeof State>) => {
   /**
@@ -426,7 +449,7 @@ const routeTools = (state: z.infer<typeof State>) => {
     isAIMessage(lastMessage) &&
     lastMessage.tool_calls?.length
   ) {
-    return "tools";
+    return 'tools';
   }
 
   /** Otherwise, route to the end. */
@@ -434,21 +457,21 @@ const routeTools = (state: z.infer<typeof State>) => {
 };
 
 const graph = new StateGraph(State)
-  .addNode("chatbot", chatbot)
+  .addNode('chatbot', chatbot)
 
   // The `routeTools` function returns "tools" if the chatbot asks to use a tool, and "END" if
   // it is fine directly responding. This conditional routing defines the main agent loop.
-  .addNode("tools", createToolNode(tools))
+  .addNode('tools', createToolNode(tools))
 
   // Start the graph with the chatbot
-  .addEdge(START, "chatbot")
+  .addEdge(START, 'chatbot')
 
   // The `routeTools` function returns "tools" if the chatbot asks to use a tool, and "END" if
   // it is fine directly responding.
-  .addConditionalEdges("chatbot", routeTools, ["tools", END])
+  .addConditionalEdges('chatbot', routeTools, ['tools', END])
 
   // Any time a tool is called, we need to return to the chatbot
-  .addEdge("tools", "chatbot")
+  .addEdge('tools', 'chatbot')
   .compile();
 ```
 
@@ -460,8 +483,9 @@ const graph = new StateGraph(State)
 
 ## 7. Visualize the graph (optional)
 
-:::python
-You can visualize the graph using the `get_graph` method and one of the "draw" methods, like `draw_ascii` or `draw_png`. The `draw` methods each require additional dependencies.
+:::python You can visualize the graph using the `get_graph` method and one of
+the "draw" methods, like `draw_ascii` or `draw_png`. The `draw` methods each
+require additional dependencies.
 
 ```python
 from IPython.display import Image, display
@@ -475,17 +499,17 @@ except Exception:
 
 :::
 
-:::js
-You can visualize the graph using the `getGraph` method and render the graph with the `drawMermaidPng` method.
+:::js You can visualize the graph using the `getGraph` method and render the
+graph with the `drawMermaidPng` method.
 
 ```typescript
-import * as fs from "node:fs/promises";
+import * as fs from 'node:fs/promises';
 
 const drawableGraph = await graph.getGraphAsync();
 const image = await drawableGraph.drawMermaidPng();
 const imageBuffer = new Uint8Array(await image.arrayBuffer());
 
-await fs.writeFile("chatbot-with-tools.png", imageBuffer);
+await fs.writeFile('chatbot-with-tools.png', imageBuffer);
 ```
 
 :::
@@ -558,7 +582,7 @@ Goodbye!
 :::js
 
 ```typescript
-import readline from "node:readline/promises";
+import readline from 'node:readline/promises';
 
 const prompt = readline.createInterface({
   input: process.stdin,
@@ -567,23 +591,23 @@ const prompt = readline.createInterface({
 
 async function generateText(content: string) {
   const stream = await graph.stream(
-    { messages: [{ type: "human", content }] },
-    { streamMode: "values" }
+    { messages: [{ type: 'human', content }] },
+    { streamMode: 'values' }
   );
 
   for await (const event of stream) {
     const lastMessage = event.messages.at(-1);
 
-    if (lastMessage?.getType() === "ai" || lastMessage?.getType() === "tool") {
+    if (lastMessage?.getType() === 'ai' || lastMessage?.getType() === 'tool') {
       console.log(`Assistant: ${lastMessage?.text}`);
     }
   }
 }
 
 while (true) {
-  const human = await prompt.question("User: ");
-  if (["quit", "exit", "q"].includes(human.trim())) break;
-  await generateText(human || "What do you know about LangGraph?");
+  const human = await prompt.question('User: ');
+  if (['quit', 'exit', 'q'].includes(human.trim())) break;
+  await generateText(human || 'What do you know about LangGraph?');
 }
 
 prompt.close();
@@ -628,12 +652,16 @@ This makes LangGraph a significant tool in the evolving landscape of LLM-based a
 
 ## 9. Use prebuilts
 
-For ease of use, adjust your code to replace the following with LangGraph prebuilt components. These have built in functionality like parallel API execution.
+For ease of use, adjust your code to replace the following with LangGraph
+prebuilt components. These have built in functionality like parallel API
+execution.
 
 :::python
 
-- `BasicToolNode` is replaced with the prebuilt [ToolNode](https://langchain-ai.github.io/langgraph/reference/prebuilt/#toolnode)
-- `route_tools` is replaced with the prebuilt [tools_condition](https://langchain-ai.github.io/langgraph/reference/prebuilt/#tools_condition)
+- `BasicToolNode` is replaced with the prebuilt
+  [ToolNode](https://langchain-ai.github.io/langgraph/reference/prebuilt/#toolnode)
+- `route_tools` is replaced with the prebuilt
+  [tools_condition](https://langchain-ai.github.io/langgraph/reference/prebuilt/#tools_condition)
 
 {% include-markdown "../../../snippets/chat_model_tabs.md" %}
 
@@ -695,43 +723,50 @@ graph = graph_builder.compile()
 
 :::js
 
-- `createToolNode` is replaced with the prebuilt [ToolNode](https://langchain-ai.github.io/langgraphjs/reference/classes/langgraph_prebuilt.ToolNode.html)
-- `routeTools` is replaced with the prebuilt [toolsCondition](https://langchain-ai.github.io/langgraphjs/reference/functions/langgraph_prebuilt.toolsCondition.html)
+- `createToolNode` is replaced with the prebuilt
+  [ToolNode](https://langchain-ai.github.io/langgraphjs/reference/classes/langgraph_prebuilt.ToolNode.html)
+- `routeTools` is replaced with the prebuilt
+  [toolsCondition](https://langchain-ai.github.io/langgraphjs/reference/functions/langgraph_prebuilt.toolsCondition.html)
 
 ```typescript
-import { TavilySearch } from "@langchain/tavily";
-import { ChatOpenAI } from "@langchain/openai";
-import { StateGraph, START, MessagesZodState, END } from "@langchain/langgraph";
-import { ToolNode, toolsCondition } from "@langchain/langgraph/prebuilt";
-import { z } from "zod";
+import { TavilySearch } from '@langchain/tavily';
+import { ChatOpenAI } from '@langchain/openai';
+import { StateGraph, START, MessagesZodState, END } from '@langchain/langgraph';
+import { ToolNode, toolsCondition } from '@langchain/langgraph/prebuilt';
+import { z } from 'zod';
 
 const State = z.object({ messages: MessagesZodState.shape.messages });
 
 const tools = [new TavilySearch({ maxResults: 2 })];
 
-const llm = new ChatOpenAI({ model: "gpt-4o-mini" }).bindTools(tools);
+const llm = new ChatOpenAI({ model: 'gpt-4o-mini' }).bindTools(tools);
 
 const graph = new StateGraph(State)
-  .addNode("chatbot", async (state) => ({
+  .addNode('chatbot', async (state) => ({
     messages: [await llm.invoke(state.messages)],
   }))
-  .addNode("tools", new ToolNode(tools))
-  .addConditionalEdges("chatbot", toolsCondition, ["tools", END])
-  .addEdge("tools", "chatbot")
-  .addEdge(START, "chatbot")
+  .addNode('tools', new ToolNode(tools))
+  .addConditionalEdges('chatbot', toolsCondition, ['tools', END])
+  .addEdge('tools', 'chatbot')
+  .addEdge(START, 'chatbot')
   .compile();
 ```
 
 :::
 
-**Congratulations!** You've created a conversational agent in LangGraph that can use a search engine to retrieve updated information when needed. Now it can handle a wider range of user queries.
+**Congratulations!** You've created a conversational agent in LangGraph that can
+use a search engine to retrieve updated information when needed. Now it can
+handle a wider range of user queries.
 
 :::python
 
-To inspect all the steps your agent just took, check out this [LangSmith trace](https://smith.langchain.com/public/4fbd7636-25af-4638-9587-5a02fdbb0172/r).
+To inspect all the steps your agent just took, check out this
+[LangSmith trace](https://smith.langchain.com/public/4fbd7636-25af-4638-9587-5a02fdbb0172/r).
 
 :::
 
 ## Next steps
 
-The chatbot cannot remember past interactions on its own, which limits its ability to have coherent, multi-turn conversations. In the next part, you will [add **memory**](./3-add-memory.md) to address this.
+The chatbot cannot remember past interactions on its own, which limits its
+ability to have coherent, multi-turn conversations. In the next part, you will
+[add **memory**](./3-add-memory.md) to address this.

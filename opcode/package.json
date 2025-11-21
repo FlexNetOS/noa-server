@@ -54,7 +54,7 @@
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.54.2",
     "react-markdown": "^9.0.3",
-    "react-syntax-highlighter": "^15.6.1",
+    "react-syntax-highlighter": "^16.1.0",
     "recharts": "^2.14.1",
     "remark-gfm": "^4.0.0",
     "tailwind-merge": "^2.6.0",
@@ -71,12 +71,9 @@
     "@vitejs/plugin-react": "^4.3.4",
     "sharp": "^0.34.2",
     "typescript": "~5.6.2",
-    "vite": "^6.0.3"
+    "vite": "^6.4.1"
   },
-  "trustedDependencies": [
-    "@parcel/watcher",
-    "@tailwindcss/oxide"
-  ],
+  "trustedDependencies": ["@parcel/watcher", "@tailwindcss/oxide"],
   "optionalDependencies": {
     "@esbuild/linux-x64": "^0.25.6",
     "@rollup/rollup-linux-x64-gnu": "^4.45.1"

@@ -61,7 +61,7 @@ export class OptimizedAPIClient {
       // Replace prompt in data
       const optimizedData = {
         ...data,
-        [promptField]: result.optimized
+        [promptField]: result.optimized,
       };
 
       // Make the actual API call
@@ -74,12 +74,11 @@ export class OptimizedAPIClient {
           optimized: result.optimized,
           bypassed: result.bypassed,
           cached: result.cached,
-          processingTime: result.processingTime
+          processingTime: result.processingTime,
         };
       }
 
       return response;
-
     } catch (error) {
       this.logger.error('API call failed', error);
       throw error;
@@ -94,7 +93,7 @@ export class OptimizedAPIClient {
     // For now, return a mock response
     return {
       data: { success: true, ...data },
-      status: 200
+      status: 200,
     };
   }
 

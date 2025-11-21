@@ -2,7 +2,8 @@
 
 ## Overview
 
-This guide shows how to integrate the monitoring package into your Noa Server application.
+This guide shows how to integrate the monitoring package into your Noa Server
+application.
 
 ## Installation
 
@@ -24,13 +25,13 @@ import {
   DatabaseHealthCheck,
   CacheHealthCheck,
   MemoryHealthCheck,
-  HealthEndpoints
+  HealthEndpoints,
 } from './packages/monitoring/health/src';
 
 import {
   ErrorTracker,
   ExpressErrorHandler,
-  ProcessErrorHandler
+  ProcessErrorHandler,
 } from './packages/monitoring/errors/src';
 ```
 
@@ -52,9 +53,7 @@ Add to your root `package.json`:
 
 ```json
 {
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": ["packages/*"],
   "dependencies": {
     "@noa-server/monitoring": "workspace:*"
   }
@@ -77,7 +76,7 @@ import {
   MemoryHealthCheck,
   DiskHealthCheck,
   ServiceHealthCheck,
-  HealthEndpoints
+  HealthEndpoints,
 } from './packages/monitoring/health/src';
 
 // Error tracking
@@ -86,7 +85,7 @@ import {
   ExpressErrorHandler,
   ProcessErrorHandler,
   UnhandledRejectionHandler,
-  ErrorSeverity
+  ErrorSeverity,
 } from './packages/monitoring/errors/src';
 
 // ========================================
@@ -102,13 +101,13 @@ const dbPool = new Pool({
   database: process.env.DB_NAME || 'noa',
   user: process.env.DB_USER || 'postgres',
   password: process.env.DB_PASSWORD,
-  max: 20
+  max: 20,
 });
 
 const redis = new Redis({
   host: process.env.REDIS_HOST || 'localhost',
   port: parseInt(process.env.REDIS_PORT || '6379'),
-  password: process.env.REDIS_PASSWORD
+  password: process.env.REDIS_PASSWORD,
 });
 
 // ========================================
@@ -118,7 +117,7 @@ const redis = new Redis({
 const healthManager = new HealthCheckManager({
   enableAutoRefresh: true,
   refreshInterval: 30000, // 30 seconds
-  parallelExecution: true
+  parallelExecution: true,
 });
 
 // Database health
@@ -128,7 +127,7 @@ healthManager.register(
       pool: dbPool,
       queryTimeout: 3000,
       warningLatency: 100,
-      criticalLatency: 500
+      criticalLatency: 500,
     },
     'database'
   )
@@ -141,7 +140,7 @@ healthManager.register(
       client: redis,
       warningHitRate: 70,
       criticalHitRate: 50,
-      warningLatency: 50
+      warningLatency: 50,
     },
     'cache'
   )
@@ -153,7 +152,7 @@ healthManager.register(
     {
       warningThreshold: 80,
       criticalThreshold: 90,
-      checkHeapMemory: true
+      checkHeapMemory: true,
     },
     'memory'
   )
@@ -166,7 +165,7 @@ healthManager.register(
       paths: ['/tmp', process.cwd()],
       warningThreshold: 80,
       criticalThreshold: 90,
-      testWrite: true
+      testWrite: true,
     },
     'disk'
   )
@@ -181,7 +180,7 @@ if (process.env.EXTERNAL_API_URL) {
         method: 'GET',
         expectedStatus: [200, 204],
         warningResponseTime: 1000,
-        maxConsecutiveFailures: 3
+        maxConsecutiveFailures: 3,
       },
       'external-api'
     )
@@ -194,7 +193,7 @@ app.use(
   HealthEndpoints.createMiddleware(healthManager, {
     basePath: '/health',
     enableDetailedErrors: process.env.NODE_ENV !== 'production',
-    enableMetrics: true
+    enableMetrics: true,
   })
 );
 
@@ -218,19 +217,15 @@ const errorTracker = new ErrorTracker({
     }
     return event;
   },
-  ignoreErrors: [
-    /network.*error/i,
-    /cancelled/i,
-    /timeout/i
-  ],
-  maxBreadcrumbs: 100
+  ignoreErrors: [/network.*error/i, /cancelled/i, /timeout/i],
+  maxBreadcrumbs: 100,
 });
 
 // Express error handlers
 const expressHandler = new ExpressErrorHandler(errorTracker, {
   exposeErrors: process.env.NODE_ENV !== 'production',
   logErrors: true,
-  captureUnhandled: true
+  captureUnhandled: true,
 });
 
 // Process error handlers
@@ -238,7 +233,7 @@ const processHandler = new ProcessErrorHandler(errorTracker, {
   exitOnError: process.env.NODE_ENV === 'production',
   flushTimeout: 2000,
   captureRejections: true,
-  captureExceptions: true
+  captureExceptions: true,
 });
 
 // Unhandled rejection handler
@@ -246,7 +241,7 @@ const rejectionHandler = new UnhandledRejectionHandler(errorTracker, {
   logRejections: true,
   exitOnRejection: false,
   maxRejections: 10,
-  rejectionWindow: 60000
+  rejectionWindow: 60000,
 });
 
 // Request handler (MUST be first middleware)
@@ -266,12 +261,13 @@ app.use((req, res, next) => {
     errorTracker.setUser({
       id: user.id,
       email: user.email,
-      username: user.username
+      username: user.username,
     });
   }
 
   // Request ID
-  const requestId = (req.headers['x-request-id'] as string) || `req-${Date.now()}`;
+  const requestId =
+    (req.headers['x-request-id'] as string) || `req-${Date.now()}`;
   errorTracker.setTag('request_id', requestId);
 
   next();
@@ -285,7 +281,7 @@ app.use(async (req, res, next) => {
     if (!isHealthy) {
       return res.status(503).json({
         error: 'Service temporarily unavailable',
-        message: 'System health check failed'
+        message: 'System health check failed',
       });
     }
   }
@@ -302,10 +298,12 @@ app.get('/api/users/:id', async (req, res) => {
       timestamp: new Date(),
       category: 'database',
       message: `Fetching user ${req.params.id}`,
-      level: ErrorSeverity.INFO
+      level: ErrorSeverity.INFO,
     });
 
-    const result = await dbPool.query('SELECT * FROM users WHERE id = $1', [req.params.id]);
+    const result = await dbPool.query('SELECT * FROM users WHERE id = $1', [
+      req.params.id,
+    ]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'User not found' });
@@ -325,7 +323,7 @@ app.post('/api/orders', async (req, res) => {
       category: 'business',
       message: 'Creating new order',
       level: ErrorSeverity.INFO,
-      data: { items: req.body.items?.length }
+      data: { items: req.body.items?.length },
     });
 
     // Validation
@@ -333,7 +331,7 @@ app.post('/api/orders', async (req, res) => {
       const error = new Error('Order must contain at least one item');
       await errorTracker.captureError(error, {
         tags: { feature: 'orders', error_type: 'validation' },
-        extra: { requestBody: req.body }
+        extra: { requestBody: req.body },
       });
       return res.status(400).json({ error: error.message });
     }
@@ -424,6 +422,11 @@ setInterval(async () => {
 
   console.log('=== System Status ===');
   console.log(`Health Score: ${metrics.healthScore.toFixed(2)}%`);
-  console.log(`Checks: ${metrics.checksHealthy}/${metrics.checksTotal} healthy`);
-  console.log(`Errors: ${errorStats.totalErrors} total, ${errorStats.recentErrors} recent`);
+  console.log(
+    `Checks: ${metrics.checksHealthy}/${metrics.checksTotal} healthy`
+  );
+  console.log(
+    `Errors: ${errorStats.totalErrors} total, ${errorStats.recentErrors} recent`
+  );
 }, 60000); // Every minute
+```

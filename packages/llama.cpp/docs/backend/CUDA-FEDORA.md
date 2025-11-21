@@ -1,11 +1,13 @@
 # Setting Up CUDA on Fedora
 
-In this guide we setup [Nvidia CUDA](https://docs.nvidia.com/cuda/) in a toolbox container. This guide is applicable for:
+In this guide we setup [Nvidia CUDA](https://docs.nvidia.com/cuda/) in a toolbox
+container. This guide is applicable for:
 
 - [Fedora Workstation](https://fedoraproject.org/workstation/)
 - [Atomic Desktops for Fedora](https://fedoraproject.org/atomic-desktops/)
 - [Fedora Spins](https://fedoraproject.org/spins)
-- [Other Distributions](https://containertoolbx.org/distros/), including `Red Hat Enterprise Linux >= 8.5`, `Arch Linux`, and `Ubuntu`.
+- [Other Distributions](https://containertoolbx.org/distros/), including
+  `Red Hat Enterprise Linux >= 8.5`, `Arch Linux`, and `Ubuntu`.
 
 ## Table of Contents
 
@@ -25,8 +27,13 @@ In this guide we setup [Nvidia CUDA](https://docs.nvidia.com/cuda/) in a toolbox
 
 ## Prerequisites
 
-- **Toolbox Installed on the Host System** `Fedora Silverblue` and `Fedora Workstation` both have toolbox by default, other distributions may need to install the [toolbox package](https://containertoolbx.org/install/).
-- **NVIDIA Drivers and Graphics Card installed on Host System (recommended)** To run CUDA program, such as `llama.cpp`, the host should be setup to access your NVIDIA hardware. Fedora Hosts can use the [RPM Fusion Repository](https://rpmfusion.org/Howto/NVIDIA).
+- **Toolbox Installed on the Host System** `Fedora Silverblue` and
+  `Fedora Workstation` both have toolbox by default, other distributions may
+  need to install the [toolbox package](https://containertoolbx.org/install/).
+- **NVIDIA Drivers and Graphics Card installed on Host System (recommended)** To
+  run CUDA program, such as `llama.cpp`, the host should be setup to access your
+  NVIDIA hardware. Fedora Hosts can use the
+  [RPM Fusion Repository](https://rpmfusion.org/Howto/NVIDIA).
 - **Internet connectivity** to download packages.
 
 ### Using the Fedora 41 CUDA Repository
@@ -39,9 +46,12 @@ The latest release is 41.
 
 ## Creating a Fedora Toolbox Environment
 
-This guide focuses on Fedora hosts, but with small adjustments, it can work for other hosts. Using the Fedora Toolbox allows us to install the necessary packages without affecting the host system.
+This guide focuses on Fedora hosts, but with small adjustments, it can work for
+other hosts. Using the Fedora Toolbox allows us to install the necessary
+packages without affecting the host system.
 
-**Note:** Toolbox is available for other systems, and even without Toolbox, it is possible to use Podman or Docker.
+**Note:** Toolbox is available for other systems, and even without Toolbox, it
+is possible to use Podman or Docker.
 
 1. **Create a Fedora 41 Toolbox:**
 
@@ -55,7 +65,8 @@ This guide focuses on Fedora hosts, but with small adjustments, it can work for 
    toolbox enter --container fedora-toolbox-41-cuda
    ```
 
-   Inside the toolbox, you have root privileges and can install packages without affecting the host system.
+   Inside the toolbox, you have root privileges and can install packages without
+   affecting the host system.
 
 ## Installing Essential Development Tools
 
@@ -71,7 +82,8 @@ This guide focuses on Fedora hosts, but with small adjustments, it can work for 
    sudo dnf install vim-default-editor --allowerasing
    ```
 
-   The `--allowerasing` flag will allow the removal of the conflicting `nano-default-editor` package.
+   The `--allowerasing` flag will allow the removal of the conflicting
+   `nano-default-editor` package.
 
 3. **Install Development Tools and Libraries:**
 
@@ -79,7 +91,8 @@ This guide focuses on Fedora hosts, but with small adjustments, it can work for 
    sudo dnf install @c-development @development-tools cmake
    ```
 
-   This installs essential packages for compiling software, including `gcc`, `make`, and other development headers.
+   This installs essential packages for compiling software, including `gcc`,
+   `make`, and other development headers.
 
 ## Adding the CUDA Repository
 
@@ -97,20 +110,21 @@ sudo dnf distro-sync
 
 ## Installing Nvidia Driver Libraries
 
-First, we need to detect if the host is supplying the [NVIDIA driver libraries into the toolbox](https://github.com/containers/toolbox/blob/main/src/pkg/nvidia/nvidia.go):
+First, we need to detect if the host is supplying the
+[NVIDIA driver libraries into the toolbox](https://github.com/containers/toolbox/blob/main/src/pkg/nvidia/nvidia.go):
 
 ```bash
 ls -la /usr/lib64/libcuda.so.1
 ```
 
-### If *`libcuda.so.1`* is missing:
+### If _`libcuda.so.1`_ is missing:
 
 ```
 ls: cannot access '/usr/lib64/libcuda.so.1': No such file or directory
 ```
 
-**Explanation:**
-The host dose not supply the CUDA drivers, **install them now:**
+**Explanation:** The host dose not supply the CUDA drivers, **install them
+now:**
 
 #### Install the Nvidia Driver Libraries on Guest:
 
@@ -118,17 +132,19 @@ The host dose not supply the CUDA drivers, **install them now:**
 sudo dnf install nvidia-driver-cuda nvidia-driver-libs nvidia-driver-cuda-libs nvidia-persistenced
 ```
 
-### If *`libcuda.so.1`* exists:
+### If _`libcuda.so.1`_ exists:
+
 ```
 lrwxrwxrwx. 1 root root 21 Mar 24 11:26 /usr/lib64/libcuda.so.1 -> libcuda.so.570.133.07
 ```
 
-**Explanation:**
-The host is supply the CUDA drivers, **we need to update the guest RPM Database accordingly:**
+**Explanation:** The host is supply the CUDA drivers, **we need to update the
+guest RPM Database accordingly:**
 
 #### Update the Toolbox RPM Database to include the Host-Supplied Libraries:
 
-Note: we do not actually install the libraries, we just update the DB so that the guest system knows they are supplied by the host.
+Note: we do not actually install the libraries, we just update the DB so that
+the guest system knows they are supplied by the host.
 
 ##### 1. Download `nvidia-` parts that are supplied by the host RPM's (with dependencies)
 
@@ -144,18 +160,20 @@ sudo rpm --install --verbose --hash --justdb /tmp/nvidia-driver-libs/*
 
 **Note:**
 
-- The `--justdb` option only updates the RPM database, without touching the filesystem elsewhere.
+- The `--justdb` option only updates the RPM database, without touching the
+  filesystem elsewhere.
 
 ##### Check that the RPM Database has been correctly updated:
 
-**Note:** This is the same command as in the *"Install the Nvidia Driver Libraries on Guest"* for if *`libcuda.so.1`* was missing.
-
+**Note:** This is the same command as in the _"Install the Nvidia Driver
+Libraries on Guest"_ for if _`libcuda.so.1`_ was missing.
 
 ```bash
 sudo dnf install nvidia-driver-cuda nvidia-driver-libs nvidia-driver-cuda-libs nvidia-persistenced
 ```
 
-*(this time it will not install anything, as the database things that these packages are already installed)*
+_(this time it will not install anything, as the database things that these
+packages are already installed)_
 
 ```
 Updating and loading repositories:
@@ -189,9 +207,11 @@ To use CUDA, add its binary directory to your system's `PATH`.
    ```
 
    **Explanation:**
-
-   - We add to `/etc/profile.d/` as the `/etc/` folder is unique to this particular container, and is not shared with other containers or the host system.
-   - The backslash `\` before `$PATH` ensures the variable is correctly written into the script.
+   - We add to `/etc/profile.d/` as the `/etc/` folder is unique to this
+     particular container, and is not shared with other containers or the host
+     system.
+   - The backslash `\` before `$PATH` ensures the variable is correctly written
+     into the script.
 
 2. **Make the Script Executable:**
 
@@ -205,11 +225,14 @@ To use CUDA, add its binary directory to your system's `PATH`.
    source /etc/profile.d/cuda.sh
    ```
 
-   **Note:** This command updates your current shell session with the new `PATH`. The `/etc/profile.d/cuda.sh` script ensures that the CUDA binaries are available in your `PATH` for all future sessions.
+   **Note:** This command updates your current shell session with the new
+   `PATH`. The `/etc/profile.d/cuda.sh` script ensures that the CUDA binaries
+   are available in your `PATH` for all future sessions.
 
 ## Verifying the Installation
 
-To confirm that CUDA is correctly installed and configured, check the version of the NVIDIA CUDA Compiler (`nvcc`):
+To confirm that CUDA is correctly installed and configured, check the version of
+the NVIDIA CUDA Compiler (`nvcc`):
 
 ```bash
 nvcc --version
@@ -225,22 +248,27 @@ Cuda compilation tools, release 12.8, V12.8.93
 Build cuda_12.8.r12.8/compiler.35583870_0
 ```
 
-This output confirms that the CUDA compiler is accessible and indicates the installed version.
+This output confirms that the CUDA compiler is accessible and indicates the
+installed version.
 
 ## Conclusion
 
-You have successfully set up CUDA on Fedora within a toolbox environment using the Fedora 41 CUDA repository. By manually updating the RPM db and configuring the environment, you can develop CUDA applications without affecting your host system.
+You have successfully set up CUDA on Fedora within a toolbox environment using
+the Fedora 41 CUDA repository. By manually updating the RPM db and configuring
+the environment, you can develop CUDA applications without affecting your host
+system.
 
 ## Troubleshooting
 
 - **Installation Failures:**
-
-  - If you encounter errors during installation, carefully read the error messages. They often indicate conflicting files or missing dependencies.
-  - You may use the `--excludepath` option with `rpm` to exclude conflicting files during manual RPM installations.
+  - If you encounter errors during installation, carefully read the error
+    messages. They often indicate conflicting files or missing dependencies.
+  - You may use the `--excludepath` option with `rpm` to exclude conflicting
+    files during manual RPM installations.
 
 - **Rebooting the Container:**
-
-  - Sometimes there may be a bug in the NVIDIA driver host passthrough (such as missing a shared library). Rebooting the container may solve this issue:
+  - Sometimes there may be a bug in the NVIDIA driver host passthrough (such as
+    missing a shared library). Rebooting the container may solve this issue:
 
   ```bash
   # on the host system
@@ -248,31 +276,43 @@ You have successfully set up CUDA on Fedora within a toolbox environment using t
   ```
 
 - **Environment Variables Not Set:**
-  - If `nvcc` is not found after installation, ensure that `/usr/local/cuda/bin` is in your `PATH`.
+  - If `nvcc` is not found after installation, ensure that `/usr/local/cuda/bin`
+    is in your `PATH`.
   - Run `echo $PATH` to check if the path is included.
   - Re-source the profile script or open a new terminal session.
 
 ## Additional Notes
 
 - **Updating CUDA in the Future:**
-
-  - Keep an eye on the official NVIDIA repositories for updates to your Fedora version.
-  - When an updated repository becomes available, adjust your `dnf` configuration accordingly.
+  - Keep an eye on the official NVIDIA repositories for updates to your Fedora
+    version.
+  - When an updated repository becomes available, adjust your `dnf`
+    configuration accordingly.
 
 - **Building `llama.cpp`:**
-
-  - With CUDA installed, you can follow these [build instructions for `llama.cpp`](https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md) to compile it with CUDA support.
-  - Ensure that any CUDA-specific build flags or paths are correctly set in your build configuration.
+  - With CUDA installed, you can follow these
+    [build instructions for `llama.cpp`](https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md)
+    to compile it with CUDA support.
+  - Ensure that any CUDA-specific build flags or paths are correctly set in your
+    build configuration.
 
 - **Using the Toolbox Environment:**
-  - The toolbox environment is isolated from your host system, which helps prevent conflicts.
-  - Remember that system files and configurations inside the toolbox are separate from the host. By default the home directory of the user is shared between the host and the toolbox.
+  - The toolbox environment is isolated from your host system, which helps
+    prevent conflicts.
+  - Remember that system files and configurations inside the toolbox are
+    separate from the host. By default the home directory of the user is shared
+    between the host and the toolbox.
 
 ---
 
-**Disclaimer:** Manually installing and modifying system packages can lead to instability of the container. The above steps are provided as a guideline and may need adjustments based on your specific system configuration. Always back up important data before making significant system changes, especially as your home folder is writable and shared with he toolbox.
+**Disclaimer:** Manually installing and modifying system packages can lead to
+instability of the container. The above steps are provided as a guideline and
+may need adjustments based on your specific system configuration. Always back up
+important data before making significant system changes, especially as your home
+folder is writable and shared with he toolbox.
 
-**Acknowledgments:** Special thanks to the Fedora community and NVIDIA documentation for providing resources that assisted in creating this guide.
+**Acknowledgments:** Special thanks to the Fedora community and NVIDIA
+documentation for providing resources that assisted in creating this guide.
 
 ## References
 

@@ -2,17 +2,19 @@
 
 ## Overview
 
-The **Mandatory Automation System** automatically intercepts and optimizes ALL prompts before they're sent to AI systems. This ensures every prompt is precision-crafted using the 4-D methodology, dramatically improving output quality.
+The **Mandatory Automation System** automatically intercepts and optimizes ALL
+prompts before they're sent to AI systems. This ensures every prompt is
+precision-crafted using the 4-D methodology, dramatically improving output
+quality.
 
 ## 🎯 Key Features
 
-✅ **Automatic Interception** - All prompts optimized by default
-✅ **Smart Caching** - Fast repeat optimizations
-✅ **Quality Gates** - Enforce minimum quality standards
-✅ **Bypass Mechanisms** - Opt-out when needed
-✅ **Performance Monitoring** - Track all metrics
-✅ **Multiple Integrations** - Claude Code, API, Terminal
-✅ **Emergency Override** - Admin control for critical situations
+✅ **Automatic Interception** - All prompts optimized by default ✅ **Smart
+Caching** - Fast repeat optimizations ✅ **Quality Gates** - Enforce minimum
+quality standards ✅ **Bypass Mechanisms** - Opt-out when needed ✅
+**Performance Monitoring** - Track all metrics ✅ **Multiple Integrations** -
+Claude Code, API, Terminal ✅ **Emergency Override** - Admin control for
+critical situations
 
 ---
 
@@ -42,12 +44,14 @@ const app = express();
 app.use(express.json());
 
 // Add mandatory optimization middleware
-app.use(mandatoryPromptOptimizer({
-  enabled: true,
-  promptField: 'prompt',
-  logRequests: true,
-  attachMetrics: true
-}));
+app.use(
+  mandatoryPromptOptimizer({
+    enabled: true,
+    promptField: 'prompt',
+    logRequests: true,
+    attachMetrics: true,
+  })
+);
 
 // Your endpoints now get optimized prompts automatically
 app.post('/api/chat', (req, res) => {
@@ -74,13 +78,11 @@ await initializeClaudeCodeOptimization();
 import { createOptimizedAPI } from './src/prompt-optimizer/integrations';
 
 const api = createOptimizedAPI({
-  baseURL: 'https://api.example.com'
+  baseURL: 'https://api.example.com',
 });
 
 // Automatic optimization on all API calls
-const response = await api.chat([
-  { role: 'user', content: 'Write code' }
-]);
+const response = await api.chat([{ role: 'user', content: 'Write code' }]);
 ```
 
 ---
@@ -93,13 +95,13 @@ Edit `src/prompt-optimizer/config/automation-rules.json`:
 
 ```json
 {
-  "mandatory": true,          // Make optimization mandatory
-  "enabled": true,            // Enable/disable automation
+  "mandatory": true, // Make optimization mandatory
+  "enabled": true, // Enable/disable automation
 
   "quality": {
-    "threshold": 7.0,         // Minimum quality score (1-10)
-    "blockBelowThreshold": false,  // Block low-quality prompts
-    "autoRetryOnFailure": true,    // Retry if optimization fails
+    "threshold": 7.0, // Minimum quality score (1-10)
+    "blockBelowThreshold": false, // Block low-quality prompts
+    "autoRetryOnFailure": true, // Retry if optimization fails
     "maxRetries": 2
   },
 
@@ -111,14 +113,14 @@ Edit `src/prompt-optimizer/config/automation-rules.json`:
 
   "caching": {
     "enabled": true,
-    "ttl": 3600,              // Cache time-to-live (seconds)
+    "ttl": 3600, // Cache time-to-live (seconds)
     "maxEntries": 1000,
     "strategy": "lru"
   },
 
   "logging": {
     "enabled": true,
-    "level": "info",          // verbose | info | warn | error
+    "level": "info", // verbose | info | warn | error
     "logOriginal": true,
     "logOptimized": true,
     "logMetrics": true
@@ -135,8 +137,8 @@ import { automationConfig } from './src/prompt-optimizer/automation';
 automationConfig.updateConfig({
   quality: {
     threshold: 8.0,
-    blockBelowThreshold: true
-  }
+    blockBelowThreshold: true,
+  },
 });
 
 // Reload configuration
@@ -214,6 +216,7 @@ console.log(report);
 ```
 
 **Sample Output:**
+
 ```
 ================================================================================
 AUTOMATION MONITOR REPORT
@@ -272,7 +275,7 @@ app.use(express.json());
 app.use(mandatoryPromptOptimizer());
 
 app.post('/api/generate', async (req, res) => {
-  const { prompt } = req.body;  // Already optimized!
+  const { prompt } = req.body; // Already optimized!
 
   // Access optimization metrics
   const metrics = req.body._optimizationMetrics;
@@ -345,11 +348,14 @@ Optimize all incoming prompts at the gateway level:
 // gateway.ts
 import { mandatoryPromptOptimizer } from './src/prompt-optimizer/automation';
 
-app.use('/api/*', mandatoryPromptOptimizer({
-  enabled: true,
-  attachMetrics: true,
-  onError: 'passthrough'
-}));
+app.use(
+  '/api/*',
+  mandatoryPromptOptimizer({
+    enabled: true,
+    attachMetrics: true,
+    onError: 'passthrough',
+  })
+);
 ```
 
 ### Use Case 2: Microservices
@@ -377,9 +383,9 @@ Enforce minimum quality standards:
 automationConfig.updateConfig({
   quality: {
     threshold: 8.0,
-    blockBelowThreshold: true,  // Reject low-quality prompts
-    autoRetryOnFailure: true
-  }
+    blockBelowThreshold: true, // Reject low-quality prompts
+    autoRetryOnFailure: true,
+  },
 });
 ```
 
@@ -391,9 +397,9 @@ Compare original vs optimized performance:
 automationConfig.updateConfig({
   abTesting: {
     enabled: true,
-    sampleRate: 0.5,  // 50% of requests
-    compareResults: true
-  }
+    sampleRate: 0.5, // 50% of requests
+    compareResults: true,
+  },
 });
 ```
 
@@ -408,8 +414,8 @@ automationConfig.updateConfig({
 const config = {
   bypass: {
     enabled: true,
-    prefixes: ['@raw:', '@skip:']
-  }
+    prefixes: ['@raw:', '@skip:'],
+  },
 };
 ```
 
@@ -421,7 +427,7 @@ setInterval(() => {
   const stats = mandatoryOptimizer.getStats();
   console.log('Success Rate:', stats.monitor.successfulOptimizations);
   console.log('Cache Hit Rate:', stats.cache.totalHits);
-}, 60000);  // Every minute
+}, 60000); // Every minute
 ```
 
 ### 3. Set Reasonable Timeouts
@@ -463,6 +469,7 @@ if (criticalError) {
 ### Problem: Optimization Too Slow
 
 **Solution 1:** Enable caching
+
 ```json
 {
   "caching": {
@@ -473,6 +480,7 @@ if (criticalError) {
 ```
 
 **Solution 2:** Increase timeout
+
 ```json
 {
   "performance": {
@@ -484,6 +492,7 @@ if (criticalError) {
 ### Problem: Too Many Bypasses
 
 **Solution:** Review bypass usage
+
 ```typescript
 const stats = mandatoryOptimizer.getStats();
 console.log('Bypass Rate:', stats.monitor.bypassedOptimizations);
@@ -492,6 +501,7 @@ console.log('Bypass Rate:', stats.monitor.bypassedOptimizations);
 ### Problem: Quality Not Improving
 
 **Solution:** Increase quality threshold
+
 ```json
 {
   "quality": {
@@ -504,6 +514,7 @@ console.log('Bypass Rate:', stats.monitor.bypassedOptimizations);
 ### Problem: Cache Not Working
 
 **Solution:** Check cache settings
+
 ```typescript
 const cacheStats = mandatoryOptimizer.getStats().cache;
 console.log('Cache Size:', cacheStats.size);
@@ -519,8 +530,8 @@ console.log('Hit Rate:', cacheStats.hitRate);
 ```json
 {
   "caching": {
-    "maxEntries": 5000,  // Increase for high traffic
-    "ttl": 7200          // Longer TTL for stable prompts
+    "maxEntries": 5000, // Increase for high traffic
+    "ttl": 7200 // Longer TTL for stable prompts
   }
 }
 ```
@@ -540,7 +551,7 @@ console.log('Hit Rate:', cacheStats.hitRate);
 ```json
 {
   "logging": {
-    "level": "warn",  // Less verbose in production
+    "level": "warn", // Less verbose in production
     "logMetrics": false
   }
 }
@@ -559,7 +570,7 @@ prePromptHook.register('analytics', async (original, optimized, metadata) => {
   // Send to analytics
   analytics.track('prompt_optimized', {
     improvement: metadata.qualityScore,
-    cached: metadata.cached
+    cached: metadata.cached,
   });
 });
 ```
@@ -594,6 +605,7 @@ app.post('/admin/config', (req, res) => {
 ## 📚 API Reference
 
 See full API documentation in the source files:
+
 - `src/prompt-optimizer/automation/auto-optimizer.ts`
 - `src/prompt-optimizer/automation/config.ts`
 - `src/prompt-optimizer/automation/middleware.ts`

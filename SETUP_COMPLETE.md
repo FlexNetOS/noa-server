@@ -10,7 +10,8 @@
   - MANUS_API_KEY in workspace/.env.secrets
   - AWS keys, database passwords, session secrets
 
-**Action Required:** Review `quick_secrets_audit.csv` and rotate/secure any real credentials
+**Action Required:** Review `quick_secrets_audit.csv` and rotate/secure any real
+credentials
 
 ---
 

@@ -1,7 +1,7 @@
 # Code Transformation Quick Start Guide
 
-**For**: `/home/deflex` codebase transformations
-**Full Inventory**: See `CODE_TRANSFORMATION_INVENTORY.md`
+**For**: `/home/deflex` codebase transformations **Full Inventory**: See
+`CODE_TRANSFORMATION_INVENTORY.md`
 
 ---
 
@@ -19,7 +19,8 @@ claude-flow hive-mind wizard
 # Follow prompts to configure and launch transformation swarm
 ```
 
-**What it does**: Automatically sets up optimal agent configuration, topology, and spawns intelligent swarm for your transformation task.
+**What it does**: Automatically sets up optimal agent configuration, topology,
+and spawns intelligent swarm for your transformation task.
 
 ### Option 2: Direct Swarm Command
 
@@ -94,7 +95,8 @@ npx claude-flow sparc batch optimizer,coder \
 
 ## 🎯 Claude Code Task Tool (For Interactive Sessions)
 
-When working within Claude Code CLI, use the Task tool for parallel agent execution:
+When working within Claude Code CLI, use the Task tool for parallel agent
+execution:
 
 ```javascript
 // Single message with ALL agents concurrently
@@ -157,6 +159,7 @@ npx claude-flow neural-train "Successful code unification patterns"
 ## 📊 Available Tools Summary
 
 ### 74 Core Agents in `.claude/agents/`
+
 - **5 Core Development**: coder, reviewer, tester, planner, researcher
 - **18 SPARC Methodology**: analyzer, architect, optimizer, orchestrator, etc.
 - **5 Hive-Mind**: queen, worker, scout, memory-manager, collective-intelligence
@@ -165,13 +168,16 @@ npx claude-flow neural-train "Successful code unification patterns"
 - **26+ Specialized**: optimization, templates, neural, analysis, etc.
 
 ### 90+ MCP Tools
+
 - Swarm coordination, task orchestration, memory management
 - Performance tracking, neural processing, GitHub integration
 
 ### 25+ Slash Commands
+
 - Automation, optimization, memory, audit, coordination
 
 ### 30+ Automation Scripts
+
 - Prompt optimizer, swarm initializer, validation runner, etc.
 
 ---
@@ -185,6 +191,7 @@ npx claude-flow neural-train "Successful code unification patterns"
 5. **Run continuous audits** - validate as you transform
 
 **Expected Performance**:
+
 - 2.8-4.4x faster with parallel execution
 - 10-20x faster with SDK integration
 - 84.8% SWE-Bench solve rate
@@ -195,11 +202,14 @@ npx claude-flow neural-train "Successful code unification patterns"
 ## 🆘 Need Help?
 
 **Full Documentation**:
-- `/home/deflex/noa-server/docs/CODE_TRANSFORMATION_INVENTORY.md` - Complete inventory
+
+- `/home/deflex/noa-server/docs/CODE_TRANSFORMATION_INVENTORY.md` - Complete
+  inventory
 - `/home/deflex/noa-server/CLAUDE.md` - Project instructions
 - `/home/deflex/noa-server/claude-flow/docs/` - Claude Flow docs
 
 **Interactive Help**:
+
 ```bash
 npx claude-flow --help
 npx claude-flow sparc modes
@@ -207,6 +217,7 @@ npx claude-flow hive-mind --help
 ```
 
 **Agent Information**:
+
 ```bash
 # List all available agents
 npx claude-flow agents list
@@ -217,6 +228,5 @@ npx claude-flow agents info <agent-name>
 
 ---
 
-**Quick Start Version**: 1.0.0
-**Last Updated**: 2025-10-22
-**Full Guide**: CODE_TRANSFORMATION_INVENTORY.md
+**Quick Start Version**: 1.0.0 **Last Updated**: 2025-10-22 **Full Guide**:
+CODE_TRANSFORMATION_INVENTORY.md

@@ -21,7 +21,13 @@ export class SessionPersistenceService {
   /**
    * Save session data for later restoration
    */
-  static saveSession(sessionId: string, projectId: string, projectPath: string, messageCount?: number, scrollPosition?: number): void {
+  static saveSession(
+    sessionId: string,
+    projectId: string,
+    projectPath: string,
+    messageCount?: number,
+    scrollPosition?: number
+  ): void {
     try {
       const sessionData: SessionRestoreData = {
         sessionId,
@@ -29,7 +35,7 @@ export class SessionPersistenceService {
         projectPath,
         lastMessageCount: messageCount,
         scrollPosition,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       // Save individual session data
@@ -55,7 +61,7 @@ export class SessionPersistenceService {
       if (!data) return null;
 
       const sessionData = JSON.parse(data) as SessionRestoreData;
-      
+
       // Validate the data
       if (!sessionData.sessionId || !sessionData.projectId || !sessionData.projectPath) {
         return null;
@@ -78,7 +84,7 @@ export class SessionPersistenceService {
 
       // Update session index
       const index = this.getSessionIndex();
-      const newIndex = index.filter(id => id !== sessionId);
+      const newIndex = index.filter((id) => id !== sessionId);
       localStorage.setItem(SESSION_INDEX_KEY, JSON.stringify(newIndex));
     } catch (error) {
       console.error('Failed to remove session data:', error);
@@ -104,9 +110,9 @@ export class SessionPersistenceService {
   static clearAllSessions(): void {
     try {
       const index = this.getSessionIndex();
-      
+
       // Remove all session data
-      index.forEach(sessionId => {
+      index.forEach((sessionId) => {
         localStorage.removeItem(`${STORAGE_KEY_PREFIX}${sessionId}`);
       });
 
@@ -122,11 +128,11 @@ export class SessionPersistenceService {
    */
   static cleanupOldSessions(): void {
     try {
-      const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+      const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
       const index = this.getSessionIndex();
       const activeIndex: string[] = [];
 
-      index.forEach(sessionId => {
+      index.forEach((sessionId) => {
         const data = this.loadSession(sessionId);
         if (data && data.timestamp > thirtyDaysAgo) {
           activeIndex.push(sessionId);
@@ -168,7 +174,7 @@ export class SessionPersistenceService {
       project_id: data.projectId,
       project_path: data.projectPath,
       created_at: data.timestamp / 1000, // Convert to seconds
-      first_message: "Restored session"
+      first_message: 'Restored session',
     };
   }
 }

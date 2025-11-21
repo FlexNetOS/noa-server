@@ -7,14 +7,38 @@
 export { AgentAddedTrigger, AgentInfo, AgentAddedEvent } from './triggers/agent-added-trigger';
 
 // Automation
-export { AutomationOrchestrator, OrchestrationConfig, OrchestrationResult } from './automation/orchestrator';
+export {
+  AutomationOrchestrator,
+  OrchestrationConfig,
+  OrchestrationResult,
+} from './automation/orchestrator';
 export { SwarmInitializer, SwarmSession } from './automation/swarm-initializer';
-export { IntegrationPipeline, IntegrationStep, StepResult, PipelineResult } from './automation/integration-pipeline';
-export { ValidationRunner, ValidationIssue, ValidationResult } from './automation/validation-runner';
+export {
+  IntegrationPipeline,
+  IntegrationStep,
+  StepResult,
+  PipelineResult,
+} from './automation/integration-pipeline';
+export {
+  ValidationRunner,
+  ValidationIssue,
+  ValidationResult,
+} from './automation/validation-runner';
 
 // Hooks
-export { PreAgentAddHook, PreHookContext, PreHookResult, PrerequisiteCheck } from './hooks/pre-agent-add';
-export { PostAgentAddHook, PostHookContext, PostHookResult, Notification, IntegrationSummary } from './hooks/post-agent-add';
+export {
+  PreAgentAddHook,
+  PreHookContext,
+  PreHookResult,
+  PrerequisiteCheck,
+} from './hooks/pre-agent-add';
+export {
+  PostAgentAddHook,
+  PostHookContext,
+  PostHookResult,
+  Notification,
+  IntegrationSummary,
+} from './hooks/post-agent-add';
 
 // CLI
 export { AgentSwarmCLI } from './cli/agent-swarm-cli';
@@ -22,7 +46,9 @@ export { AgentSwarmCLI } from './cli/agent-swarm-cli';
 /**
  * Quick start helper - creates and starts orchestrator with defaults
  */
-export async function startAutomation(config?: Partial<OrchestrationConfig>): Promise<AutomationOrchestrator> {
+export async function startAutomation(
+  config?: Partial<OrchestrationConfig>
+): Promise<AutomationOrchestrator> {
   const orchestrator = new AutomationOrchestrator(config);
   await orchestrator.start();
   return orchestrator;
@@ -35,7 +61,7 @@ export async function integrateAgent(agentInfo: AgentInfo): Promise<Orchestratio
   const orchestrator = new AutomationOrchestrator({
     enabled: true,
     autoTrigger: false,
-    enableSwarm: false
+    enableSwarm: false,
   });
 
   return await orchestrator.integrateAgent(agentInfo);

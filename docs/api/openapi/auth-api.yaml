@@ -1,0 +1,797 @@
+openapi: 3.1.0
+info:
+  title: NOA Server Authentication API
+  version: 1.0.0
+  description: |
+    Enterprise-grade authentication and authorization API.
+
+    Features:
+    - Email/password registration and login
+    - Multi-factor authentication (TOTP)
+    - OAuth 2.0 integration
+    - SAML SSO support
+    - API key management
+    - Role-based access control (RBAC)
+    - Session management
+    - Rate limiting
+    - Password breach detection
+
+  contact:
+    name: API Support
+    email: support@noa-server.io
+  license:
+    name: MIT
+
+servers:
+  - url: https://api.noa-server.io/api/v1
+    description: Production
+  - url: http://localhost:3000/api/v1
+    description: Development
+
+tags:
+  - name: Authentication
+    description: User authentication operations
+  - name: MFA
+    description: Multi-factor authentication
+  - name: API Keys
+    description: API key management
+  - name: Sessions
+    description: Session management
+  - name: OAuth
+    description: OAuth 2.0 providers
+  - name: SAML
+    description: SAML SSO
+
+paths:
+  /auth/register:
+    post:
+      summary: Register new user
+      description: |
+        Create a new user account with email and password.
+        Password must meet complexity requirements and not be breached.
+      operationId: registerUser
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User email address
+                password:
+                  type: string
+                  format: password
+                  minLength: 12
+                  description: User password (min 12 chars, uppercase, lowercase, number, special char)
+                metadata:
+                  type: object
+                  description: Additional user metadata
+            examples:
+              basic:
+                value:
+                  email: user@example.com
+                  password: SecureP@ssw0rd123!
+              withMetadata:
+                value:
+                  email: user@example.com
+                  password: SecureP@ssw0rd123!
+                  metadata:
+                    firstName: John
+                    lastName: Doe
+                    organization: Acme Corp
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                weakPassword:
+                  value:
+                    success: false
+                    error: Password must contain uppercase, lowercase, number, and special character
+                breachedPassword:
+                  value:
+                    success: false
+                    error: This password has been exposed in data breaches. Please choose a different password.
+                userExists:
+                  value:
+                    success: false
+                    error: User already exists
+        '429':
+          description: Too many registration attempts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/login:
+    post:
+      summary: User login
+      description: |
+        Authenticate with email and password.
+        Returns JWT access and refresh tokens.
+        MFA code required if enabled.
+      operationId: loginUser
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                mfaCode:
+                  type: string
+                  pattern: '^\d{6}$'
+                  description: 6-digit TOTP code (if MFA enabled)
+            examples:
+              basic:
+                value:
+                  email: user@example.com
+                  password: SecureP@ssw0rd123!
+              withMFA:
+                value:
+                  email: user@example.com
+                  password: SecureP@ssw0rd123!
+                  mfaCode: '123456'
+      responses:
+        '200':
+          description: Login successful
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: Session cookie
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  user:
+                    $ref: '#/components/schemas/User'
+                  token:
+                    $ref: '#/components/schemas/TokenPair'
+              examples:
+                success:
+                  value:
+                    success: true
+                    user:
+                      id: 550e8400-e29b-41d4-a716-446655440000
+                      email: user@example.com
+                      mfaEnabled: true
+                      createdAt: '2024-01-01T00:00:00Z'
+                    token:
+                      accessToken: eyJhbGciOiJSUzI1NiIs...
+                      refreshToken: eyJhbGciOiJSUzI1NiIs...
+                      expiresIn: 3600
+                      tokenType: Bearer
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidCredentials:
+                  value:
+                    success: false
+                    error: Invalid email or password
+                mfaRequired:
+                  value:
+                    success: false
+                    mfaRequired: true
+                    error: MFA code required
+                invalidMFA:
+                  value:
+                    success: false
+                    mfaRequired: true
+                    error: Invalid MFA code
+        '429':
+          description: Too many login attempts
+          headers:
+            Retry-After:
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/logout:
+    post:
+      summary: User logout
+      description: Invalidate current session and tokens
+      operationId: logoutUser
+      tags:
+        - Authentication
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sessionId:
+                  type: string
+                  description: Specific session to logout (optional, defaults to current)
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+
+  /auth/refresh:
+    post:
+      summary: Refresh access token
+      description: |
+        Generate new access token using refresh token.
+        Refresh token rotation enabled for security.
+      operationId: refreshToken
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+                  description: Refresh token from login
+            examples:
+              refresh:
+                value:
+                  refreshToken: eyJhbGciOiJSUzI1NiIs...
+      responses:
+        '200':
+          description: Token refreshed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenPair'
+        '401':
+          description: Invalid or expired refresh token
+
+  /auth/mfa/setup:
+    post:
+      summary: Setup MFA
+      description: |
+        Initialize TOTP multi-factor authentication.
+        Returns QR code and secret for authenticator app.
+      operationId: setupMFA
+      tags:
+        - MFA
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: MFA setup initiated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  secret:
+                    type: string
+                    description: Base32 encoded secret
+                  qrCode:
+                    type: string
+                    description: Data URL for QR code image
+                  recoveryCode:
+                    type: string
+                    description: One-time recovery code
+              examples:
+                setup:
+                  value:
+                    secret: JBSWY3DPEHPK3PXP
+                    qrCode: data:image/png;base64,iVBORw0KG...
+                    recoveryCode: ABCD-EFGH-IJKL-MNOP
+
+  /auth/mfa/enable:
+    post:
+      summary: Enable MFA
+      description: Verify TOTP code and enable MFA for account
+      operationId: enableMFA
+      tags:
+        - MFA
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - verificationCode
+              properties:
+                verificationCode:
+                  type: string
+                  pattern: '^\d{6}$'
+                  description: 6-digit TOTP code
+            examples:
+              verify:
+                value:
+                  verificationCode: '123456'
+      responses:
+        '200':
+          description: MFA enabled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  verified:
+                    type: boolean
+                  recoveryCodes:
+                    type: array
+                    items:
+                      type: string
+                    description: One-time recovery codes
+        '400':
+          description: Invalid verification code
+
+  /auth/mfa/disable:
+    post:
+      summary: Disable MFA
+      description: Disable multi-factor authentication
+      operationId: disableMFA
+      tags:
+        - MFA
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - verificationCode
+              properties:
+                verificationCode:
+                  type: string
+                  pattern: '^\d{6}$'
+      responses:
+        '200':
+          description: MFA disabled
+        '400':
+          description: Invalid verification code
+
+  /auth/api-keys:
+    get:
+      summary: List API keys
+      description: Get all API keys for authenticated user
+      operationId: listApiKeys
+      tags:
+        - API Keys
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of API keys
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  apiKeys:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiKey'
+
+    post:
+      summary: Create API key
+      description: |
+        Generate new API key for programmatic access.
+        Key is shown only once on creation.
+      operationId: createApiKey
+      tags:
+        - API Keys
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: Descriptive name for API key
+                expiresIn:
+                  type: integer
+                  description: Expiration in seconds (optional)
+                scopes:
+                  type: array
+                  items:
+                    type: string
+                  description: Permission scopes
+            examples:
+              create:
+                value:
+                  name: Production API Key
+                  expiresIn: 31536000
+                  scopes: [inference:read, inference:write]
+      responses:
+        '201':
+          description: API key created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  key:
+                    type: string
+                    description: API key value (shown only once)
+                  createdAt:
+                    type: string
+                    format: date-time
+              examples:
+                created:
+                  value:
+                    id: key_abc123
+                    name: Production API Key
+                    key: sk_live_51HZE2SD...
+                    createdAt: '2024-01-01T00:00:00Z'
+
+  /auth/api-keys/{keyId}:
+    delete:
+      summary: Revoke API key
+      description: Permanently revoke an API key
+      operationId: revokeApiKey
+      tags:
+        - API Keys
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: keyId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: API key revoked
+        '404':
+          description: API key not found
+
+  /auth/sessions:
+    get:
+      summary: List active sessions
+      description: Get all active sessions for user
+      operationId: listSessions
+      tags:
+        - Sessions
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Active sessions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sessions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Session'
+
+  /auth/sessions/{sessionId}:
+    delete:
+      summary: Revoke session
+      description: Invalidate specific session
+      operationId: revokeSession
+      tags:
+        - Sessions
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Session revoked
+        '404':
+          description: Session not found
+
+  /auth/oauth/{provider}:
+    get:
+      summary: OAuth login
+      description: Initiate OAuth 2.0 flow with provider
+      operationId: oauthLogin
+      tags:
+        - OAuth
+      security: []
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [google, github, microsoft]
+      responses:
+        '302':
+          description: Redirect to OAuth provider
+          headers:
+            Location:
+              schema:
+                type: string
+              description: OAuth provider authorization URL
+
+  /auth/oauth/{provider}/callback:
+    get:
+      summary: OAuth callback
+      description: Handle OAuth provider callback
+      operationId: oauthCallback
+      tags:
+        - OAuth
+      security: []
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: code
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: state
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OAuth login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  user:
+                    $ref: '#/components/schemas/User'
+                  token:
+                    $ref: '#/components/schemas/TokenPair'
+
+  /auth/saml/{provider}:
+    get:
+      summary: SAML SSO login
+      description: Initiate SAML SSO flow
+      operationId: samlLogin
+      tags:
+        - SAML
+      security: []
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '302':
+          description: Redirect to SAML IdP
+
+  /auth/saml/{provider}/callback:
+    post:
+      summary: SAML ACS endpoint
+      description: Assertion Consumer Service for SAML response
+      operationId: samlCallback
+      tags:
+        - SAML
+      security: []
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                SAMLResponse:
+                  type: string
+                RelayState:
+                  type: string
+      responses:
+        '200':
+          description: SAML login successful
+
+  /auth/saml/{provider}/metadata:
+    get:
+      summary: SAML SP metadata
+      description: Service Provider metadata for IdP configuration
+      operationId: samlMetadata
+      tags:
+        - SAML
+      security: []
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: SAML metadata XML
+          content:
+            application/xml:
+              schema:
+                type: string
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        mfaEnabled:
+          type: boolean
+        failedLoginAttempts:
+          type: integer
+        lockedUntil:
+          type: string
+          format: date-time
+          nullable: true
+        lastLogin:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+
+    TokenPair:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: JWT access token
+        refreshToken:
+          type: string
+          description: JWT refresh token
+        expiresIn:
+          type: integer
+          description: Access token lifetime in seconds
+        tokenType:
+          type: string
+          enum: [Bearer]
+
+    ApiKey:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        prefix:
+          type: string
+          description: Key prefix for identification
+        scopes:
+          type: array
+          items:
+            type: string
+        lastUsed:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    Session:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        ipAddress:
+          type: string
+        userAgent:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+        lastActivity:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum: [false]
+        error:
+          type: string
+        mfaRequired:
+          type: boolean

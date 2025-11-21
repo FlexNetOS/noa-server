@@ -1,0 +1,95 @@
+{
+  "budgets": [
+    {
+      "path": "/*",
+      "resourceSizes": [
+        {
+          "resourceType": "script",
+          "budget": 300
+        },
+        {
+          "resourceType": "stylesheet",
+          "budget": 50
+        },
+        {
+          "resourceType": "image",
+          "budget": 100
+        },
+        {
+          "resourceType": "font",
+          "budget": 50
+        },
+        {
+          "resourceType": "total",
+          "budget": 500
+        }
+      ],
+      "resourceCounts": [
+        {
+          "resourceType": "script",
+          "budget": 15
+        },
+        {
+          "resourceType": "stylesheet",
+          "budget": 5
+        },
+        {
+          "resourceType": "third-party",
+          "budget": 10
+        }
+      ],
+      "timings": [
+        {
+          "metric": "interactive",
+          "budget": 3800
+        },
+        {
+          "metric": "first-contentful-paint",
+          "budget": 1800
+        },
+        {
+          "metric": "largest-contentful-paint",
+          "budget": 2500
+        },
+        {
+          "metric": "cumulative-layout-shift",
+          "budget": 0.1
+        },
+        {
+          "metric": "total-blocking-time",
+          "budget": 300
+        },
+        {
+          "metric": "speed-index",
+          "budget": 3000
+        }
+      ]
+    },
+    {
+      "path": "/dashboard",
+      "resourceSizes": [
+        {
+          "resourceType": "script",
+          "budget": 250
+        },
+        {
+          "resourceType": "total",
+          "budget": 400
+        }
+      ]
+    },
+    {
+      "path": "/metrics",
+      "resourceSizes": [
+        {
+          "resourceType": "script",
+          "budget": 350
+        },
+        {
+          "resourceType": "total",
+          "budget": 500
+        }
+      ]
+    }
+  ]
+}

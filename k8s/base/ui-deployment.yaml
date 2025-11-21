@@ -28,54 +28,54 @@ spec:
         runAsUser: 1000
         fsGroup: 1000
       containers:
-      - name: ui-dashboard
-        image: noa-server:latest
-        imagePullPolicy: IfNotPresent
-        args: ["ui-dashboard"]
-        ports:
-        - name: http
-          containerPort: 9200
-          protocol: TCP
-        env:
-        - name: NODE_ENV
-          valueFrom:
-            configMapKeyRef:
-              name: noa-server-config
-              key: NODE_ENV
-        - name: UI_PORT
-          valueFrom:
-            configMapKeyRef:
-              name: noa-server-config
-              key: UI_PORT
-        - name: NEXT_PUBLIC_MCP_URL
-          value: "/api/mcp"
-        - name: NEXT_PUBLIC_CLAUDE_FLOW_URL
-          value: "/api/flow"
-        resources:
-          requests:
-            cpu: 250m
-            memory: 384Mi
-          limits:
-            cpu: 1500m
-            memory: 768Mi
-        livenessProbe:
-          httpGet:
-            path: /api/health
-            port: 9200
-          initialDelaySeconds: 60
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /api/health
-            port: 9200
-          initialDelaySeconds: 30
-          periodSeconds: 5
-        securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          capabilities:
-            drop:
-            - ALL
+        - name: ui-dashboard
+          image: noa-server:latest
+          imagePullPolicy: IfNotPresent
+          args: ['ui-dashboard']
+          ports:
+            - name: http
+              containerPort: 9200
+              protocol: TCP
+          env:
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: noa-server-config
+                  key: NODE_ENV
+            - name: UI_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: noa-server-config
+                  key: UI_PORT
+            - name: NEXT_PUBLIC_MCP_URL
+              value: '/api/mcp'
+            - name: NEXT_PUBLIC_CLAUDE_FLOW_URL
+              value: '/api/flow'
+          resources:
+            requests:
+              cpu: 250m
+              memory: 384Mi
+            limits:
+              cpu: 1500m
+              memory: 768Mi
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 9200
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 9200
+            initialDelaySeconds: 30
+            periodSeconds: 5
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
 
 ---
 apiVersion: v1
@@ -90,7 +90,7 @@ spec:
   selector:
     app: noa-ui-dashboard
   ports:
-  - name: http
-    port: 9200
-    targetPort: 9200
-    protocol: TCP
+    - name: http
+      port: 9200
+      targetPort: 9200
+      protocol: TCP

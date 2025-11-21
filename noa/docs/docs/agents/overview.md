@@ -10,13 +10,22 @@ hide:
 
 # Agent development using prebuilt components
 
-LangGraph provides both low-level primitives and high-level prebuilt components for building agent-based applications. This section focuses on the prebuilt, ready-to-use components designed to help you construct agentic systems quickly and reliably—without the need to implement orchestration, memory, or human feedback handling from scratch.
+LangGraph provides both low-level primitives and high-level prebuilt components
+for building agent-based applications. This section focuses on the prebuilt,
+ready-to-use components designed to help you construct agentic systems quickly
+and reliably—without the need to implement orchestration, memory, or human
+feedback handling from scratch.
 
 ## What is an agent?
 
-An _agent_ consists of three components: a **large language model (LLM)**, a set of **tools** it can use, and a **prompt** that provides instructions.
+An _agent_ consists of three components: a **large language model (LLM)**, a set
+of **tools** it can use, and a **prompt** that provides instructions.
 
-The LLM operates in a loop. In each iteration, it selects a tool to invoke, provides input, receives the result (an observation), and uses that observation to inform the next action. The loop continues until a stopping condition is met — typically when the agent has gathered enough information to respond to the user.
+The LLM operates in a loop. In each iteration, it selects a tool to invoke,
+provides input, receives the result (an observation), and uses that observation
+to inform the next action. The loop continues until a stopping condition is met
+— typically when the agent has gathered enough information to respond to the
+user.
 
 <figure markdown="1">
 ![image](./assets/agent.png){: style="max-height:400px"}
@@ -25,26 +34,45 @@ The LLM operates in a loop. In each iteration, it selects a tool to invoke, prov
 
 ## Key features
 
-LangGraph includes several capabilities essential for building robust, production-ready agentic systems:
+LangGraph includes several capabilities essential for building robust,
+production-ready agentic systems:
 
-- [**Memory integration**](../how-tos/memory/add-memory.md): Native support for _short-term_ (session-based) and _long-term_ (persistent across sessions) memory, enabling stateful behaviors in chatbots and assistants.
-- [**Human-in-the-loop control**](../concepts/human_in_the_loop.md): Execution can pause _indefinitely_ to await human feedback—unlike websocket-based solutions limited to real-time interaction. This enables asynchronous approval, correction, or intervention at any point in the workflow.
-- [**Streaming support**](../how-tos/streaming.md): Real-time streaming of agent state, model tokens, tool outputs, or combined streams.
-- [**Deployment tooling**](../tutorials/langgraph-platform/local-server.md): Includes infrastructure-free deployment tools. [**LangGraph Platform**](https://langchain-ai.github.io/langgraph/concepts/langgraph_platform/) supports testing, debugging, and deployment.
-  - **[Studio](https://langchain-ai.github.io/langgraph/concepts/langgraph_studio/)**: A visual IDE for inspecting and debugging workflows.
-  - Supports multiple [**deployment options**](https://langchain-ai.github.io/langgraph/concepts/deployment_options.md) for production.
+- [**Memory integration**](../how-tos/memory/add-memory.md): Native support for
+  _short-term_ (session-based) and _long-term_ (persistent across sessions)
+  memory, enabling stateful behaviors in chatbots and assistants.
+- [**Human-in-the-loop control**](../concepts/human_in_the_loop.md): Execution
+  can pause _indefinitely_ to await human feedback—unlike websocket-based
+  solutions limited to real-time interaction. This enables asynchronous
+  approval, correction, or intervention at any point in the workflow.
+- [**Streaming support**](../how-tos/streaming.md): Real-time streaming of agent
+  state, model tokens, tool outputs, or combined streams.
+- [**Deployment tooling**](../tutorials/langgraph-platform/local-server.md):
+  Includes infrastructure-free deployment tools.
+  [**LangGraph Platform**](https://langchain-ai.github.io/langgraph/concepts/langgraph_platform/)
+  supports testing, debugging, and deployment.
+  - **[Studio](https://langchain-ai.github.io/langgraph/concepts/langgraph_studio/)**:
+    A visual IDE for inspecting and debugging workflows.
+  - Supports multiple
+    [**deployment options**](https://langchain-ai.github.io/langgraph/concepts/deployment_options.md)
+    for production.
 
 ## High-level building blocks
 
-LangGraph comes with a set of prebuilt components that implement common agent behaviors and workflows. These abstractions are built on top of the LangGraph framework, offering a faster path to production while remaining flexible for advanced customization.
+LangGraph comes with a set of prebuilt components that implement common agent
+behaviors and workflows. These abstractions are built on top of the LangGraph
+framework, offering a faster path to production while remaining flexible for
+advanced customization.
 
-Using LangGraph for agent development allows you to focus on your application's logic and behavior, instead of building and maintaining the supporting infrastructure for state, memory, and human feedback.
+Using LangGraph for agent development allows you to focus on your application's
+logic and behavior, instead of building and maintaining the supporting
+infrastructure for state, memory, and human feedback.
 
 :::python
 
 ## Package ecosystem
 
-The high-level components are organized into several packages, each with a specific focus.
+The high-level components are organized into several packages, each with a
+specific focus.
 
 | Package                                    | Description                                                                              | Installation                            |
 | ------------------------------------------ | ---------------------------------------------------------------------------------------- | --------------------------------------- |
@@ -58,14 +86,21 @@ The high-level components are organized into several packages, each with a speci
 ## Visualize an agent graph
 
 Use the following tool to visualize the graph generated by
-@[`create_react_agent`][create_react_agent]
-and to view an outline of the corresponding code.
-It allows you to explore the infrastructure of the agent as defined by the presence of:
+@[`create_react_agent`][create_react_agent] and to view an outline of the
+corresponding code. It allows you to explore the infrastructure of the agent as
+defined by the presence of:
 
-- [`tools`](../how-tos/tool-calling.md): A list of tools (functions, APIs, or other callable objects) that the agent can use to perform tasks.
-- [`pre_model_hook`](../how-tos/create-react-agent-manage-message-history.ipynb): A function that is called before the model is invoked. It can be used to condense messages or perform other preprocessing tasks.
-- `post_model_hook`: A function that is called after the model is invoked. It can be used to implement guardrails, human-in-the-loop flows, or other postprocessing tasks.
-- [`response_format`](../agents/agents.md#6-configure-structured-output): A data structure used to constrain the type of the final output, e.g., a `pydantic` `BaseModel`.
+- [`tools`](../how-tos/tool-calling.md): A list of tools (functions, APIs, or
+  other callable objects) that the agent can use to perform tasks.
+- [`pre_model_hook`](../how-tos/create-react-agent-manage-message-history.ipynb):
+  A function that is called before the model is invoked. It can be used to
+  condense messages or perform other preprocessing tasks.
+- `post_model_hook`: A function that is called after the model is invoked. It
+  can be used to implement guardrails, human-in-the-loop flows, or other
+  postprocessing tasks.
+- [`response_format`](../agents/agents.md#6-configure-structured-output): A data
+  structure used to constrain the type of the final output, e.g., a `pydantic`
+  `BaseModel`.
 
 <div class="agent-layout">
   <div class="agent-graph-features-container">
@@ -84,8 +119,8 @@ It allows you to explore the infrastructure of the agent as defined by the prese
   </div>
 </div>
 
-The following code snippet shows how to create the above agent (and underlying graph) with
-@[`create_react_agent`][create_react_agent]:
+The following code snippet shows how to create the above agent (and underlying
+graph) with @[`create_react_agent`][create_react_agent]:
 
 <div class="language-python">
   <pre><code id="agent-code" class="language-python"></code></pre>
@@ -196,7 +231,8 @@ document$.subscribe(initializeWidget);
 
 ## Package ecosystem
 
-The high-level components are organized into several packages, each with a specific focus.
+The high-level components are organized into several packages, each with a
+specific focus.
 
 | Package                  | Description                                                                 | Installation                                       |
 | ------------------------ | --------------------------------------------------------------------------- | -------------------------------------------------- |
@@ -208,12 +244,20 @@ The high-level components are organized into several packages, each with a speci
 
 ## Visualize an agent graph
 
-Use the following tool to visualize the graph generated by @[`createReactAgent`][create_react_agent] and to view an outline of the corresponding code. It allows you to explore the infrastructure of the agent as defined by the presence of:
+Use the following tool to visualize the graph generated by
+@[`createReactAgent`][create_react_agent] and to view an outline of the
+corresponding code. It allows you to explore the infrastructure of the agent as
+defined by the presence of:
 
-- [`tools`](./tools.md): A list of tools (functions, APIs, or other callable objects) that the agent can use to perform tasks.
-- `preModelHook`: A function that is called before the model is invoked. It can be used to condense messages or perform other preprocessing tasks.
-- `postModelHook`: A function that is called after the model is invoked. It can be used to implement guardrails, human-in-the-loop flows, or other postprocessing tasks.
-- [`responseFormat`](./agents.md#6-configure-structured-output): A data structure used to constrain the type of the final output (via Zod schemas).
+- [`tools`](./tools.md): A list of tools (functions, APIs, or other callable
+  objects) that the agent can use to perform tasks.
+- `preModelHook`: A function that is called before the model is invoked. It can
+  be used to condense messages or perform other preprocessing tasks.
+- `postModelHook`: A function that is called after the model is invoked. It can
+  be used to implement guardrails, human-in-the-loop flows, or other
+  postprocessing tasks.
+- [`responseFormat`](./agents.md#6-configure-structured-output): A data
+  structure used to constrain the type of the final output (via Zod schemas).
 
 <div class="agent-layout">
   <div class="agent-graph-features-container">
@@ -232,7 +276,8 @@ Use the following tool to visualize the graph generated by @[`createReactAgent`]
   </div>
 </div>
 
-The following code snippet shows how to create the above agent (and underlying graph) with @[`createReactAgent`][create_react_agent]:
+The following code snippet shows how to create the above agent (and underlying
+graph) with @[`createReactAgent`][create_react_agent]:
 
 <div class="language-typescript">
   <pre><code id="agent-code" class="language-typescript"></code></pre>

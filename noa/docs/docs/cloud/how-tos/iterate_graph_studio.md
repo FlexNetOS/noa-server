@@ -2,11 +2,13 @@
 
 ## Overview
 
-LangGraph Studio supports two methods for modifying prompts in your graph: direct node editing and the LangSmith Playground interface.
+LangGraph Studio supports two methods for modifying prompts in your graph:
+direct node editing and the LangSmith Playground interface.
 
 ## Direct Node Editing
 
-Studio allows you to edit prompts used inside individual nodes, directly from the graph interface.
+Studio allows you to edit prompts used inside individual nodes, directly from
+the graph interface.
 
 !!! info "Prerequisites"
 
@@ -14,15 +16,21 @@ Studio allows you to edit prompts used inside individual nodes, directly from th
 
 ### Graph Configuration
 
-Define your [configuration](https://langchain-ai.github.io/langgraph/how-tos/configuration/) to specify prompt fields and their associated nodes using `langgraph_nodes` and `langgraph_type` keys.
+Define your
+[configuration](https://langchain-ai.github.io/langgraph/how-tos/configuration/)
+to specify prompt fields and their associated nodes using `langgraph_nodes` and
+`langgraph_type` keys.
 
 #### Configuration Reference
 
 ##### `langgraph_nodes`
 
-- **Description**: Specifies which nodes of the graph a configuration field is associated with.
-- **Value Type**: Array of strings, where each string is the name of a node in your graph.
-- **Usage Context**: Include in the `json_schema_extra` dictionary for Pydantic models or the `metadata["json_schema_extra"]` dictionary for dataclasses.
+- **Description**: Specifies which nodes of the graph a configuration field is
+  associated with.
+- **Value Type**: Array of strings, where each string is the name of a node in
+  your graph.
+- **Usage Context**: Include in the `json_schema_extra` dictionary for Pydantic
+  models or the `metadata["json_schema_extra"]` dictionary for dataclasses.
 - **Example**:
   ```python
   system_prompt: str = Field(
@@ -33,11 +41,14 @@ Define your [configuration](https://langchain-ai.github.io/langgraph/how-tos/con
 
 ##### `langgraph_type`
 
-- **Description**: Specifies the type of configuration field, which determines how it's handled in the UI.
+- **Description**: Specifies the type of configuration field, which determines
+  how it's handled in the UI.
 - **Value Type**: String
 - **Supported Values**:
-  - `"prompt"`: Indicates the field contains prompt text that should be treated specially in the UI.
-- **Usage Context**: Include in the `json_schema_extra` dictionary for Pydantic models or the `metadata["json_schema_extra"]` dictionary for dataclasses.
+  - `"prompt"`: Indicates the field contains prompt text that should be treated
+    specially in the UI.
+- **Usage Context**: Include in the `json_schema_extra` dictionary for Pydantic
+  models or the `metadata["json_schema_extra"]` dictionary for dataclasses.
 - **Example**:
   ```python
   system_prompt: str = Field(
@@ -123,12 +134,15 @@ class Configuration:
 ## LangSmith Playground
 
 The [LangSmith Playground](https://
-docs.smith.langchain.com/prompt_engineering/how_to_guides#playground) interface allows testing individual LLM calls without running the full graph:
+docs.smith.langchain.com/prompt_engineering/how_to_guides#playground) interface
+allows testing individual LLM calls without running the full graph:
 
 1. Select a thread
-2. Click "View LLM Runs" on a node. This lists all the LLM calls (if any) made inside the node.
+2. Click "View LLM Runs" on a node. This lists all the LLM calls (if any) made
+   inside the node.
 3. Select an LLM run to open in Playground
 4. Modify prompts and test different model and tool settings
 5. Copy updated prompts back to your graph
 
-For advanced Playground features, click the expand button in the top right corner.
+For advanced Playground features, click the expand button in the top right
+corner.

@@ -99,7 +99,7 @@ export class QueueDashboardGenerator {
         <section class="workers-section">
             <h2>Worker Status</h2>
             <div class="workers-grid">
-                ${workers.map(worker => this.generateWorkerCard(worker)).join('')}
+                ${workers.map((worker) => this.generateWorkerCard(worker)).join('')}
             </div>
         </section>
 
@@ -120,7 +120,7 @@ export class QueueDashboardGenerator {
                         </tr>
                     </thead>
                     <tbody>
-                        ${jobStats.map(stat => this.generateJobStatRow(stat)).join('')}
+                        ${jobStats.map((stat) => this.generateJobStatRow(stat)).join('')}
                     </tbody>
                 </table>
             </div>
@@ -130,9 +130,10 @@ export class QueueDashboardGenerator {
         <section class="alerts-section">
             <h2>System Alerts</h2>
             <div class="alerts-list">
-                ${alerts.length === 0
+                ${
+                  alerts.length === 0
                     ? '<p class="no-alerts">No active alerts</p>'
-                    : alerts.map(alert => this.generateAlert(alert)).join('')
+                    : alerts.map((alert) => this.generateAlert(alert)).join('')
                 }
             </div>
         </section>
@@ -163,20 +164,36 @@ export class QueueDashboardGenerator {
     const cards = [
       { title: 'Total Jobs', value: this.formatNumber(metrics.totalJobs), class: '' },
       { title: 'Active Jobs', value: metrics.activeJobs.toString(), class: 'active' },
-      { title: 'Completed Jobs', value: this.formatNumber(metrics.completedJobs), class: 'success' },
+      {
+        title: 'Completed Jobs',
+        value: this.formatNumber(metrics.completedJobs),
+        class: 'success',
+      },
       { title: 'Failed Jobs', value: metrics.failedJobs.toString(), class: 'error' },
       { title: 'Waiting Jobs', value: metrics.waitingJobs.toString(), class: 'warning' },
-      { title: 'Avg Processing Time', value: this.formatDuration(metrics.averageProcessingTime), class: '' },
+      {
+        title: 'Avg Processing Time',
+        value: this.formatDuration(metrics.averageProcessingTime),
+        class: '',
+      },
       { title: 'Throughput/min', value: metrics.throughputPerMinute.toFixed(1), class: '' },
-      { title: 'Error Rate', value: `${metrics.errorRate.toFixed(1)}%`, class: metrics.errorRate > 5 ? 'error' : 'success' }
+      {
+        title: 'Error Rate',
+        value: `${metrics.errorRate.toFixed(1)}%`,
+        class: metrics.errorRate > 5 ? 'error' : 'success',
+      },
     ];
 
-    return cards.map(card => `
+    return cards
+      .map(
+        (card) => `
       <div class="metric-card">
         <h3>${card.title}</h3>
         <div class="metric-value ${card.class}">${card.value}</div>
       </div>
-    `).join('');
+    `
+      )
+      .join('');
   }
 
   /**
@@ -202,12 +219,16 @@ export class QueueDashboardGenerator {
             <span class="label">Memory:</span>
             <span class="value">${worker.memoryUsage.toFixed(1)}%</span>
           </div>
-          ${worker.currentJob ? `
+          ${
+            worker.currentJob
+              ? `
             <div class="worker-metric">
               <span class="label">Current Job:</span>
               <span class="value">${worker.currentJob}</span>
             </div>
-          ` : ''}
+          `
+              : ''
+          }
         </div>
       </div>
     `;
@@ -218,7 +239,7 @@ export class QueueDashboardGenerator {
    */
   private generateJobStatRow(stat: JobTypeStats): string {
     const total = stat.queued + stat.processing + stat.completed + stat.failed;
-    const successRate = total > 0 ? ((stat.completed / total) * 100) : 0;
+    const successRate = total > 0 ? (stat.completed / total) * 100 : 0;
 
     return `
       <tr>
@@ -587,23 +608,79 @@ export class QueueDashboardGenerator {
       waitingJobs: 25,
       averageProcessingTime: 2450,
       throughputPerMinute: 12.5,
-      errorRate: 4.4
+      errorRate: 4.4,
     };
 
     const workers: WorkerStatus[] = [
-      { id: 'worker-1', status: 'busy', currentJob: 'email-job-123', jobsProcessed: 245, uptime: 3600000, memoryUsage: 85.2 },
+      {
+        id: 'worker-1',
+        status: 'busy',
+        currentJob: 'email-job-123',
+        jobsProcessed: 245,
+        uptime: 3600000,
+        memoryUsage: 85.2,
+      },
       { id: 'worker-2', status: 'idle', jobsProcessed: 198, uptime: 3600000, memoryUsage: 42.1 },
-      { id: 'worker-3', status: 'busy', currentJob: 'report-job-456', jobsProcessed: 312, uptime: 3600000, memoryUsage: 78.9 },
-      { id: 'worker-4', status: 'error', jobsProcessed: 156, uptime: 3500000, memoryUsage: 0 }
+      {
+        id: 'worker-3',
+        status: 'busy',
+        currentJob: 'report-job-456',
+        jobsProcessed: 312,
+        uptime: 3600000,
+        memoryUsage: 78.9,
+      },
+      { id: 'worker-4', status: 'error', jobsProcessed: 156, uptime: 3500000, memoryUsage: 0 },
     ];
 
     const jobStats: JobTypeStats[] = [
-      { type: 'EmailJob', queued: 5, processing: 2, completed: 450, failed: 12, averageDuration: 1200 },
-      { type: 'ReportGenerationJob', queued: 3, processing: 1, completed: 89, failed: 3, averageDuration: 8500 },
-      { type: 'DataExportJob', queued: 1, processing: 1, completed: 34, failed: 1, averageDuration: 15600 },
-      { type: 'WebhookJob', queued: 8, processing: 3, completed: 234, failed: 8, averageDuration: 800 },
-      { type: 'AnalyticsJob', queued: 2, processing: 1, completed: 67, failed: 2, averageDuration: 12400 },
-      { type: 'BackupJob', queued: 1, processing: 0, completed: 23, failed: 0, averageDuration: 28800 }
+      {
+        type: 'EmailJob',
+        queued: 5,
+        processing: 2,
+        completed: 450,
+        failed: 12,
+        averageDuration: 1200,
+      },
+      {
+        type: 'ReportGenerationJob',
+        queued: 3,
+        processing: 1,
+        completed: 89,
+        failed: 3,
+        averageDuration: 8500,
+      },
+      {
+        type: 'DataExportJob',
+        queued: 1,
+        processing: 1,
+        completed: 34,
+        failed: 1,
+        averageDuration: 15600,
+      },
+      {
+        type: 'WebhookJob',
+        queued: 8,
+        processing: 3,
+        completed: 234,
+        failed: 8,
+        averageDuration: 800,
+      },
+      {
+        type: 'AnalyticsJob',
+        queued: 2,
+        processing: 1,
+        completed: 67,
+        failed: 2,
+        averageDuration: 12400,
+      },
+      {
+        type: 'BackupJob',
+        queued: 1,
+        processing: 0,
+        completed: 23,
+        failed: 0,
+        averageDuration: 28800,
+      },
     ];
 
     const alerts: Alert[] = [
@@ -612,22 +689,22 @@ export class QueueDashboardGenerator {
         type: 'error',
         message: 'Worker worker-4 has stopped responding',
         timestamp: new Date(Date.now() - 300000),
-        resolved: false
+        resolved: false,
       },
       {
         id: 'alert-2',
         type: 'warning',
         message: 'Error rate exceeded 5% threshold',
         timestamp: new Date(Date.now() - 600000),
-        resolved: false
+        resolved: false,
       },
       {
         id: 'alert-3',
         type: 'info',
         message: 'System maintenance completed successfully',
         timestamp: new Date(Date.now() - 1800000),
-        resolved: true
-      }
+        resolved: true,
+      },
     ];
 
     return { metrics, workers, jobStats, alerts };

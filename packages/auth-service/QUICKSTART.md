@@ -48,43 +48,47 @@ import Redis from 'ioredis';
 const db = new Pool({ connectionString: process.env.DATABASE_URL });
 const redis = new Redis(process.env.REDIS_URL);
 
-const authService = new AuthService({
-  jwt: {
-    algorithm: 'HS256',
-    secret: process.env.JWT_SECRET,
-    issuer: 'noa-server',
-    audience: 'noa-client',
-    accessTokenExpiry: '15m',
-    refreshTokenExpiry: '7d'
-  },
-  password: {
-    minLength: 12,
-    requireUppercase: true,
-    requireLowercase: true,
-    requireNumbers: true,
-    requireSpecialChars: true,
-    preventBreached: true
-  },
-  mfa: {
-    enabled: true,
-    issuer: 'Noa Server',
-    window: 1
-  },
-  session: {
-    redis: {
-      host: 'localhost',
-      port: 6379,
-      password: process.env.REDIS_PASSWORD,
-      db: 0
+const authService = new AuthService(
+  {
+    jwt: {
+      algorithm: 'HS256',
+      secret: process.env.JWT_SECRET,
+      issuer: 'noa-server',
+      audience: 'noa-client',
+      accessTokenExpiry: '15m',
+      refreshTokenExpiry: '7d',
     },
-    maxAge: 24 * 60 * 60 * 1000
-  }
-}, db, redis);
+    password: {
+      minLength: 12,
+      requireUppercase: true,
+      requireLowercase: true,
+      requireNumbers: true,
+      requireSpecialChars: true,
+      preventBreached: true,
+    },
+    mfa: {
+      enabled: true,
+      issuer: 'Noa Server',
+      window: 1,
+    },
+    session: {
+      redis: {
+        host: 'localhost',
+        port: 6379,
+        password: process.env.REDIS_PASSWORD,
+        db: 0,
+      },
+      maxAge: 24 * 60 * 60 * 1000,
+    },
+  },
+  db,
+  redis
+);
 
 // Register
 const result = await authService.register({
   email: 'user@example.com',
-  password: 'SecurePass123!'
+  password: 'SecurePass123!',
 });
 
 // Login
@@ -92,7 +96,7 @@ const login = await authService.login({
   email: 'user@example.com',
   password: 'SecurePass123!',
   ipAddress: '127.0.0.1',
-  userAgent: 'Mozilla/5.0...'
+  userAgent: 'Mozilla/5.0...',
 });
 
 console.log('Token:', login.token.accessToken);
@@ -144,6 +148,7 @@ pnpm format
 ## Troubleshooting
 
 **Database connection fails**
+
 ```bash
 # Check PostgreSQL is running
 pg_isready
@@ -153,6 +158,7 @@ psql postgresql://noa:password@localhost:5432/noa
 ```
 
 **Redis connection fails**
+
 ```bash
 # Check Redis is running
 redis-cli ping
@@ -162,6 +168,7 @@ redis-cli -a your-password ping
 ```
 
 **JWT verification fails**
+
 - Ensure JWT_SECRET is the same across all services
 - Check token hasn't expired
 - Verify algorithm matches configuration

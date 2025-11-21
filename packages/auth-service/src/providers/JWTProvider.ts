@@ -43,7 +43,7 @@ export class JWTProvider {
 
     const options: jwt.SignOptions = {
       algorithm: this.config.algorithm,
-      expiresIn: this.config.accessTokenExpiry,
+      expiresIn: this.config.accessTokenExpiry as any,
     };
 
     const secret =
@@ -65,7 +65,7 @@ export class JWTProvider {
 
     const options: jwt.SignOptions = {
       algorithm: this.config.algorithm,
-      expiresIn: this.config.refreshTokenExpiry,
+      expiresIn: this.config.refreshTokenExpiry as any,
     };
 
     const secret =

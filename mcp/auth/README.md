@@ -1,6 +1,7 @@
 # MCP Authentication & Authorization
 
-Comprehensive authentication and authorization system for MCP servers with support for JWT tokens, API keys, and role-based access control.
+Comprehensive authentication and authorization system for MCP servers with
+support for JWT tokens, API keys, and role-based access control.
 
 ## Features
 
@@ -107,11 +108,13 @@ except Exception as e:
 JWT tokens provide stateless authentication with cryptographic signatures.
 
 **Request Header:**
+
 ```
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 **Token Payload:**
+
 ```json
 {
   "iss": "noa-mcp-server",
@@ -123,6 +126,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 **Operations:**
+
 - Generate token: `jwt_handler.generate_token(user_id, role)`
 - Verify token: `jwt_handler.verify_token(token)`
 - Refresh token: `jwt_handler.refresh_token(token)`
@@ -133,11 +137,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 API keys provide simple authentication for programmatic access.
 
 **Request Header:**
+
 ```
 X-API-Key: noa_mcp_aBcDeFgHiJkLmNoPqRsTuVwXyZ123456
 ```
 
 **Operations:**
+
 - Generate key: `api_key_handler.generate_key(user_id, role, name)`
 - Verify key: `api_key_handler.verify_api_key(key)`
 - Rotate key: `api_key_handler.rotate_key(old_key)`
@@ -148,12 +154,14 @@ X-API-Key: noa_mcp_aBcDeFgHiJkLmNoPqRsTuVwXyZ123456
 ### Predefined Roles
 
 #### Admin Role
+
 - **Permissions:** Full access to all MCP tools and operations
 - **Use Case:** System administrators, platform owners
 - **Resources:** `*` (all)
 - **Operations:** `*` (all)
 
 #### Developer Role
+
 - **Permissions:** Access to development tools, no system management
 - **Use Case:** Application developers, ML engineers
 - **Resources:**
@@ -163,6 +171,7 @@ X-API-Key: noa_mcp_aBcDeFgHiJkLmNoPqRsTuVwXyZ123456
 - **Operations:** `execute`, `read`, `write`
 
 #### Read-Only Role
+
 - **Permissions:** Read access to status and monitoring
 - **Use Case:** Auditors, observers, dashboards
 - **Resources:**
@@ -171,6 +180,7 @@ X-API-Key: noa_mcp_aBcDeFgHiJkLmNoPqRsTuVwXyZ123456
 - **Operations:** `read`
 
 #### Operator Role
+
 - **Permissions:** Operations access for deployment and monitoring
 - **Use Case:** DevOps engineers, SREs
 - **Resources:**
@@ -496,16 +506,19 @@ class TestAuthentication(unittest.TestCase):
 ### Common Issues
 
 **Issue:** "Invalid JWT token"
+
 - Check token expiration
 - Verify JWT secret matches
 - Ensure token format is correct
 
 **Issue:** "Rate limit exceeded"
+
 - Check rate limit configuration
 - Verify user is not making excessive requests
 - Consider increasing limits for specific users
 
 **Issue:** "Authorization failed"
+
 - Verify role has required permissions
 - Check resource and operation names
 - Review permissions configuration
@@ -529,5 +542,6 @@ MIT License - See LICENSE file for details
 ## Support
 
 For issues and questions:
+
 - GitHub Issues: https://github.com/deflex/noa-server/issues
 - Documentation: https://docs.noa-server.io/mcp/auth

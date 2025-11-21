@@ -47,4 +47,5 @@ Specialized agents and MCP integrations for enhanced development workflows.
 
 ## settings.json
 
-The settings.json detail see https://docs.anthropic.com/en/docs/claude-code/settings.
+The settings.json detail see
+https://docs.anthropic.com/en/docs/claude-code/settings.

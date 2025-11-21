@@ -16,7 +16,7 @@ async function main() {
       type: 'http' as MCPTransportType,
       endpoint: 'http://localhost:3000/mcp',
       headers: {
-        'Authorization': 'Bearer your-api-key-here',
+        Authorization: 'Bearer your-api-key-here',
         'X-Client-ID': 'example-client',
       },
     },
@@ -33,7 +33,7 @@ async function main() {
 
     // List and call tools
     const tools = await client.tools.listTools();
-    console.log(`\nAvailable tools: ${tools.map(t => t.name).join(', ')}`);
+    console.log(`\nAvailable tools: ${tools.map((t) => t.name).join(', ')}`);
 
     // Example: Call weather tool
     if (client.tools.hasTool('get_weather')) {
@@ -64,7 +64,6 @@ async function main() {
     results.forEach((result, index) => {
       console.log(`\nResult ${index + 1}:`, result);
     });
-
   } catch (error) {
     console.error('Error:', error);
   } finally {

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOA Server API Documentation - ReDoc</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    }
+
+    .topbar {
+      background-color: #0d1117;
+      padding: 15px 30px;
+      border-bottom: 1px solid #333;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .topbar-wrapper {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topbar-wrapper h1 {
+      margin: 0;
+      color: #fff;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .api-selector {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .api-selector select {
+      padding: 8px 15px;
+      border-radius: 6px;
+      border: 1px solid #333;
+      background-color: #21262d;
+      color: #e0e0e0;
+      font-size: 14px;
+      cursor: pointer;
+      min-width: 200px;
+    }
+
+    .api-selector select:hover {
+      border-color: #4a90e2;
+    }
+
+    .api-selector button {
+      padding: 8px 20px;
+      border-radius: 6px;
+      border: 1px solid #4a90e2;
+      background-color: #4a90e2;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .api-selector button:hover {
+      background-color: #3a7bc8;
+      border-color: #3a7bc8;
+    }
+
+    #redoc-container {
+      min-height: calc(100vh - 60px);
+    }
+
+    /* ReDoc dark theme customization */
+    redoc {
+      --redoc-background-color: #0d1117;
+      --redoc-text-color: #e0e0e0;
+      --redoc-heading-color: #ffffff;
+      --redoc-code-background-color: #161b22;
+      --redoc-border-color: #30363d;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-wrapper">
+      <h1>NOA Server API Documentation</h1>
+      <div class="api-selector">
+        <select id="api-select" onchange="loadAPI()">
+          <option value="openapi/ai-inference-api.yaml">AI Inference API</option>
+          <option value="openapi/auth-api.yaml">Authentication API</option>
+          <option value="openapi/message-queue-api.yaml">Message Queue API</option>
+          <option value="openapi/monitoring-api.yaml">Monitoring API</option>
+        </select>
+        <button onclick="window.location.href='swagger-ui.html'">View Swagger UI</button>
+        <button onclick="downloadPDF()">Download PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="redoc-container"></div>
+
+  <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
+  <script>
+    function getApiUrl() {
+      const select = document.getElementById('api-select');
+      return select.value;
+    }
+
+    function loadAPI() {
+      const apiUrl = getApiUrl();
+
+      Redoc.init(
+        apiUrl,
+        {
+          scrollYOffset: 60,
+          hideDownloadButton: false,
+          disableSearch: false,
+          expandResponses: '200,201',
+          jsonSampleExpandLevel: 2,
+          hideSingleRequestSampleTab: true,
+          menuToggle: true,
+          nativeScrollbars: false,
+          pathInMiddlePanel: false,
+          requiredPropsFirst: true,
+          sortPropsAlphabetically: false,
+          theme: {
+            colors: {
+              primary: {
+                main: '#4a90e2'
+              },
+              success: {
+                main: '#28a745'
+              },
+              warning: {
+                main: '#ffc107'
+              },
+              error: {
+                main: '#dc3545'
+              },
+              text: {
+                primary: '#e0e0e0',
+                secondary: '#a0a0a0'
+              },
+              border: {
+                dark: '#30363d',
+                light: '#484f58'
+              }
+            },
+            typography: {
+              fontSize: '14px',
+              lineHeight: '1.6',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif',
+              headings: {
+                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif',
+                fontWeight: '600'
+              },
+              code: {
+                fontSize: '13px',
+                fontFamily: '"SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
+                backgroundColor: '#161b22',
+                color: '#e0e0e0'
+              }
+            },
+            sidebar: {
+              backgroundColor: '#0d1117',
+              textColor: '#e0e0e0',
+              activeTextColor: '#4a90e2',
+              groupItems: {
+                activeBackgroundColor: '#21262d'
+              },
+              level1Items: {
+                activeBackgroundColor: '#21262d'
+              }
+            },
+            rightPanel: {
+              backgroundColor: '#0d1117',
+              textColor: '#e0e0e0'
+            }
+          }
+        },
+        document.getElementById('redoc-container')
+      );
+    }
+
+    function downloadPDF() {
+      alert('PDF generation feature coming soon. Use your browser\'s print function (Cmd/Ctrl + P) and select "Save as PDF" as a workaround.');
+    }
+
+    // Load default API on page load
+    window.addEventListener('load', loadAPI);
+  </script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 
 # Swarm Topology Configuration
 # Options: hierarchical, mesh, adaptive, collective-intelligence
-topology: "adaptive"
+topology: 'adaptive'
 
 # Maximum number of concurrent agents
 maxAgents: 6
@@ -11,9 +11,9 @@ maxAgents: 6
 # Coordinator Agent Types
 # These agents manage swarm coordination and task distribution
 coordinatorTypes:
-  - "hierarchical-coordinator"
-  - "mesh-coordinator"
-  - "adaptive-coordinator"
+  - 'hierarchical-coordinator'
+  - 'mesh-coordinator'
+  - 'adaptive-coordinator'
 
 # Memory and Neural Features
 enableMemory: true
@@ -23,8 +23,8 @@ enableGossip: false
 # Memory Persistence Settings
 memoryPersistence:
   enabled: true
-  storageType: "sqlite"  # Options: sqlite, json, redis
-  persistencePath: ".hive-mind/memory"
+  storageType: 'sqlite' # Options: sqlite, json, redis
+  persistencePath: '.hive-mind/memory'
   retentionDays: 30
   autoCleanup: true
 
@@ -32,69 +32,69 @@ memoryPersistence:
 neuralTraining:
   enabled: true
   autoTrain: false
-  trainingInterval: "daily"
+  trainingInterval: 'daily'
   minSamplesForTraining: 100
 
 # Performance and Optimization
 performance:
   parallelExecution: true
   maxConcurrentTasks: 10
-  taskTimeout: 600  # seconds
+  taskTimeout: 600 # seconds
   enableCaching: true
-  cacheExpiry: 3600  # seconds
+  cacheExpiry: 3600 # seconds
 
 # Auto-Assignment Rules
 autoAssignment:
   autoAssignByFileType: true
   fileTypeMapping:
-    - pattern: "*.js|*.ts|*.jsx|*.tsx"
-      agent: "coder"
-    - pattern: "*.py"
-      agent: "backend-dev"
-    - pattern: "*.test.*|*.spec.*"
-      agent: "tester"
-    - pattern: "*.md|*.txt"
-      agent: "researcher"
-    - pattern: "*.yaml|*.yml|*.json"
-      agent: "planner"
+    - pattern: '*.js|*.ts|*.jsx|*.tsx'
+      agent: 'coder'
+    - pattern: '*.py'
+      agent: 'backend-dev'
+    - pattern: '*.test.*|*.spec.*'
+      agent: 'tester'
+    - pattern: '*.md|*.txt'
+      agent: 'researcher'
+    - pattern: '*.yaml|*.yml|*.json'
+      agent: 'planner'
 
 # Task Complexity Detection
 complexityDetection:
   enabled: true
   rules:
-    - keyword: "backend|api|server|database"
-      complexity: "high"
-      topology: "hierarchical"
-    - keyword: "test|qa|validation"
-      complexity: "medium"
-      topology: "adaptive"
-    - keyword: "research|analyze|investigate"
-      complexity: "medium"
-      topology: "mesh"
-    - keyword: "fix|patch|hotfix"
-      complexity: "low"
-      topology: "mesh"
+    - keyword: 'backend|api|server|database'
+      complexity: 'high'
+      topology: 'hierarchical'
+    - keyword: 'test|qa|validation'
+      complexity: 'medium'
+      topology: 'adaptive'
+    - keyword: 'research|analyze|investigate'
+      complexity: 'medium'
+      topology: 'mesh'
+    - keyword: 'fix|patch|hotfix'
+      complexity: 'low'
+      topology: 'mesh'
 
 # Topology-Specific Settings
 topologySettings:
   hierarchical:
     maxDepth: 3
-    coordinatorRatio: 0.2  # 20% of agents are coordinators
-    taskDistributionStrategy: "priority-based"
+    coordinatorRatio: 0.2 # 20% of agents are coordinators
+    taskDistributionStrategy: 'priority-based'
 
   mesh:
-    connectionDensity: "medium"  # Options: low, medium, high
-    taskDistributionStrategy: "round-robin"
+    connectionDensity: 'medium' # Options: low, medium, high
+    taskDistributionStrategy: 'round-robin'
 
   adaptive:
     learningRate: 0.1
-    adaptationInterval: 60  # seconds
-    metricsToOptimize: ["throughput", "latency", "accuracy"]
+    adaptationInterval: 60 # seconds
+    metricsToOptimize: ['throughput', 'latency', 'accuracy']
 
 # Health Check Configuration
 healthCheck:
   enabled: true
-  interval: 30  # seconds
+  interval: 30 # seconds
   checkMemory: true
   checkAgents: true
   checkSession: true
@@ -102,19 +102,19 @@ healthCheck:
 
 # Logging Configuration
 logging:
-  level: "info"  # Options: debug, info, warn, error
+  level: 'info' # Options: debug, info, warn, error
   logToFile: true
-  logDirectory: "logs/hive-mind"
+  logDirectory: 'logs/hive-mind'
   rotateDaily: true
   maxLogFiles: 30
 
 # Session Management
 sessionManagement:
   autoSave: true
-  saveInterval: 300  # seconds
-  sessionExpiry: 86400  # 24 hours in seconds
+  saveInterval: 300 # seconds
+  sessionExpiry: 86400 # 24 hours in seconds
   archiveCompletedSessions: true
-  archiveDirectory: ".hive-mind/sessions/archive"
+  archiveDirectory: '.hive-mind/sessions/archive'
 
 # GitHub Integration
 githubIntegration:
@@ -150,4 +150,4 @@ production:
   enableMetrics: true
   enableTracing: true
   enableProfiling: false
-  metricsEndpoint: "/metrics"
+  metricsEndpoint: '/metrics'

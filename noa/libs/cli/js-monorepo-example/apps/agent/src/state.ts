@@ -1,5 +1,5 @@
-import { BaseMessage, BaseMessageLike } from "@langchain/core/messages";
-import { Annotation, messagesStateReducer } from "@langchain/langgraph";
+import { BaseMessage, BaseMessageLike } from '@langchain/core/messages';
+import { Annotation, messagesStateReducer } from '@langchain/langgraph';
 
 /**
  * Simple state annotation for the agent

@@ -1,10 +1,13 @@
 # @noa-server/unified
 
-Unified utilities and services for NOA Server - consolidated from duplicate implementations across packages.
+Unified utilities and services for NOA Server - consolidated from duplicate
+implementations across packages.
 
 ## Overview
 
-This package provides a centralized collection of utilities and services that were previously duplicated across multiple packages in the NOA Server codebase. By consolidating these implementations, we achieve:
+This package provides a centralized collection of utilities and services that
+were previously duplicated across multiple packages in the NOA Server codebase.
+By consolidating these implementations, we achieve:
 
 - **40-60% reduction** in duplicate code
 - **Single source of truth** for common patterns
@@ -16,7 +19,8 @@ This package provides a centralized collection of utilities and services that we
 
 ### Core Utilities
 
-- **RedisConnectionManager**: Singleton Redis connection pooling with circuit breaker
+- **RedisConnectionManager**: Singleton Redis connection pooling with circuit
+  breaker
 - **LoggerFactory**: Centralized logger creation with structured logging
 - **ConfigValidator**: Type-safe configuration validation with Zod
 - **EventBus**: Type-safe event system with history and replay
@@ -51,8 +55,8 @@ const redis = await manager.getConnection('cache', {
   db: 0,
   circuitBreaker: {
     enabled: true,
-    failureThreshold: 5
-  }
+    failureThreshold: 5,
+  },
 });
 
 // Use Redis client
@@ -87,13 +91,13 @@ LoggerFactory.configure({
       enabled: true,
       directory: './logs',
       maxSize: 10485760, // 10MB
-      maxFiles: 5
-    }
+      maxFiles: 5,
+    },
   },
   metadata: {
     service: 'my-service',
-    environment: 'production'
-  }
+    environment: 'production',
+  },
 });
 
 // Get logger for module
@@ -128,13 +132,13 @@ const schema = z.object({
   host: z.string().default('localhost'),
   database: z.object({
     url: z.string().url(),
-    poolSize: z.number().default(10)
+    poolSize: z.number().default(10),
   }),
   apiKey: z.string(),
   features: z.object({
     caching: z.boolean().default(true),
-    rateLimit: z.boolean().default(true)
-  })
+    rateLimit: z.boolean().default(true),
+  }),
 });
 
 // Validate configuration
@@ -152,14 +156,17 @@ const validatedConfig = ConfigValidator.validateOrThrow(schema, config);
 const envConfig = ConfigValidator.fromEnv(schema, {
   prefix: 'APP_',
   required: ['apiKey'],
-  defaults: { port: 3000 }
+  defaults: { port: 3000 },
 });
 
 // Freeze configuration (immutable)
 const frozenConfig = ConfigValidator.freeze(config);
 
 // Mask sensitive fields for logging
-const maskedConfig = ConfigValidator.maskSensitive(config, ['apiKey', 'password']);
+const maskedConfig = ConfigValidator.maskSensitive(config, [
+  'apiKey',
+  'password',
+]);
 console.log(maskedConfig); // apiKey: "ab****yz"
 ```
 
@@ -187,7 +194,7 @@ bus.on('user:created', async (data, metadata) => {
 // Emit events
 await bus.emit('user:created', {
   userId: '123',
-  email: 'user@example.com'
+  email: 'user@example.com',
 });
 
 // Wildcard subscription
@@ -197,7 +204,7 @@ bus.on('user:*' as any, (data, metadata) => {
 
 // Priority handling
 bus.on('order:placed', handler1, { priority: 10 }); // Executes first
-bus.on('order:placed', handler2, { priority: 5 });  // Executes second
+bus.on('order:placed', handler2, { priority: 5 }); // Executes second
 
 // One-time subscription
 bus.once('user:created', (data) => {
@@ -225,10 +232,10 @@ import { CircuitBreaker } from '@noa-server/unified';
 // Create circuit breaker
 const breaker = new CircuitBreaker({
   name: 'external-api',
-  failureThreshold: 5,      // Open after 5 failures
-  successThreshold: 2,      // Close after 2 successes in half-open
-  timeout: 60000,           // Stay open for 60 seconds
-  errorThresholdPercentage: 50 // Or 50% error rate
+  failureThreshold: 5, // Open after 5 failures
+  successThreshold: 2, // Close after 2 successes in half-open
+  timeout: 60000, // Stay open for 60 seconds
+  errorThresholdPercentage: 50, // Or 50% error rate
 });
 
 // Listen to state changes
@@ -260,7 +267,7 @@ try {
 
 // Get state
 console.log(breaker.getState()); // 'closed' | 'open' | 'half-open'
-console.log(breaker.isOpen());   // boolean
+console.log(breaker.isOpen()); // boolean
 
 // Get statistics
 const stats = breaker.getStatistics();
@@ -273,9 +280,9 @@ const health = breaker.getHealth();
 console.log(health); // { healthy, state, errorRate, lastFailure }
 
 // Manual control
-breaker.forceOpen();  // Manually open circuit
+breaker.forceOpen(); // Manually open circuit
 breaker.forceClose(); // Manually close circuit
-breaker.reset();      // Reset statistics
+breaker.reset(); // Reset statistics
 ```
 
 ## Advanced Usage
@@ -289,24 +296,24 @@ import {
   LogLevel,
   RedisConnectionManager,
   ConfigValidator,
-  z
+  z,
 } from '@noa-server/unified';
 
 // 1. Define configuration schema
 const ConfigSchema = z.object({
   server: z.object({
     port: z.number().default(3000),
-    host: z.string().default('0.0.0.0')
+    host: z.string().default('0.0.0.0'),
   }),
   redis: z.object({
     host: z.string().default('localhost'),
     port: z.number().default(6379),
-    password: z.string().optional()
+    password: z.string().optional(),
   }),
   logging: z.object({
     level: z.nativeEnum(LogLevel).default(LogLevel.INFO),
-    directory: z.string().default('./logs')
-  })
+    directory: z.string().default('./logs'),
+  }),
 });
 
 // 2. Load and validate configuration
@@ -314,8 +321,8 @@ const config = ConfigValidator.fromEnv(ConfigSchema, {
   prefix: 'APP_',
   defaults: {
     server: { port: 3000 },
-    logging: { level: LogLevel.INFO }
-  }
+    logging: { level: LogLevel.INFO },
+  },
 });
 
 // 3. Initialize unified modules
@@ -326,10 +333,10 @@ await initializeUnified({
       console: { enabled: true },
       file: {
         enabled: true,
-        directory: config.logging.directory
-      }
-    }
-  }
+        directory: config.logging.directory,
+      },
+    },
+  },
 });
 
 // 4. Setup Redis connections
@@ -338,7 +345,9 @@ const redis = await redisManager.getConnection('main', config.redis);
 
 // 5. Use logger
 const logger = LoggerFactory.getLogger('Application');
-logger.info('Application started', { config: ConfigValidator.maskSensitive(config) });
+logger.info('Application started', {
+  config: ConfigValidator.maskSensitive(config),
+});
 
 // 6. Application logic...
 
@@ -355,22 +364,24 @@ process.on('SIGTERM', async () => {
 #### Migrating from `rate-limiter` package
 
 **Before:**
+
 ```typescript
 import { RateLimiter } from '@noa-server/rate-limiter';
 
 const limiter = new RateLimiter({
-  redis: { host: 'localhost', port: 6379 }
+  redis: { host: 'localhost', port: 6379 },
 });
 ```
 
 **After:**
+
 ```typescript
 import { RedisConnectionManager } from '@noa-server/unified';
 
 const manager = RedisConnectionManager.getInstance();
 const redis = await manager.getConnection('ratelimit', {
   host: 'localhost',
-  port: 6379
+  port: 6379,
 });
 // Use redis with your rate limiting logic
 ```
@@ -378,21 +389,23 @@ const redis = await manager.getConnection('ratelimit', {
 #### Migrating from `cache-manager` package
 
 **Before:**
+
 ```typescript
 import { CacheManager } from '@noa-server/cache-manager';
 
 const cache = new CacheManager({
-  tiers: { redis: { host: 'localhost' } }
+  tiers: { redis: { host: 'localhost' } },
 });
 ```
 
 **After:**
+
 ```typescript
 import { RedisConnectionManager } from '@noa-server/unified';
 
 const manager = RedisConnectionManager.getInstance();
 const redis = await manager.getConnection('cache', {
-  host: 'localhost'
+  host: 'localhost',
 });
 // Use redis for caching
 ```
@@ -454,7 +467,8 @@ npm run test:coverage
 
 ## Migration Guide
 
-See [Migration Guide](../../docs/migration/unified-migration-guide.md) for step-by-step instructions on migrating from old packages.
+See [Migration Guide](../../docs/migration/unified-migration-guide.md) for
+step-by-step instructions on migrating from old packages.
 
 ## Contributing
 
@@ -475,6 +489,5 @@ MIT
 
 ---
 
-**Generated as part of Phase 3: Code Integration**
-**Version**: 1.0.0
-**Last Updated**: 2025-10-22
+**Generated as part of Phase 3: Code Integration** **Version**: 1.0.0 **Last
+Updated**: 2025-10-22

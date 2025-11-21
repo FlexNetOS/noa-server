@@ -38,10 +38,7 @@ export class FileTransport {
       maxFiles: this.config.maxFiles,
       zippedArchive: this.config.compress,
       format: this.config.json
-        ? format.combine(
-            format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
-            format.json()
-          )
+        ? format.combine(format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }), format.json())
         : format.combine(
             format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
             format.printf((info) => {

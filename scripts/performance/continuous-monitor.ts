@@ -37,9 +37,7 @@ export class ContinuousMonitor {
       ...config,
     };
 
-    this.memoryProfiler = new MemoryProfiler(
-      path.join(this.config.outputDir, 'memory')
-    );
+    this.memoryProfiler = new MemoryProfiler(path.join(this.config.outputDir, 'memory'));
   }
 
   /**
@@ -153,18 +151,9 @@ export class ContinuousMonitor {
 
     // Update Prometheus metrics
     if (this.metricsCollector) {
-      this.metricsCollector.setGauge(
-        'system_memory_usage',
-        systemMem.used
-      );
-      this.metricsCollector.setGauge(
-        'system_memory_free',
-        systemMem.free
-      );
-      this.metricsCollector.setGauge(
-        'event_loop_lag_ms',
-        eventLoopLag
-      );
+      this.metricsCollector.setGauge('system_memory_usage', systemMem.used);
+      this.metricsCollector.setGauge('system_memory_free', systemMem.free);
+      this.metricsCollector.setGauge('event_loop_lag_ms', eventLoopLag);
     }
 
     // Store metrics in history
@@ -285,7 +274,7 @@ export class ContinuousMonitor {
 # Performance Monitoring Report
 
 **Generated**: ${new Date().toISOString()}
-**Duration**: ${this.metricsHistory.length * this.config.interval / 1000} seconds
+**Duration**: ${(this.metricsHistory.length * this.config.interval) / 1000} seconds
 **Samples**: ${this.metricsHistory.length}
 
 ## Memory Usage

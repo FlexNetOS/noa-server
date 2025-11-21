@@ -9,7 +9,7 @@ import {
   OptimizationRationale,
   ComparisonResult,
   AgentConfig,
-  AgentState
+  AgentState,
 } from '../types/interfaces';
 import { PromptAnalyzer } from './analyzer';
 import { PromptDiagnostics } from './diagnostics';
@@ -30,7 +30,7 @@ export class PromptOptimizationAgent {
       qualityThreshold: config.qualityThreshold ?? 7.0,
       maxIterations: config.maxIterations ?? 3,
       verboseOutput: config.verboseOutput ?? true,
-      ...config
+      ...config,
     };
 
     this.state = {
@@ -39,7 +39,7 @@ export class PromptOptimizationAgent {
       successfulOptimizations: 0,
       averageQualityImprovement: 0,
       learnedPatterns: [],
-      templateCache: new Map()
+      templateCache: new Map(),
     };
   }
 
@@ -71,7 +71,9 @@ export class PromptOptimizationAgent {
       // Check if quality meets threshold
       if (diagnoseResult.overallQualityScore >= this.config.qualityThreshold!) {
         if (this.config.verboseOutput) {
-          console.log(`✅ Input already meets quality threshold (${diagnoseResult.overallQualityScore}/10)`);
+          console.log(
+            `✅ Input already meets quality threshold (${diagnoseResult.overallQualityScore}/10)`
+          );
         }
       }
 
@@ -111,7 +113,7 @@ export class PromptOptimizationAgent {
         original: input,
         optimized: deliverResult.finalOptimizedPrompt,
         improvements: this.identifyImprovements(deconstructResult, diagnoseResult, developResult),
-        metricsChange: metrics
+        metricsChange: metrics,
       };
 
       // Assemble final result
@@ -124,7 +126,7 @@ export class PromptOptimizationAgent {
         comparisonResult,
         optimizationRationale: rationale,
         metrics,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
 
       // Validate result
@@ -138,11 +140,12 @@ export class PromptOptimizationAgent {
 
       if (this.config.verboseOutput) {
         console.log('✨ Optimization complete!');
-        console.log(`Quality improvement: +${metrics.clarityImprovement.toFixed(1)}% clarity, +${metrics.specificityImprovement.toFixed(1)}% specificity`);
+        console.log(
+          `Quality improvement: +${metrics.clarityImprovement.toFixed(1)}% clarity, +${metrics.specificityImprovement.toFixed(1)}% specificity`
+        );
       }
 
       return result;
-
     } catch (error) {
       console.error('❌ Optimization failed:', error);
       throw error;
@@ -202,7 +205,7 @@ export class PromptOptimizationAgent {
       specificityImprovement,
       completenessImprovement,
       expectedQualityEnhancement,
-      processingTime
+      processingTime,
     };
   }
 
@@ -240,9 +243,11 @@ export class PromptOptimizationAgent {
     keyImprovements.push('Included verification criteria for quality assurance');
 
     // Techniques applied
-    techniques.filter(t => t.applied).forEach(technique => {
-      techniquesApplied.push(`${technique.technique}: ${technique.description}`);
-    });
+    techniques
+      .filter((t) => t.applied)
+      .forEach((technique) => {
+        techniquesApplied.push(`${technique.technique}: ${technique.description}`);
+      });
 
     // Why it matters
     whyItMatters.push('Structured prompts yield more consistent and reliable results');
@@ -259,7 +264,7 @@ export class PromptOptimizationAgent {
       keyImprovements,
       techniquesApplied,
       whyItMatters,
-      expectedBenefits
+      expectedBenefits,
     };
   }
 
@@ -273,7 +278,9 @@ export class PromptOptimizationAgent {
   ): string[] {
     const improvements: string[] = [];
 
-    improvements.push(`Transformed ${developResult.strategySelection.primaryType} prompt with systematic 4-D methodology`);
+    improvements.push(
+      `Transformed ${developResult.strategySelection.primaryType} prompt with systematic 4-D methodology`
+    );
 
     deconstructResult.gapAnalysis.criticalGaps.forEach((gap: string) => {
       improvements.push(`Addressed critical gap: ${gap}`);
@@ -283,9 +290,11 @@ export class PromptOptimizationAgent {
       improvements.push(`Clarity: ${rec}`);
     });
 
-    developResult.techniques.filter((t: any) => t.applied && t.impact === 'high').forEach((t: any) => {
-      improvements.push(`Applied ${t.technique} for ${t.impact} impact`);
-    });
+    developResult.techniques
+      .filter((t: any) => t.applied && t.impact === 'high')
+      .forEach((t: any) => {
+        improvements.push(`Applied ${t.technique} for ${t.impact} impact`);
+      });
 
     return improvements;
   }
@@ -300,12 +309,14 @@ export class PromptOptimizationAgent {
       this.state.successfulOptimizations++;
     }
 
-    const totalImprovement = result.metrics.clarityImprovement +
-                            result.metrics.specificityImprovement +
-                            result.metrics.completenessImprovement;
+    const totalImprovement =
+      result.metrics.clarityImprovement +
+      result.metrics.specificityImprovement +
+      result.metrics.completenessImprovement;
 
     this.state.averageQualityImprovement =
-      ((this.state.averageQualityImprovement * (this.state.optimizationCount - 1)) + totalImprovement) /
+      (this.state.averageQualityImprovement * (this.state.optimizationCount - 1) +
+        totalImprovement) /
       this.state.optimizationCount;
 
     if (this.config.enableLearning) {
@@ -347,7 +358,7 @@ export class PromptOptimizationAgent {
       successfulOptimizations: 0,
       averageQualityImprovement: 0,
       learnedPatterns: [],
-      templateCache: new Map()
+      templateCache: new Map(),
     };
   }
 }
@@ -356,5 +367,5 @@ export class PromptOptimizationAgent {
 export const promptOptimizer = new PromptOptimizationAgent({
   verboseOutput: true,
   enableLearning: true,
-  enableMultiModal: true
+  enableMultiModal: true,
 });

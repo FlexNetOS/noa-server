@@ -6,24 +6,24 @@ metadata:
   labels:
     app: noa-server
 data:
-  NODE_ENV: "production"
-  LOG_LEVEL: "info"
-  MCP_PORT: "8001"
-  CLAUDE_FLOW_PORT: "9100"
-  UI_PORT: "9200"
-  LLAMA_PORT: "9300"
-  AGENTICOS_PORT: "9400"
-  REDIS_PORT: "6379"
-  POSTGRES_PORT: "5432"
+  NODE_ENV: 'production'
+  LOG_LEVEL: 'info'
+  MCP_PORT: '8001'
+  CLAUDE_FLOW_PORT: '9100'
+  UI_PORT: '9200'
+  LLAMA_PORT: '9300'
+  AGENTICOS_PORT: '9400'
+  REDIS_PORT: '6379'
+  POSTGRES_PORT: '5432'
 
   # Service URLs
-  MCP_URL: "http://noa-mcp-service:8001"
-  CLAUDE_FLOW_URL: "http://noa-claude-flow-service:9100"
-  UI_URL: "http://noa-ui-service:9200"
-  LLAMA_URL: "http://noa-llama-service:9300"
-  AGENTICOS_URL: "http://noa-agenticos-service:9400"
-  REDIS_URL: "redis://noa-redis-service:6379"
-  POSTGRES_URL: "postgresql://noa-postgres-service:5432/noa"
+  MCP_URL: 'http://noa-mcp-service:8001'
+  CLAUDE_FLOW_URL: 'http://noa-claude-flow-service:9100'
+  UI_URL: 'http://noa-ui-service:9200'
+  LLAMA_URL: 'http://noa-llama-service:9300'
+  AGENTICOS_URL: 'http://noa-agenticos-service:9400'
+  REDIS_URL: 'redis://noa-redis-service:6379'
+  POSTGRES_URL: 'postgresql://noa-postgres-service:5432/noa'
 
 ---
 apiVersion: v1

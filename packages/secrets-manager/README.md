@@ -1,10 +1,15 @@
 # Secrets Manager
 
-Production-grade secrets management with multi-provider support and automatic rotation.
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
+Production-grade secrets management with multi-provider support and automatic
+rotation.
 
 ## Features
 
-- **Multi-Provider Support**: HashiCorp Vault, AWS Secrets Manager, Azure Key Vault, GCP Secret Manager, Local (dev only)
+- **Multi-Provider Support**: HashiCorp Vault, AWS Secrets Manager, Azure Key
+  Vault, GCP Secret Manager, Local (dev only)
 - **Unified Interface**: Single API across all providers
 - **Automatic Rotation**: Built-in secret rotation policies
 - **Audit Logging**: Track all secret access and modifications
@@ -118,10 +123,12 @@ await manager.initialize();
 ```
 
 Environment variables:
+
 - `SECRETS_PROVIDER`: vault, aws, azure, gcp, or local
 - `VAULT_ADDR`, `VAULT_TOKEN`, `VAULT_NAMESPACE`
 - `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`
-- `AZURE_KEYVAULT_URL`, `AZURE_TENANT_ID`, `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET`
+- `AZURE_KEYVAULT_URL`, `AZURE_TENANT_ID`, `AZURE_CLIENT_ID`,
+  `AZURE_CLIENT_SECRET`
 - `GCP_PROJECT_ID`, `GCP_KEY_FILE`
 
 ## Advanced Usage
@@ -183,9 +190,7 @@ const keys = await manager.list();
 const exists = await manager.exists('api-key');
 
 // Batch retrieve
-const secrets = await Promise.all(
-  keys.map(key => manager.get(key))
-);
+const secrets = await Promise.all(keys.map((key) => manager.get(key)));
 ```
 
 ## Security Best Practices
@@ -241,21 +246,21 @@ kind: Secret
 metadata:
   name: secrets-config
 stringData:
-  SECRETS_PROVIDER: "azure"
-  AZURE_KEYVAULT_URL: "https://my-vault.vault.azure.net"
+  SECRETS_PROVIDER: 'azure'
+  AZURE_KEYVAULT_URL: 'https://my-vault.vault.azure.net'
 ---
 apiVersion: v1
 kind: Pod
 spec:
   serviceAccountName: secrets-reader
   containers:
-  - name: api
-    env:
-    - name: SECRETS_PROVIDER
-      valueFrom:
-        secretKeyRef:
-          name: secrets-config
-          key: SECRETS_PROVIDER
+    - name: api
+      env:
+        - name: SECRETS_PROVIDER
+          valueFrom:
+            secretKeyRef:
+              name: secrets-config
+              key: SECRETS_PROVIDER
 ```
 
 ## Error Handling
@@ -303,3 +308,5 @@ await testManager.set('test-key', 'test-value');
 ## License
 
 MIT
+
+> Last updated: 2025-11-20

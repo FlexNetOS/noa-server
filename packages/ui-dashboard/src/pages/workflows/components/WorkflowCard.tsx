@@ -16,15 +16,15 @@ export function WorkflowCard({ workflow, onExecute, onEdit, onDelete }: Workflow
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
-      className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow"
+      className="overflow-hidden rounded-lg border border-gray-200 bg-white transition-shadow hover:shadow-lg dark:border-gray-700 dark:bg-gray-800"
     >
       <div className="p-6">
-        <div className="flex items-start justify-between mb-3">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white line-clamp-1">
+        <div className="mb-3 flex items-start justify-between">
+          <h3 className="line-clamp-1 text-lg font-semibold text-gray-900 dark:text-white">
             {workflow.name}
           </h3>
           <span
-            className={`px-2 py-1 text-xs font-medium rounded ${
+            className={`rounded px-2 py-1 text-xs font-medium ${
               workflow.status === 'active'
                 ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                 : workflow.status === 'draft'
@@ -36,16 +36,16 @@ export function WorkflowCard({ workflow, onExecute, onEdit, onDelete }: Workflow
           </span>
         </div>
 
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+        <p className="mb-4 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
           {workflow.description}
         </p>
 
         {workflow.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="mb-4 flex flex-wrap gap-2">
             {workflow.tags.map((tag) => (
               <span
                 key={tag}
-                className="px-2 py-1 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded"
+                className="rounded bg-blue-100 px-2 py-1 text-xs text-blue-800 dark:bg-blue-900 dark:text-blue-200"
               >
                 {tag}
               </span>
@@ -54,21 +54,21 @@ export function WorkflowCard({ workflow, onExecute, onEdit, onDelete }: Workflow
         )}
 
         {workflow.metrics && (
-          <div className="grid grid-cols-3 gap-4 mb-4 text-sm">
+          <div className="mb-4 grid grid-cols-3 gap-4 text-sm">
             <div>
-              <span className="text-gray-500 dark:text-gray-400 block">Executions</span>
+              <span className="block text-gray-500 dark:text-gray-400">Executions</span>
               <div className="font-semibold text-gray-900 dark:text-white">
                 {workflow.metrics.totalExecutions}
               </div>
             </div>
             <div>
-              <span className="text-gray-500 dark:text-gray-400 block">Success Rate</span>
+              <span className="block text-gray-500 dark:text-gray-400">Success Rate</span>
               <div className="font-semibold text-gray-900 dark:text-white">
                 {(workflow.metrics.successRate * 100).toFixed(1)}%
               </div>
             </div>
             <div>
-              <span className="text-gray-500 dark:text-gray-400 block">Avg Duration</span>
+              <span className="block text-gray-500 dark:text-gray-400">Avg Duration</span>
               <div className="font-semibold text-gray-900 dark:text-white">
                 {(workflow.metrics.avgDuration / 1000).toFixed(1)}s
               </div>
@@ -77,7 +77,7 @@ export function WorkflowCard({ workflow, onExecute, onEdit, onDelete }: Workflow
         )}
 
         {workflow.schedule?.enabled && (
-          <div className="mb-4 p-2 bg-blue-50 dark:bg-blue-900/20 rounded text-sm">
+          <div className="mb-4 rounded bg-blue-50 p-2 text-sm dark:bg-blue-900/20">
             <span className="text-blue-800 dark:text-blue-200">
               Scheduled: {workflow.schedule.cron}
             </span>
@@ -88,22 +88,22 @@ export function WorkflowCard({ workflow, onExecute, onEdit, onDelete }: Workflow
           <button
             onClick={() => onExecute(workflow.id)}
             disabled={workflow.status !== 'active'}
-            className="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white text-sm rounded transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 rounded bg-blue-600 px-3 py-2 text-sm text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-400"
           >
             Execute
           </button>
           <button
             onClick={() => onEdit(workflow.id)}
-            className="flex-1 px-3 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500"
+            className="flex-1 rounded bg-gray-100 px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
           >
             Edit
           </button>
           <button
             onClick={() => onDelete(workflow.id)}
-            className="px-3 py-2 bg-red-100 hover:bg-red-200 dark:bg-red-900 dark:hover:bg-red-800 text-red-700 dark:text-red-300 text-sm rounded transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+            className="rounded bg-red-100 px-3 py-2 text-sm text-red-700 transition-colors hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 dark:bg-red-900 dark:text-red-300 dark:hover:bg-red-800"
             aria-label="Delete workflow"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -115,7 +115,7 @@ export function WorkflowCard({ workflow, onExecute, onEdit, onDelete }: Workflow
         </div>
       </div>
 
-      <div className="px-6 py-3 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
+      <div className="border-t border-gray-200 bg-gray-50 px-6 py-3 text-xs text-gray-500 dark:border-gray-700 dark:bg-gray-700/50 dark:text-gray-400">
         Updated {format(new Date(workflow.updatedAt), 'PPp')}
       </div>
     </motion.div>

@@ -26,7 +26,7 @@ export class KafkaProvider extends BaseQueueProvider {
         sasl: this.config.sasl,
         connectionTimeout: this.config.connectionTimeout || 30000,
         requestTimeout: this.config.requestTimeout || 30000,
-        logLevel: this.config.logLevel || logLevel.ERROR
+        logLevel: this.config.logLevel || logLevel.ERROR,
       });
 
       // Initialize admin client for topic management
@@ -36,7 +36,7 @@ export class KafkaProvider extends BaseQueueProvider {
       // Initialize producer
       this.producer = this.kafka.producer({
         allowAutoTopicCreation: this.config.allowAutoTopicCreation !== false,
-        transactionTimeout: this.config.transactionTimeout || 60000
+        transactionTimeout: this.config.transactionTimeout || 60000,
       });
 
       await this.producer.connect();
@@ -47,7 +47,7 @@ export class KafkaProvider extends BaseQueueProvider {
           groupId: this.config.consumerGroupId,
           sessionTimeout: this.config.sessionTimeout || 30000,
           heartbeatInterval: this.config.heartbeatInterval || 3000,
-          allowAutoTopicCreation: this.config.allowAutoTopicCreation !== false
+          allowAutoTopicCreation: this.config.allowAutoTopicCreation !== false,
         });
 
         await this.consumer.connect();
@@ -99,7 +99,7 @@ export class KafkaProvider extends BaseQueueProvider {
       return this.createHealthStatus(true, {
         connected: true,
         brokers: this.config.brokers,
-        clientId: this.config.clientId
+        clientId: this.config.clientId,
       });
     } catch (error) {
       return this.createHealthStatus(false, { connected: false }, error as Error);
@@ -117,13 +117,13 @@ export class KafkaProvider extends BaseQueueProvider {
       const topicMetadata = await this.admin.fetchTopicMetadata({ topics });
 
       let totalMessages = 0;
-      const topicDetails: Array<{name: string, partitions: number, messages?: number}> = [];
+      const topicDetails: Array<{ name: string; partitions: number; messages?: number }> = [];
 
       for (const topic of topicMetadata.topics) {
         const partitions = topic.partitions.length;
         topicDetails.push({
           name: topic.name,
-          partitions
+          partitions,
         });
       }
 
@@ -136,7 +136,7 @@ export class KafkaProvider extends BaseQueueProvider {
         {
           connected: true,
           topics: topicDetails,
-          brokers: this.config.brokers?.length || 0
+          brokers: this.config.brokers?.length || 0,
         }
       );
     } catch (error) {
@@ -155,7 +155,7 @@ export class KafkaProvider extends BaseQueueProvider {
     const messageData = JSON.stringify({
       ...message,
       id: messageId,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     // Ensure topic exists
@@ -163,15 +163,17 @@ export class KafkaProvider extends BaseQueueProvider {
 
     await this.producer.send({
       topic: queueName,
-      messages: [{
-        key: messageId,
-        value: messageData,
-        headers: {
-          messageId,
-          priority: message.metadata.priority.toString(),
-          retryCount: message.metadata.retryCount.toString()
-        }
-      }]
+      messages: [
+        {
+          key: messageId,
+          value: messageData,
+          headers: {
+            messageId,
+            priority: message.metadata.priority.toString(),
+            retryCount: message.metadata.retryCount.toString(),
+          },
+        },
+      ],
     });
 
     this.emitProviderEvent('message_sent', { queueName, messageId });
@@ -218,7 +220,7 @@ export class KafkaProvider extends BaseQueueProvider {
       for (const partition of offsets) {
         const high = parseInt(partition.high);
         const low = parseInt(partition.low);
-        totalMessages += (high - low);
+        totalMessages += high - low;
       }
 
       return totalMessages;
@@ -239,11 +241,11 @@ export class KafkaProvider extends BaseQueueProvider {
       topic: queueName,
       numPartitions: options?.partitions || 1,
       replicationFactor: options?.replicationFactor || 1,
-      configEntries: options?.configEntries || []
+      configEntries: options?.configEntries || [],
     };
 
     await this.admin.createTopics({
-      topics: [topicConfig]
+      topics: [topicConfig],
     });
 
     this.emitProviderEvent('queue_created', { queueName, options });
@@ -257,7 +259,7 @@ export class KafkaProvider extends BaseQueueProvider {
     }
 
     await this.admin.deleteTopics({
-      topics: [queueName]
+      topics: [queueName],
     });
 
     this.consumerSubscriptions.delete(queueName);
@@ -288,10 +290,10 @@ export class KafkaProvider extends BaseQueueProvider {
             topic,
             partition,
             error,
-            messageValue: message.value?.toString()
+            messageValue: message.value?.toString(),
           });
         }
-      }
+      },
     });
   }
 
@@ -303,11 +305,13 @@ export class KafkaProvider extends BaseQueueProvider {
       throw new Error('Kafka consumer not initialized');
     }
 
-    await this.consumer.commitOffsets([{
-      topic,
-      partition,
-      offset
-    }]);
+    await this.consumer.commitOffsets([
+      {
+        topic,
+        partition,
+        offset,
+      },
+    ]);
   }
 
   private async ensureTopic(topicName: string): Promise<void> {

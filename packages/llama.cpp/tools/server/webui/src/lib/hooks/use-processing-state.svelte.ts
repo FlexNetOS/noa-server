@@ -2,12 +2,12 @@ import { slotsService } from '$lib/services';
 import { config } from '$lib/stores/settings.svelte';
 
 export interface UseProcessingStateReturn {
-	readonly processingState: ApiProcessingState | null;
-	getProcessingDetails(): string[];
-	getProcessingMessage(): string;
-	shouldShowDetails(): boolean;
-	startMonitoring(): Promise<void>;
-	stopMonitoring(): void;
+  readonly processingState: ApiProcessingState | null;
+  getProcessingDetails(): string[];
+  getProcessingMessage(): string;
+  shouldShowDetails(): boolean;
+  startMonitoring(): Promise<void>;
+  stopMonitoring(): void;
 }
 
 /**
@@ -27,147 +27,147 @@ export interface UseProcessingStateReturn {
  * @returns Hook interface with processing state and control methods
  */
 export function useProcessingState(): UseProcessingStateReturn {
-	let isMonitoring = $state(false);
-	let processingState = $state<ApiProcessingState | null>(null);
-	let lastKnownState = $state<ApiProcessingState | null>(null);
-	let unsubscribe: (() => void) | null = null;
+  let isMonitoring = $state(false);
+  let processingState = $state<ApiProcessingState | null>(null);
+  let lastKnownState = $state<ApiProcessingState | null>(null);
+  let unsubscribe: (() => void) | null = null;
 
-	async function startMonitoring(): Promise<void> {
-		if (isMonitoring) return;
+  async function startMonitoring(): Promise<void> {
+    if (isMonitoring) return;
 
-		isMonitoring = true;
+    isMonitoring = true;
 
-		unsubscribe = slotsService.subscribe((state) => {
-			processingState = state;
-			if (state) {
-				lastKnownState = state;
-			} else {
-				lastKnownState = null;
-			}
-		});
+    unsubscribe = slotsService.subscribe((state) => {
+      processingState = state;
+      if (state) {
+        lastKnownState = state;
+      } else {
+        lastKnownState = null;
+      }
+    });
 
-		try {
-			const currentState = await slotsService.getCurrentState();
+    try {
+      const currentState = await slotsService.getCurrentState();
 
-			if (currentState) {
-				processingState = currentState;
-				lastKnownState = currentState;
-			}
+      if (currentState) {
+        processingState = currentState;
+        lastKnownState = currentState;
+      }
 
-			if (slotsService.isStreaming()) {
-				slotsService.startStreaming();
-			}
-		} catch (error) {
-			console.warn('Failed to start slots monitoring:', error);
-			// Continue without slots monitoring - graceful degradation
-		}
-	}
+      if (slotsService.isStreaming()) {
+        slotsService.startStreaming();
+      }
+    } catch (error) {
+      console.warn('Failed to start slots monitoring:', error);
+      // Continue without slots monitoring - graceful degradation
+    }
+  }
 
-	function stopMonitoring(): void {
-		if (!isMonitoring) return;
+  function stopMonitoring(): void {
+    if (!isMonitoring) return;
 
-		isMonitoring = false;
+    isMonitoring = false;
 
-		// Only clear processing state if keepStatsVisible is disabled
-		// This preserves the last known state for display when stats should remain visible
-		const currentConfig = config();
-		if (!currentConfig.keepStatsVisible) {
-			processingState = null;
-		} else if (lastKnownState) {
-			// Keep the last known state visible when keepStatsVisible is enabled
-			processingState = lastKnownState;
-		}
+    // Only clear processing state if keepStatsVisible is disabled
+    // This preserves the last known state for display when stats should remain visible
+    const currentConfig = config();
+    if (!currentConfig.keepStatsVisible) {
+      processingState = null;
+    } else if (lastKnownState) {
+      // Keep the last known state visible when keepStatsVisible is enabled
+      processingState = lastKnownState;
+    }
 
-		if (unsubscribe) {
-			unsubscribe();
-			unsubscribe = null;
-		}
-	}
+    if (unsubscribe) {
+      unsubscribe();
+      unsubscribe = null;
+    }
+  }
 
-	function getProcessingMessage(): string {
-		if (!processingState) {
-			return 'Processing...';
-		}
+  function getProcessingMessage(): string {
+    if (!processingState) {
+      return 'Processing...';
+    }
 
-		switch (processingState.status) {
-			case 'initializing':
-				return 'Initializing...';
-			case 'preparing':
-				if (processingState.progressPercent !== undefined) {
-					return `Processing (${processingState.progressPercent}%)`;
-				}
-				return 'Preparing response...';
-			case 'generating':
-				if (processingState.tokensDecoded > 0) {
-					return `Generating... (${processingState.tokensDecoded} tokens)`;
-				}
-				return 'Generating...';
-			default:
-				return 'Processing...';
-		}
-	}
+    switch (processingState.status) {
+      case 'initializing':
+        return 'Initializing...';
+      case 'preparing':
+        if (processingState.progressPercent !== undefined) {
+          return `Processing (${processingState.progressPercent}%)`;
+        }
+        return 'Preparing response...';
+      case 'generating':
+        if (processingState.tokensDecoded > 0) {
+          return `Generating... (${processingState.tokensDecoded} tokens)`;
+        }
+        return 'Generating...';
+      default:
+        return 'Processing...';
+    }
+  }
 
-	function getProcessingDetails(): string[] {
-		// Use current processing state or fall back to last known state
-		const stateToUse = processingState || lastKnownState;
-		if (!stateToUse) {
-			return [];
-		}
+  function getProcessingDetails(): string[] {
+    // Use current processing state or fall back to last known state
+    const stateToUse = processingState || lastKnownState;
+    if (!stateToUse) {
+      return [];
+    }
 
-		const details: string[] = [];
-		const currentConfig = config(); // Get fresh config each time
+    const details: string[] = [];
+    const currentConfig = config(); // Get fresh config each time
 
-		// Always show context info when we have valid data
-		if (stateToUse.contextUsed >= 0 && stateToUse.contextTotal > 0) {
-			const contextPercent = Math.round((stateToUse.contextUsed / stateToUse.contextTotal) * 100);
+    // Always show context info when we have valid data
+    if (stateToUse.contextUsed >= 0 && stateToUse.contextTotal > 0) {
+      const contextPercent = Math.round((stateToUse.contextUsed / stateToUse.contextTotal) * 100);
 
-			details.push(
-				`Context: ${stateToUse.contextUsed}/${stateToUse.contextTotal} (${contextPercent}%)`
-			);
-		}
+      details.push(
+        `Context: ${stateToUse.contextUsed}/${stateToUse.contextTotal} (${contextPercent}%)`
+      );
+    }
 
-		if (stateToUse.outputTokensUsed > 0) {
-			// Handle infinite max_tokens (-1) case
-			if (stateToUse.outputTokensMax <= 0) {
-				details.push(`Output: ${stateToUse.outputTokensUsed}/∞`);
-			} else {
-				const outputPercent = Math.round(
-					(stateToUse.outputTokensUsed / stateToUse.outputTokensMax) * 100
-				);
+    if (stateToUse.outputTokensUsed > 0) {
+      // Handle infinite max_tokens (-1) case
+      if (stateToUse.outputTokensMax <= 0) {
+        details.push(`Output: ${stateToUse.outputTokensUsed}/∞`);
+      } else {
+        const outputPercent = Math.round(
+          (stateToUse.outputTokensUsed / stateToUse.outputTokensMax) * 100
+        );
 
-				details.push(
-					`Output: ${stateToUse.outputTokensUsed}/${stateToUse.outputTokensMax} (${outputPercent}%)`
-				);
-			}
-		}
+        details.push(
+          `Output: ${stateToUse.outputTokensUsed}/${stateToUse.outputTokensMax} (${outputPercent}%)`
+        );
+      }
+    }
 
-		if (
-			currentConfig.showTokensPerSecond &&
-			stateToUse.tokensPerSecond &&
-			stateToUse.tokensPerSecond > 0
-		) {
-			details.push(`${stateToUse.tokensPerSecond.toFixed(1)} tokens/sec`);
-		}
+    if (
+      currentConfig.showTokensPerSecond &&
+      stateToUse.tokensPerSecond &&
+      stateToUse.tokensPerSecond > 0
+    ) {
+      details.push(`${stateToUse.tokensPerSecond.toFixed(1)} tokens/sec`);
+    }
 
-		if (stateToUse.speculative) {
-			details.push('Speculative decoding enabled');
-		}
+    if (stateToUse.speculative) {
+      details.push('Speculative decoding enabled');
+    }
 
-		return details;
-	}
+    return details;
+  }
 
-	function shouldShowDetails(): boolean {
-		return processingState !== null && processingState.status !== 'idle';
-	}
+  function shouldShowDetails(): boolean {
+    return processingState !== null && processingState.status !== 'idle';
+  }
 
-	return {
-		get processingState() {
-			return processingState;
-		},
-		getProcessingDetails,
-		getProcessingMessage,
-		shouldShowDetails,
-		startMonitoring,
-		stopMonitoring
-	};
+  return {
+    get processingState() {
+      return processingState;
+    },
+    getProcessingDetails,
+    getProcessingMessage,
+    shouldShowDetails,
+    startMonitoring,
+    stopMonitoring,
+  };
 }

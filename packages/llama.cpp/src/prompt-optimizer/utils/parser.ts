@@ -7,24 +7,71 @@ import { ParsedInput } from '../types/interfaces';
 
 export class PromptParser {
   private static readonly ACTION_VERBS = [
-    'create', 'build', 'design', 'develop', 'implement', 'write', 'generate',
-    'analyze', 'evaluate', 'assess', 'review', 'optimize', 'improve',
-    'explain', 'describe', 'summarize', 'outline', 'detail',
-    'solve', 'fix', 'debug', 'refactor', 'enhance',
-    'research', 'investigate', 'explore', 'discover',
-    'plan', 'organize', 'structure', 'arrange'
+    'create',
+    'build',
+    'design',
+    'develop',
+    'implement',
+    'write',
+    'generate',
+    'analyze',
+    'evaluate',
+    'assess',
+    'review',
+    'optimize',
+    'improve',
+    'explain',
+    'describe',
+    'summarize',
+    'outline',
+    'detail',
+    'solve',
+    'fix',
+    'debug',
+    'refactor',
+    'enhance',
+    'research',
+    'investigate',
+    'explore',
+    'discover',
+    'plan',
+    'organize',
+    'structure',
+    'arrange',
   ];
 
   private static readonly CONSTRAINT_INDICATORS = [
-    'must', 'should', 'need', 'require', 'only', 'exactly',
-    'within', 'limit', 'maximum', 'minimum', 'no more than',
-    'at least', 'between', 'range', 'constraint'
+    'must',
+    'should',
+    'need',
+    'require',
+    'only',
+    'exactly',
+    'within',
+    'limit',
+    'maximum',
+    'minimum',
+    'no more than',
+    'at least',
+    'between',
+    'range',
+    'constraint',
   ];
 
   private static readonly QUALITY_INDICATORS = [
-    'professional', 'high-quality', 'detailed', 'comprehensive',
-    'thorough', 'precise', 'accurate', 'clear', 'concise',
-    'elegant', 'efficient', 'robust', 'scalable'
+    'professional',
+    'high-quality',
+    'detailed',
+    'comprehensive',
+    'thorough',
+    'precise',
+    'accurate',
+    'clear',
+    'concise',
+    'elegant',
+    'efficient',
+    'robust',
+    'scalable',
   ];
 
   /**
@@ -42,7 +89,7 @@ export class PromptParser {
       tokens,
       sentences,
       keywords,
-      entities
+      entities,
     };
   }
 
@@ -63,7 +110,7 @@ export class PromptParser {
     return text
       .toLowerCase()
       .split(/[\s,;.!?()[\]{}]+/)
-      .filter(token => token.length > 0);
+      .filter((token) => token.length > 0);
   }
 
   /**
@@ -72,8 +119,8 @@ export class PromptParser {
   private static extractSentences(text: string): string[] {
     return text
       .split(/[.!?]+/)
-      .map(s => s.trim())
-      .filter(s => s.length > 0);
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
   }
 
   /**
@@ -82,14 +129,14 @@ export class PromptParser {
   private static extractKeywords(tokens: string[]): string[] {
     const keywords = new Set<string>();
 
-    tokens.forEach(token => {
+    tokens.forEach((token) => {
       if (this.ACTION_VERBS.includes(token)) {
         keywords.add(token);
       }
-      if (this.CONSTRAINT_INDICATORS.some(ind => token.includes(ind))) {
+      if (this.CONSTRAINT_INDICATORS.some((ind) => token.includes(ind))) {
         keywords.add(token);
       }
-      if (this.QUALITY_INDICATORS.some(ind => token.includes(ind))) {
+      if (this.QUALITY_INDICATORS.some((ind) => token.includes(ind))) {
         keywords.add(token);
       }
     });
@@ -112,13 +159,13 @@ export class PromptParser {
     // Extract quoted strings
     const quotedMatches = text.match(/"([^"]+)"|'([^']+)'/g);
     if (quotedMatches) {
-      entities.push(...quotedMatches.map(m => m.replace(/["']/g, '')));
+      entities.push(...quotedMatches.map((m) => m.replace(/["']/g, '')));
     }
 
     // Extract code-like patterns
     const codeMatches = text.match(/`([^`]+)`/g);
     if (codeMatches) {
-      entities.push(...codeMatches.map(m => m.replace(/`/g, '')));
+      entities.push(...codeMatches.map((m) => m.replace(/`/g, '')));
     }
 
     return [...new Set(entities)];
@@ -129,7 +176,7 @@ export class PromptParser {
    */
   static extractActionVerbs(text: string): string[] {
     const tokens = this.tokenize(text);
-    return tokens.filter(token => this.ACTION_VERBS.includes(token));
+    return tokens.filter((token) => this.ACTION_VERBS.includes(token));
   }
 
   /**
@@ -139,9 +186,9 @@ export class PromptParser {
     const constraints: string[] = [];
     const sentences = this.extractSentences(text);
 
-    sentences.forEach(sentence => {
+    sentences.forEach((sentence) => {
       const lowerSentence = sentence.toLowerCase();
-      if (this.CONSTRAINT_INDICATORS.some(ind => lowerSentence.includes(ind))) {
+      if (this.CONSTRAINT_INDICATORS.some((ind) => lowerSentence.includes(ind))) {
         constraints.push(sentence);
       }
     });
@@ -154,13 +201,13 @@ export class PromptParser {
    */
   static detectOutputFormat(text: string): string | undefined {
     const formats = {
-      'json': /\bjson\b/i,
-      'markdown': /\bmarkdown\b|\bmd\b/i,
-      'code': /\bcode\b|\bfunction\b|\bclass\b/i,
-      'list': /\blist\b|\bbullet\b|\bitems\b/i,
-      'table': /\btable\b|\bgrid\b/i,
-      'diagram': /\bdiagram\b|\bvisualization\b/i,
-      'step-by-step': /\bstep[- ]by[- ]step\b|\bsteps\b/i
+      json: /\bjson\b/i,
+      markdown: /\bmarkdown\b|\bmd\b/i,
+      code: /\bcode\b|\bfunction\b|\bclass\b/i,
+      list: /\blist\b|\bbullet\b|\bitems\b/i,
+      table: /\btable\b|\bgrid\b/i,
+      diagram: /\bdiagram\b|\bvisualization\b/i,
+      'step-by-step': /\bstep[- ]by[- ]step\b|\bsteps\b/i,
     };
 
     for (const [format, pattern] of Object.entries(formats)) {
@@ -177,11 +224,11 @@ export class PromptParser {
    */
   static detectTone(text: string): string | undefined {
     const tones = {
-      'formal': /\bformal\b|\bprofessional\b|\bacademic\b/i,
-      'casual': /\bcasual\b|\bconversational\b|\bfriendly\b/i,
-      'technical': /\btechnical\b|\bdetailed\b|\bprecise\b/i,
-      'creative': /\bcreative\b|\bimaginative\b|\binnovative\b/i,
-      'persuasive': /\bpersuasive\b|\bconvincing\b|\bcompelling\b/i
+      formal: /\bformal\b|\bprofessional\b|\bacademic\b/i,
+      casual: /\bcasual\b|\bconversational\b|\bfriendly\b/i,
+      technical: /\btechnical\b|\bdetailed\b|\bprecise\b/i,
+      creative: /\bcreative\b|\bimaginative\b|\binnovative\b/i,
+      persuasive: /\bpersuasive\b|\bconvincing\b|\bcompelling\b/i,
     };
 
     for (const [tone, pattern] of Object.entries(tones)) {
@@ -198,11 +245,11 @@ export class PromptParser {
    */
   static detectAudience(text: string): string | undefined {
     const audiences = {
-      'beginner': /\bbeginner\b|\bnovice\b|\bstarter\b/i,
-      'intermediate': /\bintermediate\b/i,
-      'expert': /\bexpert\b|\badvanced\b|\bprofessional\b/i,
-      'general': /\bgeneral\b|\beveryone\b|\banyone\b/i,
-      'technical': /\bdeveloper\b|\bengineer\b|\btechnical\b/i
+      beginner: /\bbeginner\b|\bnovice\b|\bstarter\b/i,
+      intermediate: /\bintermediate\b/i,
+      expert: /\bexpert\b|\badvanced\b|\bprofessional\b/i,
+      general: /\bgeneral\b|\beveryone\b|\banyone\b/i,
+      technical: /\bdeveloper\b|\bengineer\b|\btechnical\b/i,
     };
 
     for (const [audience, pattern] of Object.entries(audiences)) {
@@ -219,10 +266,10 @@ export class PromptParser {
    */
   static detectLength(text: string): string | undefined {
     const lengthPatterns = {
-      'brief': /\bbrief\b|\bshort\b|\bconcise\b|\bsummary\b/i,
-      'medium': /\bmedium\b|\bmoderate\b/i,
-      'detailed': /\bdetailed\b|\bcomprehensive\b|\bthorough\b|\bin-depth\b/i,
-      'extensive': /\bextensive\b|\bexhaustive\b|\bcomplete\b/i
+      brief: /\bbrief\b|\bshort\b|\bconcise\b|\bsummary\b/i,
+      medium: /\bmedium\b|\bmoderate\b/i,
+      detailed: /\bdetailed\b|\bcomprehensive\b|\bthorough\b|\bin-depth\b/i,
+      extensive: /\bextensive\b|\bexhaustive\b|\bcomplete\b/i,
     };
 
     // Check for specific word/character counts
@@ -261,13 +308,13 @@ export class PromptParser {
       /\bseveral\b/gi,
       /\bvarious\b/gi,
       /\betc\.?\b/gi,
-      /\band so on\b/gi
+      /\band so on\b/gi,
     ];
 
-    ambiguousPatterns.forEach(pattern => {
+    ambiguousPatterns.forEach((pattern) => {
       const matches = text.match(pattern);
       if (matches) {
-        ambiguous.push(...matches.map(m => m.toLowerCase()));
+        ambiguous.push(...matches.map((m) => m.toLowerCase()));
       }
     });
 
@@ -289,7 +336,7 @@ export class PromptParser {
     const vocabularyDiversity = uniqueWords.size / words.length;
 
     // Technical term density
-    const technicalTerms = words.filter(w => w.length > 8).length;
+    const technicalTerms = words.filter((w) => w.length > 8).length;
     const technicalDensity = technicalTerms / words.length;
 
     // Complexity factors

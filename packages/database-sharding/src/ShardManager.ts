@@ -39,25 +39,25 @@ export class ShardManager extends EventEmitter {
     this.router = new ShardRouter({
       strategy: this.strategy,
       config: this.config,
-      logger: this.logger
+      logger: this.logger,
     });
 
     if (options.metricsEnabled !== false) {
       this.metricsCollector = new ShardingMetricsCollector({
         shards: this.config.shards,
-        logger: this.logger
+        logger: this.logger,
       });
     }
 
     this.healthMonitor = new ShardHealthMonitor({
       shards: this.config.shards,
       interval: options.healthCheckInterval || this.config.healthCheck.interval,
-      logger: this.logger
+      logger: this.logger,
     });
 
     this.migrationManager = new ShardMigrationManager({
       config: this.config,
-      logger: this.logger
+      logger: this.logger,
     });
 
     this.setupEventHandlers();
@@ -75,16 +75,16 @@ export class ShardManager extends EventEmitter {
       ),
       transports: [
         new winston.transports.Console({
-          format: winston.format.simple()
-        })
-      ]
+          format: winston.format.simple(),
+        }),
+      ],
     });
   }
 
   private initializeStrategy(): void {
     const strategyOptions = {
       shards: this.config.shards,
-      logger: this.logger
+      logger: this.logger,
     };
 
     switch (this.config.strategy) {
@@ -142,7 +142,7 @@ export class ShardManager extends EventEmitter {
       this.logger.info('Initializing ShardManager', {
         strategy: this.config.strategy,
         shardCount: this.config.shards.length,
-        databaseType: this.config.databaseType
+        databaseType: this.config.databaseType,
       });
 
       // Initialize router
@@ -162,7 +162,6 @@ export class ShardManager extends EventEmitter {
       this.isInitialized = true;
       this.logger.info('ShardManager initialized successfully');
       this.emit('initialized');
-
     } catch (error) {
       this.logger.error('Failed to initialize ShardManager', { error });
       throw error;
@@ -201,7 +200,6 @@ export class ShardManager extends EventEmitter {
       this.isInitialized = false;
       this.logger.info('ShardManager shutdown complete');
       this.emit('shutdown');
-
     } catch (error) {
       this.logger.error('Error during ShardManager shutdown', { error });
       throw error;
@@ -217,8 +215,7 @@ export class ShardManager extends EventEmitter {
     this.logger.info('Adding new shard', { shardId: config.id });
 
     // Validate shard configuration
-    ShardConfigBuilder
-      .withId(config.id)
+    ShardConfigBuilder.withId(config.id)
       .withWeight(config.weight)
       .withTags(config.tags)
       .withMetadata(config.metadata)
@@ -253,7 +250,7 @@ export class ShardManager extends EventEmitter {
     this.logger.info('Removing shard', { shardId });
 
     // Check if shard exists
-    const shardIndex = this.config.shards.findIndex(s => s.id === shardId);
+    const shardIndex = this.config.shards.findIndex((s) => s.id === shardId);
     if (shardIndex === -1) {
       throw new Error(`Shard ${shardId} not found`);
     }
@@ -307,7 +304,6 @@ export class ShardManager extends EventEmitter {
 
       this.logger.info('Shard rebalancing completed');
       this.emit('rebalanced');
-
     } catch (error) {
       this.logger.error('Shard rebalancing failed', { error });
       throw error;
@@ -319,7 +315,7 @@ export class ShardManager extends EventEmitter {
 
     try {
       // Mark shard as inactive
-      const shard = this.config.shards.find(s => s.id === shardId);
+      const shard = this.config.shards.find((s) => s.id === shardId);
       if (shard) {
         shard.status = 'inactive';
       }
@@ -331,7 +327,6 @@ export class ShardManager extends EventEmitter {
 
       // Emit failure event for external handling
       this.emit('shard-failure-handled', { shardId });
-
     } catch (error) {
       this.logger.error('Failed to handle shard failure', { shardId, error });
       throw error;
@@ -353,10 +348,7 @@ export class ShardManager extends EventEmitter {
     return this.router.getShardForKey(key);
   }
 
-  async executeOnShard<T>(
-    shardId: string,
-    operation: (connection: any) => Promise<T>
-  ): Promise<T> {
+  async executeOnShard<T>(shardId: string, operation: (connection: any) => Promise<T>): Promise<T> {
     if (!this.isInitialized) {
       throw new Error('ShardManager not initialized');
     }
@@ -364,10 +356,7 @@ export class ShardManager extends EventEmitter {
     return this.router.executeOnShard(shardId, operation);
   }
 
-  async executeQuery<T>(
-    key: any,
-    operation: (connection: any) => Promise<T>
-  ): Promise<T> {
+  async executeQuery<T>(key: any, operation: (connection: any) => Promise<T>): Promise<T> {
     if (!this.isInitialized) {
       throw new Error('ShardManager not initialized');
     }
@@ -383,7 +372,7 @@ export class ShardManager extends EventEmitter {
       strategy: this.config.strategy,
       isInitialized: this.isInitialized,
       healthStatus: this.healthMonitor.getHealthStatus(),
-      ...(this.metricsCollector ? this.metricsCollector.getAggregatedMetrics() : {})
+      ...(this.metricsCollector ? this.metricsCollector.getAggregatedMetrics() : {}),
     };
   }
 
@@ -404,7 +393,11 @@ export class ShardManager extends EventEmitter {
   }
 
   // Migration management
-  async createMigration(sourceShard: string, targetShard: string, tableName: string): Promise<string> {
+  async createMigration(
+    sourceShard: string,
+    targetShard: string,
+    tableName: string
+  ): Promise<string> {
     return this.migrationManager.createMigration(sourceShard, targetShard, tableName);
   }
 

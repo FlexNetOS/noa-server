@@ -1,0 +1,12 @@
+import { diag, DiagConsoleLogger, DiagLogLevel } from "@opentelemetry/api";
+import { NodeTracerProvider, BatchSpanProcessor } from "@opentelemetry/sdk-trace-node";
+import { Resource } from "@opentelemetry/resources";
+import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-grpc";
+import { SEMRESATTRS_SERVICE_NAME } from "@opentelemetry/semantic-conventions";
+const service = process.env.OTEL_SERVICE_NAME || "model-gateway";
+const resource = new Resource({ [SEMRESATTRS_SERVICE_NAME]: service });
+const provider = new NodeTracerProvider({ resource });
+const exporter = new OTLPTraceExporter({ url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "http://localhost:4317" });
+provider.addSpanProcessor(new BatchSpanProcessor(exporter));
+provider.register();
+diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.ERROR);

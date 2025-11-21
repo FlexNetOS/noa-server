@@ -13,17 +13,23 @@ export const EmailJobDataSchema = z.object({
   cc: z.union([z.string(), z.array(z.string())]).optional(),
   bcc: z.union([z.string(), z.array(z.string())]).optional(),
   replyTo: z.string().optional(),
-  attachments: z.array(z.object({
-    filename: z.string(),
-    content: z.union([z.string(), z.instanceof(Buffer)]),
-    contentType: z.string().optional(),
-    encoding: z.string().optional()
-  })).optional(),
+  attachments: z
+    .array(
+      z.object({
+        filename: z.string(),
+        content: z.union([z.string(), z.instanceof(Buffer)]),
+        contentType: z.string().optional(),
+        encoding: z.string().optional(),
+      })
+    )
+    .optional(),
   priority: z.enum(['high', 'normal', 'low']).optional(),
-  template: z.object({
-    name: z.string(),
-    data: z.record(z.any())
-  }).optional()
+  template: z
+    .object({
+      name: z.string(),
+      data: z.record(z.any()),
+    })
+    .optional(),
 });
 
 export type EmailJobData = z.infer<typeof EmailJobDataSchema>;
@@ -67,7 +73,7 @@ export class EmailJob {
       // Additional options for better reliability
       pool: true,
       maxConnections: 5,
-      maxMessages: 100
+      maxMessages: 100,
     });
   }
 
@@ -81,7 +87,7 @@ export class EmailJob {
       this.logger.info('Sending email', {
         jobId: job.id,
         to: emailData.to,
-        subject: emailData.subject
+        subject: emailData.subject,
       });
 
       // Prepare email options
@@ -93,7 +99,7 @@ export class EmailJob {
       this.logger.info('Email sent successfully', {
         jobId: job.id,
         messageId: result.messageId,
-        response: result.response
+        response: result.response,
       });
 
       return {
@@ -101,15 +107,14 @@ export class EmailJob {
         accepted: result.accepted,
         rejected: result.rejected,
         pending: result.pending,
-        response: result.response
+        response: result.response,
       };
-
     } catch (error) {
       this.logger.error('Failed to send email', {
         jobId: job.id,
         error: (error as Error).message,
         to: emailData.to,
-        subject: emailData.subject
+        subject: emailData.subject,
       });
 
       throw new Error(`Email sending failed: ${(error as Error).message}`);
@@ -145,7 +150,7 @@ export class EmailJob {
       bcc: emailData.bcc,
       replyTo: emailData.replyTo,
       attachments: emailData.attachments,
-      priority: emailData.priority as 'high' | 'normal' | 'low' | undefined
+      priority: emailData.priority as 'high' | 'normal' | 'low' | undefined,
     };
 
     return mailOptions;
@@ -162,7 +167,7 @@ export class EmailJob {
       return true;
     } catch (error) {
       this.logger.error('Email configuration validation failed', {
-        error: (error as Error).message
+        error: (error as Error).message,
       });
       return false;
     }
@@ -177,12 +182,12 @@ export class EmailJob {
       const stats = (this.transporter as any).getStats?.();
       return {
         isIdle: this.transporter.isIdle(),
-        stats: stats || null
+        stats: stats || null,
       };
     } catch (error) {
       return {
         isIdle: this.transporter.isIdle(),
-        error: (error as Error).message
+        error: (error as Error).message,
       };
     }
   }
@@ -206,41 +211,51 @@ export class EmailJob {
   /**
    * Helper method to create a simple text email job
    */
-  static createTextEmail(to: string | string[], subject: string, text: string, options?: {
-    from?: string;
-    cc?: string | string[];
-    bcc?: string | string[];
-    priority?: 'high' | 'normal' | 'low';
-  }): EmailJobData {
+  static createTextEmail(
+    to: string | string[],
+    subject: string,
+    text: string,
+    options?: {
+      from?: string;
+      cc?: string | string[];
+      bcc?: string | string[];
+      priority?: 'high' | 'normal' | 'low';
+    }
+  ): EmailJobData {
     return EmailJobDataSchema.parse({
       to,
       subject,
       text,
-      ...options
+      ...options,
     });
   }
 
   /**
    * Helper method to create an HTML email job
    */
-  static createHtmlEmail(to: string | string[], subject: string, html: string, options?: {
-    text?: string;
-    from?: string;
-    cc?: string | string[];
-    bcc?: string | string[];
-    priority?: 'high' | 'normal' | 'low';
-    attachments?: Array<{
-      filename: string;
-      content: string | Buffer;
-      contentType?: string;
-      encoding?: string;
-    }>;
-  }): EmailJobData {
+  static createHtmlEmail(
+    to: string | string[],
+    subject: string,
+    html: string,
+    options?: {
+      text?: string;
+      from?: string;
+      cc?: string | string[];
+      bcc?: string | string[];
+      priority?: 'high' | 'normal' | 'low';
+      attachments?: Array<{
+        filename: string;
+        content: string | Buffer;
+        contentType?: string;
+        encoding?: string;
+      }>;
+    }
+  ): EmailJobData {
     return EmailJobDataSchema.parse({
       to,
       subject,
       html,
-      ...options
+      ...options,
     });
   }
 
@@ -269,9 +284,9 @@ export class EmailJob {
       subject: '', // Will be set by template
       template: {
         name: templateName,
-        data: templateData
+        data: templateData,
       },
-      ...options
+      ...options,
     });
   }
 }

@@ -1,0 +1,48 @@
+name: Claude Squad - Lint
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.go'
+      - 'go.mod'
+      - 'go.sum'
+      - '.github/workflows/lint.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - '**.go'
+      - 'go.mod'
+      - 'go.sum'
+      - '.github/workflows/lint.yml'
+
+jobs:
+  golangci:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Set up Go
+        uses: actions/setup-go@0c52d547c9bc32b0c8faf7aabfb35c35306304d30
+        with:
+          go-version: '1.23'
+          cache: false
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@5a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z
+        with:
+          version: v1.60.1
+          args: --timeout=3m --out-format=line-number --fast --max-issues-per-linter=0 --max-same-issues=0
+          skip-cache: false
+          only-new-issues: true
+
+      - name: Check formatting
+        run: |
+          if [ -n "$(gofmt -l .)" ]; then
+            echo "The following files are not formatted correctly:"
+            gofmt -l .
+            echo "Fix these issues"
+            gofmt -d .
+            exit 1
+          fi

@@ -1,6 +1,10 @@
 # @noa/cache-manager
 
-Multi-tier caching system with Redis, memory, and CDN support featuring advanced caching strategies.
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
+Multi-tier caching system with Redis, memory, and CDN support featuring advanced
+caching strategies.
 
 ## Features
 
@@ -208,11 +212,13 @@ async function getPopularProduct(id: string) {
   } else {
     // Refresh cache proactively before expiration
     const cachedEntry = cacheManager.getCacheEntry(cacheKey);
-    const timeToExpire = cachedEntry.ttl * 1000 - (Date.now() - cachedEntry.timestamp);
+    const timeToExpire =
+      cachedEntry.ttl * 1000 - (Date.now() - cachedEntry.timestamp);
 
-    if (timeToExpire < 300000) { // 5 minutes
+    if (timeToExpire < 300000) {
+      // 5 minutes
       // Refresh in background
-      database.products.findById(id).then(fresh => {
+      database.products.findById(id).then((fresh) => {
         cacheManager.set(cacheKey, fresh, { ttl: 3600 });
       });
     }
@@ -287,7 +293,7 @@ await warmCache();
 
 ```typescript
 async function getUsersByIds(ids: string[]) {
-  const cacheKeys = ids.map(id => `user:${id}`);
+  const cacheKeys = ids.map((id) => `user:${id}`);
   const users = [];
   const missingIds = [];
 
@@ -414,3 +420,5 @@ cacheManager.on('circuit-closed', ({ service }) => {
 ## License
 
 MIT
+
+> Last updated: 2025-11-20
