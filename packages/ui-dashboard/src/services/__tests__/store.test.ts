@@ -11,12 +11,48 @@ import { useDashboardStore } from '../store';
 
 describe('DashboardStore', () => {
   beforeEach(() => {
-    // Reset store to initial state
-    const { result } = renderHook(() => useDashboardStore());
+    // Reset store to a clean initial state before each test
     act(() => {
-      result.current.setAutoRefresh(true);
-      result.current.setRefreshInterval(5000);
+      const initial = useDashboardStore.getState();
+      useDashboardStore.setState({
+        ...initial,
+        swarmMetrics: {
+          totalAgents: 0,
+          activeAgents: 0,
+          totalTasks: 0,
+          completedTasks: 0,
+          failedTasks: 0,
+          avgResponseTime: 0,
+          throughput: 0,
+          uptime: 0,
+        },
+        systemHealth: {
+          status: 'unhealthy',
+          cpu: 0,
+          memory: 0,
+          disk: 0,
+          network: { latency: 0, throughput: 0 },
+          services: { mcp: false, neural: false, swarm: false, hooks: false },
+        },
+        neuralMetrics: {
+          modelsLoaded: 0,
+          totalInferences: 0,
+          avgInferenceTime: 0,
+          accuracy: 0,
+        },
+        agents: [],
+        taskQueue: [],
+        queues: [],
+        mcpTools: [],
+        recentHooks: [],
+        isLoading: true,
+        error: null,
+        lastUpdate: null,
+        autoRefresh: true,
+        refreshInterval: 5000,
+      });
     });
+
     jest.clearAllMocks();
   });
 

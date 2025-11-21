@@ -1,5 +1,8 @@
 # @noa/ai-provider
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 A unified AI provider package that provides a consistent interface for different
 AI providers including OpenAI, Claude, and llama.cpp. This package abstracts
 provider-specific APIs and offers consistent methods for inference, model
@@ -486,3 +489,5 @@ const response = await provider.createChatCompletion({
 ## License
 
 MIT
+
+> Last updated: 2025-11-20

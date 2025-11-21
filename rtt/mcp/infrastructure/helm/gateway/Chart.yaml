@@ -1,0 +1,13 @@
+apiVersion: v2
+name: gateway
+description: MCP Model Gateway - API gateway for model routing and load balancing
+version: 0.1.0
+appVersion: "0.1.0"
+type: application
+keywords:
+  - mcp
+  - gateway
+  - api-gateway
+  - model-routing
+maintainers:
+  - name: MCP Platform Team

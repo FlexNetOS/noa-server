@@ -1,5 +1,8 @@
 # @noa/cdn-manager
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 Multi-CDN management and asset optimization system supporting CloudFront,
 Cloudflare, Fastly, and Akamai.
 
@@ -541,3 +544,5 @@ cdnManager.on('deployment-completed', (stats) => {
 ## License
 
 MIT
+
+> Last updated: 2025-11-20

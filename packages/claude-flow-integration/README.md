@@ -1,5 +1,8 @@
 # Claude Flow Integration
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 Complete integration layer for Claude Flow orchestration system, replacing
 Maestro stubs with production-ready functionality.
 
@@ -407,3 +410,5 @@ Contributions welcome! Please see [CONTRIBUTING.md](./CONTRIBUTING.md).
 ## License
 
 MIT
+
+> Last updated: 2025-11-20

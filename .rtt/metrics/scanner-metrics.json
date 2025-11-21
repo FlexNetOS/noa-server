@@ -1,0 +1,13 @@
+{
+  "timestamp": 1761612726.07311,
+  "uptime_seconds": 0.001749277114868164,
+  "counters": {
+    "symbols_found": 7
+  },
+  "timings": {},
+  "gauges": {
+    "total_symbols": 7,
+    "total_errors": 0
+  },
+  "metadata": {}
+}

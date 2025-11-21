@@ -1,5 +1,8 @@
 # Secrets Manager
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 Production-grade secrets management with multi-provider support and automatic
 rotation.
 
@@ -305,3 +308,5 @@ await testManager.set('test-key', 'test-value');
 ## License
 
 MIT
+
+> Last updated: 2025-11-20

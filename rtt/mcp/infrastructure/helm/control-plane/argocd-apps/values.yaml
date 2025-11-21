@@ -1,0 +1,17 @@
+repoURL: https://github.com/yourorg/your-repo.git
+targetRevision: main
+rootPath: deploy
+namespace: argocd
+apps:
+  - name: spire
+    path: charts/spire
+    namespace: spire
+  - name: vault-baseline
+    path: charts/vault-baseline
+    namespace: vault
+  - name: nexus
+    path: charts/nexus
+    namespace: devsecops
+  - name: cas-vfs
+    path: charts/cas-vfs
+    namespace: rtt

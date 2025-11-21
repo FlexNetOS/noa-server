@@ -1,5 +1,8 @@
 # NOA Server
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 NOA (Neural Operating Architecture) Server - A comprehensive server platform for AI-powered operations.
 
 ## 📚 Documentation
@@ -308,3 +311,5 @@ For issues and questions:
 ---
 
 **Last Updated**: 2025-10-23
+
+> Last updated: 2025-11-20

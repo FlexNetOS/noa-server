@@ -1,0 +1,36 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8sallowedproviders
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sAllowedProviders
+      validation:
+        openAPIV3Schema:
+          properties:
+            allowed:
+              type: array
+              items: { type: string }
+  targets:
+  - target: admission.k8s.gatekeeper.sh
+    rego: |
+      package k8sallowedproviders
+      violation[{"msg": msg}] {
+        input.review.kind.kind == "Deployment"
+        ann := input.review.object.metadata.annotations
+        providers := split(ann["rtt.plan/providers"], ",")
+        not subset(providers, input.parameters.allowed)
+        disallowed := {p | p := providers[_]; not p == ""; not allowed(p, input.parameters.allowed)}
+        msg := sprintf("disallowed providers: %v", [disallowed])
+      }
+      allowed(p, allowed_list) { p == allowed_list[_] }
+      subset(set, universe) {
+        not exists_not_in(set, universe)
+      }
+      exists_not_in(set, universe) {
+        p := set[_]
+        p != ""
+        not allowed(p, universe)
+      }

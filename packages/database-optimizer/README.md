@@ -1,5 +1,8 @@
 # @noa/database-optimizer
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 Comprehensive database optimization and query analysis system for PostgreSQL,
 MongoDB, and MySQL.
 
@@ -374,3 +377,5 @@ MIT
 
 - GitHub Issues: https://github.com/noa-server/database-optimizer/issues
 - Documentation: https://docs.noa-server.com/database-optimizer
+
+> Last updated: 2025-11-20

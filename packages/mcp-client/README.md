@@ -1,5 +1,8 @@
 # @noa-server/mcp-client
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 TypeScript SDK for Model Context Protocol (MCP) - A comprehensive client library
 for connecting to and interacting with MCP servers.
 
@@ -476,3 +479,5 @@ For issues and questions:
 
 - GitHub Issues: https://github.com/noa-server/noa-server/issues
 - Documentation: https://docs.noa-server.io/mcp-client
+
+> Last updated: 2025-11-20

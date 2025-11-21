@@ -1,5 +1,8 @@
 # Contains Studio Dashboard
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 Real-time monitoring and control dashboard for Contains Studio Agents platform.
 
 ## Features
@@ -287,3 +290,5 @@ MIT License - see LICENSE file for details
 ---
 
 **Version**: 1.0.0 **Last Updated**: October 22, 2025 **Status**: ✅ Operational
+
+> Last updated: 2025-11-20

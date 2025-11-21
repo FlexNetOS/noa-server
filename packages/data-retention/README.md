@@ -1,5 +1,8 @@
 # Data Retention Package
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 Automated data retention and lifecycle management for Noa Server.
 
 ## Features
@@ -257,3 +260,5 @@ for comprehensive documentation.
 ## License
 
 MIT
+
+> Last updated: 2025-11-20

@@ -1,5 +1,8 @@
 # AI Inference API - Secure REST API
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 Production-ready REST API for AI model inference with comprehensive security
 features.
 
@@ -354,3 +357,5 @@ MIT
 For security issues, please email: security@noa-server.com
 
 Do not disclose security vulnerabilities publicly.
+
+> Last updated: 2025-11-20

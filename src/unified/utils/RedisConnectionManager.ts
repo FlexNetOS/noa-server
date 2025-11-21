@@ -14,10 +14,10 @@
  */
 
 import { EventEmitter } from 'events';
-import Redis, { RedisOptions, Redis as RedisClient } from 'ioredis';
+import Redis, { Redis as RedisClient, RedisOptions } from 'ioredis';
 import { z } from 'zod';
-import { LoggerFactory } from './LoggerFactory';
 import { CircuitBreaker } from '../services/CircuitBreaker';
+import { LoggerFactory } from './LoggerFactory';
 
 /**
  * Redis connection configuration schema

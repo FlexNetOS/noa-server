@@ -1,5 +1,8 @@
 # Agent Swarm
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 Multi-agent swarm coordination with consensus algorithms, inter-agent
 communication, and distributed task execution.
 
@@ -442,3 +445,5 @@ Contributions welcome! Please see [CONTRIBUTING.md](./CONTRIBUTING.md).
 ## License
 
 MIT
+
+> Last updated: 2025-11-20

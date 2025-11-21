@@ -1,5 +1,8 @@
 # Workflow Orchestration
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 Comprehensive orchestration engine for Claude Flow workflows with advanced state
 management, execution control, and workflow patterns.
 
@@ -427,3 +430,5 @@ Contributions welcome! Please see [CONTRIBUTING.md](./CONTRIBUTING.md).
 ## License
 
 MIT
+
+> Last updated: 2025-11-20

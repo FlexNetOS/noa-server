@@ -1,0 +1,14 @@
+{
+  "agents": {
+    "summarize@1.0.0": "sha256:b77a696d43c1617753d34ec62d9f6144115a5d6fb7f52b3d2bb7d0f014b54fd1",
+    "search@1.0.0": "sha256:bfe263bd4389c356e26ec0c90c6aa721f9f8ea1e3cea441fc7050f9a90928de0",
+    "code_fix@1.0.0": "sha256:e1621019ff2a416c24376158f3fba50020305df16277ed26dcc9353b568ad9d1"
+  },
+  "signers": [
+    "ed25519:dev-ed25519"
+  ],
+  "mcp_tools": {
+    "claude/summarize@1.0.0": "sha256:9404eea1d622927163e6b856f9239fe5e018752d778e8ef5414fd50d91c3b53c",
+    "claude/search@1.0.0": "sha256:93c94f77e8fe8da17a809f73e1c1788a480d2e8332c4c484bac9039d2b60b35e"
+  }
+}

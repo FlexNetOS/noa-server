@@ -1,5 +1,8 @@
 # llama.cpp Neural Processing Layer
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 This package implements the neural processing layer for the Claude Suite using
 llama.cpp, providing GGUF model support, CUDA acceleration (when available), and
 unified APIs for model loading and inference.
@@ -563,3 +566,5 @@ tail -f ~/.cache/claude-cli-nodejs/*/mcp-logs-*/
 
 This implementation uses llama.cpp (MIT License) and follows the Claude Suite
 licensing terms.
+
+> Last updated: 2025-11-20

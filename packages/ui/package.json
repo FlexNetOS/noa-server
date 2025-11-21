@@ -13,9 +13,7 @@
     },
     "./styles": "./dist/style.css"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -35,6 +33,7 @@
     "test:e2e:ui": "playwright test --ui",
     "test:all": "pnpm run test:unit && pnpm run test:integration && pnpm run test:e2e",
     "test:coverage": "vitest run --coverage",
+    "test:gate": "VITEST_DISABLE_THRESHOLDS=1 vitest run --coverage tests/gated",
     "cleanup:unused": "tsx scripts/cleanup-unused.ts",
     "cleanup:unused:live": "tsx scripts/cleanup-unused.ts --live",
     "cleanup:unused:quiet": "tsx scripts/cleanup-unused.ts --quiet"
@@ -84,6 +83,7 @@
     "@tailwindcss/forms": "^0.5.9",
     "@tailwindcss/typography": "^0.5.15",
     "@testing-library/react": "^16.1.0",
+    "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/user-event": "^14.5.2",
     "@types/d3": "^7.4.3",
     "@types/papaparse": "^5.3.15",

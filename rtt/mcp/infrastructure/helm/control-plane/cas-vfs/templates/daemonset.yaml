@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata: { name: cas-vfsd }
+spec:
+  selector: { matchLabels: { app: cas-vfsd } }
+  template:
+    metadata: { labels: { app: cas-vfsd } }
+    spec:
+      hostPID: true
+      containers:
+      - name: vfs
+        image: {{ .Values.image }}
+        securityContext:
+          privileged: true
+          capabilities: { add: ["SYS_ADMIN"] }
+        env:
+        - { name: CAS_BACKEND, value: "{{ .Values.cas.backend }}" }
+        - { name: CAS_S3_ENDPOINT, value: "{{ .Values.cas.s3.endpoint }}" }
+        - { name: CAS_S3_BUCKET, value: "{{ .Values.cas.s3.bucket }}" }
+        - { name: CAS_S3_REGION, value: "{{ .Values.cas.s3.region }}" }
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom: { secretKeyRef: { name: {{ .Values.cas.s3.accessKeySecret }}, key: {{ .Values.cas.s3.accessKeyIdKey }} } }
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom: { secretKeyRef: { name: {{ .Values.cas.s3.accessKeySecret }}, key: {{ .Values.cas.s3.secretAccessKeyKey }} } }
+        volumeMounts:
+        - { name: fuse, mountPath: /dev/fuse }
+        - { name: mount, mountPath: {{ .Values.mountPath }} }
+      volumes:
+      - name: fuse
+        hostPath: { path: /dev/fuse }
+      - name: mount
+        hostPath: { path: {{ .Values.mountPath }}, type: DirectoryOrCreate }

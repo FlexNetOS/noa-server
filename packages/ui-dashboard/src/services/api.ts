@@ -2,8 +2,19 @@
 import type { AgentStatus, TaskQueueItem, TelemetryData, Queue, QueueJob } from '@/types';
 import { RequestContext, requestInterceptor } from './request-interceptor';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8081/api/v1';
-const WS_BASE = import.meta.env.VITE_WS_URL || 'ws://localhost:8081';
+// Note: We intentionally use process.env here instead of import.meta.env so that
+// Jest (Node) can run tests without needing Vite's import.meta shim.
+//
+// In the Vite build, these process.env references are replaced at bundle-time
+// via the `define` section in vite.config.ts, so no runtime process global is
+// required in the browser. In tests, Node's real process.env is used.
+//
+// Minimal typing to keep TypeScript happy without pulling in full Node types.
+declare const process: { env?: Record<string, string | undefined> };
+
+const API_BASE = (process.env?.VITE_API_URL as string | undefined) ||
+  'http://localhost:8081/api/v1';
+const WS_BASE = (process.env?.VITE_WS_URL as string | undefined) || 'ws://localhost:8081';
 
 interface WebSocketHandshake {
   sid?: string;

@@ -1,5 +1,8 @@
 # @noa/rate-limiter
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 Advanced distributed rate limiting with multiple algorithms and abuse detection.
 
 ## Features
@@ -480,3 +483,5 @@ console.log('Whitelisted keys:', stats.whitelistedKeys);
 ## License
 
 MIT
+
+> Last updated: 2025-11-20

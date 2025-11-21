@@ -1,5 +1,8 @@
 # @noa/ui - Noa UI Component Library
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 Comprehensive UI component library with TailwindCSS 4.0, design tokens, advanced components, **customizable dashboard widgets**, chart library, and **blazing-fast performance optimizations for 10k+ data points**.
 
 ## Features
@@ -576,3 +579,5 @@ MIT
 ---
 
 **Performance Optimized** | **Production Ready** | **10k+ Data Points** | **60fps Animations**
+
+> Last updated: 2025-11-20

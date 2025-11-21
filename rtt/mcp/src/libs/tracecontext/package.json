@@ -1,0 +1,20 @@
+{
+  "name": "@mcp/tracecontext",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@opentelemetry/api": "^1.8.0",
+    "@opentelemetry/sdk-trace-node": "^1.8.0",
+    "@opentelemetry/resources": "^1.8.0",
+    "@opentelemetry/exporter-trace-otlp-grpc": "^0.53.0",
+    "@opentelemetry/propagator-w3c": "^1.8.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}

@@ -1,5 +1,8 @@
 # Noa Server Monitoring Package
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 Comprehensive monitoring solution for Noa Server including health checks and
 error tracking with Sentry integration.
 
@@ -251,3 +254,5 @@ For issues and questions:
 - GitHub Issues: [noa-server/issues](https://github.com/noa-server/issues)
 - Documentation: [docs/](./docs/)
 - Examples: [examples/](./examples/)
+
+> Last updated: 2025-11-20

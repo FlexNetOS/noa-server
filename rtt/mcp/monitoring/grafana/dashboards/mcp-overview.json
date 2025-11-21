@@ -1,0 +1,59 @@
+{
+  "dashboard": {
+    "title": "MCP Platform Overview",
+    "tags": ["mcp", "overview"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "title": "Request Rate",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{service=\"mcp\"}[5m])",
+            "legendFormat": "{{method}} {{path}}"
+          }
+        ],
+        "type": "graph"
+      },
+      {
+        "title": "Response Time (p95)",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{service=\"mcp\"}[5m]))",
+            "legendFormat": "p95"
+          }
+        ],
+        "type": "graph"
+      },
+      {
+        "title": "Error Rate",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{service=\"mcp\",status=~\"5..\"}[5m])",
+            "legendFormat": "5xx errors"
+          }
+        ],
+        "type": "graph"
+      },
+      {
+        "title": "Token Usage by Model",
+        "targets": [
+          {
+            "expr": "sum by (model) (rate(llm_tokens_total[5m]))",
+            "legendFormat": "{{model}}"
+          }
+        ],
+        "type": "graph"
+      },
+      {
+        "title": "Cost by Tenant",
+        "targets": [
+          {
+            "expr": "sum by (tenant) (llm_cost_total)",
+            "legendFormat": "{{tenant}}"
+          }
+        ],
+        "type": "graph"
+      }
+    ]
+  }
+}

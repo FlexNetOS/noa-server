@@ -9,6 +9,13 @@ export default defineConfig({
       '@': resolve(__dirname, './src'),
     },
   },
+  // Bridge Vite's import.meta.env to process.env so shared code can use
+  // process.env.* (which works naturally in Jest/Node) while Vite replaces
+  // those references at build time for the browser bundle.
+  define: {
+    'process.env.VITE_API_URL': 'import.meta.env.VITE_API_URL',
+    'process.env.VITE_WS_URL': 'import.meta.env.VITE_WS_URL',
+  },
   server: {
     host: '0.0.0.0',
     port: 3000,
