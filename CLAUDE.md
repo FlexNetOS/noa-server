@@ -1,4 +1,4 @@
-# Claude Code Configuration - SPARC Development Environment
+# Shared Provider Access Configuration - SPARC Development Environment
 
 ## 🚨 CRITICAL: CONCURRENT EXECUTION & FILE MANAGEMENT
 
@@ -7,7 +7,7 @@
 1. ALL operations MUST be concurrent/parallel in a single message
 2. **NEVER save working files, text/mds and tests to the root folder**
 3. ALWAYS organize files in appropriate subdirectories
-4. **USE CLAUDE CODE'S TASK TOOL** for spawning agents concurrently, not just
+4. **USE SHARED PROVIDER ACCESS'S TASK TOOL** for spawning agents concurrently, not just
    MCP
 
 ### ⚡ GOLDEN RULE: "1 MESSAGE = ALL RELATED OPERATIONS"
@@ -15,18 +15,18 @@
 **MANDATORY PATTERNS:**
 
 - **TodoWrite**: ALWAYS batch ALL todos in ONE call (5-10+ todos minimum)
-- **Task tool (Claude Code)**: ALWAYS spawn ALL agents in ONE message with full
+- **Task tool (Shared Provider Access)**: ALWAYS spawn ALL agents in ONE message with full
   instructions
 - **File operations**: ALWAYS batch ALL reads/writes/edits in ONE message
 - **Bash commands**: ALWAYS batch ALL terminal operations in ONE message
 - **Memory operations**: ALWAYS batch ALL memory store/retrieve in ONE message
 
-### 🎯 CRITICAL: Claude Code Task Tool for Agent Execution
+### 🎯 CRITICAL: Shared Provider Access Task Tool for Agent Execution
 
-**Claude Code's Task tool is the PRIMARY way to spawn agents:**
+**Shared Provider Access's Task tool is the PRIMARY way to spawn agents:**
 
 ```javascript
-// ✅ CORRECT: Use Claude Code's Task tool for parallel agent execution
+// ✅ CORRECT: Use Shared Provider Access's Task tool for parallel agent execution
 [Single Message]:
   Task("Research agent", "Analyze requirements and patterns...", "researcher")
   Task("Coder agent", "Implement core features...", "coder")
@@ -142,9 +142,9 @@ Test-Driven Development.
 
 `migration-planner`, `swarm-init`
 
-## 🎯 Claude Code vs MCP Tools
+## 🎯 Shared Provider Access vs MCP Tools
 
-### Claude Code Handles ALL EXECUTION:
+### Shared Provider Access Handles ALL EXECUTION:
 
 - **Task tool**: Spawn and run agents concurrently for actual work
 - File operations (Read, Write, Edit, MultiEdit, Glob, Grep)
@@ -167,7 +167,7 @@ Test-Driven Development.
 - Performance tracking
 - GitHub integration
 
-**KEY**: MCP coordinates the strategy, Claude Code's Task tool executes with
+**KEY**: MCP coordinates the strategy, Shared Provider Access's Task tool executes with
 real agents.
 
 ## 🚀 Quick Setup
@@ -179,22 +179,22 @@ claude mcp add ruv-swarm npx ruv-swarm mcp start  # Optional: Enhanced coordinat
 claude mcp add flow-nexus npx flow-nexus@latest mcp start  # Optional: Cloud features
 ```
 
-### 🧠 llama.cpp + Claude Code MCP Integration Setup
+### 🧠 llama.cpp + Shared Provider Access MCP Integration Setup
 
-**Local Neural Processing with Claude Code:**
+**Local Neural Processing with Shared Provider Access:**
 
 ```bash
 # Navigate to llama.cpp package
 cd ~/noa-server/packages/llama.cpp
 
-# Launch Claude Code with MCP neural processing (bypasses permission checks)
+# Launch Shared Provider Access with MCP neural processing (bypasses permission checks)
 (praisonai_env) deflex@FlexNetOS-1001:~/noa-server/packages/llama.cpp$ claude --dangerously-skip-permissions
 
 # Verify MCP server connection
 claude mcp list
 # Expected: neural-processing: ✓ Connected
 
-# Available neural tools in Claude Code:
+# Available neural tools in Shared Provider Access:
 # - chat_completion: Generate text responses
 # - stream_chat: Real-time streaming responses
 # - benchmark_model: Performance testing
@@ -258,19 +258,19 @@ Flow-Nexus extends MCP capabilities with 70+ cloud-based orchestration tools:
 - Login: `mcp__flow-nexus__user_login` or `npx flow-nexus@latest login`
 - Access 70+ specialized MCP tools for advanced orchestration
 
-## 🚀 Agent Execution Flow with Claude Code
+## 🚀 Agent Execution Flow with Shared Provider Access
 
 ### The Correct Pattern
 
 1. **Optional**: Use MCP tools to set up coordination topology
-2. **REQUIRED**: Use Claude Code's Task tool to spawn agents that do actual work
+2. **REQUIRED**: Use Shared Provider Access's Task tool to spawn agents that do actual work
 3. **REQUIRED**: Each agent runs hooks for coordination
 4. **REQUIRED**: Batch all operations in single messages
 
 ### Example Full-Stack Development
 
 ```javascript
-// Single message with all agent spawning via Claude Code's Task tool
+// Single message with all agent spawning via Shared Provider Access's Task tool
 [Parallel Agent Execution]:
   Task("Backend Developer", "Build REST API with Express. Use hooks for coordination.", "backend-dev")
   Task("Frontend Developer", "Create React UI. Coordinate with backend via memory.", "coder")
@@ -315,7 +315,7 @@ npx claude-flow@alpha hooks session-end --export-metrics true
 
 ## 🎯 Concurrent Execution Examples
 
-### ✅ CORRECT WORKFLOW: MCP Coordinates, Claude Code Executes
+### ✅ CORRECT WORKFLOW: MCP Coordinates, Shared Provider Access Executes
 
 ```javascript
 // Step 1: MCP tools set up coordination (optional, for complex tasks)
@@ -325,9 +325,9 @@ npx claude-flow@alpha hooks session-end --export-metrics true
   mcp__claude-flow__agent_spawn { type: "coder" }
   mcp__claude-flow__agent_spawn { type: "tester" }
 
-// Step 2: Claude Code Task tool spawns ACTUAL agents that do the work
+// Step 2: Shared Provider Access Task tool spawns ACTUAL agents that do the work
 [Single Message - Parallel Agent Execution]:
-  // Claude Code's Task tool spawns real agents concurrently
+  // Shared Provider Access's Task tool spawns real agents concurrently
   Task("Research agent", "Analyze API requirements and best practices. Check memory for prior decisions.", "researcher")
   Task("Coder agent", "Implement REST endpoints with authentication. Coordinate via hooks.", "coder")
   Task("Database agent", "Design and implement database schema. Store decisions in memory.", "code-analyzer")
@@ -997,7 +997,7 @@ nvidia-smi
 
 ---
 
-Remember: **Claude Flow coordinates, Claude Code creates!**
+Remember: **Claude Flow coordinates, Shared Provider Access creates!**
 
 ## Important Instruction Reminders
 
