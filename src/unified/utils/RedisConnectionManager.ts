@@ -36,7 +36,12 @@ export const RedisConnectionConfigSchema = z.object({
       maxDelay: z.number().default(3000), // ms
       factor: z.number().default(2), // exponential backoff factor
     })
-    .default({}),
+    .default({
+      maxAttempts: 3,
+      initialDelay: 100,
+      maxDelay: 3000,
+      factor: 2,
+    }),
   circuitBreaker: z
     .object({
       enabled: z.boolean().default(true),
@@ -44,14 +49,23 @@ export const RedisConnectionConfigSchema = z.object({
       successThreshold: z.number().default(2),
       timeout: z.number().default(60000), // ms
     })
-    .default({}),
+    .default({
+      enabled: true,
+      failureThreshold: 5,
+      successThreshold: 2,
+      timeout: 60000,
+    }),
   pooling: z
     .object({
       enabled: z.boolean().default(true),
       min: z.number().default(2),
       max: z.number().default(10),
     })
-    .default({}),
+    .default({
+      enabled: true,
+      min: 2,
+      max: 10,
+    }),
   enableOfflineQueue: z.boolean().default(true),
   enableReadyCheck: z.boolean().default(true),
   connectTimeout: z.number().default(10000), // ms
