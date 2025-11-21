@@ -14,10 +14,10 @@
  */
 
 import { EventEmitter } from 'events';
-import Redis, { RedisOptions, Redis as RedisClient } from 'ioredis';
+import Redis, { Redis as RedisClient, RedisOptions } from 'ioredis';
 import { z } from 'zod';
-import { LoggerFactory } from './LoggerFactory';
 import { CircuitBreaker } from '../services/CircuitBreaker';
+import { LoggerFactory } from './LoggerFactory';
 
 /**
  * Redis connection configuration schema
@@ -36,7 +36,12 @@ export const RedisConnectionConfigSchema = z.object({
       maxDelay: z.number().default(3000), // ms
       factor: z.number().default(2), // exponential backoff factor
     })
-    .optional(),
+    .default({
+      maxAttempts: 3,
+      initialDelay: 100,
+      maxDelay: 3000,
+      factor: 2,
+    }),
   circuitBreaker: z
     .object({
       enabled: z.boolean().default(true),
@@ -44,14 +49,23 @@ export const RedisConnectionConfigSchema = z.object({
       successThreshold: z.number().default(2),
       timeout: z.number().default(60000), // ms
     })
-    .optional(),
+    .default({
+      enabled: true,
+      failureThreshold: 5,
+      successThreshold: 2,
+      timeout: 60000,
+    }),
   pooling: z
     .object({
       enabled: z.boolean().default(true),
       min: z.number().default(2),
       max: z.number().default(10),
     })
-    .optional(),
+    .default({
+      enabled: true,
+      min: 2,
+      max: 10,
+    }),
   enableOfflineQueue: z.boolean().default(true),
   enableReadyCheck: z.boolean().default(true),
   connectTimeout: z.number().default(10000), // ms

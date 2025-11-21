@@ -228,13 +228,10 @@ export class EventBus extends EventEmitter {
    * Unsubscribe from an event
    */
   public unsubscribe(subscriptionId: string): boolean {
-    for (const [eventName, subs] of this.subscriptions.entries()) {
-      const index = subs.findIndex((sub) => sub.id === subscriptionId);
-      if (index !== -1) {
-        subs.splice(index, 1);
-        if (subs.length === 0) {
-          this.subscriptions.delete(eventName);
-        }
+    for (const subs of this.subscriptions.values()) {
+      const subscription = subs.find((sub) => sub.id === subscriptionId);
+      if (subscription) {
+        this.removeSubscription(subscription);
         return true;
       }
     }
@@ -247,6 +244,24 @@ export class EventBus extends EventEmitter {
   public override off(eventName: string | symbol, listener: (...args: any[]) => void): this {
     super.off(eventName, listener);
     return this;
+  }
+
+  /**
+   * Remove a subscription from tracking and EventEmitter
+   */
+  private removeSubscription(subscription: EventSubscription): void {
+    const subs = this.subscriptions.get(subscription.eventName);
+    if (subs) {
+      const index = subs.findIndex((sub) => sub.id === subscription.id);
+      if (index !== -1) {
+        subs.splice(index, 1);
+        if (subs.length === 0) {
+          this.subscriptions.delete(subscription.eventName);
+        }
+      }
+    }
+
+    super.off(subscription.eventName, subscription.handler as any);
   }
 
   /**
@@ -277,7 +292,8 @@ export class EventBus extends EventEmitter {
     }
 
     // Get subscribers
-    const subs = this.subscriptions.get(eventName) || [];
+    const subs = [...(this.subscriptions.get(eventName) || [])];
+    const onceSubscriptions: EventSubscription[] = [];
 
     // Track metrics
     const startTime = Date.now();
@@ -290,7 +306,7 @@ export class EventBus extends EventEmitter {
 
         // Remove if once
         if (sub.once) {
-          this.off(sub.id);
+          onceSubscriptions.push(sub);
         }
       } catch (error) {
         errorCount++;
@@ -306,6 +322,12 @@ export class EventBus extends EventEmitter {
         if (this.config.errorHandler) {
           this.config.errorHandler(err, envelope);
         }
+      }
+    }
+
+    if (onceSubscriptions.length) {
+      for (const subscription of onceSubscriptions) {
+        this.removeSubscription(subscription);
       }
     }
 
@@ -346,12 +368,14 @@ export class EventBus extends EventEmitter {
     const namespace = parts[0];
     const wildcardKey = `${namespace}:*`;
 
-    const subs = this.subscriptions.get(wildcardKey) || [];
+    const subs = [...(this.subscriptions.get(wildcardKey) || [])];
+    const onceSubscriptions: EventSubscription[] = [];
+
     for (const sub of subs) {
       try {
         await sub.handler(envelope.data, envelope.metadata);
         if (sub.once) {
-          this.off(sub.id);
+          onceSubscriptions.push(sub);
         }
       } catch (error) {
         const err = error instanceof Error ? error : new Error(String(error));
@@ -360,6 +384,12 @@ export class EventBus extends EventEmitter {
           wildcardKey,
           error: err.message,
         });
+      }
+    }
+
+    if (onceSubscriptions.length) {
+      for (const subscription of onceSubscriptions) {
+        this.removeSubscription(subscription);
       }
     }
   }
