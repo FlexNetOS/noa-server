@@ -40,7 +40,7 @@
     "csso": "^5.0.5",
     "html-minifier-terser": "^7.2.0",
     "mime-types": "^2.1.35",
-    "glob": "^10.3.10",
+    "glob": "^10.5.0",
     "winston": "^3.11.0",
     "chalk": "^5.3.0",
     "zod": "^3.22.4"
