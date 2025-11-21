@@ -71,15 +71,10 @@ npx claude-flow auto agent -t "Fix bug in login" -s minimal
 ## Agent Types Selected
 
 - **Architect**: System design, architecture decisions
-
 - **Coder**: Implementation, code generation
-
 - **Tester**: Test creation, quality assurance
-
 - **Analyst**: Performance, optimization
-
 - **Researcher**: Documentation, best practices
-
 - **Coordinator**: Task management, progress tracking
 
 ## Strategies
