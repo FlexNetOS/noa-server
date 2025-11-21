@@ -3,7 +3,11 @@
   "version": "0.0.1",
   "private": true,
   "description": "Integrated Claude Suite monorepo with automation pipeline, MCP tooling, agents, llama.cpp, and UI.",
-  "workspaces": ["packages/*", "servers/*", "apps/*"],
+  "workspaces": [
+    "packages/*",
+    "servers/*",
+    "apps/*"
+  ],
   "scripts": {
     "hive:init": "bash scripts/automation/hive-mind-init.sh",
     "hive:test": "bash scripts/tasks/hive-mind-test.sh",
@@ -29,9 +33,9 @@
     "truth-gate": "bash scripts/npm/run-task.sh truth-gate",
     "export": "bash scripts/npm/run-task.sh export",
     "release:report": "bash scripts/npm/run-task.sh release:report",
-    "lint": "eslint packages scripts src tests --ext .js,.jsx,.ts,.tsx --max-warnings 0",
-    "lint:fix": "eslint packages scripts src tests --ext .js,.jsx,.ts,.tsx --fix",
-    "lint:report": "mkdir -p docs/reports && eslint packages scripts src tests --ext .js,.jsx,.ts,.tsx --format html --output-file docs/reports/eslint-report.html",
+    "lint": "ESLINT_USE_FLAT_CONFIG=1 eslint --config eslint.config.js packages scripts src tests --max-warnings 0",
+    "lint:fix": "ESLINT_USE_FLAT_CONFIG=1 eslint --config eslint.config.js packages scripts src tests --fix",
+    "lint:report": "mkdir -p docs/reports && ESLINT_USE_FLAT_CONFIG=1 eslint --config eslint.config.js packages scripts src tests --format html --output-file docs/reports/eslint-report.html",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,yml,yaml}\"",
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md,yml,yaml}\"",
     "format:staged": "prettier --write --ignore-unknown",
@@ -95,6 +99,8 @@
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/js": "^8.57.0",
     "@jest/globals": "^29.7.0",
     "@playwright/test": "^1.56.1",
     "@types/amqplib": "^0.10.1",
@@ -125,6 +131,7 @@
     "pg": "^8.16.3",
     "prettier": "^3.3.3",
     "prettier-plugin-svelte": "^3.4.0",
+    "prettier-plugin-tailwindcss": "^0.7.1",
     "prom-client": "^15.1.0",
     "redis": "^5.9.0",
     "ruv-swarm": "^1.0.20",
