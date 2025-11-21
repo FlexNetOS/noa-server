@@ -45,27 +45,27 @@ export function AdminPanel() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      <div className="flex h-full items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-500" />
       </div>
     );
   }
 
   return (
-    <div className="h-full flex flex-col bg-gray-50 dark:bg-gray-900">
+    <div className="flex h-full flex-col bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <div className="flex-none px-6 py-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex items-center justify-between mb-4">
+      <div className="flex-none border-b border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
+        <div className="mb-4 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Administration</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
               System configuration and management
             </p>
           </div>
 
           <button
             onClick={() => fetchData()}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             Refresh
           </button>
@@ -79,10 +79,10 @@ export function AdminPanel() {
               role="tab"
               aria-selected={activeTab === tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`px-4 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              className={`rounded-lg px-4 py-2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 activeTab === tab.id
                   ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
               }`}
             >
               <span className="mr-2">{tab.icon}</span>
@@ -112,81 +112,81 @@ function OverviewTab({ servers, config }: { servers: MCPServer[]; config: System
   return (
     <div className="space-y-6">
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+          className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
         >
-          <div className="flex items-center justify-between mb-2">
+          <div className="mb-2 flex items-center justify-between">
             <span className="text-sm text-gray-500 dark:text-gray-400">MCP Servers</span>
             <span className="text-2xl">🔌</span>
           </div>
           <div className="text-3xl font-bold text-gray-900 dark:text-white">
             {connectedServers}/{servers.length}
           </div>
-          <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">Connected</div>
+          <div className="mt-1 text-sm text-gray-500 dark:text-gray-400">Connected</div>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+          className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
         >
-          <div className="flex items-center justify-between mb-2">
+          <div className="mb-2 flex items-center justify-between">
             <span className="text-sm text-gray-500 dark:text-gray-400">Total Requests</span>
             <span className="text-2xl">📡</span>
           </div>
           <div className="text-3xl font-bold text-gray-900 dark:text-white">
             {totalRequests.toLocaleString()}
           </div>
-          <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">All time</div>
+          <div className="mt-1 text-sm text-gray-500 dark:text-gray-400">All time</div>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+          className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
         >
-          <div className="flex items-center justify-between mb-2">
+          <div className="mb-2 flex items-center justify-between">
             <span className="text-sm text-gray-500 dark:text-gray-400">Maintenance Mode</span>
             <span className="text-2xl">🔧</span>
           </div>
           <div className="text-3xl font-bold text-gray-900 dark:text-white">
             {config?.general.maintenance ? 'ON' : 'OFF'}
           </div>
-          <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">Current status</div>
+          <div className="mt-1 text-sm text-gray-500 dark:text-gray-400">Current status</div>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+          className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
         >
-          <div className="flex items-center justify-between mb-2">
+          <div className="mb-2 flex items-center justify-between">
             <span className="text-sm text-gray-500 dark:text-gray-400">Max Agents</span>
             <span className="text-2xl">🤖</span>
           </div>
           <div className="text-3xl font-bold text-gray-900 dark:text-white">
             {config?.swarm.maxAgents || 0}
           </div>
-          <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">Configured limit</div>
+          <div className="mt-1 text-sm text-gray-500 dark:text-gray-400">Configured limit</div>
         </motion.div>
       </div>
 
       {/* System Status */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">System Status</h3>
+      <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
+        <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">System Status</h3>
         <div className="space-y-3">
-          <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded">
+          <div className="flex items-center justify-between rounded bg-gray-50 p-3 dark:bg-gray-700">
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Neural Processing
             </span>
             <span
-              className={`px-2 py-1 text-xs font-medium rounded ${
+              className={`rounded px-2 py-1 text-xs font-medium ${
                 config?.neural.enabled
                   ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                   : 'bg-gray-100 text-gray-800 dark:bg-gray-600 dark:text-gray-200'
@@ -196,12 +196,12 @@ function OverviewTab({ servers, config }: { servers: MCPServer[]; config: System
             </span>
           </div>
 
-          <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded">
+          <div className="flex items-center justify-between rounded bg-gray-50 p-3 dark:bg-gray-700">
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Auto Scaling
             </span>
             <span
-              className={`px-2 py-1 text-xs font-medium rounded ${
+              className={`rounded px-2 py-1 text-xs font-medium ${
                 config?.swarm.autoScaling
                   ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                   : 'bg-gray-100 text-gray-800 dark:bg-gray-600 dark:text-gray-200'
@@ -211,12 +211,12 @@ function OverviewTab({ servers, config }: { servers: MCPServer[]; config: System
             </span>
           </div>
 
-          <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded">
+          <div className="flex items-center justify-between rounded bg-gray-50 p-3 dark:bg-gray-700">
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Rate Limiting
             </span>
             <span
-              className={`px-2 py-1 text-xs font-medium rounded ${
+              className={`rounded px-2 py-1 text-xs font-medium ${
                 config?.security.rateLimiting.enabled
                   ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                   : 'bg-gray-100 text-gray-800 dark:bg-gray-600 dark:text-gray-200'

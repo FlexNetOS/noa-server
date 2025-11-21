@@ -1,6 +1,7 @@
 # Performance Monitoring & Benchmarking Suite
 
-Comprehensive performance testing, profiling, and monitoring infrastructure for noa-server.
+Comprehensive performance testing, profiling, and monitoring infrastructure for
+noa-server.
 
 ## Quick Start
 
@@ -32,6 +33,7 @@ npm run perf:report
 Core benchmarking engine with statistical analysis.
 
 **Features:**
+
 - Warmup and measurement phases
 - Statistical calculations (mean, median, p50/p95/p99)
 - Baseline comparison
@@ -39,6 +41,7 @@ Core benchmarking engine with statistical analysis.
 - JSON export
 
 **Usage:**
+
 ```typescript
 import { BenchmarkRunner } from './benchmark-runner';
 
@@ -52,7 +55,7 @@ await runner.runBenchmark(
   },
   {
     warmupRuns: 10,
-    measurementRuns: 100
+    measurementRuns: 100,
   }
 );
 
@@ -65,12 +68,14 @@ await runner.generateReport();
 HTTP endpoint performance testing.
 
 **Tests:**
+
 - Health check endpoints
 - Authentication flows
 - Metrics endpoints
 - Custom API routes
 
 **Usage:**
+
 ```typescript
 import { runAPIBenchmarks } from './api-benchmarks';
 
@@ -82,6 +87,7 @@ await runAPIBenchmarks('http://localhost:8080');
 Node.js runtime performance testing.
 
 **Tests:**
+
 - Event loop latency
 - Memory allocation
 - CPU-intensive operations
@@ -89,6 +95,7 @@ Node.js runtime performance testing.
 - JSON parsing/stringifying
 
 **Usage:**
+
 ```typescript
 import { runSystemBenchmarks } from './system-benchmarks';
 
@@ -100,6 +107,7 @@ await runSystemBenchmarks();
 Memory usage tracking and leak detection.
 
 **Features:**
+
 - Continuous memory snapshots
 - Heap snapshot generation
 - Memory leak detection
@@ -107,6 +115,7 @@ Memory usage tracking and leak detection.
 - CSV chart export
 
 **Usage:**
+
 ```typescript
 import { MemoryProfiler } from './memory-profiler';
 
@@ -129,6 +138,7 @@ await profiler.generateChart(profile);
 Real-time performance monitoring.
 
 **Features:**
+
 - Prometheus metrics integration
 - System resource monitoring
 - Event loop lag tracking
@@ -136,6 +146,7 @@ Real-time performance monitoring.
 - Historical data storage
 
 **Usage:**
+
 ```bash
 # Via npm script
 npm run perf:monitor
@@ -151,23 +162,23 @@ MONITOR_DURATION=300 MONITOR_INTERVAL=5 node scripts/performance/continuous-moni
 
 ### API Performance Targets
 
-| Metric | p50 | p95 | p99 |
-|--------|-----|-----|-----|
-| Health Check | <50ms | <100ms | <200ms |
-| Authentication | <100ms | <200ms | <500ms |
-| AI Inference | <500ms | <2s | <5s |
-| Database Query | <20ms | <50ms | <100ms |
-| Cache Operation | <5ms | <10ms | <20ms |
+| Metric          | p50    | p95    | p99    |
+| --------------- | ------ | ------ | ------ |
+| Health Check    | <50ms  | <100ms | <200ms |
+| Authentication  | <100ms | <200ms | <500ms |
+| AI Inference    | <500ms | <2s    | <5s    |
+| Database Query  | <20ms  | <50ms  | <100ms |
+| Cache Operation | <5ms   | <10ms  | <20ms  |
 
 ### System Performance Targets
 
-| Metric | Target |
-|--------|--------|
-| Cold Start | <3s |
+| Metric          | Target |
+| --------------- | ------ |
+| Cold Start      | <3s    |
 | Memory Baseline | <512MB |
-| Memory Peak | <2GB |
-| CPU Idle | <5% |
-| Event Loop Lag | <50ms |
+| Memory Peak     | <2GB   |
+| CPU Idle        | <5%    |
+| Event Loop Lag  | <50ms  |
 
 ## Output Files
 
@@ -197,24 +208,28 @@ MONITOR_DURATION=300 MONITOR_INTERVAL=5 node scripts/performance/continuous-moni
 ## Continuous Integration
 
 ### Pre-commit
+
 ```bash
 # Performance assertions in unit tests
 npm test
 ```
 
 ### Pull Requests
+
 ```bash
 # Integration tests + load test
 npm run perf:bench:api
 ```
 
 ### Daily
+
 ```bash
 # Full benchmark suite
 npm run perf:bench
 ```
 
 ### Weekly
+
 ```bash
 # Stress testing
 npm run perf:monitor:extended
@@ -223,6 +238,7 @@ npm run perf:monitor:extended
 ## Performance Budgets
 
 ### Page Load Budget
+
 - HTML: <15KB
 - CSS: <50KB
 - JavaScript: <200KB
@@ -230,12 +246,14 @@ npm run perf:monitor:extended
 - Total: <1MB
 
 ### Time Budget
+
 - TTFB: <200ms
 - FCP: <1.8s
 - LCP: <2.5s
 - TTI: <3.8s
 
 ### Error Budget
+
 - Availability: 99.9%
 - Error Rate: <0.1%
 - Timeout Rate: <0.01%
@@ -294,7 +312,7 @@ await runner.runBenchmark(
     warmupRuns: 20,
     measurementRuns: 500,
     minDuration: 5000,
-    maxDuration: 120000
+    maxDuration: 120000,
   }
 );
 ```
@@ -365,5 +383,4 @@ npx claude-flow@alpha hooks post-edit \
 
 ---
 
-**Maintained by**: Performance Engineering Team
-**Last Updated**: 2025-10-22
+**Maintained by**: Performance Engineering Team **Last Updated**: 2025-10-22

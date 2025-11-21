@@ -2,7 +2,8 @@
 
 <!-- POL-0167: Contribution guidelines -->
 
-Thank you for your interest in contributing to NOA Server Platform! This guide will help you get started.
+Thank you for your interest in contributing to NOA Server Platform! This guide
+will help you get started.
 
 ## Table of Contents
 
@@ -19,7 +20,8 @@ Thank you for your interest in contributing to NOA Server Platform! This guide w
 
 ### Our Pledge
 
-We are committed to providing a welcoming and inspiring community for all. Please be respectful and constructive in all interactions.
+We are committed to providing a welcoming and inspiring community for all.
+Please be respectful and constructive in all interactions.
 
 ### Expected Behavior
 
@@ -43,12 +45,14 @@ Before contributing, ensure you have:
 
 - [ ] Read the [README](../../README.md)
 - [ ] Completed [Development Setup](DEVELOPMENT.md)
-- [ ] Reviewed existing [issues](https://github.com/noa-server/noa-server/issues)
+- [ ] Reviewed existing
+      [issues](https://github.com/noa-server/noa-server/issues)
 - [ ] Joined our [Discord server](https://discord.gg/noa-server)
 
 ### First Time Contributors
 
 Look for issues labeled:
+
 - `good first issue` - Simple tasks for newcomers
 - `help wanted` - Tasks that need contributors
 - `documentation` - Documentation improvements
@@ -58,28 +62,28 @@ Look for issues labeled:
 ### Reporting Bugs
 
 Before creating a bug report:
+
 1. Search existing issues to avoid duplicates
 2. Verify the bug exists in the latest version
 3. Collect relevant information (OS, versions, logs)
 
 **Bug Report Template:**
-```markdown
-**Description**
-A clear description of the bug.
 
-**To Reproduce**
-Steps to reproduce:
+```markdown
+**Description** A clear description of the bug.
+
+**To Reproduce** Steps to reproduce:
+
 1. Go to '...'
 2. Click on '...'
 3. See error
 
-**Expected Behavior**
-What you expected to happen.
+**Expected Behavior** What you expected to happen.
 
-**Actual Behavior**
-What actually happened.
+**Actual Behavior** What actually happened.
 
 **Environment**
+
 - OS: [e.g., Ubuntu 22.04]
 - Node.js: [e.g., 20.5.0]
 - Python: [e.g., 3.11.4]
@@ -87,7 +91,9 @@ What actually happened.
 
 **Logs**
 ```
+
 Paste relevant logs here
+
 ```
 
 **Screenshots**
@@ -97,23 +103,21 @@ If applicable, add screenshots.
 ### Suggesting Enhancements
 
 **Enhancement Template:**
+
 ```markdown
-**Problem Statement**
-Describe the problem this enhancement would solve.
+**Problem Statement** Describe the problem this enhancement would solve.
 
-**Proposed Solution**
-Describe your proposed solution.
+**Proposed Solution** Describe your proposed solution.
 
-**Alternatives Considered**
-Other approaches you've considered.
+**Alternatives Considered** Other approaches you've considered.
 
-**Additional Context**
-Any other context or screenshots.
+**Additional Context** Any other context or screenshots.
 ```
 
 ### Contributing Code
 
 1. **Fork the repository**
+
    ```bash
    # Click 'Fork' on GitHub
    git clone https://github.com/YOUR_USERNAME/noa-server.git
@@ -122,6 +126,7 @@ Any other context or screenshots.
    ```
 
 2. **Create a branch**
+
    ```bash
    git checkout -b feature/your-feature-name
    # or
@@ -163,6 +168,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 ```
 
 **Types:**
+
 - `feat` - New feature
 - `fix` - Bug fix
 - `docs` - Documentation
@@ -173,6 +179,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `chore` - Maintenance
 
 **Examples:**
+
 ```bash
 feat(api): add user authentication endpoint
 fix(neural): resolve memory leak in llama.cpp wrapper
@@ -217,6 +224,7 @@ npm run precommit
 ### Submitting PR
 
 1. **Push your branch**
+
    ```bash
    git push origin feature/your-feature-name
    ```
@@ -227,23 +235,29 @@ npm run precommit
    - Fill out the PR template
 
 **PR Template:**
+
 ```markdown
 ## Description
+
 Brief description of changes.
 
 ## Type of Change
+
 - [ ] Bug fix (non-breaking change fixing an issue)
 - [ ] New feature (non-breaking change adding functionality)
 - [ ] Breaking change (fix or feature causing existing functionality to change)
 - [ ] Documentation update
 
 ## Testing
+
 Describe testing performed:
+
 - [ ] Unit tests
 - [ ] Integration tests
 - [ ] Manual testing
 
 ## Checklist
+
 - [ ] Code follows style guidelines
 - [ ] Self-review completed
 - [ ] Comments added for complex code
@@ -253,6 +267,7 @@ Describe testing performed:
 - [ ] Dependent changes merged
 
 ## Related Issues
+
 Closes #123
 ```
 
@@ -370,6 +385,7 @@ fn read_config() -> Result<Config, ConfigError> {
 ### Test Coverage (POL-0100)
 
 All new code must have:
+
 - Minimum 80% code coverage
 - Unit tests for all functions
 - Integration tests for APIs
@@ -403,6 +419,7 @@ describe('validateEmail', () => {
 ### Required Documentation (POL-0142-0159)
 
 1. **Code Comments**
+
    ```javascript
    /**
     * Creates a new user account
@@ -437,22 +454,27 @@ describe('validateEmail', () => {
 
 - **Documentation**: Check [docs/](../../docs)
 - **Discord**: [Join our server](https://discord.gg/noa-server)
-- **GitHub Discussions**: [Ask questions](https://github.com/noa-server/noa-server/discussions)
-- **Issues**: [Browse existing issues](https://github.com/noa-server/noa-server/issues)
+- **GitHub Discussions**:
+  [Ask questions](https://github.com/noa-server/noa-server/discussions)
+- **Issues**:
+  [Browse existing issues](https://github.com/noa-server/noa-server/issues)
 
 ## Recognition
 
 Contributors are recognized in:
+
 - [CONTRIBUTORS.md](../../CONTRIBUTORS.md)
 - Release notes
 - Annual contributor reports
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the MIT License.
+By contributing, you agree that your contributions will be licensed under the
+MIT License.
 
 ---
 
 Thank you for contributing to NOA Server Platform! 🚀
 
-Questions? Reach out on [Discord](https://discord.gg/noa-server) or open a [Discussion](https://github.com/noa-server/noa-server/discussions).
+Questions? Reach out on [Discord](https://discord.gg/noa-server) or open a
+[Discussion](https://github.com/noa-server/noa-server/discussions).

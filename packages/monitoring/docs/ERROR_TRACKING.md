@@ -2,7 +2,9 @@
 
 ## Overview
 
-The error tracking system provides comprehensive error monitoring with Sentry integration, automatic error grouping, context management, and multiple error handlers for Express, process-level errors, and unhandled rejections.
+The error tracking system provides comprehensive error monitoring with Sentry
+integration, automatic error grouping, context management, and multiple error
+handlers for Express, process-level errors, and unhandled rejections.
 
 ## Features
 
@@ -21,7 +23,7 @@ The error tracking system provides comprehensive error monitoring with Sentry in
 import {
   ErrorTracker,
   ExpressErrorHandler,
-  ProcessErrorHandler
+  ProcessErrorHandler,
 } from '@noa-server/monitoring/errors';
 import express from 'express';
 
@@ -32,7 +34,7 @@ const tracker = new ErrorTracker({
   release: process.env.APP_VERSION,
   sampleRate: 1.0,
   tracesSampleRate: 0.1,
-  enableTracing: true
+  enableTracing: true,
 });
 
 // Setup Express handlers
@@ -55,7 +57,7 @@ app.use(expressHandler.errorHandler());
 // Setup process handlers
 const processHandler = new ProcessErrorHandler(tracker, {
   exitOnError: true,
-  flushTimeout: 2000
+  flushTimeout: 2000,
 });
 processHandler.register();
 
@@ -65,7 +67,7 @@ try {
 } catch (error) {
   await tracker.captureError(error as Error, {
     tags: { feature: 'data-processing' },
-    user: { id: '123' }
+    user: { id: '123' },
   });
 }
 ```
@@ -76,16 +78,16 @@ try {
 
 ```typescript
 interface ErrorTrackerConfig {
-  dsn: string;                    // Sentry DSN
-  environment: string;            // Environment (dev, staging, prod)
-  release?: string;               // App version/release
-  sampleRate?: number;            // Error sample rate (0-1)
-  tracesSampleRate?: number;      // Traces sample rate (0-1)
-  enableTracing?: boolean;        // Enable performance tracing
-  beforeSend?: (event) => event;  // Filter/modify events
-  ignoreErrors?: RegExp[];        // Errors to ignore
-  denyUrls?: RegExp[];            // URLs to ignore
-  maxBreadcrumbs?: number;        // Max breadcrumbs (default: 100)
+  dsn: string; // Sentry DSN
+  environment: string; // Environment (dev, staging, prod)
+  release?: string; // App version/release
+  sampleRate?: number; // Error sample rate (0-1)
+  tracesSampleRate?: number; // Traces sample rate (0-1)
+  enableTracing?: boolean; // Enable performance tracing
+  beforeSend?: (event) => event; // Filter/modify events
+  ignoreErrors?: RegExp[]; // Errors to ignore
+  denyUrls?: RegExp[]; // URLs to ignore
+  maxBreadcrumbs?: number; // Max breadcrumbs (default: 100)
 }
 ```
 
@@ -119,16 +121,16 @@ await tracker.captureError(error, {
   user: {
     id: '123',
     email: 'user@example.com',
-    username: 'user'
+    username: 'user',
   },
   tags: {
     feature: 'checkout',
-    payment_method: 'stripe'
+    payment_method: 'stripe',
   },
   extra: {
     orderId: 'order-123',
-    amount: 99.99
-  }
+    amount: 99.99,
+  },
 });
 ```
 
@@ -138,27 +140,20 @@ await tracker.captureError(error, {
 import { ErrorSeverity } from '@noa-server/monitoring/errors';
 
 // Different severity levels
-await tracker.captureMessage(
-  'User completed checkout',
-  ErrorSeverity.INFO
-);
+await tracker.captureMessage('User completed checkout', ErrorSeverity.INFO);
 
 await tracker.captureMessage(
   'Slow database query detected',
   ErrorSeverity.WARNING,
   {
     tags: { query_type: 'user_search' },
-    extra: { duration: 5000 }
+    extra: { duration: 5000 },
   }
 );
 
-await tracker.captureMessage(
-  'Payment gateway timeout',
-  ErrorSeverity.ERROR,
-  {
-    tags: { gateway: 'stripe' }
-  }
-);
+await tracker.captureMessage('Payment gateway timeout', ErrorSeverity.ERROR, {
+  tags: { gateway: 'stripe' },
+});
 ```
 
 ## Context Management
@@ -170,7 +165,7 @@ await tracker.captureMessage(
 tracker.setUser({
   id: '123',
   email: 'user@example.com',
-  username: 'johndoe'
+  username: 'johndoe',
 });
 
 // Clear user context
@@ -184,7 +179,7 @@ tracker.clearContext();
 tracker.setTags({
   environment: 'production',
   server: 'api-1',
-  version: '1.0.0'
+  version: '1.0.0',
 });
 
 // Set individual tag
@@ -198,7 +193,7 @@ tracker.setTag('feature', 'checkout');
 tracker.setExtra('sessionId', 'session-123');
 tracker.setExtra('metadata', {
   referrer: 'google',
-  campaign: 'summer-sale'
+  campaign: 'summer-sale',
 });
 ```
 
@@ -213,8 +208,8 @@ tracker.setContext({
     url: '/api/orders',
     headers: { 'user-agent': 'Chrome' },
     query: { page: '1' },
-    body: { items: ['item1'] }
-  }
+    body: { items: ['item1'] },
+  },
 });
 ```
 
@@ -233,8 +228,8 @@ tracker.addBreadcrumb({
   level: ErrorSeverity.INFO,
   data: {
     from: '/cart',
-    to: '/checkout'
-  }
+    to: '/checkout',
+  },
 });
 
 // Different categories
@@ -246,8 +241,8 @@ tracker.addBreadcrumb({
   data: {
     method: 'POST',
     url: '/api/payments',
-    status: 200
-  }
+    status: 200,
+  },
 });
 
 tracker.addBreadcrumb({
@@ -257,8 +252,8 @@ tracker.addBreadcrumb({
   level: ErrorSeverity.INFO,
   data: {
     query: 'SELECT * FROM users WHERE id = $1',
-    duration: 45
-  }
+    duration: 45,
+  },
 });
 ```
 
@@ -272,7 +267,7 @@ import { ExpressErrorHandler } from '@noa-server/monitoring/errors';
 const expressHandler = new ExpressErrorHandler(tracker, {
   exposeErrors: process.env.NODE_ENV !== 'production',
   logErrors: true,
-  captureUnhandled: true
+  captureUnhandled: true,
 });
 
 // Request handler (first middleware)
@@ -310,10 +305,10 @@ app.use(expressHandler.errorHandler());
 import { ProcessErrorHandler } from '@noa-server/monitoring/errors';
 
 const processHandler = new ProcessErrorHandler(tracker, {
-  exitOnError: true,      // Exit on uncaught exception
-  flushTimeout: 2000,     // Wait 2s before exit
+  exitOnError: true, // Exit on uncaught exception
+  flushTimeout: 2000, // Wait 2s before exit
   captureRejections: true,
-  captureExceptions: true
+  captureExceptions: true,
 });
 
 processHandler.register();
@@ -334,8 +329,8 @@ import { UnhandledRejectionHandler } from '@noa-server/monitoring/errors';
 const rejectionHandler = new UnhandledRejectionHandler(tracker, {
   logRejections: true,
   exitOnRejection: false,
-  maxRejections: 10,        // Max rejections in window
-  rejectionWindow: 60000    // 1 minute window
+  maxRejections: 10, // Max rejections in window
+  rejectionWindow: 60000, // 1 minute window
 });
 
 rejectionHandler.register();
@@ -370,6 +365,7 @@ tracker.addGroupingRule(
 ### Fingerprint Generation
 
 Errors are grouped by:
+
 1. Custom rules (regex patterns)
 2. Error category
 3. Error type + normalized message
@@ -426,7 +422,10 @@ const span1 = transaction.startChild({ op: 'db', description: 'Fetch user' });
 await fetchUser();
 span1.finish();
 
-const span2 = transaction.startChild({ op: 'http', description: 'Payment API' });
+const span2 = transaction.startChild({
+  op: 'http',
+  description: 'Payment API',
+});
 await processPayment();
 span2.finish();
 
@@ -466,7 +465,7 @@ console.log('By Category:', stats.categories);
 
 // Get recent errors
 const recent = tracker.getRecentErrors(10);
-recent.forEach(error => {
+recent.forEach((error) => {
   console.log(error.message, error.category, error.timestamp);
 });
 ```
@@ -492,7 +491,7 @@ const tracker = new ErrorTracker({
     }
 
     return event;
-  }
+  },
 });
 ```
 
@@ -502,15 +501,8 @@ const tracker = new ErrorTracker({
 const tracker = new ErrorTracker({
   dsn: process.env.SENTRY_DSN!,
   environment: 'production',
-  ignoreErrors: [
-    /network error/i,
-    /timeout/i,
-    /cancelled/i
-  ],
-  denyUrls: [
-    /localhost/,
-    /127\.0\.0\.1/
-  ]
+  ignoreErrors: [/network error/i, /timeout/i, /cancelled/i],
+  denyUrls: [/localhost/, /127\.0\.0\.1/],
 });
 ```
 
@@ -520,7 +512,7 @@ const tracker = new ErrorTracker({
 const tracker = new ErrorTracker({
   dsn: process.env.SENTRY_DSN!,
   environment: 'production',
-  tracesSampleRate: 0.1,  // 10% of transactions
+  tracesSampleRate: 0.1, // 10% of transactions
   beforeSend: (event) => {
     // Sample based on user
     if (event.user?.id && parseInt(event.user.id) % 10 === 0) {
@@ -529,7 +521,7 @@ const tracker = new ErrorTracker({
     }
     // 100% for premium users
     return event;
-  }
+  },
 });
 ```
 
@@ -540,7 +532,7 @@ const tracker = new ErrorTracker({
 const tracker = new ErrorTracker({
   dsn: process.env.SENTRY_DSN!,
   environment: 'production',
-  release: `noa-server@${process.env.APP_VERSION}`
+  release: `noa-server@${process.env.APP_VERSION}`,
 });
 
 // Upload source maps
@@ -550,6 +542,7 @@ const tracker = new ErrorTracker({
 ## Best Practices
 
 1. **Set User Context Early**
+
    ```typescript
    app.use((req, res, next) => {
      if (req.user) {
@@ -560,24 +553,27 @@ const tracker = new ErrorTracker({
    ```
 
 2. **Use Meaningful Breadcrumbs**
+
    ```typescript
    tracker.addBreadcrumb({
      category: 'business',
      message: 'Order total calculated',
      level: ErrorSeverity.INFO,
-     data: { total: 99.99, items: 3 }
+     data: { total: 99.99, items: 3 },
    });
    ```
 
 3. **Tag by Feature**
+
    ```typescript
    tracker.setTags({
      feature: 'checkout',
-     team: 'payments'
+     team: 'payments',
    });
    ```
 
 4. **Add Request IDs**
+
    ```typescript
    app.use((req, res, next) => {
      const requestId = req.headers['x-request-id'];

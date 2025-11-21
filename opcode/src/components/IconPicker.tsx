@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   // Interface & Navigation
   Home,
@@ -141,165 +141,165 @@ import {
   Watch,
   Wrench,
   type LucideIcon,
-} from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+} from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 
 /**
  * Icon categories for better organization
  */
 const ICON_CATEGORIES = {
-  "Interface & Navigation": [
-    { name: "home", icon: Home },
-    { name: "menu", icon: Menu },
-    { name: "settings", icon: Settings },
-    { name: "user", icon: User },
-    { name: "users", icon: Users },
-    { name: "log-out", icon: LogOut },
-    { name: "bell", icon: Bell },
-    { name: "bookmark", icon: Bookmark },
-    { name: "calendar", icon: Calendar },
-    { name: "clock", icon: Clock },
-    { name: "eye", icon: Eye },
-    { name: "eye-off", icon: EyeOff },
-    { name: "hash", icon: Hash },
-    { name: "heart", icon: Heart },
-    { name: "info", icon: Info },
-    { name: "link", icon: Link },
-    { name: "lock", icon: Lock },
-    { name: "map", icon: Map },
-    { name: "message-square", icon: MessageSquare },
-    { name: "mic", icon: Mic },
-    { name: "music", icon: Music },
-    { name: "paperclip", icon: Paperclip },
-    { name: "phone", icon: Phone },
-    { name: "pin", icon: Pin },
-    { name: "plus", icon: Plus },
-    { name: "save", icon: Save },
-    { name: "share", icon: Share },
-    { name: "star", icon: Star },
-    { name: "tag", icon: Tag },
-    { name: "trash", icon: Trash },
-    { name: "upload", icon: Upload },
-    { name: "download", icon: Download },
-    { name: "edit", icon: Edit },
-    { name: "copy", icon: Copy },
+  'Interface & Navigation': [
+    { name: 'home', icon: Home },
+    { name: 'menu', icon: Menu },
+    { name: 'settings', icon: Settings },
+    { name: 'user', icon: User },
+    { name: 'users', icon: Users },
+    { name: 'log-out', icon: LogOut },
+    { name: 'bell', icon: Bell },
+    { name: 'bookmark', icon: Bookmark },
+    { name: 'calendar', icon: Calendar },
+    { name: 'clock', icon: Clock },
+    { name: 'eye', icon: Eye },
+    { name: 'eye-off', icon: EyeOff },
+    { name: 'hash', icon: Hash },
+    { name: 'heart', icon: Heart },
+    { name: 'info', icon: Info },
+    { name: 'link', icon: Link },
+    { name: 'lock', icon: Lock },
+    { name: 'map', icon: Map },
+    { name: 'message-square', icon: MessageSquare },
+    { name: 'mic', icon: Mic },
+    { name: 'music', icon: Music },
+    { name: 'paperclip', icon: Paperclip },
+    { name: 'phone', icon: Phone },
+    { name: 'pin', icon: Pin },
+    { name: 'plus', icon: Plus },
+    { name: 'save', icon: Save },
+    { name: 'share', icon: Share },
+    { name: 'star', icon: Star },
+    { name: 'tag', icon: Tag },
+    { name: 'trash', icon: Trash },
+    { name: 'upload', icon: Upload },
+    { name: 'download', icon: Download },
+    { name: 'edit', icon: Edit },
+    { name: 'copy', icon: Copy },
   ],
-  "Development & Tech": [
-    { name: "bot", icon: Bot },
-    { name: "brain", icon: Brain },
-    { name: "code", icon: Code },
-    { name: "terminal", icon: Terminal },
-    { name: "cpu", icon: Cpu },
-    { name: "database", icon: Database },
-    { name: "git-branch", icon: GitBranch },
-    { name: "github", icon: Github },
-    { name: "globe", icon: Globe },
-    { name: "hard-drive", icon: HardDrive },
-    { name: "laptop", icon: Laptop },
-    { name: "monitor", icon: Monitor },
-    { name: "server", icon: Server },
-    { name: "wifi", icon: Wifi },
-    { name: "cloud", icon: Cloud },
-    { name: "command", icon: Command },
-    { name: "file-code", icon: FileCode },
-    { name: "file-json", icon: FileJson },
-    { name: "folder", icon: Folder },
-    { name: "folder-open", icon: FolderOpen },
-    { name: "bug", icon: Bug },
-    { name: "coffee", icon: Coffee },
+  'Development & Tech': [
+    { name: 'bot', icon: Bot },
+    { name: 'brain', icon: Brain },
+    { name: 'code', icon: Code },
+    { name: 'terminal', icon: Terminal },
+    { name: 'cpu', icon: Cpu },
+    { name: 'database', icon: Database },
+    { name: 'git-branch', icon: GitBranch },
+    { name: 'github', icon: Github },
+    { name: 'globe', icon: Globe },
+    { name: 'hard-drive', icon: HardDrive },
+    { name: 'laptop', icon: Laptop },
+    { name: 'monitor', icon: Monitor },
+    { name: 'server', icon: Server },
+    { name: 'wifi', icon: Wifi },
+    { name: 'cloud', icon: Cloud },
+    { name: 'command', icon: Command },
+    { name: 'file-code', icon: FileCode },
+    { name: 'file-json', icon: FileJson },
+    { name: 'folder', icon: Folder },
+    { name: 'folder-open', icon: FolderOpen },
+    { name: 'bug', icon: Bug },
+    { name: 'coffee', icon: Coffee },
   ],
-  "Business & Finance": [
-    { name: "briefcase", icon: Briefcase },
-    { name: "building", icon: Building },
-    { name: "credit-card", icon: CreditCard },
-    { name: "dollar-sign", icon: DollarSign },
-    { name: "trending-up", icon: TrendingUp },
-    { name: "trending-down", icon: TrendingDown },
-    { name: "bar-chart", icon: BarChart },
-    { name: "pie-chart", icon: PieChart },
-    { name: "calculator", icon: Calculator },
-    { name: "receipt", icon: Receipt },
-    { name: "wallet", icon: Wallet },
+  'Business & Finance': [
+    { name: 'briefcase', icon: Briefcase },
+    { name: 'building', icon: Building },
+    { name: 'credit-card', icon: CreditCard },
+    { name: 'dollar-sign', icon: DollarSign },
+    { name: 'trending-up', icon: TrendingUp },
+    { name: 'trending-down', icon: TrendingDown },
+    { name: 'bar-chart', icon: BarChart },
+    { name: 'pie-chart', icon: PieChart },
+    { name: 'calculator', icon: Calculator },
+    { name: 'receipt', icon: Receipt },
+    { name: 'wallet', icon: Wallet },
   ],
-  "Creative & Design": [
-    { name: "palette", icon: Palette },
-    { name: "brush", icon: Brush },
-    { name: "camera", icon: Camera },
-    { name: "film", icon: Film },
-    { name: "image", icon: Image },
-    { name: "layers", icon: Layers },
-    { name: "layout", icon: Layout },
-    { name: "pen-tool", icon: PenTool },
-    { name: "scissors", icon: Scissors },
-    { name: "type", icon: Type },
-    { name: "zap", icon: Zap },
-    { name: "sparkles", icon: Sparkles },
-    { name: "wand-2", icon: Wand2 },
+  'Creative & Design': [
+    { name: 'palette', icon: Palette },
+    { name: 'brush', icon: Brush },
+    { name: 'camera', icon: Camera },
+    { name: 'film', icon: Film },
+    { name: 'image', icon: Image },
+    { name: 'layers', icon: Layers },
+    { name: 'layout', icon: Layout },
+    { name: 'pen-tool', icon: PenTool },
+    { name: 'scissors', icon: Scissors },
+    { name: 'type', icon: Type },
+    { name: 'zap', icon: Zap },
+    { name: 'sparkles', icon: Sparkles },
+    { name: 'wand-2', icon: Wand2 },
   ],
-  "Nature & Science": [
-    { name: "beaker", icon: Beaker },
-    { name: "atom", icon: Atom },
-    { name: "dna", icon: Dna },
-    { name: "flame", icon: Flame },
-    { name: "leaf", icon: Leaf },
-    { name: "mountain", icon: Mountain },
-    { name: "sun", icon: Sun },
-    { name: "moon", icon: Moon },
-    { name: "cloud-rain", icon: CloudRain },
-    { name: "snowflake", icon: Snowflake },
-    { name: "tree-pine", icon: TreePine },
-    { name: "waves", icon: Waves },
-    { name: "wind", icon: Wind },
+  'Nature & Science': [
+    { name: 'beaker', icon: Beaker },
+    { name: 'atom', icon: Atom },
+    { name: 'dna', icon: Dna },
+    { name: 'flame', icon: Flame },
+    { name: 'leaf', icon: Leaf },
+    { name: 'mountain', icon: Mountain },
+    { name: 'sun', icon: Sun },
+    { name: 'moon', icon: Moon },
+    { name: 'cloud-rain', icon: CloudRain },
+    { name: 'snowflake', icon: Snowflake },
+    { name: 'tree-pine', icon: TreePine },
+    { name: 'waves', icon: Waves },
+    { name: 'wind', icon: Wind },
   ],
-  "Gaming & Entertainment": [
-    { name: "gamepad-2", icon: Gamepad2 },
-    { name: "dice-1", icon: Dice1 },
-    { name: "trophy", icon: Trophy },
-    { name: "medal", icon: Medal },
-    { name: "crown", icon: Crown },
-    { name: "rocket", icon: Rocket },
-    { name: "target", icon: Target },
-    { name: "swords", icon: Swords },
-    { name: "shield", icon: Shield },
+  'Gaming & Entertainment': [
+    { name: 'gamepad-2', icon: Gamepad2 },
+    { name: 'dice-1', icon: Dice1 },
+    { name: 'trophy', icon: Trophy },
+    { name: 'medal', icon: Medal },
+    { name: 'crown', icon: Crown },
+    { name: 'rocket', icon: Rocket },
+    { name: 'target', icon: Target },
+    { name: 'swords', icon: Swords },
+    { name: 'shield', icon: Shield },
   ],
-  "Communication": [
-    { name: "mail", icon: Mail },
-    { name: "send", icon: Send },
-    { name: "message-circle", icon: MessageCircle },
-    { name: "video", icon: Video },
-    { name: "voicemail", icon: Voicemail },
-    { name: "radio", icon: Radio },
-    { name: "podcast", icon: Podcast },
-    { name: "megaphone", icon: Megaphone },
+  Communication: [
+    { name: 'mail', icon: Mail },
+    { name: 'send', icon: Send },
+    { name: 'message-circle', icon: MessageCircle },
+    { name: 'video', icon: Video },
+    { name: 'voicemail', icon: Voicemail },
+    { name: 'radio', icon: Radio },
+    { name: 'podcast', icon: Podcast },
+    { name: 'megaphone', icon: Megaphone },
   ],
-  "Miscellaneous": [
-    { name: "activity", icon: Activity },
-    { name: "anchor", icon: Anchor },
-    { name: "award", icon: Award },
-    { name: "battery", icon: Battery },
-    { name: "bluetooth", icon: Bluetooth },
-    { name: "compass", icon: Compass },
-    { name: "crosshair", icon: Crosshair },
-    { name: "flag", icon: Flag },
-    { name: "flashlight", icon: Flashlight },
-    { name: "gift", icon: Gift },
-    { name: "headphones", icon: Headphones },
-    { name: "key", icon: Key },
-    { name: "lightbulb", icon: Lightbulb },
-    { name: "package", icon: Package },
-    { name: "puzzle", icon: Puzzle },
-    { name: "search", icon: SearchIcon },
-    { name: "smile", icon: Smile },
-    { name: "thumbs-up", icon: ThumbsUp },
-    { name: "umbrella", icon: Umbrella },
-    { name: "watch", icon: Watch },
-    { name: "wrench", icon: Wrench },
+  Miscellaneous: [
+    { name: 'activity', icon: Activity },
+    { name: 'anchor', icon: Anchor },
+    { name: 'award', icon: Award },
+    { name: 'battery', icon: Battery },
+    { name: 'bluetooth', icon: Bluetooth },
+    { name: 'compass', icon: Compass },
+    { name: 'crosshair', icon: Crosshair },
+    { name: 'flag', icon: Flag },
+    { name: 'flashlight', icon: Flashlight },
+    { name: 'gift', icon: Gift },
+    { name: 'headphones', icon: Headphones },
+    { name: 'key', icon: Key },
+    { name: 'lightbulb', icon: Lightbulb },
+    { name: 'package', icon: Package },
+    { name: 'puzzle', icon: Puzzle },
+    { name: 'search', icon: SearchIcon },
+    { name: 'smile', icon: Smile },
+    { name: 'thumbs-up', icon: ThumbsUp },
+    { name: 'umbrella', icon: Umbrella },
+    { name: 'watch', icon: Watch },
+    { name: 'wrench', icon: Wrench },
   ],
 } as const;
 
-type IconCategory = typeof ICON_CATEGORIES[keyof typeof ICON_CATEGORIES];
+type IconCategory = (typeof ICON_CATEGORIES)[keyof typeof ICON_CATEGORIES];
 type IconItem = IconCategory[number];
 
 interface IconPickerProps {
@@ -325,13 +325,8 @@ interface IconPickerProps {
  * Icon picker component with search and categories
  * Similar to Notion's icon picker interface
  */
-export const IconPicker: React.FC<IconPickerProps> = ({
-  value,
-  onSelect,
-  isOpen,
-  onClose,
-}) => {
-  const [searchQuery, setSearchQuery] = useState("");
+export const IconPicker: React.FC<IconPickerProps> = ({ value, onSelect, isOpen, onClose }) => {
+  const [searchQuery, setSearchQuery] = useState('');
   const [hoveredIcon, setHoveredIcon] = useState<string | null>(null);
 
   // Filter icons based on search query
@@ -342,9 +337,7 @@ export const IconPicker: React.FC<IconPickerProps> = ({
     const filtered: Record<string, IconItem[]> = {};
 
     Object.entries(ICON_CATEGORIES).forEach(([category, icons]) => {
-      const matchingIcons = icons.filter(({ name }) =>
-        name.toLowerCase().includes(query)
-      );
+      const matchingIcons = icons.filter(({ name }) => name.toLowerCase().includes(query));
       if (matchingIcons.length > 0) {
         filtered[category] = matchingIcons;
       }
@@ -361,20 +354,20 @@ export const IconPicker: React.FC<IconPickerProps> = ({
   const handleSelect = (iconName: string) => {
     onSelect(iconName);
     onClose();
-    setSearchQuery("");
+    setSearchQuery('');
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[80vh] p-0">
-        <DialogHeader className="px-6 py-4 border-b">
+      <DialogContent className="max-h-[80vh] max-w-2xl p-0">
+        <DialogHeader className="border-b px-6 py-4">
           <DialogTitle>Choose an icon</DialogTitle>
         </DialogHeader>
 
         {/* Search Bar */}
-        <div className="px-6 py-3 border-b">
+        <div className="border-b px-6 py-3">
           <div className="relative">
-            <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
             <Input
               placeholder="Search icons..."
               value={searchQuery}
@@ -386,12 +379,10 @@ export const IconPicker: React.FC<IconPickerProps> = ({
         </div>
 
         {/* Icon Grid */}
-        <div className="h-[60vh] px-6 py-4 overflow-y-auto">
+        <div className="h-[60vh] overflow-y-auto px-6 py-4">
           {Object.keys(filteredCategories).length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-32 text-center">
-              <p className="text-sm text-muted-foreground">
-                No icons found for "{searchQuery}"
-              </p>
+            <div className="flex h-32 flex-col items-center justify-center text-center">
+              <p className="text-muted-foreground text-sm">No icons found for "{searchQuery}"</p>
             </div>
           ) : (
             <div className="space-y-6">
@@ -404,9 +395,7 @@ export const IconPicker: React.FC<IconPickerProps> = ({
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <h3 className="text-sm font-medium text-muted-foreground mb-3">
-                      {category}
-                    </h3>
+                    <h3 className="text-muted-foreground mb-3 text-sm font-medium">{category}</h3>
                     <div className="grid grid-cols-10 gap-2">
                       {icons.map((item: IconItem) => {
                         const Icon = item.icon;
@@ -419,14 +408,14 @@ export const IconPicker: React.FC<IconPickerProps> = ({
                             onMouseEnter={() => setHoveredIcon(item.name)}
                             onMouseLeave={() => setHoveredIcon(null)}
                             className={cn(
-                              "p-2.5 rounded-lg transition-colors relative group",
-                              "hover:bg-accent hover:text-accent-foreground",
-                              value === item.name && "bg-primary/10 text-primary"
+                              'group relative rounded-lg p-2.5 transition-colors',
+                              'hover:bg-accent hover:text-accent-foreground',
+                              value === item.name && 'bg-primary/10 text-primary'
                             )}
                           >
                             <Icon className="h-5 w-5" />
                             {hoveredIcon === item.name && (
-                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded shadow-lg whitespace-nowrap z-10">
+                              <div className="bg-popover text-popover-foreground absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 transform rounded px-2 py-1 text-xs whitespace-nowrap shadow-lg">
                                 {item.name}
                               </div>
                             )}
@@ -442,8 +431,8 @@ export const IconPicker: React.FC<IconPickerProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3 border-t bg-muted/50">
-          <p className="text-xs text-muted-foreground text-center">
+        <div className="bg-muted/50 border-t px-6 py-3">
+          <p className="text-muted-foreground text-center text-xs">
             Click an icon to select • {allIcons.length} icons available
           </p>
         </div>
@@ -460,4 +449,4 @@ export const AVAILABLE_ICONS = Object.values(ICON_CATEGORIES)
 // Export icon map for easy access
 export const ICON_MAP = Object.values(ICON_CATEGORIES)
   .flat()
-  .reduce((acc, { name, icon }) => ({ ...acc, [name]: icon }), {} as Record<string, LucideIcon>); 
+  .reduce((acc, { name, icon }) => ({ ...acc, [name]: icon }), {} as Record<string, LucideIcon>);

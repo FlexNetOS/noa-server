@@ -1,12 +1,19 @@
 # How to use the interrupt option
 
-This guide assumes knowledge of what double-texting is, which you can learn about in the [double-texting conceptual guide](../../concepts/double_texting.md).
+This guide assumes knowledge of what double-texting is, which you can learn
+about in the
+[double-texting conceptual guide](../../concepts/double_texting.md).
 
-The guide covers the `interrupt` option for double texting, which interrupts the prior run of the graph and starts a new one with the double-text. This option does not delete the first run, but rather keeps it in the database but sets its status to `interrupted`. Below is a quick example of using the `interrupt` option.
+The guide covers the `interrupt` option for double texting, which interrupts the
+prior run of the graph and starts a new one with the double-text. This option
+does not delete the first run, but rather keeps it in the database but sets its
+status to `interrupted`. Below is a quick example of using the `interrupt`
+option.
 
 ## Setup
 
-First, we will define a quick helper function for printing out JS and CURL model outputs (you can skip this if using Python):
+First, we will define a quick helper function for printing out JS and CURL model
+outputs (you can skip this if using Python):
 
 === "Javascript"
 
@@ -16,7 +23,7 @@ First, we will define a quick helper function for printing out JS and CURL model
       const sepLen = Math.floor((80 - padded.length) / 2);
       const sep = "=".repeat(sepLen);
       const secondSep = sep + (padded.length % 2 ? "=" : "");
-      
+
       console.log(`${sep}${padded}${secondSep}`);
       console.log("\n\n");
       console.log(m.content);
@@ -45,7 +52,8 @@ First, we will define a quick helper function for printing out JS and CURL model
     }
     ```
 
-Now, let's import our required packages and instantiate our client, assistant, and thread.
+Now, let's import our required packages and instantiate our client, assistant,
+and thread.
 
 === "Python"
 
@@ -116,14 +124,14 @@ Now we can start our two runs and join the second one until it has completed:
       { input: { messages: [{ role: "human", content: "what's the weather in sf?" }] } }
     );
     // sleep a bit to get partial outputs from the first run
-    await new Promise(resolve => setTimeout(resolve, 2000)); 
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
     let run = await client.runs.create(
       thread["thread_id"],
       assistantId,
-      { 
+      {
         input: { messages: [{ role: "human", content: "what's the weather in nyc?" }] },
-        multitaskStrategy: "interrupt" 
+        multitaskStrategy: "interrupt"
       }
     );
 
@@ -153,8 +161,8 @@ Now we can start our two runs and join the second one until it has completed:
 
 ## View run results
 
-We can see that the thread has partial data from the first run + data from the second run
-
+We can see that the thread has partial data from the first run + data from the
+second run
 
 === "Python"
 
@@ -190,10 +198,10 @@ We can see that the thread has partial data from the first run + data from the s
 Output:
 
     ================================ Human Message =================================
-    
+
     what's the weather in sf?
     ================================== Ai Message ==================================
-    
+
     [{'id': 'toolu_01MjNtVJwEcpujRGrf3x6Pih', 'input': {'query': 'weather in san francisco'}, 'name': 'tavily_search_results_json', 'type': 'tool_use'}]
     Tool Calls:
       tavily_search_results_json (toolu_01MjNtVJwEcpujRGrf3x6Pih)
@@ -202,13 +210,13 @@ Output:
         query: weather in san francisco
     ================================= Tool Message =================================
     Name: tavily_search_results_json
-    
+
     [{"url": "https://www.wunderground.com/hourly/us/ca/san-francisco/KCASANFR2002/date/2024-6-18", "content": "High 64F. Winds W at 10 to 20 mph. A few clouds from time to time. Low 49F. Winds W at 10 to 20 mph. Temp. San Francisco Weather Forecasts. Weather Underground provides local & long-range weather ..."}]
     ================================ Human Message =================================
-    
+
     what's the weather in nyc?
     ================================== Ai Message ==================================
-    
+
     [{'id': 'toolu_01KtE1m1ifPLQAx4fQLyZL9Q', 'input': {'query': 'weather in new york city'}, 'name': 'tavily_search_results_json', 'type': 'tool_use'}]
     Tool Calls:
       tavily_search_results_json (toolu_01KtE1m1ifPLQAx4fQLyZL9Q)
@@ -217,19 +225,18 @@ Output:
         query: weather in new york city
     ================================= Tool Message =================================
     Name: tavily_search_results_json
-    
+
     [{"url": "https://www.accuweather.com/en/us/new-york/10021/june-weather/349727", "content": "Get the monthly weather forecast for New York, NY, including daily high/low, historical averages, to help you plan ahead."}]
     ================================== Ai Message ==================================
-    
+
     The search results provide weather forecasts and information for New York City. Based on the top result from AccuWeather, here are some key details about the weather in NYC:
-    
+
     - This is a monthly weather forecast for New York City for the month of June.
     - It includes daily high and low temperatures to help plan ahead.
     - Historical averages for June in NYC are also provided as a reference point.
     - More detailed daily or hourly forecasts with precipitation chances, humidity, wind, etc. can be found by visiting the AccuWeather page.
-    
-    So in summary, the search provides a convenient overview of the expected weather conditions in New York City over the next month to give you an idea of what to prepare for if traveling or making plans there. Let me know if you need any other details!
 
+    So in summary, the search provides a convenient overview of the expected weather conditions in New York City over the next month to give you an idea of what to prepare for if traveling or making plans there. Let me know if you need any other details!
 
 Verify that the original, interrupted run was interrupted
 
@@ -250,4 +257,3 @@ Output:
     ```
     'interrupted'
     ```
-

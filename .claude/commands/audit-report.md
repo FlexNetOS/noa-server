@@ -5,6 +5,7 @@ Generate a comprehensive audit report for a completed audit or task.
 ## What This Command Does
 
 Creates human-readable and machine-readable audit reports:
+
 - **Executive Summary**: High-level verification status
 - **Detailed Findings**: All discrepancies with severity levels
 - **Evidence Trail**: Cryptographic proof of verification
@@ -80,6 +81,7 @@ fi
 ## Report Structure
 
 ### JSON Report (`audit-report.json`):
+
 ```json
 {
   "taskId": "task-123",
@@ -100,17 +102,18 @@ fi
 ```
 
 ### Markdown Report (Generated):
+
 ```markdown
 # Audit Report: task-123
 
-**Status**: ✅ PASSED
-**Confidence**: 97%
-**Date**: 2025-10-22
+**Status**: ✅ PASSED **Confidence**: 97% **Date**: 2025-10-22
 
 ## Summary
+
 Triple-verification protocol completed successfully...
 
 ## Findings
+
 - Total Discrepancies: 2 (0 critical, 1 high, 1 medium)
 - Evidence Items: 45
 - Pass A: ✅ 98% confidence
@@ -118,9 +121,9 @@ Triple-verification protocol completed successfully...
 - Pass C: ✅ 97% confidence
 
 ## Recommendations
+
 1. Address high-severity discrepancies
-2. Review medium-severity findings
-...
+2. Review medium-severity findings ...
 ```
 
 ## Example
@@ -130,6 +133,7 @@ Triple-verification protocol completed successfully...
 ```
 
 Output:
+
 ```
 ═══════════════════════════════════════════════════════
                AUDIT REPORT SUMMARY

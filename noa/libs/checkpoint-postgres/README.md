@@ -4,21 +4,38 @@ Implementation of LangGraph CheckpointSaver that uses Postgres.
 
 ## Dependencies
 
-By default `langgraph-checkpoint-postgres` installs `psycopg` (Psycopg 3) without any extras. However, you can choose a specific installation that best suits your needs [here](https://www.psycopg.org/psycopg3/docs/basic/install.html) (for example, `psycopg[binary]`).
+By default `langgraph-checkpoint-postgres` installs `psycopg` (Psycopg 3)
+without any extras. However, you can choose a specific installation that best
+suits your needs
+[here](https://www.psycopg.org/psycopg3/docs/basic/install.html) (for example,
+`psycopg[binary]`).
 
 ## Usage
 
-> [!IMPORTANT]
-> When using Postgres checkpointers for the first time, make sure to call `.setup()` method on them to create required tables. See example below.
+> [!IMPORTANT] When using Postgres checkpointers for the first time, make sure
+> to call `.setup()` method on them to create required tables. See example
+> below.
 
-> [!IMPORTANT]
-> When manually creating Postgres connections and passing them to `PostgresSaver` or `AsyncPostgresSaver`, make sure to include `autocommit=True` and `row_factory=dict_row` (`from psycopg.rows import dict_row`). See a full example in this [how-to guide](https://langchain-ai.github.io/langgraph/how-tos/persistence_postgres/).
+> [!IMPORTANT] When manually creating Postgres connections and passing them to
+> `PostgresSaver` or `AsyncPostgresSaver`, make sure to include
+> `autocommit=True` and `row_factory=dict_row`
+> (`from psycopg.rows import dict_row`). See a full example in this
+> [how-to guide](https://langchain-ai.github.io/langgraph/how-tos/persistence_postgres/).
 >
 > **Why these parameters are required:**
-> - `autocommit=True`: Required for the `.setup()` method to properly commit the checkpoint tables to the database. Without this, table creation may not be persisted.
-> - `row_factory=dict_row`: Required because the PostgresSaver implementation accesses database rows using dictionary-style syntax (e.g., `row["column_name"]`). The default `tuple_row` factory returns tuples that only support index-based access (e.g., `row[0]`), which will cause `TypeError` exceptions when the checkpointer tries to access columns by name.
+>
+> - `autocommit=True`: Required for the `.setup()` method to properly commit the
+>   checkpoint tables to the database. Without this, table creation may not be
+>   persisted.
+> - `row_factory=dict_row`: Required because the PostgresSaver implementation
+>   accesses database rows using dictionary-style syntax (e.g.,
+>   `row["column_name"]`). The default `tuple_row` factory returns tuples that
+>   only support index-based access (e.g., `row[0]`), which will cause
+>   `TypeError` exceptions when the checkpointer tries to access columns by
+>   name.
 >
 > **Example of incorrect usage:**
+>
 > ```python
 > # ❌ This will fail with TypeError during checkpointer operations
 > with psycopg.connect(DB_URI) as conn:  # Missing autocommit=True and row_factory=dict_row

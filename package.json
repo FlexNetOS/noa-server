@@ -33,9 +33,9 @@
     "truth-gate": "bash scripts/npm/run-task.sh truth-gate",
     "export": "bash scripts/npm/run-task.sh export",
     "release:report": "bash scripts/npm/run-task.sh release:report",
-    "lint": "eslint packages scripts src tests --ext .js,.jsx,.ts,.tsx --max-warnings 0",
-    "lint:fix": "eslint packages scripts src tests --ext .js,.jsx,.ts,.tsx --fix",
-    "lint:report": "mkdir -p docs/reports && eslint packages scripts src tests --ext .js,.jsx,.ts,.tsx --format html --output-file docs/reports/eslint-report.html",
+    "lint": "ESLINT_USE_FLAT_CONFIG=1 eslint --config eslint.config.js packages scripts src tests --max-warnings 0",
+    "lint:fix": "ESLINT_USE_FLAT_CONFIG=1 eslint --config eslint.config.js packages scripts src tests --fix",
+    "lint:report": "mkdir -p docs/reports && ESLINT_USE_FLAT_CONFIG=1 eslint --config eslint.config.js packages scripts src tests --format html --output-file docs/reports/eslint-report.html",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,yml,yaml}\"",
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md,yml,yaml}\"",
     "format:staged": "prettier --write --ignore-unknown",
@@ -56,11 +56,14 @@
     "generate:component": "node scripts/generators/generate.js component",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:unit": "vitest run --coverage tests/unit",
+    "test:unit": "vitest run --coverage tests/unit packages/ai-provider/tests packages/message-queue/tests",
     "test:integration": "VITEST_DISABLE_THRESHOLDS=1 vitest run --coverage tests/integration",
     "test:e2e": "playwright test",
     "test:all": "pnpm run test:unit && pnpm run test:integration && pnpm run test:e2e",
     "test:coverage": "vitest run --coverage",
+    "test:ui": "pnpm --filter @noa/ui test:gate",
+    "test:ui-dashboard": "pnpm --filter ui-dashboard test:gate",
+    "test:ui:all": "pnpm run test:ui && pnpm run test:ui-dashboard",
     "typecheck": "tsc --noEmit --project tsconfig.json",
     "typecheck:watch": "tsc --noEmit --watch",
     "build:all": "pnpm -r run build",
@@ -96,6 +99,8 @@
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/js": "^8.57.0",
     "@jest/globals": "^29.7.0",
     "@playwright/test": "^1.56.1",
     "@types/amqplib": "^0.10.1",
@@ -125,6 +130,8 @@
     "license-checker": "^25.0.1",
     "pg": "^8.16.3",
     "prettier": "^3.3.3",
+    "prettier-plugin-svelte": "^3.4.0",
+    "prettier-plugin-tailwindcss": "^0.7.1",
     "prom-client": "^15.1.0",
     "redis": "^5.9.0",
     "ruv-swarm": "^1.0.20",
@@ -132,5 +139,11 @@
     "vitest": "^3.2.4",
     "winston": "^3.18.3",
     "zod": "^4.1.12"
+  },
+  "pnpm": {
+    "overrides": {
+      "@types/react": "^18.3.26",
+      "@types/react-dom": "^18.3.5"
+    }
   }
 }

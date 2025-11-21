@@ -184,8 +184,8 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-      - "443:443"
-      - "80:80"
+      - '443:443'
+      - '80:80'
     networks:
       - frontend
     volumes:
@@ -246,7 +246,7 @@ services:
     networks:
       - monitoring
     ports:
-      - "3001:3000"
+      - '3001:3000'
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
       - GF_USERS_ALLOW_SIGN_UP=false

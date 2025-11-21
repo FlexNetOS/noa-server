@@ -1,4 +1,4 @@
-import type { 
+import type {
   EventName,
   FeatureUsageProperties,
   ErrorProperties,
@@ -42,7 +42,7 @@ import type {
   PromptPatternProperties,
   WorkflowProperties,
   NetworkPerformanceProperties,
-  SuggestionProperties
+  SuggestionProperties,
 } from './types';
 
 export const ANALYTICS_EVENTS = {
@@ -55,7 +55,7 @@ export const ANALYTICS_EVENTS = {
   CHECKPOINT_CREATED: 'checkpoint_created' as EventName,
   CHECKPOINT_RESTORED: 'checkpoint_restored' as EventName,
   TOOL_EXECUTED: 'tool_executed' as EventName,
-  
+
   // Feature usage events
   FEATURE_USED: 'feature_used' as EventName,
   MODEL_SELECTED: 'model_selected' as EventName,
@@ -64,13 +64,13 @@ export const ANALYTICS_EVENTS = {
   FILE_OPENED: 'file_opened' as EventName,
   FILE_EDITED: 'file_edited' as EventName,
   FILE_SAVED: 'file_saved' as EventName,
-  
+
   // Agent events
   AGENT_EXECUTED: 'agent_executed' as EventName,
   AGENT_STARTED: 'agent_started' as EventName,
   AGENT_PROGRESS: 'agent_progress' as EventName,
   AGENT_ERROR: 'agent_error' as EventName,
-  
+
   // MCP events
   MCP_SERVER_CONNECTED: 'mcp_server_connected' as EventName,
   MCP_SERVER_DISCONNECTED: 'mcp_server_disconnected' as EventName,
@@ -78,57 +78,57 @@ export const ANALYTICS_EVENTS = {
   MCP_SERVER_REMOVED: 'mcp_server_removed' as EventName,
   MCP_TOOL_INVOKED: 'mcp_tool_invoked' as EventName,
   MCP_CONNECTION_ERROR: 'mcp_connection_error' as EventName,
-  
+
   // Slash command events
   SLASH_COMMAND_USED: 'slash_command_used' as EventName,
   SLASH_COMMAND_SELECTED: 'slash_command_selected' as EventName,
   SLASH_COMMAND_EXECUTED: 'slash_command_executed' as EventName,
   SLASH_COMMAND_CREATED: 'slash_command_created' as EventName,
-  
+
   // Settings and system events
   SETTINGS_CHANGED: 'settings_changed' as EventName,
   APP_STARTED: 'app_started' as EventName,
   APP_CLOSED: 'app_closed' as EventName,
-  
+
   // Error and performance events
   ERROR_OCCURRED: 'error_occurred' as EventName,
   API_ERROR: 'api_error' as EventName,
   UI_ERROR: 'ui_error' as EventName,
   PERFORMANCE_BOTTLENECK: 'performance_bottleneck' as EventName,
   MEMORY_WARNING: 'memory_warning' as EventName,
-  
+
   // User journey events
   JOURNEY_MILESTONE: 'journey_milestone' as EventName,
   USER_RETENTION: 'user_retention' as EventName,
-  
+
   // AI interaction events
   AI_INTERACTION: 'ai_interaction' as EventName,
   PROMPT_PATTERN: 'prompt_pattern' as EventName,
-  
+
   // Quality events
   OUTPUT_REGENERATED: 'output_regenerated' as EventName,
   CONVERSATION_ABANDONED: 'conversation_abandoned' as EventName,
   SUGGESTION_ACCEPTED: 'suggestion_accepted' as EventName,
   SUGGESTION_REJECTED: 'suggestion_rejected' as EventName,
-  
+
   // Workflow events
   WORKFLOW_STARTED: 'workflow_started' as EventName,
   WORKFLOW_COMPLETED: 'workflow_completed' as EventName,
   WORKFLOW_ABANDONED: 'workflow_abandoned' as EventName,
-  
+
   // Feature adoption events
   FEATURE_DISCOVERED: 'feature_discovered' as EventName,
   FEATURE_ADOPTED: 'feature_adopted' as EventName,
   FEATURE_COMBINATION: 'feature_combination' as EventName,
-  
+
   // Resource usage events
   RESOURCE_USAGE_HIGH: 'resource_usage_high' as EventName,
   RESOURCE_USAGE_SAMPLED: 'resource_usage_sampled' as EventName,
-  
+
   // Network performance events
   NETWORK_PERFORMANCE: 'network_performance' as EventName,
   NETWORK_FAILURE: 'network_failure' as EventName,
-  
+
   // Engagement events
   SESSION_ENGAGEMENT: 'session_engagement' as EventName,
 } as const;
@@ -142,7 +142,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   feature: (feature: string, subfeature?: string, metadata?: Record<string, any>) => ({
     event: ANALYTICS_EVENTS.FEATURE_USED,
     properties: {
@@ -152,7 +152,7 @@ export const eventBuilders = {
       ...metadata,
     } as FeatureUsageProperties,
   }),
-  
+
   error: (errorType: string, errorCode?: string, context?: string) => ({
     event: ANALYTICS_EVENTS.ERROR_OCCURRED,
     properties: {
@@ -162,7 +162,7 @@ export const eventBuilders = {
       context,
     } as ErrorProperties,
   }),
-  
+
   model: (newModel: string, previousModel?: string, source?: string) => ({
     event: ANALYTICS_EVENTS.MODEL_SELECTED,
     properties: {
@@ -172,7 +172,7 @@ export const eventBuilders = {
       source,
     } as ModelProperties,
   }),
-  
+
   agent: (agentType: string, success: boolean, agentName?: string, durationMs?: number) => ({
     event: ANALYTICS_EVENTS.AGENT_EXECUTED,
     properties: {
@@ -183,7 +183,7 @@ export const eventBuilders = {
       duration_ms: durationMs,
     } as AgentProperties,
   }),
-  
+
   mcp: (serverName: string, success: boolean, serverType?: string) => ({
     event: ANALYTICS_EVENTS.MCP_SERVER_CONNECTED,
     properties: {
@@ -193,7 +193,7 @@ export const eventBuilders = {
       success,
     } as MCPProperties,
   }),
-  
+
   slashCommand: (command: string, success: boolean) => ({
     event: ANALYTICS_EVENTS.SLASH_COMMAND_USED,
     properties: {
@@ -202,7 +202,7 @@ export const eventBuilders = {
       success,
     } as SlashCommandProperties,
   }),
-  
+
   performance: (metrics: PerformanceMetrics) => ({
     event: ANALYTICS_EVENTS.FEATURE_USED,
     properties: {
@@ -211,7 +211,7 @@ export const eventBuilders = {
       ...metrics,
     },
   }),
-  
+
   // Claude Code Session event builders
   promptSubmitted: (props: PromptSubmittedProperties) => ({
     event: ANALYTICS_EVENTS.PROMPT_SUBMITTED,
@@ -220,7 +220,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   sessionStopped: (props: SessionStoppedProperties) => ({
     event: ANALYTICS_EVENTS.SESSION_STOPPED,
     properties: {
@@ -228,7 +228,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   // Enhanced session stopped with detailed metrics
   enhancedSessionStopped: (props: EnhancedSessionStoppedProperties) => ({
     event: ANALYTICS_EVENTS.SESSION_STOPPED,
@@ -268,7 +268,7 @@ export const eventBuilders = {
       pending_prompts_count: props.pending_prompts_count,
     },
   }),
-  
+
   checkpointCreated: (props: CheckpointCreatedProperties) => ({
     event: ANALYTICS_EVENTS.CHECKPOINT_CREATED,
     properties: {
@@ -276,7 +276,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   checkpointRestored: (props: CheckpointRestoredProperties) => ({
     event: ANALYTICS_EVENTS.CHECKPOINT_RESTORED,
     properties: {
@@ -284,7 +284,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   toolExecuted: (props: ToolExecutedProperties) => ({
     event: ANALYTICS_EVENTS.TOOL_EXECUTED,
     properties: {
@@ -292,10 +292,12 @@ export const eventBuilders = {
       tool_name: sanitizers.sanitizeToolName(props.tool_name),
       execution_time_ms: props.execution_time_ms,
       success: props.success,
-      error_message: props.error_message ? sanitizers.sanitizeErrorMessage(props.error_message) : undefined,
+      error_message: props.error_message
+        ? sanitizers.sanitizeErrorMessage(props.error_message)
+        : undefined,
     },
   }),
-  
+
   // Enhanced Agent event builders
   agentStarted: (props: AgentStartedProperties) => ({
     event: ANALYTICS_EVENTS.AGENT_STARTED,
@@ -306,7 +308,7 @@ export const eventBuilders = {
       has_custom_prompt: props.has_custom_prompt,
     },
   }),
-  
+
   agentProgress: (props: AgentProgressProperties) => ({
     event: ANALYTICS_EVENTS.AGENT_PROGRESS,
     properties: {
@@ -314,7 +316,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   agentError: (props: AgentErrorProperties) => ({
     event: ANALYTICS_EVENTS.AGENT_ERROR,
     properties: {
@@ -322,7 +324,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   // MCP event builders
   mcpServerAdded: (props: MCPServerAddedProperties) => ({
     event: ANALYTICS_EVENTS.MCP_SERVER_ADDED,
@@ -331,7 +333,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   mcpServerRemoved: (props: MCPServerRemovedProperties) => ({
     event: ANALYTICS_EVENTS.MCP_SERVER_REMOVED,
     properties: {
@@ -340,7 +342,7 @@ export const eventBuilders = {
       was_connected: props.was_connected,
     },
   }),
-  
+
   mcpToolInvoked: (props: MCPToolInvokedProperties) => ({
     event: ANALYTICS_EVENTS.MCP_TOOL_INVOKED,
     properties: {
@@ -350,7 +352,7 @@ export const eventBuilders = {
       invocation_source: props.invocation_source,
     },
   }),
-  
+
   mcpConnectionError: (props: MCPConnectionErrorProperties) => ({
     event: ANALYTICS_EVENTS.MCP_CONNECTION_ERROR,
     properties: {
@@ -360,7 +362,7 @@ export const eventBuilders = {
       retry_attempt: props.retry_attempt,
     },
   }),
-  
+
   // Slash Command event builders
   slashCommandSelected: (props: SlashCommandSelectedProperties) => ({
     event: ANALYTICS_EVENTS.SLASH_COMMAND_SELECTED,
@@ -370,7 +372,7 @@ export const eventBuilders = {
       selection_method: props.selection_method,
     },
   }),
-  
+
   slashCommandExecuted: (props: SlashCommandExecutedProperties) => ({
     event: ANALYTICS_EVENTS.SLASH_COMMAND_EXECUTED,
     properties: {
@@ -380,7 +382,7 @@ export const eventBuilders = {
       execution_time_ms: props.execution_time_ms,
     },
   }),
-  
+
   slashCommandCreated: (props: SlashCommandCreatedProperties) => ({
     event: ANALYTICS_EVENTS.SLASH_COMMAND_CREATED,
     properties: {
@@ -388,7 +390,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   // Error and Performance event builders
   apiError: (props: APIErrorProperties) => ({
     event: ANALYTICS_EVENTS.API_ERROR,
@@ -400,7 +402,7 @@ export const eventBuilders = {
       response_time_ms: props.response_time_ms,
     },
   }),
-  
+
   uiError: (props: UIErrorProperties) => ({
     event: ANALYTICS_EVENTS.UI_ERROR,
     properties: {
@@ -408,7 +410,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   performanceBottleneck: (props: PerformanceBottleneckProperties) => ({
     event: ANALYTICS_EVENTS.PERFORMANCE_BOTTLENECK,
     properties: {
@@ -416,7 +418,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   memoryWarning: (props: MemoryWarningProperties) => ({
     event: ANALYTICS_EVENTS.MEMORY_WARNING,
     properties: {
@@ -424,7 +426,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   // User journey event builders
   journeyMilestone: (props: UserJourneyProperties) => ({
     event: ANALYTICS_EVENTS.JOURNEY_MILESTONE,
@@ -433,7 +435,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   // Enhanced prompt submission with more context
   enhancedPromptSubmitted: (props: EnhancedPromptSubmittedProperties) => ({
     event: ANALYTICS_EVENTS.PROMPT_SUBMITTED,
@@ -451,7 +453,7 @@ export const eventBuilders = {
       session_age_ms: props.session_age_ms,
     },
   }),
-  
+
   // Enhanced tool execution with more context
   enhancedToolExecuted: (props: EnhancedToolExecutedProperties) => ({
     event: ANALYTICS_EVENTS.TOOL_EXECUTED,
@@ -460,7 +462,9 @@ export const eventBuilders = {
       tool_name: sanitizers.sanitizeToolName(props.tool_name),
       execution_time_ms: props.execution_time_ms,
       success: props.success,
-      error_message: props.error_message ? sanitizers.sanitizeErrorMessage(props.error_message) : undefined,
+      error_message: props.error_message
+        ? sanitizers.sanitizeErrorMessage(props.error_message)
+        : undefined,
       tool_category: props.tool_category,
       consecutive_failures: props.consecutive_failures,
       retry_attempted: props.retry_attempted,
@@ -468,7 +472,7 @@ export const eventBuilders = {
       output_size_bytes: props.output_size_bytes,
     },
   }),
-  
+
   // Enhanced error tracking
   enhancedError: (props: EnhancedErrorProperties) => ({
     event: ANALYTICS_EVENTS.ERROR_OCCURRED,
@@ -476,7 +480,9 @@ export const eventBuilders = {
       category: 'error',
       error_type: props.error_type,
       error_code: props.error_code,
-      error_message: props.error_message ? sanitizers.sanitizeErrorMessage(props.error_message) : undefined,
+      error_message: props.error_message
+        ? sanitizers.sanitizeErrorMessage(props.error_message)
+        : undefined,
       context: props.context,
       user_action_before_error: props.user_action_before_error,
       recovery_attempted: props.recovery_attempted,
@@ -485,7 +491,7 @@ export const eventBuilders = {
       stack_trace_hash: props.stack_trace_hash,
     },
   }),
-  
+
   // Session engagement
   sessionEngagement: (props: SessionEngagementProperties) => ({
     event: ANALYTICS_EVENTS.SESSION_ENGAGEMENT,
@@ -494,7 +500,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   // Feature discovery
   featureDiscovered: (props: FeatureDiscoveryProperties) => ({
     event: ANALYTICS_EVENTS.FEATURE_DISCOVERED,
@@ -503,7 +509,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   // Output quality
   outputRegenerated: (props: OutputQualityProperties) => ({
     event: ANALYTICS_EVENTS.OUTPUT_REGENERATED,
@@ -512,7 +518,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   // Conversation abandoned
   conversationAbandoned: (reason: string, messagesCount: number) => ({
     event: ANALYTICS_EVENTS.CONVERSATION_ABANDONED,
@@ -522,7 +528,7 @@ export const eventBuilders = {
       messages_count: messagesCount,
     },
   }),
-  
+
   // Suggestion tracking
   suggestionAccepted: (props: SuggestionProperties) => ({
     event: ANALYTICS_EVENTS.SUGGESTION_ACCEPTED,
@@ -531,7 +537,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   suggestionRejected: (props: SuggestionProperties) => ({
     event: ANALYTICS_EVENTS.SUGGESTION_REJECTED,
     properties: {
@@ -539,7 +545,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   // Resource usage
   resourceUsageHigh: (props: ResourceUsageProperties) => ({
     event: ANALYTICS_EVENTS.RESOURCE_USAGE_HIGH,
@@ -548,7 +554,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   resourceUsageSampled: (props: ResourceUsageProperties) => ({
     event: ANALYTICS_EVENTS.RESOURCE_USAGE_SAMPLED,
     properties: {
@@ -556,7 +562,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   // Feature adoption
   featureAdopted: (props: FeatureAdoptionProperties) => ({
     event: ANALYTICS_EVENTS.FEATURE_ADOPTED,
@@ -565,7 +571,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   featureCombination: (props: FeatureCombinationProperties) => ({
     event: ANALYTICS_EVENTS.FEATURE_COMBINATION,
     properties: {
@@ -573,7 +579,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   // AI interactions
   aiInteraction: (props: AIInteractionProperties) => ({
     event: ANALYTICS_EVENTS.AI_INTERACTION,
@@ -582,7 +588,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   promptPattern: (props: PromptPatternProperties) => ({
     event: ANALYTICS_EVENTS.PROMPT_PATTERN,
     properties: {
@@ -590,7 +596,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   // Workflow tracking
   workflowStarted: (props: WorkflowProperties) => ({
     event: ANALYTICS_EVENTS.WORKFLOW_STARTED,
@@ -599,7 +605,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   workflowCompleted: (props: WorkflowProperties) => ({
     event: ANALYTICS_EVENTS.WORKFLOW_COMPLETED,
     properties: {
@@ -607,7 +613,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   workflowAbandoned: (props: WorkflowProperties) => ({
     event: ANALYTICS_EVENTS.WORKFLOW_ABANDONED,
     properties: {
@@ -615,7 +621,7 @@ export const eventBuilders = {
       ...props,
     },
   }),
-  
+
   // Network performance
   networkPerformance: (props: NetworkPerformanceProperties) => ({
     event: ANALYTICS_EVENTS.NETWORK_PERFORMANCE,
@@ -629,7 +635,7 @@ export const eventBuilders = {
       circuit_breaker_triggered: props.circuit_breaker_triggered,
     },
   }),
-  
+
   networkFailure: (props: NetworkPerformanceProperties) => ({
     event: ANALYTICS_EVENTS.NETWORK_FAILURE,
     properties: {
@@ -651,12 +657,12 @@ export const sanitizers = {
     const ext = path.split('.').pop();
     return ext ? `*.${ext}` : 'unknown';
   },
-  
+
   // Remove project names and paths
   sanitizeProjectPath: (_path: string): string => {
     return 'project';
   },
-  
+
   // Sanitize error messages that might contain sensitive info
   sanitizeErrorMessage: (message: string): string => {
     // Remove file paths
@@ -667,31 +673,31 @@ export const sanitizers = {
     message = message.replace(/[\w\.-]+@[\w\.-]+\.\w+/g, '***@***.***');
     return message;
   },
-  
+
   // Sanitize agent names that might contain user info
   sanitizeAgentName: (name: string): string => {
     // Only keep the type, remove custom names
     return name.split('-')[0] || 'custom';
   },
-  
+
   // Sanitize tool names to remove any user-specific info
   sanitizeToolName: (name: string): string => {
     // Remove any path-like structures
     return name.replace(/\/[\w\-\/\.]+/g, '').toLowerCase();
   },
-  
+
   // Sanitize server names to remove any user-specific info
   sanitizeServerName: (name: string): string => {
     // Keep only the type or first part
     return name.split(/[\-_]/)[0] || 'custom';
   },
-  
+
   // Sanitize command names
   sanitizeCommandName: (name: string): string => {
     // Remove any custom prefixes or user-specific parts
     return name.replace(/^custom-/, '').split('-')[0] || 'custom';
   },
-  
+
   // Sanitize API endpoints
   sanitizeEndpoint: (endpoint: string): string => {
     // Remove any dynamic IDs or user-specific parts

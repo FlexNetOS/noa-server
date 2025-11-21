@@ -1,0 +1,12 @@
+namespaceSelector: {}
+allowedProviders:
+  - openai
+  - anthropic
+  - llamacpp
+  - vertexai
+requiredAnnotations:
+  - rtt.plan/hash
+  - rtt.plan/signed
+  - rtt.plan/id
+  - rtt.data/region
+enforceImageDigest: true

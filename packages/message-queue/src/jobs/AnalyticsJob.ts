@@ -8,35 +8,53 @@ export const AnalyticsJobDataSchema = z.object({
   dataSource: z.object({
     type: z.enum(['events', 'metrics', 'logs', 'database', 'api']),
     source: z.string(), // table name, API endpoint, file path, etc.
-    filters: z.object({
-      dateRange: z.object({
-        start: z.date(),
-        end: z.date()
-      }).optional(),
-      dimensions: z.array(z.string()).optional(),
-      metrics: z.array(z.string()).optional(),
-      conditions: z.record(z.any()).optional()
-    }).optional()
+    filters: z
+      .object({
+        dateRange: z
+          .object({
+            start: z.date(),
+            end: z.date(),
+          })
+          .optional(),
+        dimensions: z.array(z.string()).optional(),
+        metrics: z.array(z.string()).optional(),
+        conditions: z.record(z.any()).optional(),
+      })
+      .optional(),
   }),
-  processing: z.object({
-    aggregations: z.array(z.object({
-      name: z.string(),
-      type: z.enum(['count', 'sum', 'avg', 'min', 'max', 'distinct', 'percentile']),
-      field: z.string(),
-      groupBy: z.array(z.string()).optional(),
-      percentile: z.number().optional() // for percentile aggregation
-    })).optional(),
-    transformations: z.array(z.object({
-      name: z.string(),
-      type: z.enum(['filter', 'map', 'group', 'sort', 'join', 'pivot']),
-      config: z.record(z.any())
-    })).optional(),
-    calculations: z.array(z.object({
-      name: z.string(),
-      formula: z.string(), // mathematical expression
-      dependencies: z.array(z.string()).optional()
-    })).optional()
-  }).optional(),
+  processing: z
+    .object({
+      aggregations: z
+        .array(
+          z.object({
+            name: z.string(),
+            type: z.enum(['count', 'sum', 'avg', 'min', 'max', 'distinct', 'percentile']),
+            field: z.string(),
+            groupBy: z.array(z.string()).optional(),
+            percentile: z.number().optional(), // for percentile aggregation
+          })
+        )
+        .optional(),
+      transformations: z
+        .array(
+          z.object({
+            name: z.string(),
+            type: z.enum(['filter', 'map', 'group', 'sort', 'join', 'pivot']),
+            config: z.record(z.any()),
+          })
+        )
+        .optional(),
+      calculations: z
+        .array(
+          z.object({
+            name: z.string(),
+            formula: z.string(), // mathematical expression
+            dependencies: z.array(z.string()).optional(),
+          })
+        )
+        .optional(),
+    })
+    .optional(),
   output: z.object({
     format: z.enum(['json', 'csv', 'chart', 'dashboard', 'alert']),
     destination: z.object({
@@ -44,26 +62,34 @@ export const AnalyticsJobDataSchema = z.object({
       path: z.string().optional(),
       table: z.string().optional(),
       endpoint: z.string().optional(),
-      email: z.object({
-        to: z.union([z.string(), z.array(z.string())]),
-        subject: z.string().optional(),
-        template: z.string().optional()
-      }).optional()
+      email: z
+        .object({
+          to: z.union([z.string(), z.array(z.string())]),
+          subject: z.string().optional(),
+          template: z.string().optional(),
+        })
+        .optional(),
     }),
-    filename: z.string().optional()
+    filename: z.string().optional(),
   }),
-  options: z.object({
-    realTime: z.boolean().optional(),
-    batchSize: z.number().optional(),
-    timeout: z.number().optional(),
-    cache: z.boolean().optional(),
-    alerts: z.array(z.object({
-      condition: z.string(), // expression to evaluate
-      threshold: z.number(),
-      message: z.string(),
-      severity: z.enum(['low', 'medium', 'high', 'critical'])
-    })).optional()
-  }).optional()
+  options: z
+    .object({
+      realTime: z.boolean().optional(),
+      batchSize: z.number().optional(),
+      timeout: z.number().optional(),
+      cache: z.boolean().optional(),
+      alerts: z
+        .array(
+          z.object({
+            condition: z.string(), // expression to evaluate
+            threshold: z.number(),
+            message: z.string(),
+            severity: z.enum(['low', 'medium', 'high', 'critical']),
+          })
+        )
+        .optional(),
+    })
+    .optional(),
 });
 
 export type AnalyticsJobData = z.infer<typeof AnalyticsJobDataSchema>;
@@ -130,7 +156,7 @@ export class AnalyticsJob {
       this.logger.info('Starting analytics processing', {
         jobId: job.id,
         operation: analyticsData.operation,
-        dataSource: analyticsData.dataSource.type
+        dataSource: analyticsData.dataSource.type,
       });
 
       // Fetch data from source
@@ -151,18 +177,24 @@ export class AnalyticsJob {
         insights: [],
         output: {
           format: analyticsData.output.format,
-          size: 0
-        }
+          size: 0,
+        },
       };
 
       // Perform aggregations if specified
       if (analyticsData.processing?.aggregations) {
-        result.aggregations = await this.performAggregations(processedData, analyticsData.processing.aggregations);
+        result.aggregations = await this.performAggregations(
+          processedData,
+          analyticsData.processing.aggregations
+        );
       }
 
       // Perform calculations if specified
       if (analyticsData.processing?.calculations) {
-        result.calculations = await this.performCalculations(result.aggregations, analyticsData.processing.calculations);
+        result.calculations = await this.performCalculations(
+          result.aggregations,
+          analyticsData.processing.calculations
+        );
       }
 
       // Generate insights
@@ -181,16 +213,15 @@ export class AnalyticsJob {
         jobId: job.id,
         operation: analyticsData.operation,
         insightsCount: result.insights.length,
-        alertsTriggered: result.alerts.filter(a => a.triggered).length
+        alertsTriggered: result.alerts.filter((a) => a.triggered).length,
       });
 
       return result;
-
     } catch (error) {
       this.logger.error('Analytics processing failed', {
         jobId: job.id,
         error: (error as Error).message,
-        operation: analyticsData.operation
+        operation: analyticsData.operation,
       });
 
       throw new Error(`Analytics processing failed: ${(error as Error).message}`);
@@ -265,7 +296,7 @@ export class AnalyticsJob {
     this.logger.info('Fetching events', { source: dataSource.source });
     return [
       { event: 'user_login', userId: '1', timestamp: new Date() },
-      { event: 'page_view', userId: '1', page: '/dashboard', timestamp: new Date() }
+      { event: 'page_view', userId: '1', page: '/dashboard', timestamp: new Date() },
     ];
   }
 
@@ -277,7 +308,7 @@ export class AnalyticsJob {
     this.logger.info('Fetching metrics', { source: dataSource.source });
     return [
       { metric: 'cpu_usage', value: 45.2, timestamp: new Date() },
-      { metric: 'memory_usage', value: 67.8, timestamp: new Date() }
+      { metric: 'memory_usage', value: 67.8, timestamp: new Date() },
     ];
   }
 
@@ -289,7 +320,7 @@ export class AnalyticsJob {
     this.logger.info('Fetching logs', { source: dataSource.source });
     return [
       { level: 'info', message: 'User logged in', timestamp: new Date() },
-      { level: 'error', message: 'Database connection failed', timestamp: new Date() }
+      { level: 'error', message: 'Database connection failed', timestamp: new Date() },
     ];
   }
 
@@ -299,9 +330,7 @@ export class AnalyticsJob {
   private async fetchFromDatabase(dataSource: any): Promise<any[]> {
     // In real implementation, use database client
     this.logger.info('Fetching from database', { source: dataSource.source });
-    return [
-      { id: 1, name: 'Sample Record', createdAt: new Date() }
-    ];
+    return [{ id: 1, name: 'Sample Record', createdAt: new Date() }];
   }
 
   /**
@@ -310,9 +339,7 @@ export class AnalyticsJob {
   private async fetchFromApi(dataSource: any): Promise<any[]> {
     // In real implementation, make HTTP request
     this.logger.info('Fetching from API', { source: dataSource.source });
-    return [
-      { id: 1, data: 'API Response', timestamp: new Date() }
-    ];
+    return [{ id: 1, data: 'API Response', timestamp: new Date() }];
   }
 
   /**
@@ -323,7 +350,7 @@ export class AnalyticsJob {
 
     // Date range filter
     if (filters.dateRange) {
-      filteredData = filteredData.filter(item => {
+      filteredData = filteredData.filter((item) => {
         const timestamp = new Date(item.timestamp || item.createdAt);
         return timestamp >= filters.dateRange.start && timestamp <= filters.dateRange.end;
       });
@@ -332,7 +359,7 @@ export class AnalyticsJob {
     // Dimension filters
     if (filters.dimensions) {
       // Only keep specified dimensions
-      filteredData = filteredData.map(item => {
+      filteredData = filteredData.map((item) => {
         const filtered: any = {};
         filters.dimensions.forEach((dim: string) => {
           if (item.hasOwnProperty(dim)) {
@@ -345,7 +372,7 @@ export class AnalyticsJob {
 
     // Condition filters
     if (filters.conditions) {
-      filteredData = filteredData.filter(item => {
+      filteredData = filteredData.filter((item) => {
         return Object.entries(filters.conditions).every(([key, value]) => {
           return item[key] === value;
         });
@@ -358,7 +385,10 @@ export class AnalyticsJob {
   /**
    * Perform aggregations on data
    */
-  private async performAggregations(data: any[], aggregations: any[]): Promise<Record<string, any>> {
+  private async performAggregations(
+    data: any[],
+    aggregations: any[]
+  ): Promise<Record<string, any>> {
     const results: Record<string, any> = {};
 
     for (const agg of aggregations) {
@@ -377,7 +407,10 @@ export class AnalyticsJob {
   /**
    * Perform calculations on aggregated data
    */
-  private async performCalculations(aggregations: Record<string, any>, calculations: any[]): Promise<Record<string, any>> {
+  private async performCalculations(
+    aggregations: Record<string, any>,
+    calculations: any[]
+  ): Promise<Record<string, any>> {
     const results: Record<string, any> = {};
 
     for (const calc of calculations) {
@@ -390,7 +423,10 @@ export class AnalyticsJob {
         let processedFormula = formula;
         for (const [key, value] of Object.entries(aggregations)) {
           if (typeof value === 'number') {
-            processedFormula = processedFormula.replace(new RegExp(`\\b${key}\\b`, 'g'), value.toString());
+            processedFormula = processedFormula.replace(
+              new RegExp(`\\b${key}\\b`, 'g'),
+              value.toString()
+            );
           }
         }
 
@@ -399,7 +435,9 @@ export class AnalyticsJob {
 
         results[calc.name] = result;
       } catch (error) {
-        this.logger.warn(`Calculation failed for ${calc.name}`, { error: (error as Error).message });
+        this.logger.warn(`Calculation failed for ${calc.name}`, {
+          error: (error as Error).message,
+        });
         results[calc.name] = null;
       }
     }
@@ -425,7 +463,7 @@ export class AnalyticsJob {
     }
 
     // Generate insights based on alerts
-    const triggeredAlerts = result.alerts.filter(a => a.triggered);
+    const triggeredAlerts = result.alerts.filter((a) => a.triggered);
     if (triggeredAlerts.length > 0) {
       insights.push(`${triggeredAlerts.length} alerts were triggered requiring attention`);
     }
@@ -436,12 +474,17 @@ export class AnalyticsJob {
   /**
    * Check alert conditions
    */
-  private async checkAlerts(result: AnalyticsResult, alerts: any[]): Promise<Array<{
-    condition: string;
-    triggered: boolean;
-    severity: string;
-    message: string;
-  }>> {
+  private async checkAlerts(
+    result: AnalyticsResult,
+    alerts: any[]
+  ): Promise<
+    Array<{
+      condition: string;
+      triggered: boolean;
+      severity: string;
+      message: string;
+    }>
+  > {
     const alertResults = [];
 
     for (const alert of alerts) {
@@ -454,7 +497,10 @@ export class AnalyticsJob {
         let processedCondition = condition;
         for (const [key, value] of Object.entries(result.aggregations)) {
           if (typeof value === 'number') {
-            processedCondition = processedCondition.replace(new RegExp(`\\b${key}\\b`, 'g'), value.toString());
+            processedCondition = processedCondition.replace(
+              new RegExp(`\\b${key}\\b`, 'g'),
+              value.toString()
+            );
           }
         }
 
@@ -465,28 +511,27 @@ export class AnalyticsJob {
           condition: alert.condition,
           triggered,
           severity: alert.severity,
-          message: alert.message
+          message: alert.message,
         });
 
         if (triggered) {
           this.logger.warn('Alert triggered', {
             condition: alert.condition,
             severity: alert.severity,
-            message: alert.message
+            message: alert.message,
           });
         }
-
       } catch (error) {
         this.logger.error('Alert evaluation failed', {
           condition: alert.condition,
-          error: (error as Error).message
+          error: (error as Error).message,
         });
 
         alertResults.push({
           condition: alert.condition,
           triggered: false,
           severity: 'low',
-          message: `Alert evaluation failed: ${(error as Error).message}`
+          message: `Alert evaluation failed: ${(error as Error).message}`,
         });
       }
     }
@@ -497,7 +542,10 @@ export class AnalyticsJob {
   /**
    * Output results to destination
    */
-  private async outputResults(result: AnalyticsResult, analyticsData: AnalyticsJobData): Promise<{
+  private async outputResults(
+    result: AnalyticsResult,
+    analyticsData: AnalyticsJobData
+  ): Promise<{
     format: string;
     size: number;
     location?: string;
@@ -528,7 +576,10 @@ export class AnalyticsJob {
   /**
    * Output to file (placeholder)
    */
-  private async outputToFile(result: AnalyticsResult, output: any): Promise<{
+  private async outputToFile(
+    result: AnalyticsResult,
+    output: any
+  ): Promise<{
     format: string;
     size: number;
     location?: string;
@@ -539,14 +590,17 @@ export class AnalyticsJob {
     return {
       format: output.format,
       size: data.length,
-      location: output.destination.path
+      location: output.destination.path,
     };
   }
 
   /**
    * Output to database (placeholder)
    */
-  private async outputToDatabase(result: AnalyticsResult, output: any): Promise<{
+  private async outputToDatabase(
+    result: AnalyticsResult,
+    output: any
+  ): Promise<{
     format: string;
     size: number;
     location?: string;
@@ -556,14 +610,17 @@ export class AnalyticsJob {
     return {
       format: output.format,
       size: JSON.stringify(result).length,
-      location: output.destination.table
+      location: output.destination.table,
     };
   }
 
   /**
    * Output to API (placeholder)
    */
-  private async outputToApi(result: AnalyticsResult, output: any): Promise<{
+  private async outputToApi(
+    result: AnalyticsResult,
+    output: any
+  ): Promise<{
     format: string;
     size: number;
     location?: string;
@@ -573,14 +630,17 @@ export class AnalyticsJob {
     return {
       format: output.format,
       size: JSON.stringify(result).length,
-      location: output.destination.endpoint
+      location: output.destination.endpoint,
     };
   }
 
   /**
    * Output to email (placeholder)
    */
-  private async outputToEmail(result: AnalyticsResult, output: any): Promise<{
+  private async outputToEmail(
+    result: AnalyticsResult,
+    output: any
+  ): Promise<{
     format: string;
     size: number;
     location?: string;
@@ -589,14 +649,17 @@ export class AnalyticsJob {
     this.logger.info('Outputting to email', { email: output.destination.email });
     return {
       format: output.format,
-      size: JSON.stringify(result).length
+      size: JSON.stringify(result).length,
     };
   }
 
   /**
    * Output to dashboard (placeholder)
    */
-  private async outputToDashboard(result: AnalyticsResult, output: any): Promise<{
+  private async outputToDashboard(
+    result: AnalyticsResult,
+    output: any
+  ): Promise<{
     format: string;
     size: number;
     location?: string;
@@ -605,7 +668,7 @@ export class AnalyticsJob {
     this.logger.info('Outputting to dashboard');
     return {
       format: output.format,
-      size: JSON.stringify(result).length
+      size: JSON.stringify(result).length,
     };
   }
 
@@ -619,7 +682,7 @@ export class AnalyticsJob {
         if (config.groupBy) {
           // Grouped count
           const groups: Record<string, number> = {};
-          data.forEach(item => {
+          data.forEach((item) => {
             const key = config.groupBy.map((field: string) => item[field]).join('|');
             groups[key] = (groups[key] || 0) + 1;
           });
@@ -628,14 +691,14 @@ export class AnalyticsJob {
           // Simple count
           return data.length;
         }
-      }
+      },
     });
 
     this.registerAggregator('sum', {
       aggregate: async (data, config) => {
         const field = config.field;
         return data.reduce((sum, item) => sum + (item[field] || 0), 0);
-      }
+      },
     });
 
     this.registerAggregator('avg', {
@@ -643,7 +706,7 @@ export class AnalyticsJob {
         const field = config.field;
         const sum = data.reduce((sum, item) => sum + (item[field] || 0), 0);
         return sum / data.length;
-      }
+      },
     });
 
     // Register processors
@@ -652,7 +715,7 @@ export class AnalyticsJob {
         // Basic aggregation processor
         return data;
       },
-      getSupportedOperations: () => ['aggregate']
+      getSupportedOperations: () => ['aggregate'],
     });
 
     this.registerProcessor('analyze', {
@@ -660,7 +723,7 @@ export class AnalyticsJob {
         // Basic analysis processor
         return data;
       },
-      getSupportedOperations: () => ['analyze']
+      getSupportedOperations: () => ['analyze'],
     });
   }
 
@@ -736,10 +799,10 @@ export class AnalyticsJob {
       operation: 'aggregate',
       dataSource,
       processing: {
-        aggregations
+        aggregations,
       },
       output,
-      options
+      options,
     });
   }
 }

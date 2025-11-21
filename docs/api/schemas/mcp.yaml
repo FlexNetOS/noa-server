@@ -109,7 +109,7 @@ paths:
             example:
               parameters:
                 path: /data/file.txt
-                content: "Hello, World!"
+                content: 'Hello, World!'
               timeout: 60
       responses:
         '200':

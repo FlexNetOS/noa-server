@@ -2,8 +2,7 @@
 
 ## Overview
 
-**Severity**: SEV1 (Critical)
-**Estimated Duration**: 30-60 minutes
+**Severity**: SEV1 (Critical) **Estimated Duration**: 30-60 minutes
 **Prerequisites**: Database admin access, kubectl access
 
 ## Symptoms
@@ -26,6 +25,7 @@
 ### Step 1: Verify Database Status (2 minutes)
 
 **Automated Check**:
+
 ```bash
 # Check database pods
 kubectl get pods -n database
@@ -40,6 +40,7 @@ kubectl logs -n database postgres-0 --tail=100
 **Expected Outcome**: Identify if database pod is running, crashed, or stuck
 
 **Decision Point**:
+
 - If pod is running → Go to Step 2
 - If pod is crashed → Go to Step 3
 - If pod is missing → Go to Step 4
@@ -47,6 +48,7 @@ kubectl logs -n database postgres-0 --tail=100
 ### Step 2: Check Database Health (3 minutes)
 
 **Commands**:
+
 ```bash
 # Test database connectivity
 psql -h postgres.database.svc.cluster.local -U admin -d noa_db -c "SELECT 1"
@@ -64,12 +66,14 @@ kubectl exec -n database postgres-0 -- df -h
 ```
 
 **Expected Outcome**:
+
 - Database responds to queries
 - Connection count is normal (<100)
 - No long-running locks
 - Disk space >20% free
 
 **Common Issues**:
+
 - Connection pool exhausted → Clear idle connections
 - Disk full → Expand volume or clear old logs
 - Long-running queries → Terminate blocking queries
@@ -79,6 +83,7 @@ kubectl exec -n database postgres-0 -- df -h
 **Warning**: This will cause a brief additional outage (30-60 seconds)
 
 **Commands**:
+
 ```bash
 # Create snapshot first (if time permits)
 kubectl exec -n database postgres-0 -- pg_dump noa_db > /tmp/emergency-backup.sql
@@ -100,6 +105,7 @@ kubectl exec -n database postgres-0 -- psql -U admin -d noa_db -c "SELECT 1"
 ### Step 4: Check for Resource Issues (5 minutes)
 
 **Commands**:
+
 ```bash
 # Check node resources
 kubectl top nodes
@@ -117,6 +123,7 @@ kubectl get pvc -n database
 **Expected Outcome**: Identify if resource constraints caused failure
 
 **Actions**:
+
 - OOMKilled → Increase memory limit
 - Disk full → Expand PVC
 - Node issues → Drain and reschedule
@@ -124,6 +131,7 @@ kubectl get pvc -n database
 ### Step 5: Verify Application Recovery (5 minutes)
 
 **Commands**:
+
 ```bash
 # Check application pods
 kubectl get pods -n production
@@ -139,6 +147,7 @@ kubectl exec -n production api-0 -- curl localhost:9090/metrics | grep db_connec
 ```
 
 **Expected Outcome**:
+
 - All application pods healthy
 - API responding normally
 - Error rates back to baseline
@@ -149,6 +158,7 @@ kubectl exec -n production api-0 -- curl localhost:9090/metrics | grep db_connec
 **Warning**: This is a last resort. Data loss may occur.
 
 **Commands**:
+
 ```bash
 # Check replica status
 kubectl exec -n database postgres-replica-0 -- \
@@ -173,6 +183,7 @@ kubectl exec -n production api-0 -- curl localhost:9090/health
 ## Communication Template
 
 ### Initial Alert
+
 ```
 [SEV1 INCIDENT] Database Failure
 Status: Investigating
@@ -183,6 +194,7 @@ Next Update: 10 minutes
 ```
 
 ### Update During Recovery
+
 ```
 [SEV1 UPDATE] Database Failure
 Status: Identified - Database pod crashed due to [reason]
@@ -193,6 +205,7 @@ Next Update: 10 minutes
 ```
 
 ### Resolution
+
 ```
 [SEV1 RESOLVED] Database Failure
 Status: Resolved
@@ -239,4 +252,5 @@ Next Steps: Post-mortem scheduled for [date/time]
 
 - Database Architecture: [docs/architecture/database.md]
 - Backup Procedures: [docs/operations/backup-procedures.md]
-- PostgreSQL High Availability: https://www.postgresql.org/docs/current/high-availability.html
+- PostgreSQL High Availability:
+  https://www.postgresql.org/docs/current/high-availability.html

@@ -9,12 +9,15 @@ hide:
 
 # Use MCP
 
-[Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) is an open protocol that standardizes how applications provide tools and context to language models. LangGraph agents can use tools defined on MCP servers through the `langchain-mcp-adapters` library.
+[Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) is
+an open protocol that standardizes how applications provide tools and context to
+language models. LangGraph agents can use tools defined on MCP servers through
+the `langchain-mcp-adapters` library.
 
 ![MCP](./assets/mcp.png)
 
-:::python
-Install the `langchain-mcp-adapters` library to use MCP tools in LangGraph:
+:::python Install the `langchain-mcp-adapters` library to use MCP tools in
+LangGraph:
 
 ```bash
 pip install langchain-mcp-adapters
@@ -22,8 +25,8 @@ pip install langchain-mcp-adapters
 
 :::
 
-:::js
-Install the `@langchain/mcp-adapters` library to use MCP tools in LangGraph:
+:::js Install the `@langchain/mcp-adapters` library to use MCP tools in
+LangGraph:
 
 ```bash
 npm install langchain-mcp-adapters
@@ -33,8 +36,8 @@ npm install langchain-mcp-adapters
 
 ## Use MCP tools
 
-:::python
-The `langchain-mcp-adapters` package enables agents to use tools defined across one or more MCP servers.
+:::python The `langchain-mcp-adapters` package enables agents to use tools
+defined across one or more MCP servers.
 
 === "In an agent"
 
@@ -148,8 +151,8 @@ The `langchain-mcp-adapters` package enables agents to use tools defined across 
 
 :::
 
-:::js
-The `@langchain/mcp-adapters` package enables agents to use tools defined across one or more MCP servers.
+:::js The `@langchain/mcp-adapters` package enables agents to use tools defined
+across one or more MCP servers.
 
 === "In an agent"
 
@@ -250,8 +253,8 @@ The `@langchain/mcp-adapters` package enables agents to use tools defined across
 
 ## Custom MCP servers
 
-:::python
-To create your own MCP servers, you can use the `mcp` library. This library provides a simple way to define tools and run them as servers.
+:::python To create your own MCP servers, you can use the `mcp` library. This
+library provides a simple way to define tools and run them as servers.
 
 Install the MCP library:
 
@@ -261,8 +264,9 @@ pip install mcp
 
 :::
 
-:::js
-To create your own MCP servers, you can use the `@modelcontextprotocol/sdk` library. This library provides a simple way to define tools and run them as servers.
+:::js To create your own MCP servers, you can use the
+`@modelcontextprotocol/sdk` library. This library provides a simple way to
+define tools and run them as servers.
 
 Install the MCP SDK:
 
@@ -272,7 +276,8 @@ npm install @modelcontextprotocol/sdk
 
 :::
 
-Use the following reference implementations to test your agent with MCP tool servers.
+Use the following reference implementations to test your agent with MCP tool
+servers.
 
 :::python
 
@@ -300,17 +305,17 @@ if __name__ == "__main__":
 :::js
 
 ```typescript title="Example Math Server (stdio transport)"
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
+} from '@modelcontextprotocol/sdk/types.js';
 
 const server = new Server(
   {
-    name: "math-server",
-    version: "0.1.0",
+    name: 'math-server',
+    version: '0.1.0',
   },
   {
     capabilities: {
@@ -323,39 +328,39 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
       {
-        name: "add",
-        description: "Add two numbers",
+        name: 'add',
+        description: 'Add two numbers',
         inputSchema: {
-          type: "object",
+          type: 'object',
           properties: {
             a: {
-              type: "number",
-              description: "First number",
+              type: 'number',
+              description: 'First number',
             },
             b: {
-              type: "number",
-              description: "Second number",
+              type: 'number',
+              description: 'Second number',
             },
           },
-          required: ["a", "b"],
+          required: ['a', 'b'],
         },
       },
       {
-        name: "multiply",
-        description: "Multiply two numbers",
+        name: 'multiply',
+        description: 'Multiply two numbers',
         inputSchema: {
-          type: "object",
+          type: 'object',
           properties: {
             a: {
-              type: "number",
-              description: "First number",
+              type: 'number',
+              description: 'First number',
             },
             b: {
-              type: "number",
-              description: "Second number",
+              type: 'number',
+              description: 'Second number',
             },
           },
-          required: ["a", "b"],
+          required: ['a', 'b'],
         },
       },
     ],
@@ -364,23 +369,23 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   switch (request.params.name) {
-    case "add": {
+    case 'add': {
       const { a, b } = request.params.arguments as { a: number; b: number };
       return {
         content: [
           {
-            type: "text",
+            type: 'text',
             text: String(a + b),
           },
         ],
       };
     }
-    case "multiply": {
+    case 'multiply': {
       const { a, b } = request.params.arguments as { a: number; b: number };
       return {
         content: [
           {
-            type: "text",
+            type: 'text',
             text: String(a * b),
           },
         ],
@@ -394,7 +399,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("Math MCP server running on stdio");
+  console.error('Math MCP server running on stdio');
 }
 
 main();
@@ -423,21 +428,21 @@ if __name__ == "__main__":
 :::js
 
 ```typescript title="Example Weather Server (HTTP transport)"
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
-import express from "express";
+} from '@modelcontextprotocol/sdk/types.js';
+import express from 'express';
 
 const app = express();
 app.use(express.json());
 
 const server = new Server(
   {
-    name: "weather-server",
-    version: "0.1.0",
+    name: 'weather-server',
+    version: '0.1.0',
   },
   {
     capabilities: {
@@ -450,17 +455,17 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
       {
-        name: "get_weather",
-        description: "Get weather for location",
+        name: 'get_weather',
+        description: 'Get weather for location',
         inputSchema: {
-          type: "object",
+          type: 'object',
           properties: {
             location: {
-              type: "string",
-              description: "Location to get weather for",
+              type: 'string',
+              description: 'Location to get weather for',
             },
           },
-          required: ["location"],
+          required: ['location'],
         },
       },
     ],
@@ -469,12 +474,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   switch (request.params.name) {
-    case "get_weather": {
+    case 'get_weather': {
       const { location } = request.params.arguments as { location: string };
       return {
         content: [
           {
-            type: "text",
+            type: 'text',
             text: `It's always sunny in ${location}`,
           },
         ],
@@ -485,8 +490,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   }
 });
 
-app.post("/mcp", async (req, res) => {
-  const transport = new SSEServerTransport("/mcp", res);
+app.post('/mcp', async (req, res) => {
+  const transport = new SSEServerTransport('/mcp', res);
   await server.connect(transport);
 });
 

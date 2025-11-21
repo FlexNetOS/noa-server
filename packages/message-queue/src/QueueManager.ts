@@ -2,17 +2,17 @@ import { EventEmitter } from 'events';
 import { v4 as uuidv4 } from 'uuid';
 import { Logger } from 'winston';
 import {
-    JobOptions,
-    JobPriority,
-    JobStatus,
-    QueueConfigSchema,
-    QueueHealthStatus,
-    QueueJob,
-    QueueJobSchema,
-    QueueMessage,
-    QueueMessageSchema,
-    QueueMetrics,
-    QueueProvider
+  JobOptions,
+  JobPriority,
+  JobStatus,
+  QueueConfigSchema,
+  QueueHealthStatus,
+  QueueJob,
+  QueueJobSchema,
+  QueueMessage,
+  QueueMessageSchema,
+  QueueMetrics,
+  QueueProvider,
 } from './types';
 
 export interface QueueManagerOptions {
@@ -60,7 +60,7 @@ export class QueueManager extends EventEmitter {
       activeJobs: 0,
       queuedJobs: 0,
       averageProcessingTime: 0,
-      uptime: 0
+      uptime: 0,
     };
 
     this.initializeQueues();
@@ -79,7 +79,7 @@ export class QueueManager extends EventEmitter {
 
     this.logger.info('Starting Queue Manager', {
       providers: this.config.providers?.length || 0,
-      queues: this.queues.size
+      queues: this.queues.size,
     });
 
     try {
@@ -126,7 +126,7 @@ export class QueueManager extends EventEmitter {
         await provider.connect();
 
         this.logger.info(`Provider ${provider.name} initialized`, {
-          type: provider.type
+          type: provider.type,
         });
       } catch (error) {
         this.logger.error(`Failed to initialize provider ${providerConfig.name}`, { error });
@@ -181,7 +181,7 @@ export class QueueManager extends EventEmitter {
 
       async purgeQueue(_queueName: string) {
         // Mock implementation
-      }
+      },
     };
 
     return MockProvider;
@@ -241,7 +241,7 @@ export class QueueManager extends EventEmitter {
           processingRate: this.calculateProcessingRate(queueName),
           errorRate: this.calculateErrorRate(queueName),
           averageProcessingTime: this.calculateAverageProcessingTime(queueName),
-          timestamp: new Date()
+          timestamp: new Date(),
         };
 
         metrics.push(metric);
@@ -268,7 +268,7 @@ export class QueueManager extends EventEmitter {
           status: isHealthy ? 'healthy' : 'unhealthy',
           latency,
           errorRate: this.calculateProviderErrorRate(name),
-          lastHealthCheck: new Date()
+          lastHealthCheck: new Date(),
         };
 
         healthStatuses.push(status);
@@ -279,7 +279,7 @@ export class QueueManager extends EventEmitter {
           latency: 0,
           errorRate: 1,
           lastHealthCheck: new Date(),
-          details: { error: (error as Error).message }
+          details: { error: (error as Error).message },
         });
       }
     }
@@ -312,11 +312,15 @@ export class QueueManager extends EventEmitter {
   }
 
   // Public API methods
-  async sendMessage(queueName: string, payload: any, options?: {
-    priority?: number;
-    delay?: number;
-    ttl?: number;
-  }): Promise<string> {
+  async sendMessage(
+    queueName: string,
+    payload: any,
+    options?: {
+      priority?: number;
+      delay?: number;
+      ttl?: number;
+    }
+  ): Promise<string> {
     if (!this.isRunning) {
       throw new Error('Queue Manager is not running');
     }
@@ -340,8 +344,8 @@ export class QueueManager extends EventEmitter {
         delay: options?.delay,
         ttl: options?.ttl,
         retryCount: 0,
-        maxRetries: this.config.retryPolicy?.maxRetries || 3
-      }
+        maxRetries: this.config.retryPolicy?.maxRetries || 3,
+      },
     };
 
     // Validate message
@@ -374,7 +378,7 @@ export class QueueManager extends EventEmitter {
       retryDelay: options?.retryDelay || this.config.retryPolicy?.retryDelay || 1000,
       timeout: options?.timeout,
       scheduledFor: options?.scheduledFor,
-      tags: options?.tags
+      tags: options?.tags,
     };
 
     // Validate job
@@ -392,8 +396,8 @@ export class QueueManager extends EventEmitter {
         timestamp: new Date(),
         priority: job.priority,
         retryCount: job.retryCount,
-        maxRetries: job.maxRetries
-      }
+        maxRetries: job.maxRetries,
+      },
     });
 
     this.logger.debug(`Job submitted`, { jobId: job.id, type: job.type });
@@ -518,10 +522,10 @@ export class QueueManager extends EventEmitter {
   }
 
   getProviders(): Array<{ name: string; type: string; isConnected: boolean }> {
-    return Array.from(this.providers.values()).map(provider => ({
+    return Array.from(this.providers.values()).map((provider) => ({
       name: provider.name,
       type: provider.type,
-      isConnected: provider.isConnected
+      isConnected: provider.isConnected,
     }));
   }
 
@@ -529,7 +533,7 @@ export class QueueManager extends EventEmitter {
     return Array.from(this.queues.entries()).map(([name, config]) => ({
       name,
       provider: config.provider,
-      options: config.options
+      options: config.options,
     }));
   }
 
@@ -568,7 +572,8 @@ export class QueueManager extends EventEmitter {
     this.stats.totalJobsProcessed++;
 
     // Update average processing time
-    const processingTime = job.completedAt.getTime() - (job.startedAt?.getTime() || job.completedAt.getTime());
+    const processingTime =
+      job.completedAt.getTime() - (job.startedAt?.getTime() || job.completedAt.getTime());
     this.stats.averageProcessingTime = (this.stats.averageProcessingTime + processingTime) / 2;
 
     super.emit('job-completed', job);
@@ -584,7 +589,7 @@ export class QueueManager extends EventEmitter {
     job.failedAt = new Date();
     job.lastError = {
       message: error,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
     this.activeJobs.delete(jobId);
     this.stats.activeJobs = this.activeJobs.size;
@@ -610,8 +615,8 @@ export class QueueManager extends EventEmitter {
               timestamp: new Date(),
               priority: job.priority,
               retryCount: job.retryCount,
-              maxRetries: job.maxRetries
-            }
+              maxRetries: job.maxRetries,
+            },
           });
         } catch (retryError) {
           this.logger.error(`Failed to retry job ${jobId}`, { retryError });

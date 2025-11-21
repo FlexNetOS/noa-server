@@ -2,7 +2,8 @@
 
 ## Overview
 
-The NOA Server monitoring system provides automated health checks, metrics collection, self-healing, and a real-time dashboard for operational visibility.
+The NOA Server monitoring system provides automated health checks, metrics
+collection, self-healing, and a real-time dashboard for operational visibility.
 
 ## Quick Start (5 minutes)
 
@@ -23,6 +24,7 @@ npm run monitor:start
 Open your browser to: **http://localhost:9300**
 
 The dashboard shows:
+
 - Real-time system health
 - CPU and memory usage
 - Error rates and latency
@@ -124,7 +126,9 @@ curl http://localhost:9300/api/sse
 The system automatically heals common issues:
 
 ### 1. Service Restart
+
 **Triggers**: Service down, health check failure
+
 - Graceful shutdown
 - Wait period
 - Restart service
@@ -132,7 +136,9 @@ The system automatically heals common issues:
 - Max 5 restarts per service
 
 ### 2. Safe Restart
+
 **Triggers**: High error rate
+
 - State backup
 - Cache clearing
 - Monitored restart
@@ -140,20 +146,26 @@ The system automatically heals common issues:
 - Rollback if needed
 
 ### 3. Dependency Check
+
 **Triggers**: Dependency failure
+
 - Identify dependencies
 - Health check each
 - Heal unhealthy deps
 - Restart main service
 
 ### 4. Graceful Degradation
+
 **Triggers**: Max restarts exceeded
+
 - Set read-only mode
 - Disable non-critical features
 - Alert administrators
 
 ### 5. Scale Up
+
 **Triggers**: Performance degradation
+
 - Detect orchestration (K8s/PM2)
 - Add instance
 - Load balancing
@@ -161,6 +173,7 @@ The system automatically heals common issues:
 ## Configuration
 
 ### Primary Config
+
 **Location**: `/home/deflex/noa-server/config/monitoring/monitoring-config.json`
 
 ### Key Settings
@@ -170,23 +183,23 @@ The system automatically heals common issues:
   "monitoring": {
     "healthChecks": {
       "enabled": true,
-      "interval": 30000,        // Check every 30 seconds
-      "timeout": 5000,          // 5 second timeout
-      "retries": 3              // Retry 3 times before healing
+      "interval": 30000, // Check every 30 seconds
+      "timeout": 5000, // 5 second timeout
+      "retries": 3 // Retry 3 times before healing
     },
     "selfHealing": {
       "enabled": true,
       "autoRestart": true,
-      "maxRestarts": 5,         // Max restarts per service
-      "restartCooldown": 60000  // 60 second cooldown
+      "maxRestarts": 5, // Max restarts per service
+      "restartCooldown": 60000 // 60 second cooldown
     },
     "metrics": {
       "collectInterval": 10000, // Collect every 10 seconds
-      "retentionDays": 30       // Keep 30 days of data
+      "retentionDays": 30 // Keep 30 days of data
     },
     "dashboard": {
       "port": 9300,
-      "refreshInterval": 5000   // Update every 5 seconds
+      "refreshInterval": 5000 // Update every 5 seconds
     }
   }
 }
@@ -195,6 +208,7 @@ The system automatically heals common issues:
 ## Metrics Collected
 
 ### System Metrics (every 10s)
+
 - CPU usage (average and per-core)
 - Memory usage (total, used, free, %)
 - Disk usage
@@ -203,6 +217,7 @@ The system automatically heals common issues:
 - Load average
 
 ### Application Metrics
+
 - Total requests
 - Successful requests
 - Failed requests
@@ -211,6 +226,7 @@ The system automatically heals common issues:
 - Throughput (req/s, bytes/s)
 
 ### Business Metrics
+
 - Active users
 - Tasks completed
 - Agent spawns
@@ -221,11 +237,13 @@ The system automatically heals common issues:
 ## Alert Rules
 
 ### Critical Alerts (Auto-heal)
+
 - **High Error Rate**: > 5%
 - **Service Down**: Critical service unavailable
 - **CPU Overload**: > 90%
 
 ### Warning Alerts (Notify only)
+
 - **High Latency**: > 1000ms
 - **Memory Pressure**: > 85%
 
@@ -254,21 +272,18 @@ tail -f logs/self-healing/*.log
 ## Data Storage
 
 ### Metrics Data
-**Location**: `data/metrics/`
-**Format**: JSONL (JSON Lines)
-**Retention**: 30 days (configurable)
-**Example**: `data/metrics/metrics-2025-10-22.jsonl`
+
+**Location**: `data/metrics/` **Format**: JSONL (JSON Lines) **Retention**: 30
+days (configurable) **Example**: `data/metrics/metrics-2025-10-22.jsonl`
 
 ### Alert Logs
-**Location**: `logs/alerts/`
-**Rotation**: Daily
-**Retention**: 30 days
+
+**Location**: `logs/alerts/` **Rotation**: Daily **Retention**: 30 days
 **Example**: `logs/alerts/alerts-2025-10-22.log`
 
 ### Healing Logs
-**Location**: `logs/self-healing/`
-**Rotation**: Daily
-**Retention**: 14 days
+
+**Location**: `logs/self-healing/` **Rotation**: Daily **Retention**: 14 days
 **Example**: `logs/self-healing/healing-2025-10-22.log`
 
 ## Troubleshooting
@@ -343,15 +358,18 @@ npm run test tests/monitoring/self-healing.test.js
 ## CI/CD Integration
 
 ### GitHub Actions
+
 **File**: `.github/workflows/monitoring-ci.yml`
 
 **Triggers**:
+
 - Push to main/develop
 - Pull requests
 - Schedule (every 6 hours)
 - Manual workflow dispatch
 
 **Jobs**:
+
 - Health check tests
 - Metrics collection tests
 - Self-healing tests
@@ -396,7 +414,8 @@ kubectl scale -n monitoring deployment/health-check-monitor --replicas=2
 ## Support
 
 - **Documentation**: `/home/deflex/noa-server/docs/automation-phase7-report.md`
-- **Configuration**: `/home/deflex/noa-server/config/monitoring/monitoring-config.json`
+- **Configuration**:
+  `/home/deflex/noa-server/config/monitoring/monitoring-config.json`
 - **Scripts**: `/home/deflex/noa-server/scripts/monitoring/`
 - **Tests**: `/home/deflex/noa-server/tests/monitoring/`
 
@@ -411,6 +430,4 @@ kubectl scale -n monitoring deployment/health-check-monitor --replicas=2
 
 ---
 
-**Version**: 1.0.0
-**Last Updated**: 2025-10-22
-**Status**: Production Ready
+**Version**: 1.0.0 **Last Updated**: 2025-10-22 **Status**: Production Ready

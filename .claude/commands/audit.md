@@ -1,10 +1,12 @@
 # Comprehensive Audit
 
-Run a comprehensive audit on the current workspace or specified target using the Hive-Mind Audit Agent Swarm.
+Run a comprehensive audit on the current workspace or specified target using the
+Hive-Mind Audit Agent Swarm.
 
 ## What This Command Does
 
 Executes a full audit with:
+
 - **7 specialized audit agents** running concurrently
 - **Triple-verification protocol** (Pass A, Pass B, Pass C)
 - **Truth Gate validation** with evidence ledger
@@ -39,6 +41,7 @@ node hooks/run-audit.js --target "{{target:$(pwd)}}" --task-id "manual-{{timesta
 ## Expected Output
 
 The audit will:
+
 1. ✅ Initialize the Audit System with Queen coordinator
 2. 🔍 Spawn 7 audit agents concurrently
 3. 📊 Execute triple-verification protocol

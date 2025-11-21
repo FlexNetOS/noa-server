@@ -13,25 +13,21 @@ export default function <T extends QueryObject>(query: string): T {
 }
 
 function parseSingleValue(value: string): QueryValue {
-  if (value === "true") return true;
-  if (value === "false") return false;
+  if (value === 'true') return true;
+  if (value === 'false') return false;
 
-  if (!isNaN(Number(value)) && value.trim() !== "") return Number(value);
+  if (!isNaN(Number(value)) && value.trim() !== '') return Number(value);
 
   return value;
 }
 
-function setQueryValue(
-  obj: QueryObject,
-  path: string,
-  value: QueryValue
-): void {
+function setQueryValue(obj: QueryObject, path: string, value: QueryValue): void {
   const [baseKey, ...rest] = path.split(/[\[\].]/).filter(Boolean);
 
   if (!baseKey) return;
 
   if (rest.length === 0) {
-    if (path.endsWith("[]")) {
+    if (path.endsWith('[]')) {
       const cleanKey = path.slice(0, -2);
       if (!obj[cleanKey]) {
         obj[cleanKey] = [];
@@ -46,7 +42,7 @@ function setQueryValue(
     }
 
     const nestedObj = obj[baseKey] as QueryObject;
-    const nestedPath = rest.join(".");
+    const nestedPath = rest.join('.');
 
     setQueryValue(nestedObj, nestedPath, value);
   }

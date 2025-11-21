@@ -30,7 +30,7 @@ export interface AnalyticsConfig {
   loaded?: (posthog: any) => void;
 }
 
-export type EventName = 
+export type EventName =
   | 'session_created'
   | 'session_completed'
   | 'session_resumed'
@@ -173,7 +173,7 @@ export interface EnhancedSessionStoppedProperties extends SessionStoppedProperti
   time_to_first_message_ms?: number;
   average_response_time_ms?: number;
   idle_time_ms?: number;
-  
+
   // Interaction metrics
   prompts_sent: number;
   tools_executed: number;
@@ -181,23 +181,23 @@ export interface EnhancedSessionStoppedProperties extends SessionStoppedProperti
   files_created: number;
   files_modified: number;
   files_deleted: number;
-  
+
   // Content metrics
   total_tokens_used?: number;
   code_blocks_generated?: number;
   errors_encountered: number;
-  
+
   // Session context
   model: string;
   has_checkpoints: boolean;
   checkpoint_count?: number;
   was_resumed: boolean;
-  
+
   // Agent context (if applicable)
   agent_type?: string;
   agent_name?: string;
   agent_success?: boolean;
-  
+
   // Stop context
   stop_source: 'user_button' | 'keyboard_shortcut' | 'timeout' | 'error' | 'completed';
   final_state: 'success' | 'partial' | 'failed' | 'cancelled';

@@ -1,12 +1,17 @@
 # Reject
 
-This guide assumes knowledge of what double-texting is, which you can learn about in the [double-texting conceptual guide](../../concepts/double_texting.md).
+This guide assumes knowledge of what double-texting is, which you can learn
+about in the
+[double-texting conceptual guide](../../concepts/double_texting.md).
 
-The guide covers the `reject` option for double texting, which rejects the new run of the graph by throwing an error and continues with the original run until completion. Below is a quick example of using the `reject` option.
+The guide covers the `reject` option for double texting, which rejects the new
+run of the graph by throwing an error and continues with the original run until
+completion. Below is a quick example of using the `reject` option.
 
 ## Setup
 
-First, we will define a quick helper function for printing out JS and CURL model outputs (you can skip this if using Python):
+First, we will define a quick helper function for printing out JS and CURL model
+outputs (you can skip this if using Python):
 
 === "Javascript"
 
@@ -16,7 +21,7 @@ First, we will define a quick helper function for printing out JS and CURL model
       const sepLen = Math.floor((80 - padded.length) / 2);
       const sep = "=".repeat(sepLen);
       const secondSep = sep + (padded.length % 2 ? "=" : "");
-      
+
       console.log(`${sep}${padded}${secondSep}`);
       console.log("\n\n");
       console.log(m.content);
@@ -45,7 +50,8 @@ First, we will define a quick helper function for printing out JS and CURL model
     }
     ```
 
-Now, let's import our required packages and instantiate our client, assistant, and thread.
+Now, let's import our required packages and instantiate our client, assistant,
+and thread.
 
 === "Python"
 
@@ -82,8 +88,8 @@ Now, let's import our required packages and instantiate our client, assistant, a
 
 ## Create runs
 
-Now we can run a thread and try to run a second one with the "reject" option, which should fail since we have already started a run:
-
+Now we can run a thread and try to run a second one with the "reject" option,
+which should fail since we have already started a run:
 
 === "Python"
 
@@ -114,12 +120,12 @@ Now we can run a thread and try to run a second one with the "reject" option, wh
       assistantId,
       input={"messages": [{"role": "user", "content": "what's the weather in sf?"}]},
     );
-    
+
     try {
       await client.runs.create(
         thread["thread_id"],
         assistantId,
-        { 
+        {
           input: {"messages": [{"role": "user", "content": "what's the weather in nyc?"}]},
           multitask_strategy:"reject"
         },
@@ -197,10 +203,10 @@ We can verify that the original thread finished executing:
 Output:
 
     ================================ Human Message =================================
-    
+
     what's the weather in sf?
     ================================== Ai Message ==================================
-    
+
     [{'id': 'toolu_01CyewEifV2Kmi7EFKHbMDr1', 'input': {'query': 'weather in san francisco'}, 'name': 'tavily_search_results_json', 'type': 'tool_use'}]
     Tool Calls:
       tavily_search_results_json (toolu_01CyewEifV2Kmi7EFKHbMDr1)
@@ -209,21 +215,20 @@ Output:
         query: weather in san francisco
     ================================= Tool Message =================================
     Name: tavily_search_results_json
-    
+
     [{"url": "https://www.accuweather.com/en/us/san-francisco/94103/june-weather/347629", "content": "Get the monthly weather forecast for San Francisco, CA, including daily high/low, historical averages, to help you plan ahead."}]
     ================================== Ai Message ==================================
-    
+
     According to the search results from Tavily, the current weather in San Francisco is:
-    
+
     The average high temperature in San Francisco in June is around 65°F (18°C), with average lows around 54°F (12°C). June tends to be one of the cooler and foggier months in San Francisco due to the marine layer of fog that often blankets the city during the summer months.
-    
+
     Some key points about the typical June weather in San Francisco:
-    
+
     - Mild temperatures with highs in the 60s F and lows in the 50s F
     - Foggy mornings that often burn off to sunny afternoons
     - Little to no rainfall, as June falls in the dry season
     - Breezy conditions, with winds off the Pacific Ocean
     - Layers are recommended for changing weather conditions
-    
-    So in summary, you can expect mild, foggy mornings giving way to sunny but cool afternoons in San Francisco this time of year. The marine layer keeps temperatures moderate compared to other parts of California in June.
 
+    So in summary, you can expect mild, foggy mornings giving way to sunny but cool afternoons in San Francisco this time of year. The marine layer keeps temperatures moderate compared to other parts of California in June.

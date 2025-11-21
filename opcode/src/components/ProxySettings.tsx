@@ -14,7 +14,11 @@ export interface ProxySettings {
 
 interface ProxySettingsProps {
   setToast: (toast: { message: string; type: 'success' | 'error' } | null) => void;
-  onChange?: (hasChanges: boolean, getSettings: () => ProxySettings, saveSettings: () => Promise<void>) => void;
+  onChange?: (
+    hasChanges: boolean,
+    getSettings: () => ProxySettings,
+    saveSettings: () => Promise<void>
+  ) => void;
 }
 
 export function ProxySettings({ setToast, onChange }: ProxySettingsProps) {
@@ -78,9 +82,8 @@ export function ProxySettings({ setToast, onChange }: ProxySettingsProps) {
     }
   };
 
-
   const handleInputChange = (field: keyof ProxySettings, value: string) => {
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
       [field]: value || null,
     }));
@@ -90,7 +93,7 @@ export function ProxySettings({ setToast, onChange }: ProxySettingsProps) {
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-medium">Proxy Settings</h3>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-muted-foreground text-sm">
           Configure proxy settings for Claude API requests
         </p>
       </div>
@@ -99,14 +102,12 @@ export function ProxySettings({ setToast, onChange }: ProxySettingsProps) {
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
             <Label htmlFor="proxy-enabled">Enable Proxy</Label>
-            <p className="text-sm text-muted-foreground">
-              Use proxy for all Claude API requests
-            </p>
+            <p className="text-muted-foreground text-sm">Use proxy for all Claude API requests</p>
           </div>
           <Switch
             id="proxy-enabled"
             checked={settings.enabled}
-            onCheckedChange={(checked) => setSettings(prev => ({ ...prev, enabled: checked }))}
+            onCheckedChange={(checked) => setSettings((prev) => ({ ...prev, enabled: checked }))}
           />
         </div>
 
@@ -142,7 +143,7 @@ export function ProxySettings({ setToast, onChange }: ProxySettingsProps) {
               onChange={(e) => handleInputChange('no_proxy', e.target.value)}
               disabled={!settings.enabled}
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               Comma-separated list of hosts that should bypass the proxy
             </p>
           </div>
@@ -156,12 +157,11 @@ export function ProxySettings({ setToast, onChange }: ProxySettingsProps) {
               onChange={(e) => handleInputChange('all_proxy', e.target.value)}
               disabled={!settings.enabled}
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               Proxy URL to use for all protocols if protocol-specific proxies are not set
             </p>
           </div>
         </div>
-
       </div>
     </div>
   );

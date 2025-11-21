@@ -1,14 +1,18 @@
 # Release Engineering Documentation
 
-Comprehensive documentation for the Noa Server release engineering and deployment infrastructure.
+Comprehensive documentation for the Noa Server release engineering and
+deployment infrastructure.
 
 ## Quick Links
 
-- **[Quick Reference](./QUICK_REFERENCE.md)** - Command cheatsheet for common tasks
+- **[Quick Reference](./QUICK_REFERENCE.md)** - Command cheatsheet for common
+  tasks
 - **[Release Process](./RELEASE_PROCESS.md)** - Complete release workflow guide
-- **[Deployment Guide](./DEPLOYMENT_GUIDE.md)** - Blue-green deployment procedures
+- **[Deployment Guide](./DEPLOYMENT_GUIDE.md)** - Blue-green deployment
+  procedures
 - **[Rollback Guide](./ROLLBACK_GUIDE.md)** - Emergency rollback procedures
-- **[Feature Flags Guide](./FEATURE_FLAGS_GUIDE.md)** - Feature flag usage and strategies
+- **[Feature Flags Guide](./FEATURE_FLAGS_GUIDE.md)** - Feature flag usage and
+  strategies
 - **[Architecture](./ARCHITECTURE.md)** - System architecture and diagrams
 
 ## Getting Started
@@ -18,11 +22,13 @@ Comprehensive documentation for the Noa Server release engineering and deploymen
 If you're shipping a new feature:
 
 1. **Create a changeset**
+
    ```bash
    pnpm changeset
    ```
 
 2. **Commit and push**
+
    ```bash
    git commit -am "feat: new feature"
    git push origin main
@@ -39,6 +45,7 @@ If you're shipping a new feature:
 If you're deploying to production:
 
 1. **Deploy to staging first**
+
    ```bash
    ./scripts/release/deploy-blue-green.sh staging v1.0.0 canary-10
    ```
@@ -49,6 +56,7 @@ If you're deploying to production:
    - Verify functionality
 
 3. **Deploy to production**
+
    ```bash
    ./scripts/release/deploy-blue-green.sh production v1.0.0 canary-10
    ```
@@ -73,9 +81,11 @@ Actions → Emergency Rollback → Run workflow
 ## Documentation Guide
 
 ### 1. Quick Reference
+
 **File**: `QUICK_REFERENCE.md`
 
 **Contents**:
+
 - Command cheatsheet
 - Common operations
 - Troubleshooting
@@ -84,9 +94,11 @@ Actions → Emergency Rollback → Run workflow
 **Use when**: You need a quick command or reminder
 
 ### 2. Release Process
+
 **File**: `RELEASE_PROCESS.md`
 
 **Contents**:
+
 - Semantic versioning
 - Release types (major, minor, patch)
 - Automated pipeline
@@ -97,9 +109,11 @@ Actions → Emergency Rollback → Run workflow
 **Use when**: Creating or managing releases
 
 ### 3. Deployment Guide
+
 **File**: `DEPLOYMENT_GUIDE.md`
 
 **Contents**:
+
 - Blue-green deployment strategy
 - Traffic migration strategies
 - Kubernetes infrastructure
@@ -110,9 +124,11 @@ Actions → Emergency Rollback → Run workflow
 **Use when**: Deploying to staging or production
 
 ### 4. Rollback Guide
+
 **File**: `ROLLBACK_GUIDE.md`
 
 **Contents**:
+
 - Emergency procedures
 - Rollback scenarios
 - Database rollback
@@ -123,9 +139,11 @@ Actions → Emergency Rollback → Run workflow
 **Use when**: Emergency or planned rollback needed
 
 ### 5. Feature Flags Guide
+
 **File**: `FEATURE_FLAGS_GUIDE.md`
 
 **Contents**:
+
 - Feature flag setup
 - Rollout strategies
 - A/B testing
@@ -136,9 +154,11 @@ Actions → Emergency Rollback → Run workflow
 **Use when**: Implementing gradual rollouts or A/B tests
 
 ### 6. Architecture
+
 **File**: `ARCHITECTURE.md`
 
 **Contents**:
+
 - System diagrams
 - Component architecture
 - Deployment flow
@@ -240,17 +260,20 @@ packages/feature-flags/
 ## Key Metrics
 
 ### Deployment Performance
+
 - Frequency: 5-10 deployments/week
 - Duration: < 10 minutes
 - Success Rate: > 95%
 - Zero Downtime: 100%
 
 ### Reliability
+
 - MTTR: < 5 minutes
 - Rollback Time: < 2 minutes
 - Uptime: 99.9%
 
 ### Quality
+
 - Test Coverage: > 80%
 - Security Vulnerabilities: 0 critical
 - Documentation: 100%
@@ -258,15 +281,18 @@ packages/feature-flags/
 ## Support
 
 ### Documentation
+
 - All guides in `/docs/release/`
 - Implementation report: `/docs/PHASE7_IMPLEMENTATION_REPORT.md`
 
 ### Communication
+
 - **Slack**: #releases, #deployments
 - **On-call**: PagerDuty
 - **Email**: devops@example.com
 
 ### Resources
+
 - GitHub Issues: Report problems
 - GitHub Discussions: Ask questions
 - Runbooks: `/docs/runbooks/`
@@ -274,18 +300,21 @@ packages/feature-flags/
 ## Training
 
 ### Required Reading
+
 1. Quick Reference (5 min)
 2. Release Process (20 min)
 3. Deployment Guide (30 min)
 4. Rollback Guide (15 min)
 
 ### Hands-On Training
+
 1. Create test release in dev
 2. Deploy to staging
 3. Practice rollback
 4. Use feature flags
 
 ### Certification
+
 - Complete training modules
 - Perform supervised deployment
 - Execute test rollback
@@ -294,6 +323,7 @@ packages/feature-flags/
 ## Best Practices
 
 ### Development
+
 1. Always create changesets
 2. Write comprehensive tests
 3. Update documentation
@@ -301,6 +331,7 @@ packages/feature-flags/
 5. Test in staging first
 
 ### Deployment
+
 1. Deploy during business hours
 2. Monitor actively during deployment
 3. Keep old version running (1 replica)
@@ -308,6 +339,7 @@ packages/feature-flags/
 5. Have rollback plan ready
 
 ### Operations
+
 1. Automate everything
 2. Monitor continuously
 3. Document incidents
@@ -319,16 +351,19 @@ packages/feature-flags/
 ### Common Issues
 
 **Deployment Stuck**
+
 - Check pod status: `kubectl get pods -n production`
 - View events: `kubectl get events -n production`
 - Restart rollout: `kubectl rollout restart deployment/noa-green -n production`
 
 **High Error Rate**
+
 - View logs: `kubectl logs -n production -l app=noa --tail=100`
 - Check metrics dashboard
 - Execute rollback if needed
 
 **Feature Flag Not Working**
+
 - Verify provider connection
 - Check context data
 - Review cache settings
@@ -345,6 +380,7 @@ packages/feature-flags/
 ## Changelog
 
 ### Version 1.0.0 (2025-10-22)
+
 - Initial release engineering infrastructure
 - Automated release pipeline
 - Blue-green deployment system
@@ -355,6 +391,7 @@ packages/feature-flags/
 ## Contributing
 
 ### Documentation Updates
+
 1. Create feature branch
 2. Update relevant docs
 3. Test all commands
@@ -362,6 +399,7 @@ packages/feature-flags/
 5. Get review from DevOps team
 
 ### Infrastructure Changes
+
 1. Discuss in #devops
 2. Create RFC (Request for Comments)
 3. Get approval from team
@@ -375,6 +413,4 @@ Internal documentation for Noa Server project.
 
 ---
 
-**Last Updated**: 2025-10-22
-**Maintained By**: DevOps Team
-**Version**: 1.0.0
+**Last Updated**: 2025-10-22 **Maintained By**: DevOps Team **Version**: 1.0.0

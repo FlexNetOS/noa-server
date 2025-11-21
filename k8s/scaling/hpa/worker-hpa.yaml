@@ -20,57 +20,57 @@ spec:
     scaleUp:
       stabilizationWindowSeconds: 60
       policies:
-      - type: Pods
-        value: 3
-        periodSeconds: 60
-      - type: Percent
-        value: 100
-        periodSeconds: 60
+        - type: Pods
+          value: 3
+          periodSeconds: 60
+        - type: Percent
+          value: 100
+          periodSeconds: 60
       selectPolicy: Max
 
     scaleDown:
-      stabilizationWindowSeconds: 600  # 10 minutes for workers
+      stabilizationWindowSeconds: 600 # 10 minutes for workers
       policies:
-      - type: Pods
-        value: 1
-        periodSeconds: 600
+        - type: Pods
+          value: 1
+          periodSeconds: 600
       selectPolicy: Min
 
   metrics:
-  # Queue depth is primary metric for workers
-  - type: Object
-    object:
-      metric:
-        name: queue_depth
-      describedObject:
-        apiVersion: v1
-        kind: Service
-        name: rabbitmq
-      target:
-        type: AverageValue
-        value: "100"  # Scale when queue > 100 per worker
+    # Queue depth is primary metric for workers
+    - type: Object
+      object:
+        metric:
+          name: queue_depth
+        describedObject:
+          apiVersion: v1
+          kind: Service
+          name: rabbitmq
+        target:
+          type: AverageValue
+          value: '100' # Scale when queue > 100 per worker
 
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
 
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: 80
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
 
-  - type: Pods
-    pods:
-      metric:
-        name: jobs_processing
-      target:
-        type: AverageValue
-        averageValue: "10"
+    - type: Pods
+      pods:
+        metric:
+          name: jobs_processing
+        target:
+          type: AverageValue
+          averageValue: '10'
 
 ---
 apiVersion: monitoring.coreos.com/v1
@@ -80,27 +80,27 @@ metadata:
   namespace: noa-system
 spec:
   groups:
-  - name: worker-scaling
-    interval: 30s
-    rules:
-    - alert: WorkerQueueBacklog
-      expr: |
-        rabbitmq_queue_messages > 1000
-      for: 10m
-      labels:
-        severity: warning
-        component: worker
-      annotations:
-        summary: "Worker queue has significant backlog"
-        description: "Queue depth is {{ $value }} messages"
+    - name: worker-scaling
+      interval: 30s
+      rules:
+        - alert: WorkerQueueBacklog
+          expr: |
+            rabbitmq_queue_messages > 1000
+          for: 10m
+          labels:
+            severity: warning
+            component: worker
+          annotations:
+            summary: 'Worker queue has significant backlog'
+            description: 'Queue depth is {{ $value }} messages'
 
-    - alert: WorkerJobFailureRate
-      expr: |
-        rate(worker_jobs_failed_total[5m]) / rate(worker_jobs_total[5m]) > 0.1
-      for: 5m
-      labels:
-        severity: critical
-        component: worker
-      annotations:
-        summary: "Worker job failure rate is high"
-        description: "{{ $value | humanizePercentage }} of jobs are failing"
+        - alert: WorkerJobFailureRate
+          expr: |
+            rate(worker_jobs_failed_total[5m]) / rate(worker_jobs_total[5m]) > 0.1
+          for: 5m
+          labels:
+            severity: critical
+            component: worker
+          annotations:
+            summary: 'Worker job failure rate is high'
+            description: '{{ $value | humanizePercentage }} of jobs are failing'

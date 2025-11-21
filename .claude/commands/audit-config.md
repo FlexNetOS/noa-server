@@ -5,6 +5,7 @@ View or modify audit system configuration.
 ## What This Command Does
 
 Manages audit system settings:
+
 - View current configuration
 - Modify confidence thresholds
 - Enable/disable features
@@ -106,7 +107,8 @@ fi
 
 - **`enabled`** (boolean): Enable/disable audit system
 - **`mandatory`** (boolean): Make audits mandatory for task completions
-- **`autoTrigger`** (boolean): Automatically trigger audits on TodoWrite completions
+- **`autoTrigger`** (boolean): Automatically trigger audits on TodoWrite
+  completions
 - **`minConfidence`** (number): Minimum confidence threshold (0-1)
 
 ### Features
@@ -133,7 +135,8 @@ fi
 ### TodoWrite Interception
 
 - **`todoInterception.enabled`** (boolean): Intercept TodoWrite calls
-- **`todoInterception.interceptCompletions`** (boolean): Intercept status="completed"
+- **`todoInterception.interceptCompletions`** (boolean): Intercept
+  status="completed"
 - **`todoInterception.requireAudit`** (boolean): Require audit before completion
 
 ### llama.cpp Integration
@@ -198,6 +201,7 @@ To change a setting, edit `.claude/config.json`:
 ```
 
 Or use command:
+
 ```bash
 /audit-config --set minConfidence=0.90
 ```

@@ -18,10 +18,10 @@ export class RedisQueueProvider extends BaseQueueProvider {
       this.client = createClient({
         socket: {
           host: this.config.host || 'localhost',
-          port: this.config.port || 6379
+          port: this.config.port || 6379,
         },
         password: this.config.password,
-        database: this.config.db || 0
+        database: this.config.db || 0,
       });
 
       this.client.on('error', (err) => {
@@ -65,7 +65,7 @@ export class RedisQueueProvider extends BaseQueueProvider {
       return this.createHealthStatus(true, {
         connected: true,
         host: this.config.host,
-        port: this.config.port
+        port: this.config.port,
       });
     } catch (error) {
       return this.createHealthStatus(false, { connected: false }, error as Error);
@@ -85,7 +85,7 @@ export class RedisQueueProvider extends BaseQueueProvider {
       const metrics: Record<string, any> = {
         connected: true,
         dbSize,
-        info: {}
+        info: {},
       };
 
       // Extract key metrics from Redis INFO
@@ -95,7 +95,15 @@ export class RedisQueueProvider extends BaseQueueProvider {
           const parts = line.split(':');
           const key = parts[0];
           const value = parts[1];
-          if (key && value && ['connected_clients', 'total_connections_received', 'total_commands_processed'].includes(key)) {
+          if (
+            key &&
+            value &&
+            [
+              'connected_clients',
+              'total_connections_received',
+              'total_commands_processed',
+            ].includes(key)
+          ) {
             metrics.info[key] = value;
           }
         }
@@ -118,7 +126,7 @@ export class RedisQueueProvider extends BaseQueueProvider {
     const messageData = JSON.stringify({
       ...message,
       id: messageId,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     await this.client.lPush(queueName, messageData);

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Simple Express API server for Claude Suite Dashboard
- * Provides REST endpoints and WebSocket support for real-time updates
+ * Enhanced Express API server for Claude Suite Dashboard
+ * Provides REST endpoints, WebSocket support, and file sharing capabilities
  */
 
 import express from 'express';
@@ -59,7 +59,7 @@ function generateTelemetry() {
     .split('\n')
     .filter(Boolean)
     .slice(-20)
-    .map(line => {
+    .map((line) => {
       try {
         return JSON.parse(line);
       } catch {
@@ -77,7 +77,7 @@ function generateTelemetry() {
       failedTasks: 4,
       avgResponseTime: 245 + Math.random() * 50,
       throughput: 18.5 + Math.random() * 5,
-      uptime: Date.now() - (Date.now() % 86400000)
+      uptime: Date.now() - (Date.now() % 86400000),
     },
     systemHealth: {
       status: 'healthy',
@@ -86,14 +86,14 @@ function generateTelemetry() {
       disk: 58,
       network: {
         latency: 12 + Math.random() * 10,
-        throughput: 850 + Math.random() * 100
+        throughput: 850 + Math.random() * 100,
       },
       services: {
         mcp: true,
         neural: verification?.neural_test_passed || false,
         swarm: true,
-        hooks: recentHooks.length > 0
-      }
+        hooks: recentHooks.length > 0,
+      },
     },
     neuralMetrics: {
       modelsLoaded: 3,
@@ -101,22 +101,33 @@ function generateTelemetry() {
       avgInferenceTime: 187 + Math.random() * 30,
       gpuUtilization: 78 + Math.random() * 10,
       vramUsage: 6.4 + Math.random() * 0.5,
-      accuracy: truthGate?.accuracy || 0.98
+      accuracy: truthGate?.accuracy || 0.98,
     },
     agents: generateAgents(),
     taskQueue: generateTasks(),
     mcpTools: generateMCPTools(mcpCatalog),
     recentHooks,
-    truthGate: truthGate ? {
-      passed: truthGate.passed,
-      accuracy: truthGate.accuracy,
-      timestamp: truthGate.timestamp || new Date().toISOString()
-    } : undefined
+    truthGate: truthGate
+      ? {
+          passed: truthGate.passed,
+          accuracy: truthGate.accuracy,
+          timestamp: truthGate.timestamp || new Date().toISOString(),
+        }
+      : undefined,
   };
 }
 
 function generateAgents() {
-  const types = ['coder', 'reviewer', 'tester', 'researcher', 'planner', 'backend-dev', 'ml-developer', 'cicd-engineer'];
+  const types = [
+    'coder',
+    'reviewer',
+    'tester',
+    'researcher',
+    'planner',
+    'backend-dev',
+    'ml-developer',
+    'cicd-engineer',
+  ];
   const statuses = ['running', 'idle', 'running', 'running', 'idle', 'running', 'idle', 'running'];
 
   return types.map((type, i) => ({
@@ -128,14 +139,21 @@ function generateAgents() {
     avgResponseTime: Math.floor(Math.random() * 300) + 100,
     lastActive: new Date(Date.now() - Math.random() * 3600000).toISOString(),
     cpu: Math.floor(Math.random() * 60) + 20,
-    memory: Math.floor(Math.random() * 50) + 30
+    memory: Math.floor(Math.random() * 50) + 30,
   }));
 }
 
 function generateTasks() {
   const priorities = ['high', 'medium', 'low', 'critical'];
   const statuses = ['running', 'pending', 'pending', 'completed'];
-  const types = ['code-review', 'test-execution', 'deployment', 'analysis', 'refactoring', 'documentation'];
+  const types = [
+    'code-review',
+    'test-execution',
+    'deployment',
+    'analysis',
+    'refactoring',
+    'documentation',
+  ];
 
   return Array.from({ length: 12 }, (_, i) => ({
     id: `task-${i + 1}`,
@@ -144,8 +162,9 @@ function generateTasks() {
     status: statuses[i % 4],
     assignedAgent: i % 3 === 0 ? `agent-${(i % 8) + 1}` : undefined,
     createdAt: new Date(Date.now() - Math.random() * 7200000).toISOString(),
-    startedAt: i % 2 === 0 ? new Date(Date.now() - Math.random() * 3600000).toISOString() : undefined,
-    progress: i % 4 === 0 ? Math.floor(Math.random() * 100) : undefined
+    startedAt:
+      i % 2 === 0 ? new Date(Date.now() - Math.random() * 3600000).toISOString() : undefined,
+    progress: i % 4 === 0 ? Math.floor(Math.random() * 100) : undefined,
   }));
 }
 
@@ -157,7 +176,7 @@ function generateMCPTools(catalog) {
     avgDuration: Math.floor(Math.random() * 200) + 50,
     successRate: 0.85 + Math.random() * 0.14,
     lastUsed: new Date(Date.now() - Math.random() * 86400000).toISOString(),
-    errors: Math.floor(Math.random() * 5)
+    errors: Math.floor(Math.random() * 5),
   }));
 }
 
@@ -189,6 +208,15 @@ app.post('/api/tasks/:id/cancel', (req, res) => {
   res.json({ success: true, message: `Task ${req.params.id} cancelled` });
 });
 
+// File sharing routes - dynamically import if available
+try {
+  const shareRoutes = await import('./routes/share.js');
+  app.use('/api/share', shareRoutes.default);
+  console.log('File sharing routes loaded');
+} catch (error) {
+  console.log('File sharing routes not available (install dependencies to enable)');
+}
+
 app.get('/health', (req, res) => {
   res.json({ status: 'healthy', timestamp: new Date().toISOString() });
 });
@@ -212,10 +240,12 @@ wss.on('connection', (ws) => {
   // Send updates every 5 seconds
   const interval = setInterval(() => {
     if (ws.readyState === ws.OPEN) {
-      ws.send(JSON.stringify({
-        type: 'telemetry',
-        data: generateTelemetry()
-      }));
+      ws.send(
+        JSON.stringify({
+          type: 'telemetry',
+          data: generateTelemetry(),
+        })
+      );
     }
   }, 5000);
 
@@ -231,3 +261,12 @@ wss.on('connection', (ws) => {
 });
 
 console.log('WebSocket server ready for connections');
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, shutting down gracefully');
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
+  });
+});

@@ -1,13 +1,21 @@
 # Noa Server Alerting System
 
-Automated alerting, incident response, and performance monitoring infrastructure for Noa Server.
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
+Automated alerting, incident response, and performance monitoring infrastructure
+for Noa Server.
 
 ## Features
 
-- **Multi-Provider Alerting**: Support for PagerDuty, OpsGenie, and extensible provider architecture
-- **Intelligent Alert Management**: Deduplication, grouping, and suppression during maintenance windows
-- **Incident Response**: Automated incident creation, tracking, and post-mortem generation
-- **Escalation Policies**: Configurable escalation paths with multiple notification methods
+- **Multi-Provider Alerting**: Support for PagerDuty, OpsGenie, and extensible
+  provider architecture
+- **Intelligent Alert Management**: Deduplication, grouping, and suppression
+  during maintenance windows
+- **Incident Response**: Automated incident creation, tracking, and post-mortem
+  generation
+- **Escalation Policies**: Configurable escalation paths with multiple
+  notification methods
 - **Alert Rules**: Dynamic rule creation with Prometheus and Grafana export
 - **Playbooks**: Automated runbook execution for common incident scenarios
 
@@ -31,15 +39,15 @@ const alertManager = new AlertManager({
     {
       type: 'pagerduty',
       apiKey: process.env.PAGERDUTY_API_KEY!,
-      routingKey: process.env.PAGERDUTY_ROUTING_KEY!
+      routingKey: process.env.PAGERDUTY_ROUTING_KEY!,
     },
     {
       type: 'opsgenie',
-      apiKey: process.env.OPSGENIE_API_KEY!
-    }
+      apiKey: process.env.OPSGENIE_API_KEY!,
+    },
   ],
   enableDeduplication: true,
-  deduplicationWindow: 300
+  deduplicationWindow: 300,
 });
 ```
 
@@ -56,14 +64,14 @@ const alert = {
   labels: {
     service: 'api',
     instance: 'api-server-1',
-    team: 'platform'
+    team: 'platform',
   },
   annotations: {
     runbook: 'https://runbooks.example.com/high-cpu',
-    dashboard: 'https://grafana.example.com/d/cpu'
+    dashboard: 'https://grafana.example.com/d/cpu',
   },
   startsAt: new Date(),
-  fingerprint: 'high-cpu-api-server-1'
+  fingerprint: 'high-cpu-api-server-1',
 };
 
 await alertManager.sendAlert(alert);
@@ -82,7 +90,7 @@ const incident = incidentManager.createIncident({
   description: 'All database connections are in use, causing request timeouts',
   severity: IncidentSeverity.SEV1,
   alerts: [alert],
-  impactedServices: ['api', 'web-app']
+  impactedServices: ['api', 'web-app'],
 });
 
 // Assign incident
@@ -107,7 +115,10 @@ const postMortem = incidentManager.generatePostMortem(incident.id);
 ### Configure Escalation Policies
 
 ```typescript
-import { EscalationPolicyManager, NotificationMethod } from '@noa-server/alerting';
+import {
+  EscalationPolicyManager,
+  NotificationMethod,
+} from '@noa-server/alerting';
 
 const escalationManager = alertManager.getEscalationManager();
 
@@ -119,20 +130,20 @@ const policy = escalationManager.createPolicy(
       level: 1,
       delay: 0, // Immediate
       targets: ['oncall-primary@example.com'],
-      notificationMethods: [NotificationMethod.PUSH, NotificationMethod.EMAIL]
+      notificationMethods: [NotificationMethod.PUSH, NotificationMethod.EMAIL],
     },
     {
       level: 2,
       delay: 5, // After 5 minutes
       targets: ['oncall-primary@example.com'],
-      notificationMethods: [NotificationMethod.SMS, NotificationMethod.PHONE]
+      notificationMethods: [NotificationMethod.SMS, NotificationMethod.PHONE],
     },
     {
       level: 3,
       delay: 15, // After 15 minutes
       targets: ['oncall-backup@example.com', 'team-lead@example.com'],
-      notificationMethods: [NotificationMethod.PHONE]
-    }
+      notificationMethods: [NotificationMethod.PHONE],
+    },
   ]
 );
 ```
@@ -147,7 +158,7 @@ alertManager.addMaintenanceWindow({
   startTime: new Date('2025-10-23T02:00:00Z'),
   endTime: new Date('2025-10-23T04:00:00Z'),
   affectedServices: ['database', 'api'],
-  suppressAlerts: true
+  suppressAlerts: true,
 });
 ```
 
@@ -169,12 +180,12 @@ ruleManager.addRule({
   duration: '5m',
   labels: {
     team: 'platform',
-    component: 'compute'
+    component: 'compute',
   },
   annotations: {
     summary: 'High CPU usage detected',
-    runbook: 'https://runbooks.example.com/high-cpu'
-  }
+    runbook: 'https://runbooks.example.com/high-cpu',
+  },
 });
 
 // Export to Prometheus format
@@ -194,7 +205,7 @@ const evaluator = new RuleEvaluator();
 // Evaluate rule with metrics
 const result = await evaluator.evaluateRule(rule, [
   { value: 85, timestamp: new Date(), labels: { instance: 'api-1' } },
-  { value: 90, timestamp: new Date(), labels: { instance: 'api-1' } }
+  { value: 90, timestamp: new Date(), labels: { instance: 'api-1' } },
 ]);
 
 if (result.triggered) {
@@ -278,10 +289,12 @@ const grafanaAlerts = ruleManager.exportToGrafana();
 
 ## Best Practices
 
-1. **Alert Fatigue Prevention**: Use appropriate severity levels and deduplication
+1. **Alert Fatigue Prevention**: Use appropriate severity levels and
+   deduplication
 2. **Clear Descriptions**: Include actionable information in alert descriptions
 3. **Runbook Links**: Always link to relevant runbooks in annotations
-4. **Regular Testing**: Test escalation policies and incident response procedures
+4. **Regular Testing**: Test escalation policies and incident response
+   procedures
 5. **Post-Mortem Culture**: Generate post-mortems for all SEV1/SEV2 incidents
 
 ## Troubleshooting
@@ -307,3 +320,5 @@ const grafanaAlerts = ruleManager.exportToGrafana();
 ## License
 
 MIT
+
+> Last updated: 2025-11-20

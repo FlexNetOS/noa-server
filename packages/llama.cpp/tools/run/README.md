@@ -1,6 +1,7 @@
 # llama.cpp/example/run
 
-The purpose of this example is to demonstrate a minimal usage of llama.cpp for running models.
+The purpose of this example is to demonstrate a minimal usage of llama.cpp for
+running models.
 
 ```bash
 llama-run granite3-moe

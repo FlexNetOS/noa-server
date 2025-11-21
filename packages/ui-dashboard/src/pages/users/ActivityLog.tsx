@@ -100,7 +100,7 @@ export function ActivityLog() {
   const getStatusIcon = (status: string) => {
     if (status === 'success') {
       return (
-        <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+        <svg className="h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
           <path
             fillRule="evenodd"
             d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -110,7 +110,7 @@ export function ActivityLog() {
       );
     } else {
       return (
-        <svg className="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+        <svg className="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
           <path
             fillRule="evenodd"
             d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
@@ -122,26 +122,26 @@ export function ActivityLog() {
   };
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="flex h-full flex-col">
       {/* Header */}
-      <div className="flex-none flex items-center justify-between mb-6">
+      <div className="mb-6 flex flex-none items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Activity Log</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Track user actions and system events
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <span
-            className={`inline-flex items-center gap-2 px-3 py-1 text-sm font-medium rounded-full ${
+            className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium ${
               isConnected
                 ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                 : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
             }`}
           >
             <span
-              className={`inline-block w-2 h-2 rounded-full animate-pulse ${
+              className={`inline-block h-2 w-2 animate-pulse rounded-full ${
                 isConnected ? 'bg-green-500' : 'bg-red-500'
               }`}
             />
@@ -150,7 +150,7 @@ export function ActivityLog() {
 
           <button
             onClick={handleExport}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             Export CSV
           </button>
@@ -158,15 +158,15 @@ export function ActivityLog() {
       </div>
 
       {/* Filters */}
-      <div className="flex-none space-y-4 mb-6">
+      <div className="mb-6 flex-none space-y-4">
         <div className="flex items-center gap-4">
-          <div className="flex-1 relative">
+          <div className="relative flex-1">
             <input
               type="text"
               placeholder="Search activity..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pl-10 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
               aria-label="Search activity"
             />
             <svg
@@ -188,7 +188,7 @@ export function ActivityLog() {
           <select
             value={userFilter}
             onChange={(e) => setUserFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
             aria-label="Filter by user"
           >
             <option value="all">All Users</option>
@@ -202,7 +202,7 @@ export function ActivityLog() {
           <select
             value={actionFilter}
             onChange={(e) => setActionFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
             aria-label="Filter by action"
           >
             <option value="all">All Actions</option>
@@ -216,7 +216,7 @@ export function ActivityLog() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
             aria-label="Filter by status"
           >
             <option value="all">All Status</option>
@@ -231,39 +231,39 @@ export function ActivityLog() {
             type="date"
             value={dateRange.start}
             onChange={(e) => setDateRange((prev) => ({ ...prev, start: e.target.value }))}
-            className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
           />
           <span className="text-gray-500 dark:text-gray-400">to</span>
           <input
             type="date"
             value={dateRange.end}
             onChange={(e) => setDateRange((prev) => ({ ...prev, end: e.target.value }))}
-            className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
           />
         </div>
       </div>
 
       {/* Activity Table */}
-      <div className="flex-1 overflow-y-auto bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+      <div className="flex-1 overflow-y-auto rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
         <table className="w-full">
-          <thead className="bg-gray-50 dark:bg-gray-700 sticky top-0">
+          <thead className="sticky top-0 bg-gray-50 dark:bg-gray-700">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                 Timestamp
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                 User
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                 Action
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                 Resource
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                 IP Address
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                 Status
               </th>
             </tr>
@@ -283,25 +283,25 @@ export function ActivityLog() {
                   animate={{ opacity: 1 }}
                   className="hover:bg-gray-50 dark:hover:bg-gray-700/50"
                 >
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                     {format(new Date(log.timestamp), 'PPpp')}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
                     {log.username}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                     {log.action}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                     {log.resource}
                     {log.resourceId && (
                       <span className="text-gray-400"> (ID: {log.resourceId})</span>
                     )}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-500 dark:text-gray-400">
+                  <td className="whitespace-nowrap px-6 py-4 font-mono text-sm text-gray-500 dark:text-gray-400">
                     {log.ipAddress}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="whitespace-nowrap px-6 py-4">
                     <div className="flex items-center gap-2">
                       {getStatusIcon(log.status)}
                       <span
@@ -323,30 +323,30 @@ export function ActivityLog() {
       </div>
 
       {/* Stats */}
-      <div className="flex-none mt-6 grid grid-cols-4 gap-4">
-        <div className="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-          <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Total Events</div>
+      <div className="mt-6 grid flex-none grid-cols-4 gap-4">
+        <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+          <div className="mb-1 text-sm text-gray-500 dark:text-gray-400">Total Events</div>
           <div className="text-2xl font-bold text-gray-900 dark:text-white">
             {filteredLogs.length}
           </div>
         </div>
 
-        <div className="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-          <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Success</div>
+        <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+          <div className="mb-1 text-sm text-gray-500 dark:text-gray-400">Success</div>
           <div className="text-2xl font-bold text-green-600 dark:text-green-400">
             {filteredLogs.filter((log) => log.status === 'success').length}
           </div>
         </div>
 
-        <div className="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-          <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Failures</div>
+        <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+          <div className="mb-1 text-sm text-gray-500 dark:text-gray-400">Failures</div>
           <div className="text-2xl font-bold text-red-600 dark:text-red-400">
             {filteredLogs.filter((log) => log.status === 'failure').length}
           </div>
         </div>
 
-        <div className="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-          <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Unique Users</div>
+        <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+          <div className="mb-1 text-sm text-gray-500 dark:text-gray-400">Unique Users</div>
           <div className="text-2xl font-bold text-gray-900 dark:text-white">
             {new Set(filteredLogs.map((log) => log.userId)).size}
           </div>

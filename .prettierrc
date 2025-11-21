@@ -12,6 +12,7 @@
   "proseWrap": "preserve",
   "quoteProps": "as-needed",
   "jsxSingleQuote": false,
+  "plugins": ["prettier-plugin-svelte"],
   "overrides": [
     {
       "files": ["*.json", ".prettierrc"],

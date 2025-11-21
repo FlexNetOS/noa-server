@@ -1,0 +1,34 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequiredRTTPlan
+metadata: { name: required-rttplan }
+spec:
+  match:
+    kinds: [ { apiGroups: ["apps"], kinds: ["Deployment"] } ]
+  parameters:
+    annotations: {{ toYaml .Values.requiredAnnotations | nindent 8 }}
+    immutable: true
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sAllowedProviders
+metadata: { name: allowed-providers }
+spec:
+  match:
+    kinds: [ { apiGroups: ["apps"], kinds: ["Deployment"] } ]
+  parameters:
+    allowed: {{ toYaml .Values.allowedProviders | nindent 8 }}
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sResidency
+metadata: { name: residency-allowed }
+spec:
+  match:
+    kinds: [ { apiGroups: ["apps"], kinds: ["Deployment"] } ]
+---
+{{- if .Values.enforceImageDigest }}
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sImageByDigest
+metadata: { name: image-by-digest }
+spec:
+  match:
+    kinds: [ { apiGroups: ["apps"], kinds: ["Deployment"] } ]
+{{- end }}

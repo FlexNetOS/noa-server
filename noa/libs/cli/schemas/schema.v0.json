@@ -13,11 +13,7 @@
             "python_version": {
               "type": "string",
               "description": "Optional. Python version in 'major.minor' format (e.g. '3.11').\nMust be at least 3.11 or greater for this deployment to function properly.\n",
-              "enum": [
-                "3.11",
-                "3.12",
-                "3.13"
-              ]
+              "enum": ["3.11", "3.12", "3.13"]
             },
             "pip_config_file": {
               "anyOf": [
@@ -134,12 +130,7 @@
             "image_distro": {
               "anyOf": [
                 {
-                  "enum": [
-                    "bookworm",
-                    "bullseye",
-                    "debian",
-                    "wolfi"
-                  ]
+                  "enum": ["bookworm", "bullseye", "debian", "wolfi"]
                 },
                 {
                   "type": "null"
@@ -201,10 +192,7 @@
               "description": "Optional. Named definitions of UI components emitted by the agent, each pointing to a JS/TS file.\n"
             }
           },
-          "required": [
-            "dependencies",
-            "graphs"
-          ]
+          "required": ["dependencies", "graphs"]
         },
         {
           "type": "object",
@@ -213,9 +201,7 @@
               "anyOf": [
                 {
                   "type": "string",
-                  "enum": [
-                    "20"
-                  ]
+                  "enum": ["20"]
                 },
                 {
                   "type": "null"
@@ -328,10 +314,7 @@
               "anyOf": [
                 {
                   "type": "string",
-                  "enum": [
-                    "debian",
-                    "wolfi"
-                  ]
+                  "enum": ["debian", "wolfi"]
                 },
                 {
                   "type": "null"
@@ -393,10 +376,7 @@
               "description": "Optional. Named definitions of UI components emitted by the agent, each pointing to a JS/TS file.\n"
             }
           },
-          "required": [
-            "node_version",
-            "graphs"
-          ]
+          "required": ["node_version", "graphs"]
         }
       ]
     },
@@ -503,9 +483,7 @@
           "description": "Default TTL (time-to-live) in minutes for checkpointed data."
         },
         "strategy": {
-          "enum": [
-            "delete"
-          ],
+          "enum": ["delete"],
           "description": "Strategy to use for deleting checkpointed data.\n"
         },
         "sweep_interval_minutes": {
@@ -595,10 +573,7 @@
         "middleware_order": {
           "anyOf": [
             {
-              "enum": [
-                "auth_first",
-                "middleware_first"
-              ]
+              "enum": ["auth_first", "middleware_first"]
             },
             {
               "type": "null"
@@ -643,10 +618,7 @@
           "description": "Headers to include (if not also matches against an 'exludes' pattern.\n"
         }
       },
-      "required": [
-        "excludes",
-        "includes"
-      ]
+      "required": ["excludes", "includes"]
     },
     "CorsConfig": {
       "title": "CorsConfig",

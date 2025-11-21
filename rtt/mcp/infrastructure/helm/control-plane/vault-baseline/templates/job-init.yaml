@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata: { name: vault-init-auth }
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: setup
+        image: hashicorp/vault:latest
+        command: ["/bin/sh","-c"]
+        args:
+        - |
+          set -e
+          export VAULT_ADDR={{ .Values.vault.address }}
+          export VAULT_TOKEN=$(cat /root/token)
+          vault auth enable -path={{ .Values.vault.k8sAuthPath | replace "auth/" "" }} kubernetes || true
+          vault write {{ .Values.vault.k8sAuthPath }}/config                 kubernetes_host={{ .Values.vault.k8sHost }}                 disable_iss_validation=true
+          vault policy write rtt-gateway - <<'EOF'
+          path "secret/data/*" { capabilities = ["read"] }
+          EOF
+          vault write {{ .Values.vault.k8sAuthPath }}/role/{{ .Values.vault.roleName }}                 bound_service_account_names="model-gateway"                 bound_service_account_namespaces="{{ .Values.vault.namespace }}"                 policies="rtt-gateway"                 ttl="24h"
+        volumeMounts:
+        - name: token
+          secret: { secretName: {{ .Values.vault.rootTokenSecret }} }
+          mountPath: /root
+      volumes:
+      - name: token
+        secret: { secretName: {{ .Values.vault.rootTokenSecret }} }

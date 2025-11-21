@@ -10,7 +10,10 @@ export { LogAggregator, LogAggregatorConfig, LogLevel, LogMetadata } from './Log
 export { StructuredLogger } from './StructuredLogger.js';
 
 // Transports
-export { ElasticsearchTransport, ElasticsearchConfig } from './transports/ElasticsearchTransport.js';
+export {
+  ElasticsearchTransport,
+  ElasticsearchConfig,
+} from './transports/ElasticsearchTransport.js';
 export { FileTransport, FileTransportConfig } from './transports/FileTransport.js';
 export { ConsoleTransport, ConsoleTransportConfig } from './transports/ConsoleTransport.js';
 

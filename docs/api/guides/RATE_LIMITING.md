@@ -13,7 +13,9 @@ Understanding and working with rate limits in the Noa Server API.
 
 ## Overview
 
-Rate limiting protects the API from abuse and ensures fair usage across all clients. The Noa Server API implements a **sliding window** rate limiting algorithm.
+Rate limiting protects the API from abuse and ensures fair usage across all
+clients. The Noa Server API implements a **sliding window** rate limiting
+algorithm.
 
 ### Why Rate Limiting?
 
@@ -24,24 +26,24 @@ Rate limiting protects the API from abuse and ensures fair usage across all clie
 
 ## Rate Limit Tiers
 
-| User Type | Requests/Hour | Requests/Minute | Burst Limit |
-|-----------|---------------|-----------------|-------------|
-| **Anonymous** | 100 | 5 | 10 |
-| **Authenticated** | 1,000 | 50 | 100 |
-| **Admin** | 10,000 | 500 | 1,000 |
-| **Enterprise** | Custom | Custom | Custom |
+| User Type         | Requests/Hour | Requests/Minute | Burst Limit |
+| ----------------- | ------------- | --------------- | ----------- |
+| **Anonymous**     | 100           | 5               | 10          |
+| **Authenticated** | 1,000         | 50              | 100         |
+| **Admin**         | 10,000        | 500             | 1,000       |
+| **Enterprise**    | Custom        | Custom          | Custom      |
 
 ### Endpoint-Specific Limits
 
 Some endpoints have additional restrictions:
 
-| Endpoint | Limit | Reason |
-|----------|-------|--------|
-| `/auth/login` | 5 req/min | Prevent brute-force |
-| `/auth/register` | 3 req/hour | Prevent spam accounts |
+| Endpoint               | Limit      | Reason                 |
+| ---------------------- | ---------- | ---------------------- |
+| `/auth/login`          | 5 req/min  | Prevent brute-force    |
+| `/auth/register`       | 3 req/hour | Prevent spam accounts  |
 | `/auth/password/reset` | 3 req/hour | Prevent email flooding |
-| `/workflows/*/execute` | 20 req/min | Resource intensive |
-| `/agents/spawn` | 10 req/min | Resource intensive |
+| `/workflows/*/execute` | 20 req/min | Resource intensive     |
+| `/agents/spawn`        | 10 req/min | Resource intensive     |
 
 ## Rate Limit Headers
 
@@ -138,10 +140,13 @@ async function makeRequestWithRetry(url, options, maxRetries = 3) {
         }
 
         const retryAfter = parseInt(response.headers.get('Retry-After')) || 60;
-        const backoff = Math.min(retryAfter * 1000, Math.pow(2, attempt) * 1000);
+        const backoff = Math.min(
+          retryAfter * 1000,
+          Math.pow(2, attempt) * 1000
+        );
 
         console.log(`Rate limited. Retrying in ${backoff}ms...`);
-        await new Promise(resolve => setTimeout(resolve, backoff));
+        await new Promise((resolve) => setTimeout(resolve, backoff));
         continue;
       }
 
@@ -150,7 +155,7 @@ async function makeRequestWithRetry(url, options, maxRetries = 3) {
       if (attempt === maxRetries) throw error;
 
       const backoff = Math.pow(2, attempt) * 1000;
-      await new Promise(resolve => setTimeout(resolve, backoff));
+      await new Promise((resolve) => setTimeout(resolve, backoff));
     }
   }
 }
@@ -191,7 +196,7 @@ class RateLimitedQueue {
       }
 
       // Wait to respect rate limit
-      await new Promise(resolve =>
+      await new Promise((resolve) =>
         setTimeout(resolve, 1000 / this.requestsPerSecond)
       );
     }
@@ -248,7 +253,7 @@ class CachedApiClient {
 
     this.cache.set(cacheKey, {
       data,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     return data;
@@ -301,13 +306,11 @@ async function parallelRequests(urls, maxConcurrent = 5) {
   const executing = [];
 
   for (const url of urls) {
-    const promise = fetch(url).then(res => res.json());
+    const promise = fetch(url).then((res) => res.json());
     results.push(promise);
 
     if (maxConcurrent <= urls.length) {
-      const e = promise.then(() =>
-        executing.splice(executing.indexOf(e), 1)
-      );
+      const e = promise.then(() => executing.splice(executing.indexOf(e), 1));
       executing.push(e);
 
       if (executing.length >= maxConcurrent) {
@@ -332,7 +335,7 @@ class RateLimitMonitor {
     this.metrics = {
       requests: 0,
       rateLimited: 0,
-      retries: 0
+      retries: 0,
     };
   }
 
@@ -343,7 +346,9 @@ class RateLimitMonitor {
     const limit = parseInt(headers.get('X-RateLimit-Limit'));
 
     // Log metrics
-    console.log(`Rate limit usage: ${((1 - remaining/limit) * 100).toFixed(2)}%`);
+    console.log(
+      `Rate limit usage: ${((1 - remaining / limit) * 100).toFixed(2)}%`
+    );
   }
 
   recordRateLimit() {
@@ -358,7 +363,7 @@ class RateLimitMonitor {
   getMetrics() {
     return {
       ...this.metrics,
-      rateLimitRate: this.metrics.rateLimited / this.metrics.requests
+      rateLimitRate: this.metrics.rateLimited / this.metrics.requests,
     };
   }
 }
@@ -372,7 +377,7 @@ Set up alerts when approaching rate limits:
 function checkRateLimitThreshold(headers, threshold = 0.8) {
   const remaining = parseInt(headers.get('X-RateLimit-Remaining'));
   const limit = parseInt(headers.get('X-RateLimit-Limit'));
-  const usage = 1 - (remaining / limit);
+  const usage = 1 - remaining / limit;
 
   if (usage >= threshold) {
     // Send alert
@@ -383,7 +388,7 @@ function checkRateLimitThreshold(headers, threshold = 0.8) {
       type: 'rate_limit_warning',
       usage: usage,
       remaining: remaining,
-      limit: limit
+      limit: limit,
     });
   }
 }
@@ -406,6 +411,7 @@ For higher rate limits:
 ### Enterprise Plans
 
 Enterprise plans offer:
+
 - **Custom rate limits**: Tailored to your needs
 - **Dedicated infrastructure**: Isolated resources
 - **Priority support**: 24/7 support team
@@ -428,13 +434,13 @@ function mockRateLimitResponse() {
       'X-RateLimit-Limit': '1000',
       'X-RateLimit-Remaining': '0',
       'X-RateLimit-Reset': String(Math.floor(Date.now() / 1000) + 3600),
-      'Retry-After': '3600'
+      'Retry-After': '3600',
     }),
     json: async () => ({
       error: 'TooManyRequests',
       message: 'Rate limit exceeded',
-      statusCode: 429
-    })
+      statusCode: 429,
+    }),
   };
 }
 ```
@@ -457,16 +463,19 @@ k6 run --vus 10 --duration 30s rate-limit-test.js
 ### Common Issues
 
 **1. Hitting rate limits unexpectedly**
+
 - Check for request loops or polling
 - Review parallel request implementations
 - Monitor actual vs expected usage
 
 **2. Rate limit not resetting**
+
 - Verify system time synchronization
 - Check time zone handling
 - Ensure using sliding window correctly
 
 **3. Different limits than expected**
+
 - Confirm authentication status
 - Check user role/tier
 - Verify endpoint-specific limits
@@ -488,6 +497,7 @@ curl -X GET https://api.noa-server.io/v1/users/me \
 ---
 
 For more information, see:
+
 - [API Quick Start](./API_QUICKSTART.md)
 - [Authentication Guide](./AUTHENTICATION.md)
 - [Webhooks Guide](./WEBHOOKS.md)

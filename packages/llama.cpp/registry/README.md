@@ -1,11 +1,15 @@
 # Llama.cpp SLLM Model Registry
 
-A comprehensive model registry system for Small Language Models (SLLMs) designed for efficient inference with llama.cpp. This registry provides a centralized database for tracking, managing, and discovering SLLM models with detailed metadata, capabilities, and performance metrics.
+A comprehensive model registry system for Small Language Models (SLLMs) designed
+for efficient inference with llama.cpp. This registry provides a centralized
+database for tracking, managing, and discovering SLLM models with detailed
+metadata, capabilities, and performance metrics.
 
 ## 🚀 Features
 
 - **SQLite Database**: Persistent storage with optimized queries and indexing
-- **Model Metadata**: Comprehensive model information including parameters, quantization, capabilities
+- **Model Metadata**: Comprehensive model information including parameters,
+  quantization, capabilities
 - **CSV Import/Export**: Easy bulk operations and data management
 - **REST API**: Full HTTP API for model discovery and management
 - **Performance Tracking**: Store and query model performance metrics
@@ -17,6 +21,7 @@ A comprehensive model registry system for Small Language Models (SLLMs) designed
 The registry currently contains **14 SLLM models** across multiple families:
 
 ### Model Families
+
 - **Qwen** (5 models): From 0.6B to 30B parameters
 - **Google/Gemma** (2 models): 270M and 4B variants
 - **Microsoft/Phi** (1 model): 3.8B instruction-tuned
@@ -29,6 +34,7 @@ The registry currently contains **14 SLLM models** across multiple families:
 - **ERNIE** (1 model): 21B Chinese reasoning model
 
 ### Size Distribution
+
 - **Tiny** (< 1B): 3 models (21%)
 - **Small** (1-5B): 6 models (43%)
 - **Medium** (5-15B): 1 model (7%)
@@ -200,7 +206,7 @@ const performanceData = {
   hardware_type: 'cpu',
   metric_type: 'tokens_per_second',
   metric_value: 25.5,
-  context_size: 4096
+  context_size: 4096,
 };
 ```
 

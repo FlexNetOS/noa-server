@@ -33,8 +33,7 @@ changelog:
 
   filters:
     exclude:
-      - "^docs:"
+      - '^docs:'
       - typo
-      - "^refactor"
-      - "^chore"
-
+      - '^refactor'
+      - '^chore'

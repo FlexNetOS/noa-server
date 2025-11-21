@@ -225,8 +225,8 @@ export class IndexManager extends EventEmitter {
 
     return match[1]
       .split(',')
-      .map(col => col.trim().replace(/\(.*\)/, ''))
-      .filter(col => col.length > 0);
+      .map((col) => col.trim().replace(/\(.*\)/, ''))
+      .filter((col) => col.length > 0);
   }
 
   /**
@@ -371,7 +371,10 @@ export class IndexManager extends EventEmitter {
 
       const usageStats = await this.getIndexUsageStats(index.indexName);
 
-      if (usageStats.recommendation === 'consider-dropping' || usageStats.recommendation === 'drop') {
+      if (
+        usageStats.recommendation === 'consider-dropping' ||
+        usageStats.recommendation === 'drop'
+      ) {
         unusedIndexes.push(usageStats);
       }
     }
@@ -492,7 +495,10 @@ export class IndexManager extends EventEmitter {
   /**
    * Create index
    */
-  async createIndex(recommendation: IndexRecommendation, concurrent: boolean = true): Promise<void> {
+  async createIndex(
+    recommendation: IndexRecommendation,
+    concurrent: boolean = true
+  ): Promise<void> {
     const client = await this.pool.connect();
 
     try {
@@ -615,7 +621,7 @@ export class IndexManager extends EventEmitter {
       }
 
       // Vacuum tables
-      const tables = new Set(indexes.map(idx => idx.tableName));
+      const tables = new Set(indexes.map((idx) => idx.tableName));
       for (const tableName of tables) {
         try {
           await this.pool.query(`VACUUM ANALYZE ${tableName};`);

@@ -1,17 +1,22 @@
 # Rebuild Graph at Runtime
 
-You might need to rebuild your graph with a different configuration for a new run. For example, you might need to use a different graph state or graph structure depending on the config. This guide shows how you can do this.
+You might need to rebuild your graph with a different configuration for a new
+run. For example, you might need to use a different graph state or graph
+structure depending on the config. This guide shows how you can do this.
 
-!!! note "Note"
-    In most cases, customizing behavior based on the config should be handled by a single graph where each node can read a config and change its behavior based on it
+!!! note "Note" In most cases, customizing behavior based on the config should
+be handled by a single graph where each node can read a config and change its
+behavior based on it
 
 ## Prerequisites
 
-Make sure to check out [this how-to guide](./setup.md) on setting up your app for deployment first.
+Make sure to check out [this how-to guide](./setup.md) on setting up your app
+for deployment first.
 
 ## Define graphs
 
-Let's say you have an app with a simple graph that calls an LLM and returns the response to the user. The app file directory looks like the following:
+Let's say you have an app with a simple graph that calls an LLM and returns the
+response to the user. The app file directory looks like the following:
 
 ```
 my-app/
@@ -20,11 +25,13 @@ my-app/
 |-- openai_agent.py     # code for your graph
 ```
 
-where the graph is defined in `openai_agent.py`. 
+where the graph is defined in `openai_agent.py`.
 
 ### No rebuild
 
-In the standard LangGraph API configuration, the server uses the compiled graph instance that's defined at the top level of `openai_agent.py`, which looks like the following:
+In the standard LangGraph API configuration, the server uses the compiled graph
+instance that's defined at the top level of `openai_agent.py`, which looks like
+the following:
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -41,7 +48,9 @@ graph_workflow.add_edge(START, "agent")
 agent = graph_workflow.compile()
 ```
 
-To make the server aware of your graph, you need to specify a path to the variable that contains the `CompiledStateGraph` instance in your LangGraph API configuration (`langgraph.json`), e.g.:
+To make the server aware of your graph, you need to specify a path to the
+variable that contains the `CompiledStateGraph` instance in your LangGraph API
+configuration (`langgraph.json`), e.g.:
 
 ```
 {
@@ -55,7 +64,11 @@ To make the server aware of your graph, you need to specify a path to the variab
 
 ### Rebuild
 
-To make your graph rebuild on each new run with custom configuration, you need to rewrite `openai_agent.py` to instead provide a _function_ that takes a config and returns a graph (or compiled graph) instance. Let's say we want to return our existing graph for user ID '1', and a tool-calling agent for other users. We can modify `openai_agent.py` as follows:
+To make your graph rebuild on each new run with custom configuration, you need
+to rewrite `openai_agent.py` to instead provide a _function_ that takes a config
+and returns a graph (or compiled graph) instance. Let's say we want to return
+our existing graph for user ID '1', and a tool-calling agent for other users. We
+can modify `openai_agent.py` as follows:
 
 ```python
 from typing import Annotated
@@ -132,7 +145,8 @@ def make_graph(config: RunnableConfig):
         return make_alternative_graph()
 ```
 
-Finally, you need to specify the path to your graph-making function (`make_graph`) in `langgraph.json`:
+Finally, you need to specify the path to your graph-making function
+(`make_graph`) in `langgraph.json`:
 
 ```
 {
@@ -144,4 +158,5 @@ Finally, you need to specify the path to your graph-making function (`make_graph
 }
 ```
 
-See more info on LangGraph API configuration file [here](../reference/cli.md#configuration-file)
+See more info on LangGraph API configuration file
+[here](../reference/cli.md#configuration-file)

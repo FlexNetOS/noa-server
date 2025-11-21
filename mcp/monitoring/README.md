@@ -1,6 +1,7 @@
 # MCP Monitoring & Metrics
 
-Comprehensive monitoring and observability for MCP servers with Prometheus metrics, structured logging, and distributed tracing.
+Comprehensive monitoring and observability for MCP servers with Prometheus
+metrics, structured logging, and distributed tracing.
 
 ## Features
 
@@ -134,14 +135,14 @@ alerting:
 
 # Load alert rules
 rule_files:
-  - "/path/to/mcp/monitoring/alerts.yml"
+  - '/path/to/mcp/monitoring/alerts.yml'
 
 # Scrape configurations
 scrape_configs:
-  - job_name: "mcp-server"
+  - job_name: 'mcp-server'
     static_configs:
-      - targets: ["localhost:8080"]
-    metrics_path: "/metrics"
+      - targets: ['localhost:8080']
+    metrics_path: '/metrics'
 ```
 
 ### Start Prometheus
@@ -545,5 +546,6 @@ MIT License - See LICENSE file for details
 ## Support
 
 For issues and questions:
+
 - GitHub Issues: https://github.com/deflex/noa-server/issues
 - Documentation: https://docs.noa-server.io/mcp/monitoring

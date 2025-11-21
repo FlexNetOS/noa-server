@@ -1,5 +1,1 @@
-::: langgraph.config
-    options:
-      members:
-        - get_store
-        - get_stream_writer
+::: langgraph.config options: members: - get_store - get_stream_writer

@@ -8,7 +8,7 @@ import {
   CoreIntent,
   KeyEntities,
   Requirements,
-  GapAnalysis
+  GapAnalysis,
 } from '../types/interfaces';
 import { PromptParser } from '../utils/parser';
 
@@ -29,7 +29,7 @@ export class PromptAnalyzer {
       keyEntities,
       requirements,
       gapAnalysis,
-      rawInput: input
+      rawInput: input,
     };
   }
 
@@ -57,7 +57,7 @@ export class PromptAnalyzer {
       primaryObjective,
       desiredOutcome,
       actionVerbs,
-      contextualGoals
+      contextualGoals,
     };
   }
 
@@ -72,11 +72,11 @@ export class PromptAnalyzer {
       { pattern: /solve|fix|debug/, outcome: 'Resolve problem or issue' },
       { pattern: /improve|optimize|enhance/, outcome: 'Enhance existing solution' },
       { pattern: /research|investigate|explore/, outcome: 'Gather information and insights' },
-      { pattern: /plan|organize|structure/, outcome: 'Create organizational framework' }
+      { pattern: /plan|organize|structure/, outcome: 'Create organizational framework' },
     ];
 
     for (const { pattern, outcome } of outcomePatterns) {
-      if (actionVerbs.some(verb => pattern.test(verb)) || pattern.test(input)) {
+      if (actionVerbs.some((verb) => pattern.test(verb)) || pattern.test(input)) {
         return outcome;
       }
     }
@@ -90,7 +90,7 @@ export class PromptAnalyzer {
   private static extractContextualGoals(sentences: string[]): string[] {
     const goals: string[] = [];
 
-    sentences.forEach(sentence => {
+    sentences.forEach((sentence) => {
       // Look for goal indicators
       if (/\b(to|for|goal|objective|aim|purpose)\b/i.test(sentence)) {
         goals.push(sentence);
@@ -120,10 +120,10 @@ export class PromptAnalyzer {
     const contextPatterns = [
       /in the context of ([^,.]+)/gi,
       /for ([^,.]+)/gi,
-      /regarding ([^,.]+)/gi
+      /regarding ([^,.]+)/gi,
     ];
 
-    contextPatterns.forEach(pattern => {
+    contextPatterns.forEach((pattern) => {
       const matches = input.matchAll(pattern);
       for (const match of matches) {
         if (match[1]) context.push(match[1]);
@@ -135,7 +135,7 @@ export class PromptAnalyzer {
       objects,
       constraints,
       context,
-      domain
+      domain,
     };
   }
 
@@ -147,19 +147,19 @@ export class PromptAnalyzer {
       'software development': ['code', 'function', 'api', 'database', 'programming', 'debug'],
       'data science': ['data', 'analyze', 'model', 'algorithm', 'statistics', 'machine learning'],
       'creative writing': ['story', 'character', 'narrative', 'plot', 'write', 'creative'],
-      'business': ['business', 'strategy', 'market', 'revenue', 'customer', 'sales'],
-      'education': ['learn', 'teach', 'explain', 'understand', 'student', 'course'],
-      'research': ['research', 'study', 'investigate', 'analysis', 'findings', 'hypothesis'],
-      'design': ['design', 'layout', 'visual', 'ui', 'ux', 'interface'],
-      'technical documentation': ['documentation', 'guide', 'manual', 'reference', 'tutorial']
+      business: ['business', 'strategy', 'market', 'revenue', 'customer', 'sales'],
+      education: ['learn', 'teach', 'explain', 'understand', 'student', 'course'],
+      research: ['research', 'study', 'investigate', 'analysis', 'findings', 'hypothesis'],
+      design: ['design', 'layout', 'visual', 'ui', 'ux', 'interface'],
+      'technical documentation': ['documentation', 'guide', 'manual', 'reference', 'tutorial'],
     };
 
     let maxMatches = 0;
     let inferredDomain = 'general';
 
     for (const [domain, domainKeys] of Object.entries(domainKeywords)) {
-      const matches = domainKeys.filter(key =>
-        keywords.includes(key) || new RegExp(`\\b${key}\\b`, 'i').test(input)
+      const matches = domainKeys.filter(
+        (key) => keywords.includes(key) || new RegExp(`\\b${key}\\b`, 'i').test(input)
       ).length;
 
       if (matches > maxMatches) {
@@ -181,7 +181,7 @@ export class PromptAnalyzer {
       tone: PromptParser.detectTone(input),
       audience: PromptParser.detectAudience(input),
       outputType: this.detectOutputType(input),
-      qualityCriteria: this.extractQualityCriteria(input)
+      qualityCriteria: this.extractQualityCriteria(input),
     };
   }
 
@@ -190,12 +190,12 @@ export class PromptAnalyzer {
    */
   private static detectOutputType(input: string): string | undefined {
     const outputTypes = {
-      'text': /\btext\b|\bparagraph\b|\bprose\b/i,
-      'code': /\bcode\b|\bfunction\b|\bscript\b|\bprogram\b/i,
-      'data': /\bdata\b|\bjson\b|\bcsv\b|\btable\b/i,
-      'analysis': /\banalysis\b|\breport\b|\binsights\b/i,
-      'list': /\blist\b|\bitems\b|\bbullets\b/i,
-      'explanation': /\bexplain\b|\bdescribe\b|\bclarify\b/i
+      text: /\btext\b|\bparagraph\b|\bprose\b/i,
+      code: /\bcode\b|\bfunction\b|\bscript\b|\bprogram\b/i,
+      data: /\bdata\b|\bjson\b|\bcsv\b|\btable\b/i,
+      analysis: /\banalysis\b|\breport\b|\binsights\b/i,
+      list: /\blist\b|\bitems\b|\bbullets\b/i,
+      explanation: /\bexplain\b|\bdescribe\b|\bclarify\b/i,
     };
 
     for (const [type, pattern] of Object.entries(outputTypes)) {
@@ -221,7 +221,7 @@ export class PromptAnalyzer {
       { pattern: /\b(detailed|detail)\b/i, criterion: 'Detail' },
       { pattern: /\b(professional|professionalism)\b/i, criterion: 'Professionalism' },
       { pattern: /\b(efficient|efficiency)\b/i, criterion: 'Efficiency' },
-      { pattern: /\b(creative|creativity)\b/i, criterion: 'Creativity' }
+      { pattern: /\b(creative|creativity)\b/i, criterion: 'Creativity' },
     ];
 
     qualityPatterns.forEach(({ pattern, criterion }) => {
@@ -291,7 +291,7 @@ export class PromptAnalyzer {
       provided,
       missing,
       ambiguous,
-      criticalGaps
+      criticalGaps,
     };
   }
 
@@ -304,7 +304,9 @@ export class PromptAnalyzer {
     lines.push('DECONSTRUCT PHASE SUMMARY:');
     lines.push(`Primary Objective: ${result.coreIntent.primaryObjective}`);
     lines.push(`Domain: ${result.keyEntities.domain}`);
-    lines.push(`Critical Gaps: ${result.gapAnalysis.criticalGaps.length > 0 ? result.gapAnalysis.criticalGaps.join(', ') : 'None'}`);
+    lines.push(
+      `Critical Gaps: ${result.gapAnalysis.criticalGaps.length > 0 ? result.gapAnalysis.criticalGaps.join(', ') : 'None'}`
+    );
 
     return lines.join('\n');
   }

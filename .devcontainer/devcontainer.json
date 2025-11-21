@@ -49,9 +49,7 @@
           "typescript",
           "typescriptreact"
         ],
-        "eslint.workingDirectories": [
-          {"mode": "auto"}
-        ],
+        "eslint.workingDirectories": [{ "mode": "auto" }],
 
         // Prettier settings
         "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -98,13 +96,13 @@
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally
   "forwardPorts": [
-    3000,  // Noa Server API
-    8080,  // UI Dashboard
-    5432,  // PostgreSQL
-    6379,  // Redis
+    3000, // Noa Server API
+    8080, // UI Dashboard
+    5432, // PostgreSQL
+    6379, // Redis
     27017, // MongoDB
-    9090,  // Prometheus
-    3001   // Grafana
+    9090, // Prometheus
+    3001 // Grafana
   ],
 
   // Port attributes

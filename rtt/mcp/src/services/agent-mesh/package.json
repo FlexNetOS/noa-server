@@ -1,0 +1,16 @@
+{
+  "name": "agent-mesh",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node --loader tsx src/index.ts"
+  },
+  "dependencies": {
+    "nats": "^2.19.0",
+    "@mcp/envelope": "file:../libs/envelope"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}

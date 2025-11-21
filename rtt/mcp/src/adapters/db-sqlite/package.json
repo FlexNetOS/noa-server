@@ -1,0 +1,11 @@
+{
+  "name": "mcp-db-sqlite",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node src/index.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.8.1"
+  }
+}

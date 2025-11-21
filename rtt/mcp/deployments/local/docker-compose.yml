@@ -1,0 +1,177 @@
+version: '3.8'
+
+services:
+  # Database
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: mcp_dev
+      POSTGRES_USER: mcp
+      POSTGRES_PASSWORD: development
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mcp"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mcp-network
+
+  # NATS with JetStream
+  nats:
+    image: nats:latest
+    command: "-js -m 8222"
+    ports:
+      - "4222:4222"   # Client connections
+      - "8222:8222"   # HTTP monitoring
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8222/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - mcp-network
+
+  # Jaeger (OpenTelemetry backend)
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports:
+      - "16686:16686"  # Jaeger UI
+      - "4317:4317"    # OTLP gRPC
+      - "4318:4318"    # OTLP HTTP
+      - "14268:14268"  # Jaeger collector
+    networks:
+      - mcp-network
+
+  # Redis (for caching)
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - mcp-network
+
+  # Qdrant (vector database)
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - mcp-network
+
+  # Optional: OPA (policy engine)
+  opa:
+    image: openpolicyagent/opa:latest
+    command: run --server --addr :8181
+    ports:
+      - "8181:8181"
+    networks:
+      - mcp-network
+
+  # MCP Server
+  mcp-server:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/server.Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgres://mcp:development@postgres:5432/mcp_dev
+      NATS_URL: nats://nats:4222
+      REDIS_URL: redis://redis:6379
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+      OTEL_SERVICE_NAME: mcp-server
+    depends_on:
+      postgres:
+        condition: service_healthy
+      nats:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      jaeger:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - mcp-network
+
+  # Gateway
+  gateway:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/gateway.Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      NODE_ENV: development
+      MCP_SERVER_URL: http://mcp-server:3000
+      REDIS_URL: redis://redis:6379
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+      OTEL_SERVICE_NAME: gateway
+      RATE_LIMIT_MAX: 100
+      RATE_LIMIT_WINDOW: 900000
+    depends_on:
+      mcp-server:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      jaeger:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:8080/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - mcp-network
+
+  # UI
+  ui:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/ui.Dockerfile
+    ports:
+      - "80:80"
+    environment:
+      GATEWAY_URL: http://gateway:8080
+    depends_on:
+      gateway:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - mcp-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  qdrant_data:
+
+networks:
+  mcp-network:
+    driver: bridge

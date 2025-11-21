@@ -32,14 +32,14 @@ export function AgentCard({ agent }: AgentCardProps) {
   const efficiency = agent.tasksCompleted > 0 ? Math.min(100, (agent.averageTime / 1000) * 10) : 0;
 
   return (
-    <Card className="relative overflow-hidden hover:shadow-lg transition-shadow">
-      <div className="absolute top-0 left-0 w-1 h-full" style={{ backgroundColor: agent.color }} />
+    <Card className="relative overflow-hidden transition-shadow hover:shadow-lg">
+      <div className="absolute left-0 top-0 h-full w-1" style={{ backgroundColor: agent.color }} />
 
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <CardTitle className="text-lg">{agent.name}</CardTitle>
-            <CardDescription className="mt-1 text-sm line-clamp-2">
+            <CardDescription className="mt-1 line-clamp-2 text-sm">
               {agent.description}
             </CardDescription>
           </div>
@@ -47,14 +47,14 @@ export function AgentCard({ agent }: AgentCardProps) {
             <Badge variant="outline" className={cn('text-xs', domainColors[agent.domain])}>
               {agent.domain}
             </Badge>
-            <div className={cn('w-2 h-2 rounded-full', statusColors[agent.status])} />
+            <div className={cn('h-2 w-2 rounded-full', statusColors[agent.status])} />
           </div>
         </div>
       </CardHeader>
 
       <CardContent className="space-y-4">
         {agent.currentTask && (
-          <div className="p-2 bg-muted rounded-md text-sm">
+          <div className="rounded-md bg-muted p-2 text-sm">
             <p className="font-medium text-muted-foreground">Current Task:</p>
             <p className="line-clamp-1">{agent.currentTask}</p>
           </div>
@@ -71,11 +71,11 @@ export function AgentCard({ agent }: AgentCardProps) {
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <p className="text-muted-foreground">Tasks Completed</p>
-            <p className="font-bold text-lg">{agent.tasksCompleted}</p>
+            <p className="text-lg font-bold">{agent.tasksCompleted}</p>
           </div>
           <div>
             <p className="text-muted-foreground">Avg Time</p>
-            <p className="font-bold text-lg">{(agent.averageTime / 1000).toFixed(1)}s</p>
+            <p className="text-lg font-bold">{(agent.averageTime / 1000).toFixed(1)}s</p>
           </div>
         </div>
 

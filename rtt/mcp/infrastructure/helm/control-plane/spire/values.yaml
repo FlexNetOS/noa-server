@@ -1,0 +1,7 @@
+trustDomain: example.org
+serverImage: ghcr.io/spiffe/spire-server:latest
+agentImage: ghcr.io/spiffe/spire-agent:latest
+server:
+  replicas: 1
+agent:
+  nodeSelector: {}

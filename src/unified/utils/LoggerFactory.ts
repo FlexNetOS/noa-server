@@ -14,10 +14,10 @@
  * @module unified/utils/LoggerFactory
  */
 
+import fs from 'fs';
+import path from 'path';
 import winston from 'winston';
 import { z } from 'zod';
-import path from 'path';
-import fs from 'fs';
 
 /**
  * Log level enumeration
@@ -46,7 +46,7 @@ export const LoggerConfigSchema = z.object({
           level: z.nativeEnum(LogLevel).optional(),
           colorize: z.boolean().default(true),
         })
-        .optional(),
+        .default({}),
       file: z
         .object({
           enabled: z.boolean().default(true),
@@ -57,16 +57,16 @@ export const LoggerConfigSchema = z.object({
           maxFiles: z.number().default(5),
           errorFilename: z.string().default('error.log'),
         })
-        .optional(),
+        .default({}),
       http: z
         .object({
           enabled: z.boolean().default(false),
           endpoint: z.string().optional(),
           headers: z.record(z.string(), z.string()).optional(),
         })
-        .optional(),
+        .default({}),
     })
-    .optional(),
+    .default({}),
   metadata: z
     .object({
       service: z.string().default('noa-server'),
@@ -74,7 +74,7 @@ export const LoggerConfigSchema = z.object({
       version: z.string().optional(),
       hostname: z.string().optional(),
     })
-    .optional(),
+    .default({}),
   enableCorrelationId: z.boolean().default(true),
   enableTimestamps: z.boolean().default(true),
   enableStackTrace: z.boolean().default(true),
@@ -83,8 +83,10 @@ export const LoggerConfigSchema = z.object({
       enabled: z.boolean().default(false),
       rate: z.number().min(0).max(1).default(1.0), // 1.0 = 100%
     })
-    .optional(),
-  moduleOverrides: z.record(z.string(), z.nativeEnum(LogLevel)).optional(),
+    .default({}),
+  moduleOverrides: z
+    .record(z.string(), z.nativeEnum(LogLevel))
+    .default({}),
 });
 
 export type LoggerConfig = z.infer<typeof LoggerConfigSchema>;

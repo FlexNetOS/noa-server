@@ -12,13 +12,7 @@
     "lint": "eslint src --ext .ts",
     "typecheck": "tsc --noEmit"
   },
-  "keywords": [
-    "secrets",
-    "vault",
-    "security",
-    "encryption",
-    "rotation"
-  ],
+  "keywords": ["secrets", "vault", "security", "encryption", "rotation"],
   "author": "Noa Server Team",
   "license": "MIT",
   "dependencies": {

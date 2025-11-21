@@ -10,18 +10,10 @@ export { AutomationLogger } from './logger';
 export { AutomationMonitor } from './monitor';
 
 // Middleware
-export {
-  mandatoryPromptOptimizer,
-  optimizeEndpoint,
-  conditionalOptimizer
-} from './middleware';
+export { mandatoryPromptOptimizer, optimizeEndpoint, conditionalOptimizer } from './middleware';
 
 // Hooks
-export {
-  PrePromptHook,
-  prePromptHook,
-  optimizeBeforeExecution
-} from './pre-prompt-hook';
+export { PrePromptHook, prePromptHook, optimizeBeforeExecution } from './pre-prompt-hook';
 
 // Types
 export type { InterceptionResult } from './auto-optimizer';

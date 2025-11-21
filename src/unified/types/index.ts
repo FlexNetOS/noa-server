@@ -155,7 +155,7 @@ export interface TimeoutConfig {
 /**
  * Logger levels
  */
-export type LogLevel = 'error' | 'warn' | 'info' | 'http' | 'verbose' | 'debug' | 'silly';
+// export type LogLevel = 'error' | 'warn' | 'info' | 'http' | 'verbose' | 'debug' | 'silly';
 
 /**
  * Correlation context for distributed tracing

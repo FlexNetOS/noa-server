@@ -96,22 +96,22 @@ export function WorkflowDashboard({ className = '' }: WorkflowDashboardProps) {
 
   if (loading) {
     return (
-      <div className={`flex items-center justify-center h-full ${className}`}>
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      <div className={`flex h-full items-center justify-center ${className}`}>
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-500" />
       </div>
     );
   }
 
   return (
-    <div className={`h-full flex flex-col ${className}`}>
+    <div className={`flex h-full flex-col ${className}`}>
       {/* Header */}
-      <div className="flex-none px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex items-center justify-between mb-4">
+      <div className="flex-none border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+        <div className="mb-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Workflows</h1>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
               <span
-                className={`inline-block w-2 h-2 rounded-full ${
+                className={`inline-block h-2 w-2 rounded-full ${
                   isConnected ? 'bg-green-500' : 'bg-red-500'
                 }`}
                 aria-label={isConnected ? 'Connected' : 'Disconnected'}
@@ -122,7 +122,7 @@ export function WorkflowDashboard({ className = '' }: WorkflowDashboardProps) {
             </div>
             <button
               onClick={handleCreateWorkflow}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               aria-label="Create new workflow"
             >
               + New Workflow
@@ -132,13 +132,13 @@ export function WorkflowDashboard({ className = '' }: WorkflowDashboardProps) {
 
         {/* Search and Filters */}
         <div className="flex items-center gap-4">
-          <div className="flex-1 relative">
+          <div className="relative flex-1">
             <input
               type="text"
               placeholder="Search workflows..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pl-10 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
               aria-label="Search workflows"
             />
             <svg
@@ -162,10 +162,10 @@ export function WorkflowDashboard({ className = '' }: WorkflowDashboardProps) {
               <button
                 key={status}
                 onClick={() => setFilter(status)}
-                className={`px-4 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                className={`rounded-lg px-4 py-2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                   filter === status
                     ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
                 }`}
                 aria-pressed={filter === status}
               >
@@ -179,7 +179,7 @@ export function WorkflowDashboard({ className = '' }: WorkflowDashboardProps) {
       {/* Workflow Grid */}
       <div className="flex-1 overflow-y-auto p-6">
         {filteredWorkflows.length === 0 ? (
-          <div className="text-center py-12">
+          <div className="py-12 text-center">
             <svg
               className="mx-auto h-12 w-12 text-gray-400"
               fill="none"
@@ -202,28 +202,28 @@ export function WorkflowDashboard({ className = '' }: WorkflowDashboardProps) {
             </p>
             <button
               onClick={handleCreateWorkflow}
-              className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               Create Workflow
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {filteredWorkflows.map((workflow, index) => (
               <motion.div
                 key={workflow.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow"
+                className="overflow-hidden rounded-lg border border-gray-200 bg-white transition-shadow hover:shadow-lg dark:border-gray-700 dark:bg-gray-800"
               >
                 <div className="p-6">
-                  <div className="flex items-start justify-between mb-3">
+                  <div className="mb-3 flex items-start justify-between">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                       {workflow.name}
                     </h3>
                     <span
-                      className={`px-2 py-1 text-xs font-medium rounded ${
+                      className={`rounded px-2 py-1 text-xs font-medium ${
                         workflow.status === 'active'
                           ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                           : workflow.status === 'draft'
@@ -235,12 +235,12 @@ export function WorkflowDashboard({ className = '' }: WorkflowDashboardProps) {
                     </span>
                   </div>
 
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+                  <p className="mb-4 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
                     {workflow.description}
                   </p>
 
                   {workflow.metrics && (
-                    <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+                    <div className="mb-4 grid grid-cols-2 gap-4 text-sm">
                       <div>
                         <span className="text-gray-500 dark:text-gray-400">Executions</span>
                         <div className="font-semibold text-gray-900 dark:text-white">
@@ -259,24 +259,24 @@ export function WorkflowDashboard({ className = '' }: WorkflowDashboardProps) {
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleExecuteWorkflow(workflow.id)}
-                      className="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="flex-1 rounded bg-blue-600 px-3 py-2 text-sm text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       disabled={workflow.status !== 'active'}
                     >
                       Execute
                     </button>
                     <button
                       onClick={() => (window.location.href = `/workflows/builder/${workflow.id}`)}
-                      className="flex-1 px-3 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      className="flex-1 rounded bg-gray-100 px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDeleteWorkflow(workflow.id)}
-                      className="px-3 py-2 bg-red-100 hover:bg-red-200 dark:bg-red-900 dark:hover:bg-red-800 text-red-700 dark:text-red-300 text-sm rounded transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+                      className="rounded bg-red-100 px-3 py-2 text-sm text-red-700 transition-colors hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 dark:bg-red-900 dark:text-red-300 dark:hover:bg-red-800"
                       aria-label="Delete workflow"
                     >
                       <svg
-                        className="w-4 h-4"
+                        className="h-4 w-4"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"

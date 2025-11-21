@@ -1,6 +1,11 @@
 # Use the functional API
 
-The [**Functional API**](../concepts/functional_api.md) allows you to add LangGraph's key features — [persistence](../concepts/persistence.md), [memory](../how-tos/memory/add-memory.md), [human-in-the-loop](../concepts/human_in_the_loop.md), and [streaming](../concepts/streaming.md) — to your applications with minimal changes to your existing code.
+The [**Functional API**](../concepts/functional_api.md) allows you to add
+LangGraph's key features — [persistence](../concepts/persistence.md),
+[memory](../how-tos/memory/add-memory.md),
+[human-in-the-loop](../concepts/human_in_the_loop.md), and
+[streaming](../concepts/streaming.md) — to your applications with minimal
+changes to your existing code.
 
 !!! tip
 
@@ -8,7 +13,8 @@ The [**Functional API**](../concepts/functional_api.md) allows you to add LangGr
 
 ## Creating a simple workflow
 
-When defining an `entrypoint`, input is restricted to the first argument of the function. To pass multiple inputs, you can use a dictionary.
+When defining an `entrypoint`, input is restricted to the first argument of the
+function. To pass multiple inputs, you can use a dictionary.
 
 :::python
 
@@ -30,7 +36,7 @@ my_workflow.invoke({"value": 1, "another_value": 2})
 const checkpointer = new MemorySaver();
 
 const myWorkflow = entrypoint(
-  { checkpointer, name: "myWorkflow" },
+  { checkpointer, name: 'myWorkflow' },
   async (inputs: { value: number; anotherValue: number }) => {
     const value = inputs.value;
     const anotherValue = inputs.anotherValue;
@@ -188,7 +194,9 @@ await myWorkflow.invoke({ value: 1, anotherValue: 2 });
 
 ## Parallel execution
 
-Tasks can be executed in parallel by invoking them concurrently and waiting for the results. This is useful for improving performance in IO bound tasks (e.g., calling APIs for LLMs).
+Tasks can be executed in parallel by invoking them concurrently and waiting for
+the results. This is useful for improving performance in IO bound tasks (e.g.,
+calling APIs for LLMs).
 
 :::python
 
@@ -208,12 +216,12 @@ def graph(numbers: list[int]) -> list[str]:
 :::js
 
 ```typescript
-const addOne = task("addOne", async (number: number) => {
+const addOne = task('addOne', async (number: number) => {
   return number + 1;
 });
 
 const graph = entrypoint(
-  { checkpointer, name: "graph" },
+  { checkpointer, name: 'graph' },
   async (numbers: number[]) => {
     return await Promise.all(numbers.map(addOne));
   }
@@ -303,7 +311,8 @@ const graph = entrypoint(
 
 ## Calling graphs
 
-The **Functional API** and the [**Graph API**](../concepts/low_level.md) can be used together in the same application as they share the same underlying runtime.
+The **Functional API** and the [**Graph API**](../concepts/low_level.md) can be
+used together in the same application as they share the same underlying runtime.
 
 :::python
 
@@ -332,15 +341,15 @@ def some_workflow(some_input: dict) -> int:
 :::js
 
 ```typescript
-import { entrypoint } from "@langchain/langgraph";
-import { StateGraph } from "@langchain/langgraph";
+import { entrypoint } from '@langchain/langgraph';
+import { StateGraph } from '@langchain/langgraph';
 
 const builder = new StateGraph(/* ... */);
 // ...
 const someGraph = builder.compile();
 
 const someWorkflow = entrypoint(
-  { name: "someWorkflow" },
+  { name: 'someWorkflow' },
   async (someInput: Record<string, any>) => {
     // Call a graph defined using the graph API
     const result1 = await someGraph.invoke(/* ... */);
@@ -455,14 +464,14 @@ def my_workflow(inputs: dict) -> int:
 ```typescript
 // Will automatically use the checkpointer from the parent entrypoint
 const someOtherWorkflow = entrypoint(
-  { name: "someOtherWorkflow" },
+  { name: 'someOtherWorkflow' },
   async (inputs: { value: number }) => {
     return inputs.value;
   }
 );
 
 const myWorkflow = entrypoint(
-  { checkpointer, name: "myWorkflow" },
+  { checkpointer, name: 'myWorkflow' },
   async (inputs: { value: number }) => {
     const value = await someOtherWorkflow.invoke({ value: 1 });
     return value;
@@ -533,8 +542,9 @@ const myWorkflow = entrypoint(
 
 ## Streaming
 
-The **Functional API** uses the same streaming mechanism as the **Graph API**. Please
-read the [**streaming guide**](../concepts/streaming.md) section for more details.
+The **Functional API** uses the same streaming mechanism as the **Graph API**.
+Please read the [**streaming guide**](../concepts/streaming.md) section for more
+details.
 
 Example of using the streaming API to stream both updates and custom data.
 
@@ -604,29 +614,29 @@ import {
   entrypoint,
   MemorySaver,
   LangGraphRunnableConfig,
-} from "@langchain/langgraph";
+} from '@langchain/langgraph';
 
 const checkpointer = new MemorySaver();
 
 const main = entrypoint(
-  { checkpointer, name: "main" },
+  { checkpointer, name: 'main' },
   async (
     inputs: { x: number },
     config: LangGraphRunnableConfig
   ): Promise<number> => {
-    config.writer?.("Started processing"); // (1)!
+    config.writer?.('Started processing'); // (1)!
     const result = inputs.x * 2;
     config.writer?.(`Result is ${result}`); // (2)!
     return result;
   }
 );
 
-const config = { configurable: { thread_id: "abc" } };
+const config = { configurable: { thread_id: 'abc' } };
 
 // (3)!
 for await (const [mode, chunk] of await main.stream(
   { x: 5 },
-  { streamMode: ["custom", "updates"], ...config } // (4)!
+  { streamMode: ['custom', 'updates'], ...config } // (4)!
 )) {
   console.log(`${mode}: ${JSON.stringify(chunk)}`);
 }
@@ -702,7 +712,7 @@ import {
   entrypoint,
   task,
   RetryPolicy,
-} from "@langchain/langgraph";
+} from '@langchain/langgraph';
 
 // This variable is just used for demonstration purposes to simulate a network failure.
 // It's not something you will have in your actual code.
@@ -714,23 +724,23 @@ const retryPolicy: RetryPolicy = { retryOn: (error) => error instanceof Error };
 
 const getInfo = task(
   {
-    name: "getInfo",
+    name: 'getInfo',
     retry: retryPolicy,
   },
   () => {
     attempts += 1;
 
     if (attempts < 2) {
-      throw new Error("Failure");
+      throw new Error('Failure');
     }
-    return "OK";
+    return 'OK';
   }
 );
 
 const checkpointer = new MemorySaver();
 
 const main = entrypoint(
-  { checkpointer, name: "main" },
+  { checkpointer, name: 'main' },
   async (inputs: Record<string, any>) => {
     return await getInfo();
   }
@@ -738,11 +748,11 @@ const main = entrypoint(
 
 const config = {
   configurable: {
-    thread_id: "1",
+    thread_id: '1',
   },
 };
 
-await main.invoke({ any_input: "foobar" }, config);
+await main.invoke({ any_input: 'foobar' }, config);
 ```
 
 ```
@@ -794,11 +804,11 @@ import {
   entrypoint,
   task,
   CachePolicy,
-} from "@langchain/langgraph";
+} from '@langchain/langgraph';
 
 const slowAdd = task(
   {
-    name: "slowAdd",
+    name: 'slowAdd',
     cache: { ttl: 120 }, // (1)!
   },
   async (x: number) => {
@@ -808,7 +818,7 @@ const slowAdd = task(
 );
 
 const main = entrypoint(
-  { cache: new InMemoryCache(), name: "main" },
+  { cache: new InMemoryCache(), name: 'main' },
   async (inputs: { x: number }) => {
     const result1 = await slowAdd(inputs.x);
     const result2 = await slowAdd(inputs.x);
@@ -818,7 +828,7 @@ const main = entrypoint(
 
 for await (const chunk of await main.stream(
   { x: 5 },
-  { streamMode: "updates" }
+  { streamMode: 'updates' }
 )) {
   console.log(chunk);
 }
@@ -900,7 +910,8 @@ except ValueError:
     pass  # Handle the failure gracefully
 ```
 
-When we resume execution, we won't need to re-run the `slow_task` as its result is already saved in the checkpoint.
+When we resume execution, we won't need to re-run the `slow_task` as its result
+is already saved in the checkpoint.
 
 ```python
 main.invoke(None, config=config)
@@ -915,13 +926,13 @@ main.invoke(None, config=config)
 :::js
 
 ```typescript
-import { entrypoint, task, MemorySaver } from "@langchain/langgraph";
+import { entrypoint, task, MemorySaver } from '@langchain/langgraph';
 
 // This variable is just used for demonstration purposes to simulate a network failure.
 // It's not something you will have in your actual code.
 let attempts = 0;
 
-const getInfo = task("getInfo", async () => {
+const getInfo = task('getInfo', async () => {
   /**
    * Simulates a task that fails once before succeeding.
    * Throws an exception on the first attempt, then returns "OK" on subsequent tries.
@@ -929,24 +940,24 @@ const getInfo = task("getInfo", async () => {
   attempts += 1;
 
   if (attempts < 2) {
-    throw new Error("Failure"); // Simulate a failure on the first attempt
+    throw new Error('Failure'); // Simulate a failure on the first attempt
   }
-  return "OK";
+  return 'OK';
 });
 
 // Initialize an in-memory checkpointer for persistence
 const checkpointer = new MemorySaver();
 
-const slowTask = task("slowTask", async () => {
+const slowTask = task('slowTask', async () => {
   /**
    * Simulates a slow-running task by introducing a 1-second delay.
    */
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  return "Ran slow task.";
+  return 'Ran slow task.';
 });
 
 const main = entrypoint(
-  { checkpointer, name: "main" },
+  { checkpointer, name: 'main' },
   async (inputs: Record<string, any>) => {
     /**
      * Main workflow function that runs the slowTask and getInfo tasks sequentially.
@@ -966,20 +977,21 @@ const main = entrypoint(
 // Workflow execution configuration with a unique thread identifier
 const config = {
   configurable: {
-    thread_id: "1", // Unique identifier to track workflow execution
+    thread_id: '1', // Unique identifier to track workflow execution
   },
 };
 
 // This invocation will take ~1 second due to the slowTask execution
 try {
   // First invocation will raise an exception due to the `getInfo` task failing
-  await main.invoke({ any_input: "foobar" }, config);
+  await main.invoke({ any_input: 'foobar' }, config);
 } catch (err) {
   // Handle the failure gracefully
 }
 ```
 
-When we resume execution, we won't need to re-run the `slowTask` as its result is already saved in the checkpoint.
+When we resume execution, we won't need to re-run the `slowTask` as its result
+is already saved in the checkpoint.
 
 ```typescript
 await main.invoke(null, config);
@@ -993,7 +1005,9 @@ await main.invoke(null, config);
 
 ## Human-in-the-loop
 
-The functional API supports [human-in-the-loop](../concepts/human_in_the_loop.md) workflows using the `interrupt` function and the `Command` primitive.
+The functional API supports
+[human-in-the-loop](../concepts/human_in_the_loop.md) workflows using the
+`interrupt` function and the `Command` primitive.
 
 ### Basic human-in-the-loop workflow
 
@@ -1034,20 +1048,20 @@ def step_3(input_query):
 :::js
 
 ```typescript
-import { entrypoint, task, interrupt, Command } from "@langchain/langgraph";
+import { entrypoint, task, interrupt, Command } from '@langchain/langgraph';
 
-const step1 = task("step1", async (inputQuery: string) => {
+const step1 = task('step1', async (inputQuery: string) => {
   // Append bar
   return `${inputQuery} bar`;
 });
 
-const humanFeedback = task("humanFeedback", async (inputQuery: string) => {
+const humanFeedback = task('humanFeedback', async (inputQuery: string) => {
   // Append user input
   const feedback = interrupt(`Please provide feedback: ${inputQuery}`);
   return `${inputQuery} ${feedback}`;
 });
 
-const step3 = task("step3", async (inputQuery: string) => {
+const step3 = task('step3', async (inputQuery: string) => {
   // Append qux
   return `${inputQuery} qux`;
 });
@@ -1055,7 +1069,8 @@ const step3 = task("step3", async (inputQuery: string) => {
 
 :::
 
-We can now compose these tasks in an [entrypoint](../concepts/functional_api.md#entrypoint):
+We can now compose these tasks in an
+[entrypoint](../concepts/functional_api.md#entrypoint):
 
 :::python
 
@@ -1079,12 +1094,12 @@ def graph(input_query):
 :::js
 
 ```typescript
-import { MemorySaver } from "@langchain/langgraph";
+import { MemorySaver } from '@langchain/langgraph';
 
 const checkpointer = new MemorySaver();
 
 const graph = entrypoint(
-  { checkpointer, name: "graph" },
+  { checkpointer, name: 'graph' },
   async (inputQuery: string) => {
     const result1 = await step1(inputQuery);
     const result2 = await humanFeedback(result1);
@@ -1097,7 +1112,10 @@ const graph = entrypoint(
 
 :::
 
-[interrupt()](../how-tos/human_in_the_loop/add-human-in-the-loop.md#pause-using-interrupt) is called inside a task, enabling a human to review and edit the output of the previous task. The results of prior tasks-- in this case `step_1`-- are persisted, so that they are not run again following the `interrupt`.
+[interrupt()](../how-tos/human_in_the_loop/add-human-in-the-loop.md#pause-using-interrupt)
+is called inside a task, enabling a human to review and edit the output of the
+previous task. The results of prior tasks-- in this case `step_1`-- are
+persisted, so that they are not run again following the `interrupt`.
 
 Let's send in a query string:
 
@@ -1116,17 +1134,20 @@ for event in graph.stream("foo", config):
 :::js
 
 ```typescript
-const config = { configurable: { thread_id: "1" } };
+const config = { configurable: { thread_id: '1' } };
 
-for await (const event of await graph.stream("foo", config)) {
+for await (const event of await graph.stream('foo', config)) {
   console.log(event);
-  console.log("\n");
+  console.log('\n');
 }
 ```
 
 :::
 
-Note that we've paused with an `interrupt` after `step_1`. The interrupt provides instructions to resume the run. To resume, we issue a [Command](../how-tos/human_in_the_loop/add-human-in-the-loop.md#resume-using-the-command-primitive) containing the data expected by the `human_feedback` task.
+Note that we've paused with an `interrupt` after `step_1`. The interrupt
+provides instructions to resume the run. To resume, we issue a
+[Command](../how-tos/human_in_the_loop/add-human-in-the-loop.md#resume-using-the-command-primitive)
+containing the data expected by the `human_feedback` task.
 
 :::python
 
@@ -1144,27 +1165,34 @@ for event in graph.stream(Command(resume="baz"), config):
 ```typescript
 // Continue execution
 for await (const event of await graph.stream(
-  new Command({ resume: "baz" }),
+  new Command({ resume: 'baz' }),
   config
 )) {
   console.log(event);
-  console.log("\n");
+  console.log('\n');
 }
 ```
 
 :::
 
-After resuming, the run proceeds through the remaining step and terminates as expected.
+After resuming, the run proceeds through the remaining step and terminates as
+expected.
 
 ### Review tool calls
 
-To review tool calls before execution, we add a `review_tool_call` function that calls [`interrupt`](../how-tos/human_in_the_loop/add-human-in-the-loop.md#pause-using-interrupt). When this function is called, execution will be paused until we issue a command to resume it.
+To review tool calls before execution, we add a `review_tool_call` function that
+calls
+[`interrupt`](../how-tos/human_in_the_loop/add-human-in-the-loop.md#pause-using-interrupt).
+When this function is called, execution will be paused until we issue a command
+to resume it.
 
-Given a tool call, our function will `interrupt` for human review. At that point we can either:
+Given a tool call, our function will `interrupt` for human review. At that point
+we can either:
 
 - Accept the tool call
 - Revise the tool call and continue
-- Generate a custom tool message (e.g., instructing the model to re-format its tool call)
+- Generate a custom tool message (e.g., instructing the model to re-format its
+  tool call)
 
 :::python
 
@@ -1197,25 +1225,25 @@ def review_tool_call(tool_call: ToolCall) -> Union[ToolCall, ToolMessage]:
 :::js
 
 ```typescript
-import { ToolCall } from "@langchain/core/messages/tool";
-import { ToolMessage } from "@langchain/core/messages";
+import { ToolCall } from '@langchain/core/messages/tool';
+import { ToolMessage } from '@langchain/core/messages';
 
 function reviewToolCall(toolCall: ToolCall): ToolCall | ToolMessage {
   // Review a tool call, returning a validated version
   const humanReview = interrupt({
-    question: "Is this correct?",
+    question: 'Is this correct?',
     tool_call: toolCall,
   });
 
   const reviewAction = humanReview.action;
   const reviewData = humanReview.data;
 
-  if (reviewAction === "continue") {
+  if (reviewAction === 'continue') {
     return toolCall;
-  } else if (reviewAction === "update") {
+  } else if (reviewAction === 'update') {
     const updatedToolCall = { ...toolCall, args: reviewData };
     return updatedToolCall;
-  } else if (reviewAction === "feedback") {
+  } else if (reviewAction === 'feedback') {
     return new ToolMessage({
       content: reviewData,
       name: toolCall.name,
@@ -1229,7 +1257,12 @@ function reviewToolCall(toolCall: ToolCall): ToolCall | ToolMessage {
 
 :::
 
-We can now update our [entrypoint](../concepts/functional_api.md#entrypoint) to review the generated tool calls. If a tool call is accepted or revised, we execute in the same way as before. Otherwise, we just append the `ToolMessage` supplied by the human. The results of prior tasks — in this case the initial model call — are persisted, so that they are not run again following the `interrupt`.
+We can now update our [entrypoint](../concepts/functional_api.md#entrypoint) to
+review the generated tool calls. If a tool call is accepted or revised, we
+execute in the same way as before. Otherwise, we just append the `ToolMessage`
+supplied by the human. The results of prior tasks — in this case the initial
+model call — are persisted, so that they are not run again following the
+`interrupt`.
 
 :::python
 
@@ -1293,13 +1326,13 @@ import {
   interrupt,
   Command,
   addMessages,
-} from "@langchain/langgraph";
-import { ToolMessage, AIMessage, BaseMessage } from "@langchain/core/messages";
+} from '@langchain/langgraph';
+import { ToolMessage, AIMessage, BaseMessage } from '@langchain/core/messages';
 
 const checkpointer = new MemorySaver();
 
 const agent = entrypoint(
-  { checkpointer, name: "agent" },
+  { checkpointer, name: 'agent' },
   async (
     messages: BaseMessage[],
     previous?: BaseMessage[]
@@ -1358,7 +1391,10 @@ const agent = entrypoint(
 
 ## Short-term memory
 
-Short-term memory allows storing information across different **invocations** of the same **thread id**. See [short-term memory](../concepts/functional_api.md#short-term-memory) for more details.
+Short-term memory allows storing information across different **invocations** of
+the same **thread id**. See
+[short-term memory](../concepts/functional_api.md#short-term-memory) for more
+details.
 
 ### Manage checkpoints
 
@@ -1410,7 +1446,7 @@ StateSnapshot(
 const config = {
   configurable: {
     // highlight-next-line
-    thread_id: "1",
+    thread_id: '1',
     // optionally provide an ID for a specific checkpoint,
     // otherwise the latest checkpoint is shown
     // highlight-next-line
@@ -1537,7 +1573,7 @@ list(graph.get_state_history(config))
 const config = {
   configurable: {
     // highlight-next-line
-    thread_id: "1",
+    thread_id: '1',
   },
 };
 // highlight-next-line
@@ -1574,10 +1610,13 @@ for await (const state of graph.getStateHistory(config)) {
 
 ### Decouple return value from saved value
 
-Use `entrypoint.final` to decouple what is returned to the caller from what is persisted in the checkpoint. This is useful when:
+Use `entrypoint.final` to decouple what is returned to the caller from what is
+persisted in the checkpoint. This is useful when:
 
-- You want to return a computed result (e.g., a summary or status), but save a different internal value for use on the next invocation.
-- You need to control what gets passed to the previous parameter on the next run.
+- You want to return a computed result (e.g., a summary or status), but save a
+  different internal value for use on the next invocation.
+- You need to control what gets passed to the previous parameter on the next
+  run.
 
 :::python
 
@@ -1607,12 +1646,12 @@ print(accumulate.invoke(3, config=config))  # 3
 :::js
 
 ```typescript
-import { entrypoint, MemorySaver } from "@langchain/langgraph";
+import { entrypoint, MemorySaver } from '@langchain/langgraph';
 
 const checkpointer = new MemorySaver();
 
 const accumulate = entrypoint(
-  { checkpointer, name: "accumulate" },
+  { checkpointer, name: 'accumulate' },
   async (n: number, previous?: number) => {
     const prev = previous || 0;
     const total = prev + n;
@@ -1621,7 +1660,7 @@ const accumulate = entrypoint(
   }
 );
 
-const config = { configurable: { thread_id: "my-thread" } };
+const config = { configurable: { thread_id: 'my-thread' } };
 
 console.log(await accumulate.invoke(1, config)); // 0
 console.log(await accumulate.invoke(2, config)); // 1
@@ -1632,8 +1671,9 @@ console.log(await accumulate.invoke(3, config)); // 3
 
 ### Chatbot example
 
-An example of a simple chatbot using the functional API and the `InMemorySaver` checkpointer.
-The bot is able to remember the previous conversation and continue from where it left off.
+An example of a simple chatbot using the functional API and the `InMemorySaver`
+checkpointer. The bot is able to remember the previous conversation and continue
+from where it left off.
 
 :::python
 
@@ -1676,19 +1716,19 @@ for chunk in workflow.stream([input_message], config, stream_mode="values"):
 :::js
 
 ```typescript
-import { BaseMessage } from "@langchain/core/messages";
+import { BaseMessage } from '@langchain/core/messages';
 import {
   addMessages,
   entrypoint,
   task,
   MemorySaver,
-} from "@langchain/langgraph";
-import { ChatAnthropic } from "@langchain/anthropic";
+} from '@langchain/langgraph';
+import { ChatAnthropic } from '@langchain/anthropic';
 
-const model = new ChatAnthropic({ model: "claude-3-5-sonnet-latest" });
+const model = new ChatAnthropic({ model: 'claude-3-5-sonnet-latest' });
 
 const callModel = task(
-  "callModel",
+  'callModel',
   async (messages: BaseMessage[]): Promise<BaseMessage> => {
     const response = await model.invoke(messages);
     return response;
@@ -1698,7 +1738,7 @@ const callModel = task(
 const checkpointer = new MemorySaver();
 
 const workflow = entrypoint(
-  { checkpointer, name: "workflow" },
+  { checkpointer, name: 'workflow' },
   async (
     inputs: BaseMessage[],
     previous?: BaseMessage[]
@@ -1716,20 +1756,20 @@ const workflow = entrypoint(
   }
 );
 
-const config = { configurable: { thread_id: "1" } };
-const inputMessage = { role: "user", content: "hi! I'm bob" };
+const config = { configurable: { thread_id: '1' } };
+const inputMessage = { role: 'user', content: "hi! I'm bob" };
 
 for await (const chunk of await workflow.stream([inputMessage], {
   ...config,
-  streamMode: "values",
+  streamMode: 'values',
 })) {
   console.log(chunk.content);
 }
 
-const inputMessage2 = { role: "user", content: "what's my name?" };
+const inputMessage2 = { role: 'user', content: "what's my name?" };
 for await (const chunk of await workflow.stream([inputMessage2], {
   ...config,
-  streamMode: "values",
+  streamMode: 'values',
 })) {
   console.log(chunk.content);
 }
@@ -1743,7 +1783,9 @@ for await (const chunk of await workflow.stream([inputMessage2], {
 
 ## Long-term memory
 
-[long-term memory](../concepts/memory.md#long-term-memory) allows storing information across different **thread ids**. This could be useful for learning information about a given user in one conversation and using it in another.
+[long-term memory](../concepts/memory.md#long-term-memory) allows storing
+information across different **thread ids**. This could be useful for learning
+information about a given user in one conversation and using it in another.
 
 ??? example "Extended example: add long-term memory"
 
@@ -1751,14 +1793,21 @@ for await (const chunk of await workflow.stream([inputMessage2], {
 
 ## Workflows
 
-- [Workflows and agent](../tutorials/workflows.md) guide for more examples of how to build workflows using the Functional API.
+- [Workflows and agent](../tutorials/workflows.md) guide for more examples of
+  how to build workflows using the Functional API.
 
 ## Agents
 
-- [How to create an agent from scratch (Functional API)](./react-agent-from-scratch-functional.ipynb): Shows how to create a simple agent from scratch using the functional API.
-- [How to build a multi-agent network](./multi-agent-network-functional.ipynb): Shows how to build a multi-agent network using the functional API.
-- [How to add multi-turn conversation in a multi-agent application (functional API)](./multi-agent-multi-turn-convo-functional.ipynb): allow an end-user to engage in a multi-turn conversation with one or more agents.
+- [How to create an agent from scratch (Functional API)](./react-agent-from-scratch-functional.ipynb):
+  Shows how to create a simple agent from scratch using the functional API.
+- [How to build a multi-agent network](./multi-agent-network-functional.ipynb):
+  Shows how to build a multi-agent network using the functional API.
+- [How to add multi-turn conversation in a multi-agent application (functional API)](./multi-agent-multi-turn-convo-functional.ipynb):
+  allow an end-user to engage in a multi-turn conversation with one or more
+  agents.
 
 ## Integrate with other libraries
 
-- [Add LangGraph's features to other frameworks using the functional API](./autogen-integration-functional.ipynb): Add LangGraph features like persistence, memory and streaming to other agent frameworks that do not provide them out of the box.
+- [Add LangGraph's features to other frameworks using the functional API](./autogen-integration-functional.ipynb):
+  Add LangGraph features like persistence, memory and streaming to other agent
+  frameworks that do not provide them out of the box.

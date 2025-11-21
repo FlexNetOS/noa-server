@@ -1,16 +1,16 @@
 # Stream outputs
 
-You can [stream outputs](../concepts/streaming.md) from a LangGraph agent or workflow.
+You can [stream outputs](../concepts/streaming.md) from a LangGraph agent or
+workflow.
 
 ## Supported stream modes
 
-:::python
-Pass one or more of the following stream modes as a list to the @[`stream()`][CompiledStateGraph.stream] or @[`astream()`][CompiledStateGraph.astream] methods:
-:::
+:::python Pass one or more of the following stream modes as a list to the
+@[`stream()`][CompiledStateGraph.stream] or
+@[`astream()`][CompiledStateGraph.astream] methods: :::
 
-:::js
-Pass one or more of the following stream modes as a list to the @[`stream()`][CompiledStateGraph.stream] method:
-:::
+:::js Pass one or more of the following stream modes as a list to the
+@[`stream()`][CompiledStateGraph.stream] method: :::
 
 | Mode       | Description                                                                                                                                                                         |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -24,22 +24,23 @@ Pass one or more of the following stream modes as a list to the @[`stream()`][Co
 
 ### Agent progress
 
-:::python
-To stream agent progress, use the @[`stream()`][CompiledStateGraph.stream] or @[`astream()`][CompiledStateGraph.astream] methods with `stream_mode="updates"`. This emits an event after every agent step.
+:::python To stream agent progress, use the
+@[`stream()`][CompiledStateGraph.stream] or
+@[`astream()`][CompiledStateGraph.astream] methods with `stream_mode="updates"`.
+This emits an event after every agent step. :::
+
+:::js To stream agent progress, use the @[`stream()`][CompiledStateGraph.stream]
+method with `streamMode: "updates"`. This emits an event after every agent step.
 :::
 
-:::js
-To stream agent progress, use the @[`stream()`][CompiledStateGraph.stream] method with `streamMode: "updates"`. This emits an event after every agent step.
-:::
-
-For example, if you have an agent that calls a tool once, you should see the following updates:
+For example, if you have an agent that calls a tool once, you should see the
+following updates:
 
 - **LLM node**: AI message with tool call requests
 - **Tool node**: Tool message with execution result
 - **LLM node**: Final AI response
 
-:::python
-=== "Sync"
+:::python === "Sync"
 
     ```python
     agent = create_react_agent(
@@ -84,11 +85,11 @@ const agent = createReactAgent({
 });
 
 for await (const chunk of await agent.stream(
-  { messages: [{ role: "user", content: "what is the weather in sf" }] },
-  { streamMode: "updates" }
+  { messages: [{ role: 'user', content: 'what is the weather in sf' }] },
+  { streamMode: 'updates' }
 )) {
   console.log(chunk);
-  console.log("\n");
+  console.log('\n');
 }
 ```
 
@@ -96,8 +97,8 @@ for await (const chunk of await agent.stream(
 
 ### LLM tokens
 
-:::python
-To stream tokens as they are produced by the LLM, use `stream_mode="messages"`:
+:::python To stream tokens as they are produced by the LLM, use
+`stream_mode="messages"`:
 
 === "Sync"
 
@@ -137,8 +138,8 @@ To stream tokens as they are produced by the LLM, use `stream_mode="messages"`:
 
 :::
 
-:::js
-To stream tokens as they are produced by the LLM, use `streamMode: "messages"`:
+:::js To stream tokens as they are produced by the LLM, use
+`streamMode: "messages"`:
 
 ```typescript
 const agent = createReactAgent({
@@ -147,12 +148,12 @@ const agent = createReactAgent({
 });
 
 for await (const [token, metadata] of await agent.stream(
-  { messages: [{ role: "user", content: "what is the weather in sf" }] },
-  { streamMode: "messages" }
+  { messages: [{ role: 'user', content: 'what is the weather in sf' }] },
+  { streamMode: 'messages' }
 )) {
-  console.log("Token", token);
-  console.log("Metadata", metadata);
-  console.log("\n");
+  console.log('Token', token);
+  console.log('Metadata', metadata);
+  console.log('\n');
 }
 ```
 
@@ -160,8 +161,8 @@ for await (const [token, metadata] of await agent.stream(
 
 ### Tool updates
 
-:::python
-To stream updates from tools as they are executed, you can use @[get_stream_writer][get_stream_writer].
+:::python To stream updates from tools as they are executed, you can use
+@[get_stream_writer][get_stream_writer].
 
 === "Sync"
 
@@ -227,23 +228,23 @@ To stream updates from tools as they are executed, you can use @[get_stream_writ
 
 :::
 
-:::js
-To stream updates from tools as they are executed, you can use the `writer` parameter from the configuration.
+:::js To stream updates from tools as they are executed, you can use the
+`writer` parameter from the configuration.
 
 ```typescript
-import { LangGraphRunnableConfig } from "@langchain/langgraph";
+import { LangGraphRunnableConfig } from '@langchain/langgraph';
 
 const getWeather = tool(
   async (input, config: LangGraphRunnableConfig) => {
     // Stream any arbitrary data
-    config.writer?.("Looking up data for city: " + input.city);
+    config.writer?.('Looking up data for city: ' + input.city);
     return `It's always sunny in ${input.city}!`;
   },
   {
-    name: "get_weather",
-    description: "Get weather for a given city.",
+    name: 'get_weather',
+    description: 'Get weather for a given city.',
     schema: z.object({
-      city: z.string().describe("The city to get weather for."),
+      city: z.string().describe('The city to get weather for.'),
     }),
   }
 );
@@ -254,22 +255,22 @@ const agent = createReactAgent({
 });
 
 for await (const chunk of await agent.stream(
-  { messages: [{ role: "user", content: "what is the weather in sf" }] },
-  { streamMode: "custom" }
+  { messages: [{ role: 'user', content: 'what is the weather in sf' }] },
+  { streamMode: 'custom' }
 )) {
   console.log(chunk);
-  console.log("\n");
+  console.log('\n');
 }
 ```
 
-!!! Note
-      If you add the `writer` parameter to your tool, you won't be able to invoke the tool outside of a LangGraph execution context without providing a writer function.
-:::
+!!! Note If you add the `writer` parameter to your tool, you won't be able to
+invoke the tool outside of a LangGraph execution context without providing a
+writer function. :::
 
 ### Stream multiple modes
 
-:::python
-You can specify multiple streaming modes by passing stream mode as a list: `stream_mode=["updates", "messages", "custom"]`:
+:::python You can specify multiple streaming modes by passing stream mode as a
+list: `stream_mode=["updates", "messages", "custom"]`:
 
 === "Sync"
 
@@ -307,8 +308,8 @@ You can specify multiple streaming modes by passing stream mode as a list: `stre
 
 :::
 
-:::js
-You can specify multiple streaming modes by passing streamMode as an array: `streamMode: ["updates", "messages", "custom"]`:
+:::js You can specify multiple streaming modes by passing streamMode as an
+array: `streamMode: ["updates", "messages", "custom"]`:
 
 ```typescript
 const agent = createReactAgent({
@@ -317,11 +318,11 @@ const agent = createReactAgent({
 });
 
 for await (const chunk of await agent.stream(
-  { messages: [{ role: "user", content: "what is the weather in sf" }] },
-  { streamMode: ["updates", "messages", "custom"] }
+  { messages: [{ role: 'user', content: 'what is the weather in sf' }] },
+  { streamMode: ['updates', 'messages', 'custom'] }
 )) {
   console.log(chunk);
-  console.log("\n");
+  console.log('\n');
 }
 ```
 
@@ -329,16 +330,20 @@ for await (const chunk of await agent.stream(
 
 ### Disable streaming
 
-In some applications you might need to disable streaming of individual tokens for a given model. This is useful in [multi-agent](../agents/multi-agent.md) systems to control which agents stream their output.
+In some applications you might need to disable streaming of individual tokens
+for a given model. This is useful in [multi-agent](../agents/multi-agent.md)
+systems to control which agents stream their output.
 
-See the [Models](../agents/models.md#disable-streaming) guide to learn how to disable streaming.
+See the [Models](../agents/models.md#disable-streaming) guide to learn how to
+disable streaming.
 
 ## Stream from a workflow
 
 ### Basic usage example
 
-:::python
-LangGraph graphs expose the @[`.stream()`][Pregel.stream] (sync) and @[`.astream()`][Pregel.astream] (async) methods to yield streamed outputs as iterators.
+:::python LangGraph graphs expose the @[`.stream()`][Pregel.stream] (sync) and
+@[`.astream()`][Pregel.astream] (async) methods to yield streamed outputs as
+iterators.
 
 === "Sync"
 
@@ -356,12 +361,12 @@ LangGraph graphs expose the @[`.stream()`][Pregel.stream] (sync) and @[`.astream
 
 :::
 
-:::js
-LangGraph graphs expose the @[`.stream()`][Pregel.stream] method to yield streamed outputs as iterators.
+:::js LangGraph graphs expose the @[`.stream()`][Pregel.stream] method to yield
+streamed outputs as iterators.
 
 ```typescript
 for await (const chunk of await graph.stream(inputs, {
-  streamMode: "updates",
+  streamMode: 'updates',
 })) {
   console.log(chunk);
 }
@@ -449,10 +454,11 @@ for await (const chunk of await graph.stream(inputs, {
 
 ### Stream multiple modes
 
-:::python
-You can pass a list as the `stream_mode` parameter to stream multiple modes at once.
+:::python You can pass a list as the `stream_mode` parameter to stream multiple
+modes at once.
 
-The streamed outputs will be tuples of `(mode, chunk)` where `mode` is the name of the stream mode and `chunk` is the data streamed by that mode.
+The streamed outputs will be tuples of `(mode, chunk)` where `mode` is the name
+of the stream mode and `chunk` is the data streamed by that mode.
 
 === "Sync"
 
@@ -470,14 +476,15 @@ The streamed outputs will be tuples of `(mode, chunk)` where `mode` is the name 
 
 :::
 
-:::js
-You can pass an array as the `streamMode` parameter to stream multiple modes at once.
+:::js You can pass an array as the `streamMode` parameter to stream multiple
+modes at once.
 
-The streamed outputs will be tuples of `[mode, chunk]` where `mode` is the name of the stream mode and `chunk` is the data streamed by that mode.
+The streamed outputs will be tuples of `[mode, chunk]` where `mode` is the name
+of the stream mode and `chunk` is the data streamed by that mode.
 
 ```typescript
 for await (const [mode, chunk] of await graph.stream(inputs, {
-  streamMode: ["updates", "custom"],
+  streamMode: ['updates', 'custom'],
 })) {
   console.log(chunk);
 }
@@ -487,7 +494,8 @@ for await (const [mode, chunk] of await graph.stream(inputs, {
 
 ### Stream graph state
 
-Use the stream modes `updates` and `values` to stream the state of the graph as it executes.
+Use the stream modes `updates` and `values` to stream the state of the graph as
+it executes.
 
 - `updates` streams the **updates** to the state after each step of the graph.
 - `values` streams the **full value** of the state after each step of the graph.
@@ -527,8 +535,8 @@ graph = (
 :::js
 
 ```typescript
-import { StateGraph, START, END } from "@langchain/langgraph";
-import { z } from "zod";
+import { StateGraph, START, END } from '@langchain/langgraph';
+import { z } from 'zod';
 
 const State = z.object({
   topic: z.string(),
@@ -536,15 +544,15 @@ const State = z.object({
 });
 
 const graph = new StateGraph(State)
-  .addNode("refineTopic", (state) => {
-    return { topic: state.topic + " and cats" };
+  .addNode('refineTopic', (state) => {
+    return { topic: state.topic + ' and cats' };
   })
-  .addNode("generateJoke", (state) => {
+  .addNode('generateJoke', (state) => {
     return { joke: `This is a joke about ${state.topic}` };
   })
-  .addEdge(START, "refineTopic")
-  .addEdge("refineTopic", "generateJoke")
-  .addEdge("generateJoke", END)
+  .addEdge(START, 'refineTopic')
+  .addEdge('refineTopic', 'generateJoke')
+  .addEdge('generateJoke', END)
   .compile();
 ```
 
@@ -604,10 +612,14 @@ const graph = new StateGraph(State)
 
 ### Stream subgraph outputs
 
-:::python
-To include outputs from [subgraphs](../concepts/subgraphs.md) in the streamed outputs, you can set `subgraphs=True` in the `.stream()` method of the parent graph. This will stream outputs from both the parent graph and any subgraphs.
+:::python To include outputs from [subgraphs](../concepts/subgraphs.md) in the
+streamed outputs, you can set `subgraphs=True` in the `.stream()` method of the
+parent graph. This will stream outputs from both the parent graph and any
+subgraphs.
 
-The outputs will be streamed as tuples `(namespace, data)`, where `namespace` is a tuple with the path to the node where a subgraph is invoked, e.g. `("parent_node:<task_id>", "child_node:<task_id>")`.
+The outputs will be streamed as tuples `(namespace, data)`, where `namespace` is
+a tuple with the path to the node where a subgraph is invoked, e.g.
+`("parent_node:<task_id>", "child_node:<task_id>")`.
 
 ```python
 for chunk in graph.stream(
@@ -619,28 +631,30 @@ for chunk in graph.stream(
     print(chunk)
 ```
 
-1. Set `subgraphs=True` to stream outputs from subgraphs.
-   :::
+1. Set `subgraphs=True` to stream outputs from subgraphs. :::
 
-:::js
-To include outputs from [subgraphs](../concepts/subgraphs.md) in the streamed outputs, you can set `subgraphs: true` in the `.stream()` method of the parent graph. This will stream outputs from both the parent graph and any subgraphs.
+:::js To include outputs from [subgraphs](../concepts/subgraphs.md) in the
+streamed outputs, you can set `subgraphs: true` in the `.stream()` method of the
+parent graph. This will stream outputs from both the parent graph and any
+subgraphs.
 
-The outputs will be streamed as tuples `[namespace, data]`, where `namespace` is a tuple with the path to the node where a subgraph is invoked, e.g. `["parent_node:<task_id>", "child_node:<task_id>"]`.
+The outputs will be streamed as tuples `[namespace, data]`, where `namespace` is
+a tuple with the path to the node where a subgraph is invoked, e.g.
+`["parent_node:<task_id>", "child_node:<task_id>"]`.
 
 ```typescript
 for await (const chunk of await graph.stream(
-  { foo: "foo" },
+  { foo: 'foo' },
   {
     subgraphs: true, // (1)!
-    streamMode: "updates",
+    streamMode: 'updates',
   }
 )) {
   console.log(chunk);
 }
 ```
 
-1. Set `subgraphs: true` to stream outputs from subgraphs.
-   :::
+1. Set `subgraphs: true` to stream outputs from subgraphs. :::
 
 ??? example "Extended example: streaming from subgraphs"
 
@@ -765,7 +779,9 @@ for await (const chunk of await graph.stream(
 
 ### Debugging {#debug}
 
-Use the `debug` streaming mode to stream as much information as possible throughout the execution of the graph. The streamed outputs include the name of the node as well as the full state.
+Use the `debug` streaming mode to stream as much information as possible
+throughout the execution of the graph. The streamed outputs include the name of
+the node as well as the full state.
 
 :::python
 
@@ -784,8 +800,8 @@ for chunk in graph.stream(
 
 ```typescript
 for await (const chunk of await graph.stream(
-  { topic: "ice cream" },
-  { streamMode: "debug" }
+  { topic: 'ice cream' },
+  { streamMode: 'debug' }
 )) {
   console.log(chunk);
 }
@@ -795,15 +811,20 @@ for await (const chunk of await graph.stream(
 
 ### LLM tokens {#messages}
 
-Use the `messages` streaming mode to stream Large Language Model (LLM) outputs **token by token** from any part of your graph, including nodes, tools, subgraphs, or tasks.
+Use the `messages` streaming mode to stream Large Language Model (LLM) outputs
+**token by token** from any part of your graph, including nodes, tools,
+subgraphs, or tasks.
 
-:::python
-The streamed output from [`messages` mode](#supported-stream-modes) is a tuple `(message_chunk, metadata)` where:
+:::python The streamed output from [`messages` mode](#supported-stream-modes) is
+a tuple `(message_chunk, metadata)` where:
 
 - `message_chunk`: the token or message segment from the LLM.
-- `metadata`: a dictionary containing details about the graph node and LLM invocation.
+- `metadata`: a dictionary containing details about the graph node and LLM
+  invocation.
 
-> If your LLM is not available as a LangChain integration, you can stream its outputs using `custom` mode instead. See [use with any LLM](#use-with-any-llm) for details.
+> If your LLM is not available as a LangChain integration, you can stream its
+> outputs using `custom` mode instead. See [use with any LLM](#use-with-any-llm)
+> for details.
 
 !!! warning "Manual config required for async in Python < 3.11"
 
@@ -850,61 +871,71 @@ for message_chunk, metadata in graph.stream( # (2)!
         print(message_chunk.content, end="|", flush=True)
 ```
 
-1. Note that the message events are emitted even when the LLM is run using `.invoke` rather than `.stream`.
-2. The "messages" stream mode returns an iterator of tuples `(message_chunk, metadata)` where `message_chunk` is the token streamed by the LLM and `metadata` is a dictionary with information about the graph node where the LLM was called and other information.
-   :::
+1. Note that the message events are emitted even when the LLM is run using
+   `.invoke` rather than `.stream`.
+2. The "messages" stream mode returns an iterator of tuples
+   `(message_chunk, metadata)` where `message_chunk` is the token streamed by
+   the LLM and `metadata` is a dictionary with information about the graph node
+   where the LLM was called and other information. :::
 
-:::js
-The streamed output from [`messages` mode](#supported-stream-modes) is a tuple `[message_chunk, metadata]` where:
+:::js The streamed output from [`messages` mode](#supported-stream-modes) is a
+tuple `[message_chunk, metadata]` where:
 
 - `message_chunk`: the token or message segment from the LLM.
-- `metadata`: a dictionary containing details about the graph node and LLM invocation.
+- `metadata`: a dictionary containing details about the graph node and LLM
+  invocation.
 
-> If your LLM is not available as a LangChain integration, you can stream its outputs using `custom` mode instead. See [use with any LLM](#use-with-any-llm) for details.
+> If your LLM is not available as a LangChain integration, you can stream its
+> outputs using `custom` mode instead. See [use with any LLM](#use-with-any-llm)
+> for details.
 
 ```typescript
-import { ChatOpenAI } from "@langchain/openai";
-import { StateGraph, START } from "@langchain/langgraph";
-import { z } from "zod";
+import { ChatOpenAI } from '@langchain/openai';
+import { StateGraph, START } from '@langchain/langgraph';
+import { z } from 'zod';
 
 const MyState = z.object({
   topic: z.string(),
-  joke: z.string().default(""),
+  joke: z.string().default(''),
 });
 
-const llm = new ChatOpenAI({ model: "gpt-4o-mini" });
+const llm = new ChatOpenAI({ model: 'gpt-4o-mini' });
 
 const callModel = async (state: z.infer<typeof MyState>) => {
   // Call the LLM to generate a joke about a topic
   const llmResponse = await llm.invoke([
-    { role: "user", content: `Generate a joke about ${state.topic}` },
+    { role: 'user', content: `Generate a joke about ${state.topic}` },
   ]); // (1)!
   return { joke: llmResponse.content };
 };
 
 const graph = new StateGraph(MyState)
-  .addNode("callModel", callModel)
-  .addEdge(START, "callModel")
+  .addNode('callModel', callModel)
+  .addEdge(START, 'callModel')
   .compile();
 
 for await (const [messageChunk, metadata] of await graph.stream(
   // (2)!
-  { topic: "ice cream" },
-  { streamMode: "messages" }
+  { topic: 'ice cream' },
+  { streamMode: 'messages' }
 )) {
   if (messageChunk.content) {
-    console.log(messageChunk.content + "|");
+    console.log(messageChunk.content + '|');
   }
 }
 ```
 
-1. Note that the message events are emitted even when the LLM is run using `.invoke` rather than `.stream`.
-2. The "messages" stream mode returns an iterator of tuples `[messageChunk, metadata]` where `messageChunk` is the token streamed by the LLM and `metadata` is a dictionary with information about the graph node where the LLM was called and other information.
-   :::
+1. Note that the message events are emitted even when the LLM is run using
+   `.invoke` rather than `.stream`.
+2. The "messages" stream mode returns an iterator of tuples
+   `[messageChunk, metadata]` where `messageChunk` is the token streamed by the
+   LLM and `metadata` is a dictionary with information about the graph node
+   where the LLM was called and other information. :::
 
 #### Filter by LLM invocation
 
-You can associate `tags` with LLM invocations to filter the streamed tokens by LLM invocation.
+You can associate `tags` with LLM invocations to filter the streamed tokens by
+LLM invocation.
 
 :::python
 
@@ -927,9 +958,10 @@ async for msg, metadata in graph.astream(  # (3)!
 
 1. llm_1 is tagged with "joke".
 2. llm_2 is tagged with "poem".
-3. The `stream_mode` is set to "messages" to stream LLM tokens. The `metadata` contains information about the LLM invocation, including the tags.
-4. Filter the streamed tokens by the `tags` field in the metadata to only include the tokens from the LLM invocation with the "joke" tag.
-   :::
+3. The `stream_mode` is set to "messages" to stream LLM tokens. The `metadata`
+   contains information about the LLM invocation, including the tags.
+4. Filter the streamed tokens by the `tags` field in the metadata to only
+   include the tokens from the LLM invocation with the "joke" tag. :::
 
 :::js
 
@@ -959,9 +991,10 @@ for await (const [msg, metadata] of await graph.stream( // (3)!
 
 1. llm1 is tagged with "joke".
 2. llm2 is tagged with "poem".
-3. The `streamMode` is set to "messages" to stream LLM tokens. The `metadata` contains information about the LLM invocation, including the tags.
-4. Filter the streamed tokens by the `tags` field in the metadata to only include the tokens from the LLM invocation with the "joke" tag.
-   :::
+3. The `streamMode` is set to "messages" to stream LLM tokens. The `metadata`
+   contains information about the LLM invocation, including the tags.
+4. Filter the streamed tokens by the `tags` field in the metadata to only
+   include the tokens from the LLM invocation with the "joke" tag. :::
 
 ??? example "Extended example: filtering by tags"
 
@@ -1082,7 +1115,8 @@ for await (const [msg, metadata] of await graph.stream( // (3)!
 
 #### Filter by node
 
-To stream tokens only from specific nodes, use `stream_mode="messages"` and filter the outputs by the `langgraph_node` field in the streamed metadata:
+To stream tokens only from specific nodes, use `stream_mode="messages"` and
+filter the outputs by the `langgraph_node` field in the streamed metadata:
 
 :::python
 
@@ -1097,9 +1131,12 @@ for msg, metadata in graph.stream( # (1)!
         ...
 ```
 
-1. The "messages" stream mode returns a tuple of `(message_chunk, metadata)` where `message_chunk` is the token streamed by the LLM and `metadata` is a dictionary with information about the graph node where the LLM was called and other information.
-2. Filter the streamed tokens by the `langgraph_node` field in the metadata to only include the tokens from the `write_poem` node.
-   :::
+1. The "messages" stream mode returns a tuple of `(message_chunk, metadata)`
+   where `message_chunk` is the token streamed by the LLM and `metadata` is a
+   dictionary with information about the graph node where the LLM was called and
+   other information.
+2. Filter the streamed tokens by the `langgraph_node` field in the metadata to
+   only include the tokens from the `write_poem` node. :::
 
 :::js
 
@@ -1107,18 +1144,21 @@ for msg, metadata in graph.stream( # (1)!
 for await (const [msg, metadata] of await graph.stream(
   // (1)!
   inputs,
-  { streamMode: "messages" }
+  { streamMode: 'messages' }
 )) {
-  if (msg.content && metadata.langgraph_node === "some_node_name") {
+  if (msg.content && metadata.langgraph_node === 'some_node_name') {
     // (2)!
     // ...
   }
 }
 ```
 
-1. The "messages" stream mode returns a tuple of `[messageChunk, metadata]` where `messageChunk` is the token streamed by the LLM and `metadata` is a dictionary with information about the graph node where the LLM was called and other information.
-2. Filter the streamed tokens by the `langgraph_node` field in the metadata to only include the tokens from the `writePoem` node.
-   :::
+1. The "messages" stream mode returns a tuple of `[messageChunk, metadata]`
+   where `messageChunk` is the token streamed by the LLM and `metadata` is a
+   dictionary with information about the graph node where the LLM was called and
+   other information.
+2. Filter the streamed tokens by the `langgraph_node` field in the metadata to
+   only include the tokens from the `writePoem` node. :::
 
 ??? example "Extended example: streaming LLM tokens from specific nodes"
 
@@ -1227,11 +1267,13 @@ for await (const [msg, metadata] of await graph.stream(
 
 ### Stream custom data
 
-:::python
-To send **custom user-defined data** from inside a LangGraph node or tool, follow these steps:
+:::python To send **custom user-defined data** from inside a LangGraph node or
+tool, follow these steps:
 
 1. Use `get_stream_writer()` to access the stream writer and emit custom data.
-2. Set `stream_mode="custom"` when calling `.stream()` or `.astream()` to get the custom data in the stream. You can combine multiple modes (e.g., `["updates", "custom"]`), but at least one must be `"custom"`.
+2. Set `stream_mode="custom"` when calling `.stream()` or `.astream()` to get
+   the custom data in the stream. You can combine multiple modes (e.g.,
+   `["updates", "custom"]`), but at least one must be `"custom"`.
 
 !!! warning "No `get_stream_writer()` in async for Python < 3.11"
 
@@ -1304,11 +1346,14 @@ To send **custom user-defined data** from inside a LangGraph node or tool, follo
 
 :::
 
-:::js
-To send **custom user-defined data** from inside a LangGraph node or tool, follow these steps:
+:::js To send **custom user-defined data** from inside a LangGraph node or tool,
+follow these steps:
 
-1. Use the `writer` parameter from the `LangGraphRunnableConfig` to emit custom data.
-2. Set `streamMode: "custom"` when calling `.stream()` to get the custom data in the stream. You can combine multiple modes (e.g., `["updates", "custom"]`), but at least one must be `"custom"`.
+1. Use the `writer` parameter from the `LangGraphRunnableConfig` to emit custom
+   data.
+2. Set `streamMode: "custom"` when calling `.stream()` to get the custom data in
+   the stream. You can combine multiple modes (e.g., `["updates", "custom"]`),
+   but at least one must be `"custom"`.
 
 === "node"
 
@@ -1378,10 +1423,11 @@ To send **custom user-defined data** from inside a LangGraph node or tool, follo
 
 ### Use with any LLM
 
-:::python
-You can use `stream_mode="custom"` to stream data from **any LLM API** — even if that API does **not** implement the LangChain chat model interface.
+:::python You can use `stream_mode="custom"` to stream data from **any LLM API**
+— even if that API does **not** implement the LangChain chat model interface.
 
-This lets you integrate raw LLM clients or external services that provide their own streaming interfaces, making LangGraph highly flexible for custom setups.
+This lets you integrate raw LLM clients or external services that provide their
+own streaming interfaces, making LangGraph highly flexible for custom setups.
 
 ```python
 from langgraph.config import get_stream_writer
@@ -1415,16 +1461,16 @@ for chunk in graph.stream(
 1. Get the stream writer to send custom data.
 2. Generate LLM tokens using your custom streaming client.
 3. Use the writer to send custom data to the stream.
-4. Set `stream_mode="custom"` to receive the custom data in the stream.
-   :::
+4. Set `stream_mode="custom"` to receive the custom data in the stream. :::
 
-:::js
-You can use `streamMode: "custom"` to stream data from **any LLM API** — even if that API does **not** implement the LangChain chat model interface.
+:::js You can use `streamMode: "custom"` to stream data from **any LLM API** —
+even if that API does **not** implement the LangChain chat model interface.
 
-This lets you integrate raw LLM clients or external services that provide their own streaming interfaces, making LangGraph highly flexible for custom setups.
+This lets you integrate raw LLM clients or external services that provide their
+own streaming interfaces, making LangGraph highly flexible for custom setups.
 
 ```typescript
-import { LangGraphRunnableConfig } from "@langchain/langgraph";
+import { LangGraphRunnableConfig } from '@langchain/langgraph';
 
 const callArbitraryModel = async (
   state: any,
@@ -1436,17 +1482,17 @@ const callArbitraryModel = async (
     // (1)!
     config.writer({ custom_llm_chunk: chunk }); // (2)!
   }
-  return { result: "completed" };
+  return { result: 'completed' };
 };
 
 const graph = new StateGraph(State)
-  .addNode("callArbitraryModel", callArbitraryModel)
+  .addNode('callArbitraryModel', callArbitraryModel)
   // Add other nodes and edges as needed
   .compile();
 
 for await (const chunk of await graph.stream(
-  { topic: "cats" },
-  { streamMode: "custom" } // (3)!
+  { topic: 'cats' },
+  { streamMode: 'custom' } // (3)!
 )) {
   // The chunk will contain the custom data streamed from the llm
   console.log(chunk);
@@ -1455,8 +1501,7 @@ for await (const chunk of await graph.stream(
 
 1. Generate LLM tokens using your custom streaming client.
 2. Use the writer to send custom data to the stream.
-3. Set `streamMode: "custom"` to receive the custom data in the stream.
-   :::
+3. Set `streamMode: "custom"` to receive the custom data in the stream. :::
 
 ??? example "Extended example: streaming arbitrary chat model"
 
@@ -1700,11 +1745,10 @@ for await (const chunk of await graph.stream(
 
 ### Disable streaming for specific chat models
 
-If your application mixes models that support streaming with those that do not, you may need to explicitly disable streaming for
-models that do not support it.
+If your application mixes models that support streaming with those that do not,
+you may need to explicitly disable streaming for models that do not support it.
 
-:::python
-Set `disable_streaming=True` when initializing the model.
+:::python Set `disable_streaming=True` when initializing the model.
 
 === "init_chat_model"
 
@@ -1732,14 +1776,13 @@ Set `disable_streaming=True` when initializing the model.
 
 :::
 
-:::js
-Set `streaming: false` when initializing the model.
+:::js Set `streaming: false` when initializing the model.
 
 ```typescript
-import { ChatOpenAI } from "@langchain/openai";
+import { ChatOpenAI } from '@langchain/openai';
 
 const model = new ChatOpenAI({
-  model: "o1-preview",
+  model: 'o1-preview',
   streaming: false, // (1)!
 });
 ```
@@ -1750,11 +1793,18 @@ const model = new ChatOpenAI({
 
 ### Async with Python < 3.11 { #async }
 
-In Python versions < 3.11, [asyncio tasks](https://docs.python.org/3/library/asyncio-task.html#asyncio.create_task) do not support the `context` parameter.  
-This limits LangGraph ability to automatically propagate context, and affects LangGraph's streaming mechanisms in two key ways:
+In Python versions < 3.11,
+[asyncio tasks](https://docs.python.org/3/library/asyncio-task.html#asyncio.create_task)
+do not support the `context` parameter.  
+This limits LangGraph ability to automatically propagate context, and affects
+LangGraph's streaming mechanisms in two key ways:
 
-1. You **must** explicitly pass [`RunnableConfig`](https://python.langchain.com/docs/concepts/runnables/#runnableconfig) into async LLM calls (e.g., `ainvoke()`), as callbacks are not automatically propagated.
-2. You **cannot** use `get_stream_writer()` in async nodes or tools — you must pass a `writer` argument directly.
+1. You **must** explicitly pass
+   [`RunnableConfig`](https://python.langchain.com/docs/concepts/runnables/#runnableconfig)
+   into async LLM calls (e.g., `ainvoke()`), as callbacks are not automatically
+   propagated.
+2. You **cannot** use `get_stream_writer()` in async nodes or tools — you must
+   pass a `writer` argument directly.
 
 ??? example "Extended example: async LLM call with manual config"
 

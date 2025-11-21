@@ -304,18 +304,18 @@ metadata:
   name: cache-clear
   namespace: production
 spec:
-  schedule: "0 2 * * *"  # 2 AM daily
+  schedule: '0 2 * * *' # 2 AM daily
   jobTemplate:
     spec:
       template:
         spec:
           containers:
-          - name: cache-clear
-            image: redis:7-alpine
-            command:
-            - /bin/sh
-            - -c
-            - redis-cli -h redis.cache.svc.cluster.local FLUSHDB
+            - name: cache-clear
+              image: redis:7-alpine
+              command:
+                - /bin/sh
+                - -c
+                - redis-cli -h redis.cache.svc.cluster.local FLUSHDB
           restartPolicy: OnFailure
 ```
 

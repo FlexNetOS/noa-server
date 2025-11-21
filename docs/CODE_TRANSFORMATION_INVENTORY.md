@@ -1,13 +1,16 @@
 # Code Transformation Tools & Agents Inventory
+
 ## Complete Guide for `/home/deflex` Codebase
 
-**Generated**: 2025-10-22
-**Scope**: Entire `/home/deflex` directory structure
-**Purpose**: Comprehensive inventory of all available tools, agents, and workflows for code transformation, unification, condensing, modification, and refactoring
+**Generated**: 2025-10-22 **Scope**: Entire `/home/deflex` directory structure
+**Purpose**: Comprehensive inventory of all available tools, agents, and
+workflows for code transformation, unification, condensing, modification, and
+refactoring
 
 ---
 
 ## Table of Contents
+
 1. [Executive Summary](#executive-summary)
 2. [Agent Ecosystem (250+ Locations)](#agent-ecosystem)
 3. [Transformation Tools & Features](#transformation-tools)
@@ -19,6 +22,7 @@
 ## Executive Summary
 
 ### Discovery Results
+
 - **Agent Directories**: 250+ unique locations across `/home/deflex`
 - **Transformation Documentation**: 1,164+ markdown files
 - **Core Agents**: 74 in primary hub (`.claude/agents/`)
@@ -28,6 +32,7 @@
 - **External Frameworks**: LangChain, LlamaIndex, Semantic Kernel, AutoGen
 
 ### Performance Capabilities
+
 - **84.8% SWE-Bench solve rate**
 - **2.8-4.4x speed improvement** with parallel execution
 - **10-20x faster** with SDK integration
@@ -41,97 +46,110 @@
 ### Primary Agent Hub: `/home/deflex/noa-server/.claude/agents/`
 
 #### Core Development Agents (5)
-| Agent | File | Purpose |
-|-------|------|---------|
-| **Coder** | `core/coder.md` | Code implementation and refactoring |
-| **Reviewer** | `core/reviewer.md` | Quality assurance and unification checks |
-| **Tester** | `core/tester.md` | Test creation and validation |
+
+| Agent          | File                 | Purpose                                    |
+| -------------- | -------------------- | ------------------------------------------ |
+| **Coder**      | `core/coder.md`      | Code implementation and refactoring        |
+| **Reviewer**   | `core/reviewer.md`   | Quality assurance and unification checks   |
+| **Tester**     | `core/tester.md`     | Test creation and validation               |
 | **Researcher** | `core/researcher.md` | Pattern analysis and information gathering |
-| **Planner** | `core/planner.md` | Strategic planning and roadmap creation |
+| **Planner**    | `core/planner.md`    | Strategic planning and roadmap creation    |
 
 #### Transformation-Focused Agents (Key)
-| Agent | File | Capability |
-|-------|------|------------|
-| **Base Template Generator** | `base-template-generator.md` | Generate unified code templates ⭐ |
-| **Code Analyzer** | `analysis/code-analyzer.md` | Deep code structure analysis |
-| **Code Quality Analyzer** | `analysis/code-review/analyze-code-quality.md` | Quality metrics |
-| **Topology Optimizer** | `optimization/topology-optimizer.md` | Agent coordination optimization |
-| **Performance Monitor** | `optimization/performance-monitor.md` | Performance tracking |
-| **Resource Allocator** | `optimization/resource-allocator.md` | Resource management |
-| **Benchmark Suite** | `optimization/benchmark-suite.md` | Performance benchmarking |
-| **Load Balancer** | `optimization/load-balancer.md` | Load distribution |
+
+| Agent                       | File                                           | Capability                         |
+| --------------------------- | ---------------------------------------------- | ---------------------------------- |
+| **Base Template Generator** | `base-template-generator.md`                   | Generate unified code templates ⭐ |
+| **Code Analyzer**           | `analysis/code-analyzer.md`                    | Deep code structure analysis       |
+| **Code Quality Analyzer**   | `analysis/code-review/analyze-code-quality.md` | Quality metrics                    |
+| **Topology Optimizer**      | `optimization/topology-optimizer.md`           | Agent coordination optimization    |
+| **Performance Monitor**     | `optimization/performance-monitor.md`          | Performance tracking               |
+| **Resource Allocator**      | `optimization/resource-allocator.md`           | Resource management                |
+| **Benchmark Suite**         | `optimization/benchmark-suite.md`              | Performance benchmarking           |
+| **Load Balancer**           | `optimization/load-balancer.md`                | Load distribution                  |
 
 #### SPARC Methodology Agents (4)
-| Agent | File | Phase |
-|-------|------|-------|
+
+| Agent             | File                     | Phase                 |
+| ----------------- | ------------------------ | --------------------- |
 | **Specification** | `sparc/specification.md` | Requirements analysis |
-| **Pseudocode** | `sparc/pseudocode.md` | Algorithm design |
-| **Architecture** | `sparc/architecture.md` | System design |
-| **Refinement** | `sparc/refinement.md` | TDD implementation |
+| **Pseudocode**    | `sparc/pseudocode.md`    | Algorithm design      |
+| **Architecture**  | `sparc/architecture.md`  | System design         |
+| **Refinement**    | `sparc/refinement.md`    | TDD implementation    |
 
 #### Hive-Mind Coordination (5)
-| Agent | File | Role |
-|-------|------|------|
-| **Queen Coordinator** | `hive-mind/queen-coordinator.md` | Strategic planning and coordination |
-| **Worker Specialist** | `hive-mind/worker-specialist.md` | Task execution |
-| **Scout Explorer** | `hive-mind/scout-explorer.md` | Discovery and exploration |
-| **Swarm Memory Manager** | `hive-mind/swarm-memory-manager.md` | Memory coordination |
-| **Collective Intelligence** | `hive-mind/collective-intelligence-coordinator.md` | Consensus building |
+
+| Agent                       | File                                               | Role                                |
+| --------------------------- | -------------------------------------------------- | ----------------------------------- |
+| **Queen Coordinator**       | `hive-mind/queen-coordinator.md`                   | Strategic planning and coordination |
+| **Worker Specialist**       | `hive-mind/worker-specialist.md`                   | Task execution                      |
+| **Scout Explorer**          | `hive-mind/scout-explorer.md`                      | Discovery and exploration           |
+| **Swarm Memory Manager**    | `hive-mind/swarm-memory-manager.md`                | Memory coordination                 |
+| **Collective Intelligence** | `hive-mind/collective-intelligence-coordinator.md` | Consensus building                  |
 
 #### Consensus & Distributed Systems (7)
-| Agent | File | Purpose |
-|-------|------|---------|
-| **Byzantine Coordinator** | `consensus/byzantine-coordinator.md` | Fault-tolerant coordination |
-| **Raft Manager** | `consensus/raft-manager.md` | Distributed consensus |
-| **Gossip Coordinator** | `consensus/gossip-coordinator.md` | Peer-to-peer communication |
-| **CRDT Synchronizer** | `consensus/crdt-synchronizer.md` | Conflict-free replication |
-| **Quorum Manager** | `consensus/quorum-manager.md` | Voting coordination |
-| **Security Manager** | `consensus/security-manager.md` | Security enforcement |
-| **Performance Benchmarker** | `consensus/performance-benchmarker.md` | Performance testing |
+
+| Agent                       | File                                   | Purpose                     |
+| --------------------------- | -------------------------------------- | --------------------------- |
+| **Byzantine Coordinator**   | `consensus/byzantine-coordinator.md`   | Fault-tolerant coordination |
+| **Raft Manager**            | `consensus/raft-manager.md`            | Distributed consensus       |
+| **Gossip Coordinator**      | `consensus/gossip-coordinator.md`      | Peer-to-peer communication  |
+| **CRDT Synchronizer**       | `consensus/crdt-synchronizer.md`       | Conflict-free replication   |
+| **Quorum Manager**          | `consensus/quorum-manager.md`          | Voting coordination         |
+| **Security Manager**        | `consensus/security-manager.md`        | Security enforcement        |
+| **Performance Benchmarker** | `consensus/performance-benchmarker.md` | Performance testing         |
 
 #### GitHub Integration (13)
-| Agent | File | Capability |
-|-------|------|------------|
-| **PR Manager** | `github/pr-manager.md` | Pull request management |
-| **Code Review Swarm** | `github/code-review-swarm.md` | Multi-agent code review |
-| **Repo Architect** | `github/repo-architect.md` | Repository restructuring ⭐ |
-| **Multi-Repo Swarm** | `github/multi-repo-swarm.md` | Cross-repo transformations ⭐ |
-| **Issue Tracker** | `github/issue-tracker.md` | Issue management |
-| **Release Manager** | `github/release-manager.md` | Release coordination |
-| **Workflow Automation** | `github/workflow-automation.md` | CI/CD automation |
-| **Project Board Sync** | `github/project-board-sync.md` | Project management |
-| **GitHub Modes** | `github/github-modes.md` | GitHub operations |
-| **Sync Coordinator** | `github/sync-coordinator.md` | Repository synchronization |
-| **Swarm PR** | `github/swarm-pr.md` | Multi-agent PR creation |
-| **Swarm Issue** | `github/swarm-issue.md` | Multi-agent issue handling |
-| **Release Swarm** | `github/release-swarm.md` | Coordinated releases |
+
+| Agent                   | File                            | Capability                    |
+| ----------------------- | ------------------------------- | ----------------------------- |
+| **PR Manager**          | `github/pr-manager.md`          | Pull request management       |
+| **Code Review Swarm**   | `github/code-review-swarm.md`   | Multi-agent code review       |
+| **Repo Architect**      | `github/repo-architect.md`      | Repository restructuring ⭐   |
+| **Multi-Repo Swarm**    | `github/multi-repo-swarm.md`    | Cross-repo transformations ⭐ |
+| **Issue Tracker**       | `github/issue-tracker.md`       | Issue management              |
+| **Release Manager**     | `github/release-manager.md`     | Release coordination          |
+| **Workflow Automation** | `github/workflow-automation.md` | CI/CD automation              |
+| **Project Board Sync**  | `github/project-board-sync.md`  | Project management            |
+| **GitHub Modes**        | `github/github-modes.md`        | GitHub operations             |
+| **Sync Coordinator**    | `github/sync-coordinator.md`    | Repository synchronization    |
+| **Swarm PR**            | `github/swarm-pr.md`            | Multi-agent PR creation       |
+| **Swarm Issue**         | `github/swarm-issue.md`         | Multi-agent issue handling    |
+| **Release Swarm**       | `github/release-swarm.md`       | Coordinated releases          |
 
 #### Templates & Migration (9)
-| Agent | File | Use Case |
-|-------|------|----------|
-| **Orchestrator Task** | `templates/orchestrator-task.md` | Task orchestration |
-| **Coordinator Swarm Init** | `templates/coordinator-swarm-init.md` | Swarm initialization |
-| **Implementer SPARC Coder** | `templates/implementer-sparc-coder.md` | SPARC coder template |
-| **Memory Coordinator** | `templates/memory-coordinator.md` | Memory management |
-| **SPARC Coordinator** | `templates/sparc-coordinator.md` | SPARC orchestration |
-| **Performance Analyzer** | `templates/performance-analyzer.md` | Performance analysis |
-| **GitHub PR Manager** | `templates/github-pr-manager.md` | PR template |
-| **Migration Plan** | `templates/migration-plan.md` | Migration planning ⭐ |
-| **Automation Smart Agent** | `templates/automation-smart-agent.md` | Smart automation |
+
+| Agent                       | File                                   | Use Case              |
+| --------------------------- | -------------------------------------- | --------------------- |
+| **Orchestrator Task**       | `templates/orchestrator-task.md`       | Task orchestration    |
+| **Coordinator Swarm Init**  | `templates/coordinator-swarm-init.md`  | Swarm initialization  |
+| **Implementer SPARC Coder** | `templates/implementer-sparc-coder.md` | SPARC coder template  |
+| **Memory Coordinator**      | `templates/memory-coordinator.md`      | Memory management     |
+| **SPARC Coordinator**       | `templates/sparc-coordinator.md`       | SPARC orchestration   |
+| **Performance Analyzer**    | `templates/performance-analyzer.md`    | Performance analysis  |
+| **GitHub PR Manager**       | `templates/github-pr-manager.md`       | PR template           |
+| **Migration Plan**          | `templates/migration-plan.md`          | Migration planning ⭐ |
+| **Automation Smart Agent**  | `templates/automation-smart-agent.md`  | Smart automation      |
 
 ### Additional Agent Locations
 
 #### User-Level Agents
+
 - **`/home/deflex/.claude/agents/`** (4 agents)
   - claude-flow, contains-studio, custom, manifest.json
 
 #### External Repositories
+
 - **`/home/deflex/ai-dev-repos/claude-flow/`** - Complete agent swarm system
-- **`/home/deflex/ai-dev-repos/anthropic-cookbook/patterns/agents/`** - Cookbook patterns
-- **`/home/deflex/ai-dev-repos/contains-studio-agents/`** - Studio agent collection
-- **`/home/deflex/ai-dev-repos/claude-code/plugins/`** - Claude Code plugin agents
+- **`/home/deflex/ai-dev-repos/anthropic-cookbook/patterns/agents/`** - Cookbook
+  patterns
+- **`/home/deflex/ai-dev-repos/contains-studio-agents/`** - Studio agent
+  collection
+- **`/home/deflex/ai-dev-repos/claude-code/plugins/`** - Claude Code plugin
+  agents
 
 #### Third-Party Frameworks
+
 - **LangChain**: `/home/deflex/.cache/.../langchain/agents/`
 - **LlamaIndex**: `/home/deflex/.../llama_index/core/agent/`
 - **Semantic Kernel**: `/home/deflex/.../semantic_kernel/agents/`
@@ -147,26 +165,26 @@ Location: `/home/deflex/noa-server/.claude/commands/sparc/`
 
 #### All 18 SPARC Agents
 
-| Agent | File | Primary Use |
-|-------|------|-------------|
-| **Analyzer** | `analyzer.md` | Code analysis and pattern detection ⭐ |
-| **Architect** | `architect.md` | System redesign and restructuring ⭐ |
-| **Batch Executor** | `batch-executor.md` | Parallel batch processing ⭐ |
-| **Coder** | `coder.md` | Code implementation and refactoring |
-| **Debugger** | `debugger.md` | Debugging and troubleshooting |
-| **Designer** | `designer.md` | UI/UX design |
-| **Documenter** | `documenter.md` | Documentation generation |
-| **Innovator** | `innovator.md` | Creative problem-solving |
-| **Memory Manager** | `memory-manager.md` | Memory management |
-| **Optimizer** | `optimizer.md` | Performance optimization and condensing ⭐⭐ |
-| **Orchestrator** | `orchestrator.md` | Workflow coordination ⭐⭐ |
-| **Researcher** | `researcher.md` | Pattern research |
-| **Reviewer** | `reviewer.md` | Code quality and unification checks ⭐ |
-| **SPARC Modes** | `sparc-modes.md` | Mode selection |
-| **Swarm Coordinator** | `swarm-coordinator.md` | Swarm coordination |
-| **TDD** | `tdd.md` | Test-driven development |
-| **Tester** | `tester.md` | Testing |
-| **Workflow Manager** | `workflow-manager.md` | Multi-step transformation pipelines ⭐⭐ |
+| Agent                 | File                   | Primary Use                                  |
+| --------------------- | ---------------------- | -------------------------------------------- |
+| **Analyzer**          | `analyzer.md`          | Code analysis and pattern detection ⭐       |
+| **Architect**         | `architect.md`         | System redesign and restructuring ⭐         |
+| **Batch Executor**    | `batch-executor.md`    | Parallel batch processing ⭐                 |
+| **Coder**             | `coder.md`             | Code implementation and refactoring          |
+| **Debugger**          | `debugger.md`          | Debugging and troubleshooting                |
+| **Designer**          | `designer.md`          | UI/UX design                                 |
+| **Documenter**        | `documenter.md`        | Documentation generation                     |
+| **Innovator**         | `innovator.md`         | Creative problem-solving                     |
+| **Memory Manager**    | `memory-manager.md`    | Memory management                            |
+| **Optimizer**         | `optimizer.md`         | Performance optimization and condensing ⭐⭐ |
+| **Orchestrator**      | `orchestrator.md`      | Workflow coordination ⭐⭐                   |
+| **Researcher**        | `researcher.md`        | Pattern research                             |
+| **Reviewer**          | `reviewer.md`          | Code quality and unification checks ⭐       |
+| **SPARC Modes**       | `sparc-modes.md`       | Mode selection                               |
+| **Swarm Coordinator** | `swarm-coordinator.md` | Swarm coordination                           |
+| **TDD**               | `tdd.md`               | Test-driven development                      |
+| **Tester**            | `tester.md`            | Testing                                      |
+| **Workflow Manager**  | `workflow-manager.md`  | Multi-step transformation pipelines ⭐⭐     |
 
 **⭐ = Highly relevant for transformation tasks**
 
@@ -201,64 +219,66 @@ npx claude-flow sparc concurrent <mode> "<tasks-file>"
 
 Location: `/home/deflex/noa-server/.claude/commands/automation/`
 
-| Command | File | Purpose |
-|---------|------|---------|
-| `/smart-agents` | `smart-agents.md` | Auto-select agents for tasks |
-| `/auto-agent` | `auto-agent.md` | Automated agent orchestration |
-| `/session-memory` | `session-memory.md` | Session state management |
-| `/workflow-select` | `workflow-select.md` | Choose optimal workflow |
-| `/smart-spawn` | `smart-spawn.md` | Intelligent agent spawning |
-| `/self-healing` | `self-healing.md` | Auto-recovery workflows |
+| Command            | File                 | Purpose                       |
+| ------------------ | -------------------- | ----------------------------- |
+| `/smart-agents`    | `smart-agents.md`    | Auto-select agents for tasks  |
+| `/auto-agent`      | `auto-agent.md`      | Automated agent orchestration |
+| `/session-memory`  | `session-memory.md`  | Session state management      |
+| `/workflow-select` | `workflow-select.md` | Choose optimal workflow       |
+| `/smart-spawn`     | `smart-spawn.md`     | Intelligent agent spawning    |
+| `/self-healing`    | `self-healing.md`    | Auto-recovery workflows       |
 
 #### Optimization Commands
 
 Location: `/home/deflex/noa-server/.claude/commands/optimization/`
 
-| Command | File | Purpose |
-|---------|------|---------|
+| Command               | File                    | Purpose                      |
+| --------------------- | ----------------------- | ---------------------------- |
 | `/parallel-execution` | `parallel-execution.md` | Parallel task execution ⭐⭐ |
-| `/topology-optimize` | `topology-optimize.md` | Optimize agent coordination |
-| `/cache-manage` | `cache-manage.md` | Cache transformation results |
-| `/auto-topology` | `auto-topology.md` | Automatic topology selection |
-| `/parallel-execute` | `parallel-execute.md` | Parallel execution control |
+| `/topology-optimize`  | `topology-optimize.md`  | Optimize agent coordination  |
+| `/cache-manage`       | `cache-manage.md`       | Cache transformation results |
+| `/auto-topology`      | `auto-topology.md`      | Automatic topology selection |
+| `/parallel-execute`   | `parallel-execute.md`   | Parallel execution control   |
 
 #### Memory & Neural Commands
 
 Location: `/home/deflex/noa-server/.claude/commands/memory/`
 
-| Command | File | Purpose |
-|---------|------|---------|
-| `/memory-usage` | `memory-usage.md` | Track transformation patterns |
-| `/memory-search` | `memory-search.md` | Find prior solutions |
-| `/memory-persist` | `memory-persist.md` | Save transformation sessions |
-| `/neural` | `neural.md` | Neural pattern detection |
-| `/usage` | `usage.md` | Resource usage tracking |
+| Command           | File                | Purpose                       |
+| ----------------- | ------------------- | ----------------------------- |
+| `/memory-usage`   | `memory-usage.md`   | Track transformation patterns |
+| `/memory-search`  | `memory-search.md`  | Find prior solutions          |
+| `/memory-persist` | `memory-persist.md` | Save transformation sessions  |
+| `/neural`         | `neural.md`         | Neural pattern detection      |
+| `/usage`          | `usage.md`          | Resource usage tracking       |
 
 ### Automation Scripts
 
 #### Prompt Optimizer
 
-Location: `/home/deflex/noa-server/packages/llama.cpp/src/prompt-optimizer/automation/`
+Location:
+`/home/deflex/noa-server/packages/llama.cpp/src/prompt-optimizer/automation/`
 
-| Script | Purpose |
-|--------|---------|
-| `pre-prompt-hook.ts` | Pre-processing hooks |
-| `auto-optimizer.ts` | Automatic optimization |
-| `middleware.ts` | Processing middleware |
-| `monitor.ts` | Real-time monitoring |
-| `cache.ts` | Optimization caching |
-| `config.ts` | Configuration management |
-| `logger.ts` | Logging system |
+| Script               | Purpose                  |
+| -------------------- | ------------------------ |
+| `pre-prompt-hook.ts` | Pre-processing hooks     |
+| `auto-optimizer.ts`  | Automatic optimization   |
+| `middleware.ts`      | Processing middleware    |
+| `monitor.ts`         | Real-time monitoring     |
+| `cache.ts`           | Optimization caching     |
+| `config.ts`          | Configuration management |
+| `logger.ts`          | Logging system           |
 
 #### Agent Swarm Automation
 
-Location: `/home/deflex/noa-server/packages/llama.cpp/src/agent-swarm/automation/`
+Location:
+`/home/deflex/noa-server/packages/llama.cpp/src/agent-swarm/automation/`
 
-| Script | Purpose |
-|--------|---------|
-| `orchestrator.ts` | Swarm orchestration |
-| `swarm-initializer.ts` | Swarm setup |
-| `validation-runner.ts` | Validation automation |
+| Script                    | Purpose               |
+| ------------------------- | --------------------- |
+| `orchestrator.ts`         | Swarm orchestration   |
+| `swarm-initializer.ts`    | Swarm setup           |
+| `validation-runner.ts`    | Validation automation |
 | `integration-pipeline.ts` | Integration workflows |
 
 #### Swarm & Orchestration
@@ -266,6 +286,7 @@ Location: `/home/deflex/noa-server/packages/llama.cpp/src/agent-swarm/automation
 Location: `/home/deflex/noa-server/claude-flow/src/`
 
 **Core Orchestration:**
+
 - `core/orchestrator.ts` - Main orchestrator
 - `core/orchestrator-fixed.ts` - Fixed version
 - `swarm/advanced-orchestrator.js` - Advanced features
@@ -275,6 +296,7 @@ Location: `/home/deflex/noa-server/claude-flow/src/`
 - `maestro/maestro-swarm-coordinator.ts` - Maestro coordination
 
 **MCP Integration:**
+
 - `mcp/swarm-tools.js` - Swarm MCP tools
 - `mcp/ruv-swarm-tools.js` - Ruv-swarm integration
 - `mcp/orchestration-integration.js` - Orchestration MCP
@@ -293,16 +315,17 @@ Location: `/home/deflex/noa-server/claude-flow/src/`
 
 #### Audit Slash Commands
 
-| Command | Purpose |
-|---------|---------|
-| `/audit` | Comprehensive audit on workspace/directory |
-| `/audit-task` | Audit specific task by ID |
-| `/audit-file` | Audit specific file or directory |
-| `/audit-report` | Generate audit report |
-| `/audit-config` | View/modify audit configuration |
-| `/audit-history` | View audit execution history |
+| Command          | Purpose                                    |
+| ---------------- | ------------------------------------------ |
+| `/audit`         | Comprehensive audit on workspace/directory |
+| `/audit-task`    | Audit specific task by ID                  |
+| `/audit-file`    | Audit specific file or directory           |
+| `/audit-report`  | Generate audit report                      |
+| `/audit-config`  | View/modify audit configuration            |
+| `/audit-history` | View audit execution history               |
 
 **Usage Examples:**
+
 ```bash
 # Audit entire directory
 /audit --target /home/deflex
@@ -387,6 +410,7 @@ TodoWrite { todos: [
 ```
 
 **Alternative CLI Approach:**
+
 ```bash
 # Hive-mind wizard for interactive setup
 claude-flow hive-mind wizard
@@ -605,6 +629,7 @@ claude-flow swarm "Optimize and condense /home/deflex codebase" \
 ### Essential Commands Cheat Sheet
 
 #### Hive-Mind Swarm
+
 ```bash
 # Interactive setup wizard
 claude-flow hive-mind wizard
@@ -617,6 +642,7 @@ claude-flow hive-mind spawn "<objective>" --claude
 ```
 
 #### SPARC Methodology
+
 ```bash
 # List modes
 npx claude-flow sparc modes
@@ -638,6 +664,7 @@ npx claude-flow sparc concurrent <mode> "<tasks-file>"
 ```
 
 #### Direct Swarm Execution
+
 ```bash
 # Start with swarm
 claude-flow start --swarm
@@ -656,6 +683,7 @@ claude-flow swarm "<task>" \
 ```
 
 #### Parallel Execution
+
 ```bash
 # Parallel task execution
 npx claude-flow parallel "<task>" --max-agents <number>
@@ -665,6 +693,7 @@ npx claude-flow parallel "Refactor all TypeScript files" --max-agents 20
 ```
 
 #### Audit System
+
 ```bash
 # Comprehensive audit
 /audit --target <path>
@@ -689,6 +718,7 @@ npx claude-flow parallel "Refactor all TypeScript files" --max-agents 20
 ```
 
 #### Memory & Neural
+
 ```bash
 # Persist memory
 npx claude-flow memory-persist "<session-name>"
@@ -714,14 +744,14 @@ npx claude-flow neural-train "<description>"
 
 ### Agent Selection Guide
 
-| Task Type | Recommended Agents | Topology |
-|-----------|-------------------|----------|
-| **Code Analysis** | analyzer, code-analyzer, researcher | Mesh |
-| **Transformation** | optimizer, coder, base-template-generator | Adaptive |
-| **Validation** | reviewer, tester, performance-benchmarker | Hierarchical |
-| **Documentation** | documenter, researcher | Mesh |
-| **Full Lifecycle** | SPARC batch (all modes) | Adaptive |
-| **GitHub Operations** | github agents (pr-manager, code-review-swarm) | Mesh |
+| Task Type             | Recommended Agents                            | Topology     |
+| --------------------- | --------------------------------------------- | ------------ |
+| **Code Analysis**     | analyzer, code-analyzer, researcher           | Mesh         |
+| **Transformation**    | optimizer, coder, base-template-generator     | Adaptive     |
+| **Validation**        | reviewer, tester, performance-benchmarker     | Hierarchical |
+| **Documentation**     | documenter, researcher                        | Mesh         |
+| **Full Lifecycle**    | SPARC batch (all modes)                       | Adaptive     |
+| **GitHub Operations** | github agents (pr-manager, code-review-swarm) | Mesh         |
 
 ---
 
@@ -734,10 +764,11 @@ npx claude-flow neural-train "<description>"
 5. **Run continuous audits** to validate transformations
 6. **Save patterns to memory** for future optimizations
 
-**Remember**: The key to success is **parallel execution** and **batch operations**. Always spawn ALL agents concurrently in a SINGLE message for maximum performance (2.8-4.4x speed improvement).
+**Remember**: The key to success is **parallel execution** and **batch
+operations**. Always spawn ALL agents concurrently in a SINGLE message for
+maximum performance (2.8-4.4x speed improvement).
 
 ---
 
-**Document Version**: 1.0.0
-**Last Updated**: 2025-10-22
-**Maintained By**: NOA Server Development Team
+**Document Version**: 1.0.0 **Last Updated**: 2025-10-22 **Maintained By**: NOA
+Server Development Team
