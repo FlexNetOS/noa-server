@@ -4,15 +4,20 @@
 
 ## Our Commitment
 
-Noa Server is committed to ensuring digital accessibility for all people, including those with disabilities. We are continually improving the user experience for everyone and applying the relevant accessibility standards.
+Noa Server is committed to ensuring digital accessibility for all people,
+including those with disabilities. We are continually improving the user
+experience for everyone and applying the relevant accessibility standards.
 
 ## Conformance Status
 
-The Web Content Accessibility Guidelines (WCAG) define requirements for designers and developers to improve accessibility for people with disabilities. It defines three levels of conformance: Level A, Level AA, and Level AAA.
+The Web Content Accessibility Guidelines (WCAG) define requirements for
+designers and developers to improve accessibility for people with disabilities.
+It defines three levels of conformance: Level A, Level AA, and Level AAA.
 
 **The Noa Server UI Dashboard is fully conformant with WCAG 2.1 Level AA.**
 
-"Fully conformant" means that the content fully conforms to the accessibility standard without any exceptions.
+"Fully conformant" means that the content fully conforms to the accessibility
+standard without any exceptions.
 
 ## What We've Done
 
@@ -83,7 +88,8 @@ Our UI Dashboard includes:
 
 ## Technical Specifications
 
-The accessibility of the Noa Server UI Dashboard relies on the following technologies:
+The accessibility of the Noa Server UI Dashboard relies on the following
+technologies:
 
 - HTML5
 - CSS3
@@ -103,15 +109,18 @@ Despite our best efforts, some limitations may exist:
 
 ### Third-Party Content
 
-Some third-party embedded content may not be fully accessible. We work with vendors to improve accessibility and provide alternatives where possible.
+Some third-party embedded content may not be fully accessible. We work with
+vendors to improve accessibility and provide alternatives where possible.
 
 ### Legacy Features
 
-We are actively working to improve accessibility of any legacy features that don't yet meet our standards.
+We are actively working to improve accessibility of any legacy features that
+don't yet meet our standards.
 
 ## Feedback and Contact
 
-We welcome your feedback on the accessibility of the Noa Server UI Dashboard. Please let us know if you encounter accessibility barriers:
+We welcome your feedback on the accessibility of the Noa Server UI Dashboard.
+Please let us know if you encounter accessibility barriers:
 
 ### Report an Issue
 
@@ -119,10 +128,7 @@ We welcome your feedback on the accessibility of the Noa Server UI Dashboard. Pl
 
 **Phone**: +1 (555) 123-4567
 
-**Mail**:
-Noa Server Accessibility Team
-123 Tech Street
-San Francisco, CA 94102
+**Mail**: Noa Server Accessibility Team 123 Tech Street San Francisco, CA 94102
 
 **Online Form**: https://noa-server.io/accessibility-feedback
 
@@ -150,17 +156,13 @@ If you are not satisfied with our response, you can escalate your concern to:
 
 ### United States
 
-**U.S. Department of Justice**
-Civil Rights Division
-950 Pennsylvania Avenue, NW
-Washington, DC 20530
-Website: https://www.ada.gov
+**U.S. Department of Justice** Civil Rights Division 950 Pennsylvania Avenue, NW
+Washington, DC 20530 Website: https://www.ada.gov
 
 ### European Union
 
-**European Commission**
-Digital Single Market
-Website: https://ec.europa.eu/digital-single-market
+**European Commission** Digital Single Market Website:
+https://ec.europa.eu/digital-single-market
 
 ## Assessment Approach
 
@@ -223,7 +225,8 @@ This accessibility statement is provided in compliance with:
 
 ## Acknowledgments
 
-We thank the accessibility community and our users for their ongoing feedback and support in making the Noa Server UI Dashboard accessible to all.
+We thank the accessibility community and our users for their ongoing feedback
+and support in making the Noa Server UI Dashboard accessible to all.
 
 ---
 

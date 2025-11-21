@@ -18,8 +18,10 @@ async function main(mcpTools = null) {
 
     // Check if MCP tools are available - inject real Flow Nexus MCP tools
     if (!mcpTools) {
-      console.log(chalk.yellow('🔧 No MCP tools provided, attempting to load Flow Nexus MCP tools...'));
-      
+      console.log(
+        chalk.yellow('🔧 No MCP tools provided, attempting to load Flow Nexus MCP tools...')
+      );
+
       try {
         // Try to load the actual Flow Nexus MCP tools
         // In a real MCP environment, these would be injected automatically
@@ -44,7 +46,7 @@ async function main(mcpTools = null) {
     const server = await AgenticMarketingServer.create(mcpTools, {
       port: process.env.PORT || 3000,
       dbPath: process.env.DB_PATH || './data/mediaspend.db',
-      autoInitialize: true
+      autoInitialize: true,
     });
 
     // Start server
@@ -79,10 +81,10 @@ function validateMCPTools(mcpTools) {
     'agent_spawn',
     'task_orchestrate',
     'workflow_create',
-    'workflow_execute'
+    'workflow_execute',
   ];
 
-  const missingTools = requiredTools.filter(tool => !mcpTools[tool]);
+  const missingTools = requiredTools.filter((tool) => !mcpTools[tool]);
 
   if (missingTools.length > 0) {
     console.warn(chalk.yellow(`⚠️  Missing MCP tools: ${missingTools.join(', ')}`));
@@ -98,75 +100,74 @@ function validateMCPTools(mcpTools) {
  */
 async function loadFlowNexusMCPTools() {
   const FlowNexusMCPWrapper = require('./src/FlowNexusMCPWrapper');
-  
+
   try {
     // Create wrapper instance
     const wrapper = new FlowNexusMCPWrapper();
-    
+
     // Ensure Flow Nexus is installed and available
     const available = await wrapper.ensureInstalled();
-    
+
     if (!available) {
       console.log(chalk.yellow('⚠️  Flow Nexus not available, using mock tools for development'));
       return createMockMCPTools();
     }
-    
+
     console.log(chalk.green('✅ Flow Nexus MCP tools loaded via npm/npx'));
-    
+
     // Return comprehensive wrapper methods as MCP tools
     return {
       // Authentication
       user_register: wrapper.user_register.bind(wrapper),
       user_login: wrapper.user_login.bind(wrapper),
       user_logout: wrapper.user_logout.bind(wrapper),
-      
+
       // Swarm Management
       swarm_init: wrapper.swarm_init.bind(wrapper),
       swarm_scale: wrapper.swarm_scale.bind(wrapper),
       swarm_status: wrapper.swarm_status.bind(wrapper),
       swarm_destroy: wrapper.swarm_destroy.bind(wrapper),
       agent_spawn: wrapper.agent_spawn.bind(wrapper),
-      
+
       // Task & Workflow Orchestration
       task_orchestrate: wrapper.task_orchestrate.bind(wrapper),
       workflow_create: wrapper.workflow_create.bind(wrapper),
       workflow_execute: wrapper.workflow_execute.bind(wrapper),
-      
+
       // Neural Network Features
       neural_train: wrapper.neural_train.bind(wrapper),
       neural_predict: wrapper.neural_predict.bind(wrapper),
       neural_list_templates: wrapper.neural_list_templates.bind(wrapper),
-      
+
       // Sandbox Execution
       sandbox_create: wrapper.sandbox_create.bind(wrapper),
       sandbox_execute: wrapper.sandbox_execute.bind(wrapper),
-      
+
       // GitHub Integration
       github_repo_analyze: wrapper.github_repo_analyze.bind(wrapper),
-      
+
       // Real-time Features
       realtime_subscribe: wrapper.realtime_subscribe.bind(wrapper),
-      
+
       // Storage Management
       storage_upload: wrapper.storage_upload.bind(wrapper),
       storage_list: wrapper.storage_list.bind(wrapper),
-      
+
       // Template System
       template_list: wrapper.template_list.bind(wrapper),
       template_deploy: wrapper.template_deploy.bind(wrapper),
-      
+
       // AI Assistant
       seraphina_chat: wrapper.seraphina_chat.bind(wrapper),
-      
+
       // Credits & Payments
       check_balance: wrapper.check_balance.bind(wrapper),
       get_payment_history: wrapper.get_payment_history.bind(wrapper),
-      
+
       // Utility methods
       getStatus: wrapper.getStatus.bind(wrapper),
-      isAvailable: wrapper.isAvailable.bind(wrapper)
+      isAvailable: wrapper.isAvailable.bind(wrapper),
     };
-    
   } catch (error) {
     console.error(chalk.red('❌ Failed to load Flow Nexus MCP tools:', error.message));
     console.log(chalk.yellow('⚠️  Falling back to mock tools for development'));
@@ -185,7 +186,7 @@ function enhanceMCPToolsForTesting(mcpTools) {
 
   if (email && password) {
     console.log(chalk.cyan(`🧪 Non-interactive mode: ${action} for ${email}`));
-    
+
     // Store credentials for auto-authentication
     process.env.AUTO_AUTH_EMAIL = email;
     process.env.AUTO_AUTH_PASSWORD = password;
@@ -208,11 +209,11 @@ function createMockMCPTools() {
         user: {
           id: 'mock-user-' + Date.now(),
           email,
-          full_name
+          full_name,
         },
         session: {
-          access_token: 'mock-token'
-        }
+          access_token: 'mock-token',
+        },
       };
     },
 
@@ -222,11 +223,11 @@ function createMockMCPTools() {
         success: true,
         user: {
           id: 'mock-user-' + Date.now(),
-          email
+          email,
         },
         session: {
-          access_token: 'mock-token'
-        }
+          access_token: 'mock-token',
+        },
       };
     },
 
@@ -237,12 +238,14 @@ function createMockMCPTools() {
 
     // Swarm management
     swarm_init: async ({ topology, maxAgents, strategy }) => {
-      console.log(chalk.blue(`[MOCK] Initializing swarm: ${topology} topology, ${maxAgents} agents`));
+      console.log(
+        chalk.blue(`[MOCK] Initializing swarm: ${topology} topology, ${maxAgents} agents`)
+      );
       return {
         success: true,
         swarmId: 'mock-swarm-' + Date.now(),
         topology,
-        maxAgents
+        maxAgents,
       };
     },
 
@@ -252,29 +255,29 @@ function createMockMCPTools() {
         success: true,
         agentId: `mock-agent-${type}-${Date.now()}`,
         type,
-        capabilities
+        capabilities,
       };
     },
 
     // Task orchestration
     task_orchestrate: async ({ task, strategy, priority }) => {
       console.log(chalk.blue(`[MOCK] Orchestrating task: ${task}`));
-      
+
       // Simulate different types of results based on task content
       let mockResult;
-      
+
       if (task.toLowerCase().includes('optimize')) {
         mockResult = {
           type: 'optimization',
           recommendations: [
             'Increase budget allocation to high-performing channels by 25%',
             'Implement dayparting to reduce overnight spend by 40%',
-            'Test new creative formats to improve CTR'
+            'Test new creative formats to improve CTR',
           ],
           expectedImpact: {
             cpa_reduction: '22%',
-            roas_increase: '18%'
-          }
+            roas_increase: '18%',
+          },
         };
       } else if (task.toLowerCase().includes('analyz')) {
         mockResult = {
@@ -282,25 +285,25 @@ function createMockMCPTools() {
           insights: [
             'Campaign performance above industry average',
             'Mobile traffic converting 2x better than desktop',
-            'Weekend engagement 35% higher'
+            'Weekend engagement 35% higher',
           ],
           metrics: {
             health_score: Math.floor(Math.random() * 20 + 70),
-            trend: 'improving'
-          }
+            trend: 'improving',
+          },
         };
       } else {
         mockResult = {
           type: 'generic',
           status: 'completed',
-          message: `Completed task: ${task}`
+          message: `Completed task: ${task}`,
         };
       }
 
       return {
         success: true,
         taskId: 'mock-task-' + Date.now(),
-        result: mockResult
+        result: mockResult,
       };
     },
 
@@ -312,7 +315,7 @@ function createMockMCPTools() {
         id: `mock-workflow-${name}-${Date.now()}`,
         name,
         description,
-        steps: steps?.length || 0
+        steps: steps?.length || 0,
       };
     },
 
@@ -322,9 +325,9 @@ function createMockMCPTools() {
         success: true,
         executionId: 'mock-execution-' + Date.now(),
         workflow_id,
-        status: 'started'
+        status: 'started',
       };
-    }
+    },
   };
 }
 

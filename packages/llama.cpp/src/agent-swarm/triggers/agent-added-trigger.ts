@@ -59,8 +59,8 @@ export class AgentAddedTrigger extends EventEmitter {
       detection: {
         watchPaths: ['src/*/agent.ts', 'src/*/core/agent.ts'],
         ignorePatterns: ['node_modules', '*.test.ts'],
-        debounceMs: 3000
-      }
+        debounceMs: 3000,
+      },
     };
   }
 
@@ -80,7 +80,7 @@ export class AgentAddedTrigger extends EventEmitter {
     this.watcher = watch(watchPaths, {
       ignored: ignorePatterns,
       persistent: persistent !== false,
-      ignoreInitial: true
+      ignoreInitial: true,
     });
 
     this.watcher
@@ -173,11 +173,10 @@ export class AgentAddedTrigger extends EventEmitter {
         path: filePath,
         agentInfo,
         timestamp: new Date(),
-        action
+        action,
       };
 
       this.emit('agent:added', event);
-
     } catch (error) {
       console.error(`   ❌ Error processing file:`, error);
     }
@@ -191,15 +190,13 @@ export class AgentAddedTrigger extends EventEmitter {
       const content = fs.readFileSync(filePath, 'utf-8');
 
       // Check for agent class definition
-      const hasAgentClass = /class\s+\w+Agent/i.test(content) ||
-                           /export\s+class\s+\w+/i.test(content);
+      const hasAgentClass =
+        /class\s+\w+Agent/i.test(content) || /export\s+class\s+\w+/i.test(content);
 
       // Check for required methods/properties
-      const hasOptimize = /optimize\s*\(/i.test(content) ||
-                         /intercept\s*\(/i.test(content);
+      const hasOptimize = /optimize\s*\(/i.test(content) || /intercept\s*\(/i.test(content);
 
       return hasAgentClass || hasOptimize;
-
     } catch (error) {
       return false;
     }
@@ -238,10 +235,9 @@ export class AgentAddedTrigger extends EventEmitter {
         capabilities,
         metadata: {
           createdAt: new Date(),
-          fileSize: content.length
-        }
+          fileSize: content.length,
+        },
       };
-
     } catch (error) {
       console.error('Error extracting agent info:', error);
       return null;
@@ -285,7 +281,7 @@ export class AgentAddedTrigger extends EventEmitter {
     return {
       active: this.watcher !== null,
       watchedPaths: this.config.detection.watchPaths,
-      activeTimers: this.debounceTimers.size
+      activeTimers: this.debounceTimers.size,
     };
   }
 }

@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Play, Clock, Hash, Bot } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Pagination } from "@/components/ui/pagination";
-import { cn } from "@/lib/utils";
-import { formatISOTimestamp } from "@/lib/date-utils";
-import type { AgentRunWithMetrics } from "@/lib/api";
-import { AGENT_ICONS } from "./CCAgents";
-import { useTabState } from "@/hooks/useTabState";
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Play, Clock, Hash, Bot } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Pagination } from '@/components/ui/pagination';
+import { cn } from '@/lib/utils';
+import { formatISOTimestamp } from '@/lib/date-utils';
+import type { AgentRunWithMetrics } from '@/lib/api';
+import { AGENT_ICONS } from './CCAgents';
+import { useTabState } from '@/hooks/useTabState';
 
 interface AgentRunsListProps {
   /**
@@ -29,54 +29,50 @@ const ITEMS_PER_PAGE = 5;
 
 /**
  * AgentRunsList component - Displays a paginated list of agent execution runs
- * 
+ *
  * @example
  * <AgentRunsList
  *   runs={runs}
  *   onRunClick={(run) => console.log('Selected:', run)}
  * />
  */
-export const AgentRunsList: React.FC<AgentRunsListProps> = ({
-  runs,
-  onRunClick,
-  className,
-}) => {
+export const AgentRunsList: React.FC<AgentRunsListProps> = ({ runs, onRunClick, className }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const { createAgentTab } = useTabState();
-  
+
   // Calculate pagination
   const totalPages = Math.ceil(runs.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentRuns = runs.slice(startIndex, endIndex);
-  
+
   // Reset to page 1 if runs change
   React.useEffect(() => {
     setCurrentPage(1);
   }, [runs.length]);
-  
+
   const renderIcon = (iconName: string) => {
     const Icon = AGENT_ICONS[iconName as keyof typeof AGENT_ICONS] || Bot;
     return <Icon className="h-4 w-4" />;
   };
-  
+
   const formatDuration = (ms?: number) => {
-    if (!ms) return "N/A";
+    if (!ms) return 'N/A';
     const seconds = Math.floor(ms / 1000);
     if (seconds < 60) return `${seconds}s`;
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}m ${remainingSeconds}s`;
   };
-  
+
   const formatTokens = (tokens?: number) => {
-    if (!tokens) return "0";
+    if (!tokens) return '0';
     if (tokens >= 1000) {
       return `${(tokens / 1000).toFixed(1)}k`;
     }
     return tokens.toString();
   };
-  
+
   const handleRunClick = (run: AgentRunWithMetrics) => {
     // If there's a callback, use it (for full-page navigation)
     if (onRunClick) {
@@ -86,11 +82,11 @@ export const AgentRunsList: React.FC<AgentRunsListProps> = ({
       createAgentTab(run.id.toString(), run.agent_name);
     }
   };
-  
+
   if (runs.length === 0) {
     return (
-      <div className={cn("text-center py-8 text-muted-foreground", className)}>
-        <Play className="h-8 w-8 mx-auto mb-2 opacity-50" />
+      <div className={cn('text-muted-foreground py-8 text-center', className)}>
+        <Play className="mx-auto mb-2 h-8 w-8 opacity-50" />
         <p className="text-sm">No execution history yet</p>
       </div>
     );
@@ -98,7 +94,7 @@ export const AgentRunsList: React.FC<AgentRunsListProps> = ({
 
   return (
     <>
-      <div className={cn("space-y-2", className)}>
+      <div className={cn('space-y-2', className)}>
         <AnimatePresence mode="popLayout">
           {currentRuns.map((run, index) => (
             <motion.div
@@ -114,44 +110,38 @@ export const AgentRunsList: React.FC<AgentRunsListProps> = ({
             >
               <Card
                 className={cn(
-                  "cursor-pointer transition-all hover:shadow-md hover:scale-[1.01] active:scale-[0.99]",
-                  run.status === "running" && "border-green-500/50"
+                  'cursor-pointer transition-all hover:scale-[1.01] hover:shadow-md active:scale-[0.99]',
+                  run.status === 'running' && 'border-green-500/50'
                 )}
                 onClick={() => handleRunClick(run)}
               >
                 <CardContent className="p-3">
                   <div className="flex items-center gap-3">
-                    <div className="flex-shrink-0">
-                      {renderIcon(run.agent_icon)}
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h4 className="text-sm font-medium truncate">
-                          {run.agent_name}
-                        </h4>
-                        {run.status === "running" && (
+                    <div className="flex-shrink-0">{renderIcon(run.agent_icon)}</div>
+
+                    <div className="min-w-0 flex-1">
+                      <div className="mb-1 flex items-center gap-2">
+                        <h4 className="truncate text-sm font-medium">{run.agent_name}</h4>
+                        {run.status === 'running' && (
                           <div className="flex items-center gap-1">
-                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                            <span className="text-xs text-green-600 font-medium">Running</span>
+                            <div className="h-2 w-2 animate-pulse rounded-full bg-green-500"></div>
+                            <span className="text-xs font-medium text-green-600">Running</span>
                           </div>
                         )}
                       </div>
-                      
-                      <p className="text-xs text-muted-foreground truncate mb-1">
-                        {run.task}
-                      </p>
-                      
-                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+
+                      <p className="text-muted-foreground mb-1 truncate text-xs">{run.task}</p>
+
+                      <div className="text-muted-foreground flex items-center gap-3 text-xs">
                         <div className="flex items-center gap-1">
                           <Clock className="h-3 w-3" />
                           <span>{formatISOTimestamp(run.created_at)}</span>
                         </div>
-                        
+
                         {run.metrics?.duration_ms && (
                           <span>{formatDuration(run.metrics.duration_ms)}</span>
                         )}
-                        
+
                         {run.metrics?.total_tokens && (
                           <div className="flex items-center gap-1">
                             <Hash className="h-3 w-3" />
@@ -160,21 +150,27 @@ export const AgentRunsList: React.FC<AgentRunsListProps> = ({
                         )}
                       </div>
                     </div>
-                    
+
                     <div className="flex-shrink-0">
-                      <Badge 
+                      <Badge
                         variant={
-                          run.status === "completed" ? "default" :
-                          run.status === "running" ? "secondary" :
-                          run.status === "failed" ? "destructive" :
-                          "outline"
+                          run.status === 'completed'
+                            ? 'default'
+                            : run.status === 'running'
+                              ? 'secondary'
+                              : run.status === 'failed'
+                                ? 'destructive'
+                                : 'outline'
                         }
                         className="text-xs"
                       >
-                        {run.status === "completed" ? "Completed" :
-                         run.status === "running" ? "Running" :
-                         run.status === "failed" ? "Failed" :
-                         "Pending"}
+                        {run.status === 'completed'
+                          ? 'Completed'
+                          : run.status === 'running'
+                            ? 'Running'
+                            : run.status === 'failed'
+                              ? 'Failed'
+                              : 'Pending'}
                       </Badge>
                     </div>
                   </div>
@@ -183,7 +179,7 @@ export const AgentRunsList: React.FC<AgentRunsListProps> = ({
             </motion.div>
           ))}
         </AnimatePresence>
-        
+
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="pt-2">
@@ -195,7 +191,6 @@ export const AgentRunsList: React.FC<AgentRunsListProps> = ({
           </div>
         )}
       </div>
-
     </>
   );
-}; 
+};

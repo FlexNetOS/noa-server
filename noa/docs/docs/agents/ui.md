@@ -9,13 +9,21 @@ hide:
 
 # UI
 
-You can use a prebuilt chat UI for interacting with any LangGraph agent through the [Agent Chat UI](https://github.com/langchain-ai/agent-chat-ui). Using the [deployed version](https://agentchat.vercel.app) is the quickest way to get started, and allows you to interact with both local and deployed graphs.
+You can use a prebuilt chat UI for interacting with any LangGraph agent through
+the [Agent Chat UI](https://github.com/langchain-ai/agent-chat-ui). Using the
+[deployed version](https://agentchat.vercel.app) is the quickest way to get
+started, and allows you to interact with both local and deployed graphs.
 
 ## Run agent in UI
 
-First, set up LangGraph API server [locally](../tutorials/langgraph-platform/local-server.md) or deploy your agent on [LangGraph Platform](https://langchain-ai.github.io/langgraph/cloud/quick_start/).
+First, set up LangGraph API server
+[locally](../tutorials/langgraph-platform/local-server.md) or deploy your agent
+on
+[LangGraph Platform](https://langchain-ai.github.io/langgraph/cloud/quick_start/).
 
-Then, navigate to [Agent Chat UI](https://agentchat.vercel.app), or clone the repository and [run the dev server locally](https://github.com/langchain-ai/agent-chat-ui?tab=readme-ov-file#setup):
+Then, navigate to [Agent Chat UI](https://agentchat.vercel.app), or clone the
+repository and
+[run the dev server locally](https://github.com/langchain-ai/agent-chat-ui?tab=readme-ov-file#setup):
 
 <video controls src="../assets/base-chat-ui.mp4" type="video/mp4"></video>
 
@@ -25,7 +33,11 @@ Then, navigate to [Agent Chat UI](https://agentchat.vercel.app), or clone the re
 
 ## Add human-in-the-loop
 
-Agent Chat UI has full support for [human-in-the-loop](../concepts/human_in_the_loop.md) workflows. To try it out, replace the agent code in `src/agent/graph.py` (from the [deployment](../tutorials/langgraph-platform/local-server.md) guide) with this [agent implementation](../how-tos/human_in_the_loop/add-human-in-the-loop.md#add-interrupts-to-any-tool):
+Agent Chat UI has full support for
+[human-in-the-loop](../concepts/human_in_the_loop.md) workflows. To try it out,
+replace the agent code in `src/agent/graph.py` (from the
+[deployment](../tutorials/langgraph-platform/local-server.md) guide) with this
+[agent implementation](../how-tos/human_in_the_loop/add-human-in-the-loop.md#add-interrupts-to-any-tool):
 
 <video controls src="../assets/interrupt-chat-ui.mp4" type="video/mp4"></video>
 
@@ -37,4 +49,7 @@ Agent Chat UI has full support for [human-in-the-loop](../concepts/human_in_the_
 
 You can also use generative UI in the Agent Chat UI.
 
-Generative UI allows you to define [React](https://react.dev/) components, and push them to the UI from the LangGraph server. For more documentation on building generative UI LangGraph agents, read [these docs](https://langchain-ai.github.io/langgraph/cloud/how-tos/generative_ui_react/).
+Generative UI allows you to define [React](https://react.dev/) components, and
+push them to the UI from the LangGraph server. For more documentation on
+building generative UI LangGraph agents, read
+[these docs](https://langchain-ai.github.io/langgraph/cloud/how-tos/generative_ui_react/).

@@ -1,28 +1,34 @@
 # 🚀 Agentic Marketing Platform v2.0 - Advanced Flow Nexus Cloud Integration
 
-**Enterprise-Grade Autonomous Media Planning & Marketing Operations** with comprehensive Flow Nexus MCP Integration
+**Enterprise-Grade Autonomous Media Planning & Marketing Operations** with
+comprehensive Flow Nexus MCP Integration
 
 ## ✅ **VERIFIED ADVANCED FEATURES**
 
-### 🤖 **AI Swarm Orchestration** 
+### 🤖 **AI Swarm Orchestration**
+
 - **Multi-agent coordination** with 7+ specialized agents
 - **Hierarchical swarm topology** (`ce77e643-2284-4133-8ffe-9ecd44e93018`)
 - **Cloud E2B sandboxes** for isolated execution
-- **Specialized roles**: Marketing Researcher, Campaign Optimizer, Analyst, Coordinator
+- **Specialized roles**: Marketing Researcher, Campaign Optimizer, Analyst,
+  Coordinator
 
 ### 🧠 **Neural Network Training & Inference**
+
 - **Custom ML models** trained in cloud (`model_1757541794316_cqwpcs11u`)
 - **94.3% accuracy** classification performance
 - **Real-time predictions** for budget allocation
 - **25 credit cost**, 863ms training time
 
 ### ⚡ **Workflow Automation**
+
 - **Event-driven pipelines** (`campaign-optimization-pipeline`)
 - **Async execution** via message queues
 - **3-step automation**: Data collection → Analysis → Optimization
 - **Auto-triggers**: Daily schedule, budget thresholds, performance drops
 
 ### 📊 **Real-time Analytics**
+
 - **Live metrics**: CTR 2.50%, CPA $6.67, CPM $10.00
 - **AI-powered insights** from swarm analysis
 - **Anomaly detection** for spend irregularities
@@ -30,7 +36,10 @@
 
 ## 🚀 Overview
 
-This is a media planning tutorial using a modular architecture that properly integrates Flow Nexus MCP tools as an SDK. The platform provides autonomous media planning operations with persistent session management, cross-platform SQLite storage, and AI-powered swarm coordination.
+This is a media planning tutorial using a modular architecture that properly
+integrates Flow Nexus MCP tools as an SDK. The platform provides autonomous
+media planning operations with persistent session management, cross-platform
+SQLite storage, and AI-powered swarm coordination.
 
 ## 🏗️ Architecture
 
@@ -51,24 +60,28 @@ This is a media planning tutorial using a modular architecture that properly int
 ## ✨ Key Features
 
 ### 🔧 Modular Architecture
+
 - **FlowNexusSDK**: Direct MCP tool integration with session persistence
 - **AuthenticationManager**: Secure login/registration with session management
 - **MediaPlanningAPI**: RESTful endpoints for campaign management
 - **DatabaseManager**: Cross-platform SQLite with automatic schema creation
 
 ### 🤖 AI-Powered Operations
+
 - **Auto-initializing swarms** after authentication
 - **Persistent workflow orchestration** across sessions
 - **Intelligent agent management** with capabilities tracking
 - **Real-time performance analytics** with AI insights
 
 ### 💾 Cross-Platform Persistence
+
 - **SQLite database** works on Linux, macOS, Windows
 - **Session restoration** - pick up where you left off
 - **Swarm state persistence** - agents and workflows survive restarts
 - **Automatic database migration** and schema updates
 
 ### 🔐 Secure Authentication
+
 - **Flow Nexus integration** with proper credential management
 - **Session token persistence** with expiration handling
 - **Non-interactive mode** for automated deployments
@@ -119,18 +132,21 @@ npm start
 The system supports multiple authentication methods:
 
 #### Interactive Mode (Default)
+
 ```bash
 npm start
 # Follow the dashboard prompts to login/register
 ```
 
 #### CLI Mode
+
 ```bash
 # During initialization
 npx agentic-marketing init --auth
 ```
 
 #### Non-Interactive Mode (Automation)
+
 ```bash
 # Set environment variables
 export FLOW_NEXUS_EMAIL="user@example.com"
@@ -142,13 +158,14 @@ npm start
 ```
 
 #### API-Based Authentication
+
 ```bash
 # Login via API
 curl -X POST http://localhost:3000/api/flow-nexus/login \
   -H "Content-Type: application/json" \
   -d '{"email":"user@example.com","password":"password"}'
 
-# Register via API  
+# Register via API
 curl -X POST http://localhost:3000/api/flow-nexus/register \
   -H "Content-Type: application/json" \
   -d '{"email":"user@example.com","password":"password","fullName":"User"}'
@@ -157,18 +174,21 @@ curl -X POST http://localhost:3000/api/flow-nexus/register \
 ## 🔌 API Endpoints
 
 ### Authentication
+
 - `POST /api/flow-nexus/register` - Register new account
-- `POST /api/flow-nexus/login` - Login existing account  
+- `POST /api/flow-nexus/login` - Login existing account
 - `GET /api/flow-nexus/status` - Check auth status
 - `POST /api/flow-nexus/logout` - Logout and clear session
 
 ### Media Planning
+
 - `POST /api/insertion-orders` - Create insertion order
 - `GET /api/insertion-orders` - List insertion orders
 - `POST /api/daily-spend` - Record daily spend
 - `GET /api/daily-spend` - Query spend data
 
 ### 🧠 **AI-Powered Analytics & Optimization**
+
 - `GET /api/analytics/performance` - **Neural-enhanced** performance metrics
 - `GET /api/analytics/pacing` - **Predictive** campaign pacing analysis
 - `POST /api/optimize/campaign` - **Multi-agent swarm** campaign optimization
@@ -177,6 +197,7 @@ curl -X POST http://localhost:3000/api/flow-nexus/register \
 ## 🎯 **Advanced Integration Examples**
 
 ### **Multi-Agent Campaign Optimization**
+
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   -d '{"campaign_id":"Q1-2025","budget":50000,"channels":["Google","Meta","TikTok"]}' \
@@ -190,6 +211,7 @@ curl -X POST -H "Content-Type: application/json" \
 ```
 
 ### **Neural Network Budget Allocation**
+
 ```bash
 # Triggers trained ML model (94.3% accuracy)
 curl -X POST -H "Content-Type: application/json" \
@@ -198,6 +220,7 @@ curl -X POST -H "Content-Type: application/json" \
 ```
 
 ### **Real-time Swarm Status**
+
 ```bash
 # Check active agents and cloud sandboxes
 curl http://localhost:3000/api/flow-nexus/status
@@ -205,19 +228,21 @@ curl http://localhost:3000/api/flow-nexus/status
 # Returns:
 # - 7+ active agents with specialized capabilities
 # - Neural model training status
-# - Workflow execution progress  
+# - Workflow execution progress
 # - Cloud resource utilization
 ```
 
 ## 💰 **Resource Management**
 
 ### **Credit System**
+
 - **Neural Training**: 25 credits per model
 - **Swarm Initialization**: 13 credits per swarm
 - **Sandbox Execution**: Variable based on usage
 - **Current Balance**: 1,897.2 credits remaining
 
 ### **Performance Metrics**
+
 - **Model Accuracy**: 94.3% (campaign classification)
 - **Training Time**: 863ms (cloud-optimized)
 - **Prediction Confidence**: 76.8% average
@@ -225,13 +250,14 @@ curl http://localhost:3000/api/flow-nexus/status
 - `GET /api/optimize/recommendations` - Get AI recommendations
 
 ### System
+
 - `GET /health` - System health check
 
 ## 🎯 **Tutorial Verification Summary**
 
 ### ✅ **Successfully Demonstrated Features**
 
-1. **🤖 AI Swarm Orchestration** 
+1. **🤖 AI Swarm Orchestration**
    - 7+ specialized agents deployed in hierarchical topology
    - Real-time coordination with cloud E2B sandboxes
    - Specialized marketing roles: Researcher, Optimizer, Analyst
@@ -257,6 +283,7 @@ curl http://localhost:3000/api/flow-nexus/status
    - Isolated execution for data processing
 
 ### 🏆 **Enterprise-Ready Architecture**
+
 - **Database**: SQLite with Flow Nexus integration tables
 - **Authentication**: JWT-based cloud sessions
 - **API**: 12+ endpoints with AI-powered responses
@@ -264,13 +291,18 @@ curl http://localhost:3000/api/flow-nexus/status
 - **Cost Management**: Credit-based resource tracking
 
 ### 📚 **Additional Resources**
-- **[ADVANCED_FEATURES.md](./ADVANCED_FEATURES.md)**: Comprehensive feature documentation
+
+- **[ADVANCED_FEATURES.md](./ADVANCED_FEATURES.md)**: Comprehensive feature
+  documentation
 - **[TUTORIAL.md](./TUTORIAL.md)**: Step-by-step implementation guide
 - **[API Documentation](http://localhost:3000/api)**: Interactive API explorer
 
 ---
 
-**🚀 This tutorial successfully demonstrates enterprise-grade AI orchestration with Flow Nexus cloud infrastructure, providing a complete foundation for autonomous marketing operations.**
+**🚀 This tutorial successfully demonstrates enterprise-grade AI orchestration
+with Flow Nexus cloud infrastructure, providing a complete foundation for
+autonomous marketing operations.**
+
 - `GET /` - Interactive dashboard
 
 ## 🤖 Flow Nexus Integration
@@ -322,7 +354,7 @@ npm start
 DB_PATH="./data/mediaspend.db"
 SCHEMA_PATH="./schema.sql"
 
-# Server Configuration  
+# Server Configuration
 PORT=3000
 NODE_ENV=production
 
@@ -403,7 +435,7 @@ curl http://localhost:3000/api/flow-nexus/status
 GET /health
 {
   "status": "operational",
-  "database": "connected", 
+  "database": "connected",
   "flowNexus": "authenticated",
   "swarm": "active"
 }
@@ -443,7 +475,7 @@ GET /api/flow-nexus/status
 # Install dependencies
 npm install
 
-# Install development dependencies  
+# Install development dependencies
 npm install --save-dev nodemon
 
 # Start in development mode with auto-reload
@@ -473,6 +505,7 @@ sqlite3 data/mediaspend.db "UPDATE flow_nexus_sessions SET status='inactive';"
 ### Common Issues
 
 **Database Connection Errors**
+
 ```bash
 # Ensure data directory exists
 mkdir -p data logs
@@ -482,6 +515,7 @@ chmod 644 data/mediaspend.db
 ```
 
 **Flow Nexus Authentication Fails**
+
 ```bash
 # Check credentials
 curl -X GET http://localhost:3000/api/flow-nexus/status
@@ -491,6 +525,7 @@ rm -f .flow-nexus-session.json
 ```
 
 **MCP Tools Not Available**
+
 ```bash
 # Use mock mode for development
 npm start -- --mock
@@ -500,11 +535,12 @@ echo "global.mcpTools = $mcpTools" | node
 ```
 
 **Cross-Platform Issues**
+
 ```bash
 # Windows: Use PowerShell script
 .\start.ps1
 
-# macOS/Linux: Use shell script  
+# macOS/Linux: Use shell script
 ./start.sh
 
 # Or use Node directly
@@ -566,16 +602,19 @@ curl -X POST http://localhost:3000/api/flow-nexus/create-workflow \
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
+for details.
 
 ## 🆘 Support
 
 - **Documentation**: [Flow Nexus GitHub](https://github.com/ruvnet/flow-nexus)
 - **Issues**: [Create Issue](https://github.com/ruvnet/flow-nexus/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/ruvnet/flow-nexus/discussions)
+- **Discussions**:
+  [GitHub Discussions](https://github.com/ruvnet/flow-nexus/discussions)
 
 ---
 
-**Built with Flow Nexus MCP Integration** - Autonomous Business Operations Platform
+**Built with Flow Nexus MCP Integration** - Autonomous Business Operations
+Platform
 
-*Last Updated: September 2025*
+_Last Updated: September 2025_

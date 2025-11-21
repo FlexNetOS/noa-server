@@ -1,6 +1,7 @@
 # Tutorial: Your First Workflow
 
-Complete walkthrough of creating and executing your first workflow in Noa Server.
+Complete walkthrough of creating and executing your first workflow in Noa
+Server.
 
 ## 📋 What You'll Learn
 
@@ -19,7 +20,8 @@ Complete walkthrough of creating and executing your first workflow in Noa Server
 
 ## Tutorial Overview
 
-We'll build a simple REST API with authentication, coordinating multiple agents to handle different aspects of the work.
+We'll build a simple REST API with authentication, coordinating multiple agents
+to handle different aspects of the work.
 
 **Time**: 20-30 minutes
 
@@ -59,6 +61,7 @@ npx claude-flow@alpha swarm status --name "api-dev-swarm"
 ```
 
 You should see output like:
+
 ```
 ✓ Swarm initialized: api-dev-swarm
   Topology: mesh
@@ -164,6 +167,7 @@ npx claude-flow@alpha task orchestrate \
 ```
 
 This will:
+
 1. Read the task definition
 2. Spawn required agents (backend-dev, security-manager, tester, reviewer)
 3. Distribute subtasks based on dependencies
@@ -221,6 +225,7 @@ ls -lR ~/noa-server/database
 ```
 
 Expected output structure:
+
 ```
 src/
 ├── server.js           # Express server
@@ -257,6 +262,7 @@ npm run test:coverage
 ```
 
 You should see:
+
 ```
 Test Suites: 2 passed, 2 total
 Tests:       12 passed, 12 total
@@ -313,6 +319,7 @@ npx claude-flow@alpha agent list --swarm "api-dev-swarm" --metrics
 ```
 
 Typical metrics:
+
 ```json
 {
   "task": "Build Authentication API",
@@ -331,6 +338,7 @@ Typical metrics:
 Let's break down the workflow:
 
 ### 1. Task Distribution
+
 ```mermaid
 graph TD
     A[Task Orchestrator] --> B[Backend Implementation]
@@ -343,6 +351,7 @@ graph TD
 ```
 
 Tasks executed in parallel:
+
 - Backend and Database ran simultaneously (no dependencies)
 - Tests waited for both Backend and Database
 - Security Review ran after Backend
@@ -390,7 +399,8 @@ Now that you've completed your first workflow, try:
 
 1. **Modify the task**: Add more features or agents
 2. **Try different topologies**: Use hierarchical for larger projects
-3. **Create custom agents**: See [Custom Agent Tutorial](../developer/examples/custom-agent.md)
+3. **Create custom agents**: See
+   [Custom Agent Tutorial](../developer/examples/custom-agent.md)
 4. **Use neural patterns**: Train from this successful workflow
 5. **Integrate with GitHub**: Automate PR creation and reviews
 
@@ -410,7 +420,8 @@ npx claude-flow@alpha neural apply \
   --task "Build Blog API with authentication"
 ```
 
-The pattern will replicate the successful workflow structure for new similar tasks.
+The pattern will replicate the successful workflow structure for new similar
+tasks.
 
 ## Troubleshooting
 
@@ -458,24 +469,25 @@ Congratulations! You've:
 - ✓ Reviewed and tested results
 - ✓ Understood agent coordination
 
-**Time to complete**: ~15-20 minutes
-**Agents used**: 5
-**Files created**: ~12
-**Tests written**: ~12
-**Coverage**: 90%+
+**Time to complete**: ~15-20 minutes **Agents used**: 5 **Files created**: ~12
+**Tests written**: ~12 **Coverage**: 90%+
 
 ## Related Tutorials
 
-- [Agent Swarm Basics](agent-swarm-basics.md) - Deep dive into swarm coordination
+- [Agent Swarm Basics](agent-swarm-basics.md) - Deep dive into swarm
+  coordination
 - [MCP Tools Usage](mcp-tools-usage.md) - Leveraging MCP capabilities
-- [Custom Agent Development](../../developer/examples/custom-agent.md) - Build your own agents
+- [Custom Agent Development](../../developer/examples/custom-agent.md) - Build
+  your own agents
 
 ## Further Reading
 
 - [User Guide](../USER_GUIDE.md) - Comprehensive documentation
 - [Features](../FEATURES.md) - All available features
-- [Architecture Overview](../../architecture/ARCHITECTURE_OVERVIEW.md) - How it works
+- [Architecture Overview](../../architecture/ARCHITECTURE_OVERVIEW.md) - How it
+  works
 
 ---
 
-**Questions?** Check the [FAQ](../FAQ.md) or [open an issue](https://github.com/your-org/noa-server/issues).
+**Questions?** Check the [FAQ](../FAQ.md) or
+[open an issue](https://github.com/your-org/noa-server/issues).

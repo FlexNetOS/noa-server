@@ -91,10 +91,7 @@ export class ConfigValidator {
    * @param data - Configuration data to validate
    * @returns Validation result with data or errors
    */
-  public static validate<T>(
-    schema: ZodSchema<T>,
-    data: unknown
-  ): ValidationResult<T> {
+  public static validate<T>(schema: ZodSchema<T>, data: unknown): ValidationResult<T> {
     try {
       const validated = schema.parse(data);
       return {
@@ -133,9 +130,7 @@ export class ConfigValidator {
   public static validateOrThrow<T>(schema: ZodSchema<T>, data: unknown): T {
     const result = this.validate(schema, data);
     if (!result.success) {
-      const errorMessages = result.errors!.map(
-        (err) => `${err.path}: ${err.message}`
-      ).join(', ');
+      const errorMessages = result.errors!.map((err) => `${err.path}: ${err.message}`).join(', ');
       throw new Error(`Configuration validation failed: ${errorMessages}`);
     }
     return result.data!;
@@ -158,10 +153,7 @@ export class ConfigValidator {
    * // Results in: { port: 3000, database: { url: 'postgres://...' } }
    * ```
    */
-  public static fromEnv<T>(
-    schema: ZodSchema<T>,
-    options: EnvParseOptions = {}
-  ): T {
+  public static fromEnv<T>(schema: ZodSchema<T>, options: EnvParseOptions = {}): T {
     const { prefix = '', transform, required = [], defaults = {} } = options;
 
     // Build configuration object from environment
@@ -228,8 +220,10 @@ export class ConfigValidator {
     }
 
     // JSON array/object
-    if ((value.startsWith('[') && value.endsWith(']')) ||
-        (value.startsWith('{') && value.endsWith('}'))) {
+    if (
+      (value.startsWith('[') && value.endsWith(']')) ||
+      (value.startsWith('{') && value.endsWith('}'))
+    ) {
       try {
         return JSON.parse(value);
       } catch {
@@ -245,7 +239,8 @@ export class ConfigValidator {
    * Format Zod validation errors
    */
   private static formatZodErrors(error: ZodError): ConfigValidationError[] {
-    return error.errors.map((issue: ZodIssue) => ({
+    const issues = (error as any).issues || (error as any).errors || [];
+    return issues.map((issue: ZodIssue) => ({
       path: issue.path.join('.'),
       message: issue.message,
       code: issue.code,
@@ -261,7 +256,7 @@ export class ConfigValidator {
     if (issue.code === 'invalid_type') {
       return (issue as any).expected || 'unknown';
     }
-    if (issue.code === 'invalid_enum_value') {
+    if ((issue.code as string) === 'invalid_enum_value') {
       return `one of: ${(issue as any).options.join(', ')}`;
     }
     return 'valid value';
@@ -377,10 +372,7 @@ export class ConfigValidator {
    * @param config - Configuration to log
    * @param title - Log title
    */
-  public static logConfig<T extends object>(
-    config: T,
-    title = 'Configuration'
-  ): void {
+  public static logConfig<T extends object>(config: T, title = 'Configuration'): void {
     const masked = this.maskSensitive(config);
     logger.info(title, masked);
   }

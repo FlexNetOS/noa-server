@@ -40,12 +40,12 @@ export function SystemHealth({ health }: SystemHealthProps) {
   ];
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+    <div className="rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+      <div className="border-b border-gray-200 p-6 dark:border-gray-700">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white">System Health</h2>
           <span
-            className={`px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(
+            className={`rounded-full px-3 py-1 text-sm font-medium ${getStatusColor(
               health.status
             )}`}
           >
@@ -56,9 +56,9 @@ export function SystemHealth({ health }: SystemHealthProps) {
 
       <div className="p-6">
         {/* Resource Usage */}
-        <div className="space-y-4 mb-6">
+        <div className="mb-6 space-y-4">
           <div>
-            <div className="flex items-center justify-between mb-2">
+            <div className="mb-2 flex items-center justify-between">
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 CPU Usage
               </span>
@@ -66,7 +66,7 @@ export function SystemHealth({ health }: SystemHealthProps) {
                 {health.cpu.toFixed(1)}%
               </span>
             </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div className="h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700">
               <motion.div
                 className={`h-2 rounded-full ${getProgressColor(health.cpu)}`}
                 initial={{ width: 0 }}
@@ -77,7 +77,7 @@ export function SystemHealth({ health }: SystemHealthProps) {
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-2">
+            <div className="mb-2 flex items-center justify-between">
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Memory Usage
               </span>
@@ -85,7 +85,7 @@ export function SystemHealth({ health }: SystemHealthProps) {
                 {health.memory.toFixed(1)}%
               </span>
             </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div className="h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700">
               <motion.div
                 className={`h-2 rounded-full ${getProgressColor(health.memory)}`}
                 initial={{ width: 0 }}
@@ -96,7 +96,7 @@ export function SystemHealth({ health }: SystemHealthProps) {
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-2">
+            <div className="mb-2 flex items-center justify-between">
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Disk Usage
               </span>
@@ -104,7 +104,7 @@ export function SystemHealth({ health }: SystemHealthProps) {
                 {health.disk.toFixed(1)}%
               </span>
             </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div className="h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700">
               <motion.div
                 className={`h-2 rounded-full ${getProgressColor(health.disk)}`}
                 initial={{ width: 0 }}
@@ -116,15 +116,15 @@ export function SystemHealth({ health }: SystemHealthProps) {
         </div>
 
         {/* Network Stats */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-            <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Network Latency</div>
+        <div className="mb-6 grid grid-cols-2 gap-4">
+          <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-700">
+            <div className="mb-1 text-sm text-gray-500 dark:text-gray-400">Network Latency</div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white">
               {health.network.latency}ms
             </div>
           </div>
-          <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-            <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Throughput</div>
+          <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-700">
+            <div className="mb-1 text-sm text-gray-500 dark:text-gray-400">Throughput</div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white">
               {health.network.throughput.toFixed(1)} MB/s
             </div>
@@ -133,19 +133,19 @@ export function SystemHealth({ health }: SystemHealthProps) {
 
         {/* Services Status */}
         <div>
-          <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+          <h3 className="mb-3 text-sm font-medium text-gray-700 dark:text-gray-300">
             Services Status
           </h3>
           <div className="grid grid-cols-2 gap-3">
             {services.map((service) => (
               <div
                 key={service.key}
-                className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                className="flex items-center justify-between rounded-lg bg-gray-50 p-3 dark:bg-gray-700"
               >
                 <span className="text-sm text-gray-700 dark:text-gray-300">{service.label}</span>
                 <div className="flex items-center gap-2">
                   <span
-                    className={`inline-block w-2 h-2 rounded-full ${
+                    className={`inline-block h-2 w-2 rounded-full ${
                       service.status ? 'bg-green-500' : 'bg-red-500'
                     }`}
                     aria-label={service.status ? 'Online' : 'Offline'}

@@ -1,6 +1,10 @@
 # @noa/feature-flags
 
-Feature flag management system for Noa Server with support for multiple providers and rollout strategies.
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
+Feature flag management system for Noa Server with support for multiple
+providers and rollout strategies.
 
 ## Features
 
@@ -143,18 +147,21 @@ await manager.withFlag(
 
 - `initialize(): Promise<void>` - Initialize the manager
 - `isReady(): boolean` - Check if manager is ready
-- `isEnabled(flagKey, context, defaultValue): Promise<boolean>` - Check if flag is enabled
+- `isEnabled(flagKey, context, defaultValue): Promise<boolean>` - Check if flag
+  is enabled
 - `getValue(flagKey, context, defaultValue): Promise<T>` - Get flag value
 - `getAllFlags(context): Promise<Record<string, any>>` - Get all flags
 - `track(eventName, context, data): Promise<void>` - Track event
-- `withFlag(flagKey, context, enabledFn, disabledFn): Promise<T>` - Conditional execution
+- `withFlag(flagKey, context, enabledFn, disabledFn): Promise<T>` - Conditional
+  execution
 - `variant(flagKey, context, variants, default): Promise<T>` - Get variant
 - `close(): Promise<void>` - Close manager
 
 ### PercentageStrategy
 
 - `create(percentage): RolloutStrategy` - Create percentage strategy
-- `shouldEnable(userId, flagKey, percentage): boolean` - Check if user should see feature
+- `shouldEnable(userId, flagKey, percentage): boolean` - Check if user should
+  see feature
 - `createGradualRollout(stages): RolloutStrategy[]` - Create gradual rollout
 
 ### UserStrategy
@@ -183,3 +190,5 @@ pnpm test:coverage
 ## License
 
 MIT
+
+> Last updated: 2025-11-20

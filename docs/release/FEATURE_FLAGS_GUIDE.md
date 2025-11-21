@@ -13,7 +13,8 @@ Complete guide to using feature flags for gradual rollouts and A/B testing.
 
 ## Overview
 
-Feature flags (feature toggles) allow you to deploy code but control feature visibility at runtime. This enables:
+Feature flags (feature toggles) allow you to deploy code but control feature
+visibility at runtime. This enables:
 
 - Gradual feature rollouts
 - A/B testing
@@ -159,10 +160,7 @@ Target specific users:
 import { UserStrategy } from '@noa/feature-flags';
 
 // Target specific users
-const strategy = UserStrategy.createForUsers([
-  'user-123',
-  'user-456',
-]);
+const strategy = UserStrategy.createForUsers(['user-123', 'user-456']);
 
 // Beta testers
 const betaStrategy = UserStrategy.createForBetaTesters();
@@ -310,6 +308,7 @@ await flags.track('recommendation-clicked', context, {
 ### A/B Test Workflow
 
 1. **Setup** (LaunchDarkly)
+
    ```json
    {
      "key": "checkout-flow",
@@ -329,6 +328,7 @@ await flags.track('recommendation-clicked', context, {
    ```
 
 2. **Implementation**
+
    ```typescript
    const variant = await flags.getValue('checkout-flow', context, 'old-checkout');
 
@@ -343,6 +343,7 @@ await flags.track('recommendation-clicked', context, {
    ```
 
 3. **Tracking**
+
    ```typescript
    // Track conversion
    await flags.track('checkout-completed', context, {
@@ -406,14 +407,14 @@ return oldBehavior();
 
 ```typescript
 // Good names
-'new-checkout-flow'
-'recommendation-algorithm-v2'
-'beta-dashboard-widgets'
+'new-checkout-flow';
+'recommendation-algorithm-v2';
+'beta-dashboard-widgets';
 
 // Bad names
-'flag1'
-'test'
-'temp-fix'
+'flag1';
+'test';
+'temp-fix';
 ```
 
 ### 2. Context Information

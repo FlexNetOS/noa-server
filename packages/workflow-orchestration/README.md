@@ -1,6 +1,10 @@
 # Workflow Orchestration
 
-Comprehensive orchestration engine for Claude Flow workflows with advanced state management, execution control, and workflow patterns.
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
+Comprehensive orchestration engine for Claude Flow workflows with advanced state
+management, execution control, and workflow patterns.
 
 ## Features
 
@@ -25,7 +29,11 @@ npm install @noa/workflow-orchestration @noa/claude-flow-integration
 
 ```typescript
 import { Orchestrator } from '@noa/workflow-orchestration';
-import { ClaudeFlowClient, WorkflowBuilder, AgentType } from '@noa/claude-flow-integration';
+import {
+  ClaudeFlowClient,
+  WorkflowBuilder,
+  AgentType,
+} from '@noa/claude-flow-integration';
 
 // Initialize client and orchestrator
 const client = new ClaudeFlowClient();
@@ -34,16 +42,16 @@ await client.initialize();
 const orchestrator = new Orchestrator(client, {
   maxConcurrentTasks: 5,
   taskTimeout: 300000,
-  enableAutoRecovery: true
+  enableAutoRecovery: true,
 });
 
 // Build workflow
 const workflow = WorkflowBuilder.meshSwarm('my-workflow', 'My Workflow', 5)
   .addTask('task-1', 'First task')
-    .withAgent(AgentType.PLANNER)
+  .withAgent(AgentType.PLANNER)
   .addTask('task-2', 'Second task')
-    .withAgent(AgentType.CODER)
-    .dependsOn('task-1')
+  .withAgent(AgentType.CODER)
+  .dependsOn('task-1')
   .build();
 
 // Execute
@@ -69,7 +77,9 @@ orchestrator.on('workflow.completed', ({ workflowId, status }) => {
 
 // Get real-time progress
 const progress = orchestrator.getWorkflowProgress(workflowId);
-console.log(`Progress: ${progress.completed}/${progress.total} (${progress.percentage.toFixed(1)}%)`);
+console.log(
+  `Progress: ${progress.completed}/${progress.total} (${progress.percentage.toFixed(1)}%)`
+);
 ```
 
 ### State Management
@@ -85,7 +95,7 @@ const state = stateManager.createWorkflowState(workflow);
 // Update task state
 stateManager.updateTaskState(workflowId, taskId, {
   status: TaskStatus.IN_PROGRESS,
-  agentId: 'agent-123'
+  agentId: 'agent-123',
 });
 
 // Create snapshot
@@ -108,7 +118,7 @@ const executor = new ParallelExecutor({
   maxConcurrency: 10,
   timeout: 60000,
   retryAttempts: 3,
-  loadBalancing: 'least-loaded'
+  loadBalancing: 'least-loaded',
 });
 
 // Execute tasks in parallel
@@ -124,7 +134,9 @@ executor.on('task.completed', (result) => {
 
 // Get statistics
 const stats = executor.getStatistics();
-console.log(`Active: ${stats.busySlots}/${stats.totalSlots}, Queue: ${stats.queueSize}`);
+console.log(
+  `Active: ${stats.busySlots}/${stats.totalSlots}, Queue: ${stats.queueSize}`
+);
 ```
 
 ### Sequential Execution
@@ -135,7 +147,7 @@ import { SequentialExecutor } from '@noa/workflow-orchestration';
 const executor = new SequentialExecutor({
   timeout: 60000,
   retryAttempts: 3,
-  stopOnFailure: true
+  stopOnFailure: true,
 });
 
 // Validate dependencies
@@ -164,7 +176,7 @@ import { AgentType } from '@noa/claude-flow-integration';
 const workflow = WorkflowTemplates.linear('linear-flow', 'Linear Process', [
   { id: 'step-1', description: 'Plan', agent: AgentType.PLANNER },
   { id: 'step-2', description: 'Code', agent: AgentType.CODER },
-  { id: 'step-3', description: 'Test', agent: AgentType.TESTER }
+  { id: 'step-3', description: 'Test', agent: AgentType.TESTER },
 ]);
 ```
 
@@ -178,9 +190,13 @@ const workflow = WorkflowTemplates.fanOutFanIn(
   [
     { id: 'process-1', description: 'Process A', agent: AgentType.CODER },
     { id: 'process-2', description: 'Process B', agent: AgentType.CODER },
-    { id: 'process-3', description: 'Process C', agent: AgentType.CODER }
+    { id: 'process-3', description: 'Process C', agent: AgentType.CODER },
   ],
-  { id: 'aggregate', description: 'Aggregate results', agent: AgentType.CODE_ANALYZER }
+  {
+    id: 'aggregate',
+    description: 'Aggregate results',
+    agent: AgentType.CODE_ANALYZER,
+  }
 );
 ```
 
@@ -193,38 +209,62 @@ const workflow = WorkflowTemplates.mapReduce(
   [
     { id: 'map-1', description: 'Map task 1', agent: AgentType.CODER },
     { id: 'map-2', description: 'Map task 2', agent: AgentType.CODER },
-    { id: 'map-3', description: 'Map task 3', agent: AgentType.CODER }
+    { id: 'map-3', description: 'Map task 3', agent: AgentType.CODER },
   ],
-  { id: 'reduce', description: 'Reduce results', agent: AgentType.CODE_ANALYZER }
+  {
+    id: 'reduce',
+    description: 'Reduce results',
+    agent: AgentType.CODE_ANALYZER,
+  }
 );
 ```
 
 ### Pipeline with Stages
 
 ```typescript
-const workflow = WorkflowTemplates.pipeline('pipeline', 'Multi-Stage Pipeline', [
-  {
-    name: 'build',
-    tasks: [
-      { id: 'compile', description: 'Compile code', agent: AgentType.CODER },
-      { id: 'bundle', description: 'Bundle assets', agent: AgentType.CODER }
-    ]
-  },
-  {
-    name: 'test',
-    tasks: [
-      { id: 'unit-test', description: 'Run unit tests', agent: AgentType.TESTER },
-      { id: 'integration-test', description: 'Run integration tests', agent: AgentType.TESTER }
-    ]
-  },
-  {
-    name: 'deploy',
-    tasks: [
-      { id: 'deploy-staging', description: 'Deploy to staging', agent: AgentType.CICD_ENGINEER },
-      { id: 'smoke-test', description: 'Run smoke tests', agent: AgentType.TESTER }
-    ]
-  }
-]);
+const workflow = WorkflowTemplates.pipeline(
+  'pipeline',
+  'Multi-Stage Pipeline',
+  [
+    {
+      name: 'build',
+      tasks: [
+        { id: 'compile', description: 'Compile code', agent: AgentType.CODER },
+        { id: 'bundle', description: 'Bundle assets', agent: AgentType.CODER },
+      ],
+    },
+    {
+      name: 'test',
+      tasks: [
+        {
+          id: 'unit-test',
+          description: 'Run unit tests',
+          agent: AgentType.TESTER,
+        },
+        {
+          id: 'integration-test',
+          description: 'Run integration tests',
+          agent: AgentType.TESTER,
+        },
+      ],
+    },
+    {
+      name: 'deploy',
+      tasks: [
+        {
+          id: 'deploy-staging',
+          description: 'Deploy to staging',
+          agent: AgentType.CICD_ENGINEER,
+        },
+        {
+          id: 'smoke-test',
+          description: 'Run smoke tests',
+          agent: AgentType.TESTER,
+        },
+      ],
+    },
+  ]
+);
 ```
 
 ### Conditional Workflow
@@ -236,11 +276,19 @@ const workflow = WorkflowTemplates.conditional(
   { id: 'check', description: 'Check condition', agent: AgentType.PLANNER },
   [
     { id: 'true-1', description: 'True branch task 1', agent: AgentType.CODER },
-    { id: 'true-2', description: 'True branch task 2', agent: AgentType.CODER }
+    { id: 'true-2', description: 'True branch task 2', agent: AgentType.CODER },
   ],
   [
-    { id: 'false-1', description: 'False branch task 1', agent: AgentType.CODER },
-    { id: 'false-2', description: 'False branch task 2', agent: AgentType.CODER }
+    {
+      id: 'false-1',
+      description: 'False branch task 1',
+      agent: AgentType.CODER,
+    },
+    {
+      id: 'false-2',
+      description: 'False branch task 2',
+      agent: AgentType.CODER,
+    },
   ]
 );
 ```
@@ -264,7 +312,7 @@ const orchestrator = new Orchestrator(client, {
   enableAutoRecovery: true,
 
   // Snapshot interval in ms
-  snapshotInterval: 60000
+  snapshotInterval: 60000,
 });
 ```
 
@@ -292,7 +340,7 @@ orchestrator.on('task.failed', ({ workflowId, taskId, error }) => {
 });
 
 orchestrator.on('workflow.completed', ({ workflowId, status, results }) => {
-  const succeeded = results.filter(r => r.status === 'completed').length;
+  const succeeded = results.filter((r) => r.status === 'completed').length;
   console.log(`Workflow done: ${succeeded}/${results.length} succeeded`);
 });
 
@@ -337,10 +385,12 @@ const state = orchestrator.getWorkflowState(workflowId);
 for (const [taskId, taskState] of state.taskStates.entries()) {
   console.log(`Task ${taskId}:`, {
     status: taskState.status,
-    duration: taskState.endTime ? taskState.endTime - taskState.startTime : null,
+    duration: taskState.endTime
+      ? taskState.endTime - taskState.startTime
+      : null,
     retries: taskState.retryCount,
     dependencies: taskState.dependencies,
-    dependents: taskState.dependents
+    dependents: taskState.dependents,
   });
 }
 
@@ -350,7 +400,7 @@ for (const result of state.results) {
     status: result.status,
     duration: result.duration,
     output: result.output,
-    error: result.error
+    error: result.error,
   });
 }
 ```
@@ -380,3 +430,5 @@ Contributions welcome! Please see [CONTRIBUTING.md](./CONTRIBUTING.md).
 ## License
 
 MIT
+
+> Last updated: 2025-11-20

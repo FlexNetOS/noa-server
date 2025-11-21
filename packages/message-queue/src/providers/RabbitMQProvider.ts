@@ -18,7 +18,7 @@ export class RabbitMQProvider extends BaseQueueProvider {
     try {
       const connectionString = `amqp://${this.config.username || 'guest'}:${this.config.password || 'guest'}@${this.config.hostname || 'localhost'}:${this.config.port || 5672}${this.config.vhost || '/'}`;
 
-      this.connection = await amqp.connect(connectionString) as any;
+      this.connection = (await amqp.connect(connectionString)) as any;
       this.channel = await this.connection.createChannel();
 
       this.connection.on('error', (err: any) => {
@@ -71,7 +71,7 @@ export class RabbitMQProvider extends BaseQueueProvider {
         connected: true,
         host: this.config.hostname,
         port: this.config.port,
-        vhost: this.config.vhost
+        vhost: this.config.vhost,
       });
     } catch (error) {
       return this.createHealthStatus(false, { connected: false }, error as Error);
@@ -89,18 +89,14 @@ export class RabbitMQProvider extends BaseQueueProvider {
       const totalMessages = queues.reduce((sum, q) => sum + (q.messageCount || 0), 0);
       const totalConsumers = queues.reduce((sum, q) => sum + (q.consumerCount || 0), 0);
 
-      return this.createMetrics(
-        totalMessages,
-        totalConsumers,
-        {
-          connected: true,
-          queues: queues.map(q => ({
-            name: q.name,
-            messages: q.messageCount,
-            consumers: q.consumerCount
-          }))
-        }
-      );
+      return this.createMetrics(totalMessages, totalConsumers, {
+        connected: true,
+        queues: queues.map((q) => ({
+          name: q.name,
+          messages: q.messageCount,
+          consumers: q.consumerCount,
+        })),
+      });
     } catch (error) {
       return this.createMetrics(0, 0, { error: (error as Error).message });
     }
@@ -117,14 +113,14 @@ export class RabbitMQProvider extends BaseQueueProvider {
     const messageData = JSON.stringify({
       ...message,
       id: messageId,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     await this.channel.assertQueue(queueName, { durable: true });
     await this.channel.sendToQueue(queueName, Buffer.from(messageData), {
       messageId,
       timestamp: Date.now(),
-      persistent: true
+      persistent: true,
     });
 
     this.emitProviderEvent('message_sent', { queueName, messageId });
@@ -156,7 +152,11 @@ export class RabbitMQProvider extends BaseQueueProvider {
     } catch (error) {
       // Reject the message if parsing fails
       this.channel.nack(message, false, false);
-      this.emitProviderEvent('message_parse_error', { queueName, error, messageContent: message.content.toString() });
+      this.emitProviderEvent('message_parse_error', {
+        queueName,
+        error,
+        messageContent: message.content.toString(),
+      });
       throw new Error(`Failed to parse message: ${(error as Error).message}`);
     }
   }
@@ -187,7 +187,7 @@ export class RabbitMQProvider extends BaseQueueProvider {
 
     await this.channel.assertQueue(queueName, {
       durable: true,
-      ...options
+      ...options,
     });
 
     this.emitProviderEvent('queue_created', { queueName, options });
@@ -215,7 +215,9 @@ export class RabbitMQProvider extends BaseQueueProvider {
     this.emitProviderEvent('queue_purged', { queueName });
   }
 
-  private async getQueueInfo(): Promise<Array<{name: string, messageCount: number, consumerCount: number}>> {
+  private async getQueueInfo(): Promise<
+    Array<{ name: string; messageCount: number; consumerCount: number }>
+  > {
     // This is a simplified implementation
     // In a real scenario, you'd use RabbitMQ management API or keep track of queues
     return [];

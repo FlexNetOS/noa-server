@@ -7,21 +7,21 @@ replicaCount: 3
 image:
   repository: noa-server/noa-server
   pullPolicy: IfNotPresent
-  tag: "latest"
+  tag: 'latest'
 
 imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+nameOverride: ''
+fullnameOverride: ''
 
 serviceAccount:
   create: true
   annotations: {}
-  name: ""
+  name: ''
 
 podAnnotations:
-  prometheus.io/scrape: "true"
-  prometheus.io/port: "8080"
-  prometheus.io/path: "/metrics"
+  prometheus.io/scrape: 'true'
+  prometheus.io/port: '8080'
+  prometheus.io/path: '/metrics'
 
 podSecurityContext:
   runAsNonRoot: true
@@ -34,7 +34,7 @@ securityContext:
   allowPrivilegeEscalation: false
   capabilities:
     drop:
-    - ALL
+      - ALL
   readOnlyRootFilesystem: true
 
 service:
@@ -45,11 +45,11 @@ service:
 
 ingress:
   enabled: true
-  className: "nginx"
+  className: 'nginx'
   annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: 'letsencrypt-prod'
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+    nginx.ingress.kubernetes.io/force-ssl-redirect: 'true'
   hosts:
     - host: noa-server.example.com
       paths:
@@ -97,7 +97,7 @@ postgresql:
   enabled: true
   auth:
     username: noa
-    password: ""  # Set via secret
+    password: '' # Set via secret
     database: noa_prod
   primary:
     resources:
@@ -110,14 +110,14 @@ postgresql:
     persistence:
       enabled: true
       size: 20Gi
-      storageClass: "fast-ssd"
+      storageClass: 'fast-ssd'
 
 # Redis configuration
 redis:
   enabled: true
   auth:
     enabled: true
-    password: ""  # Set via secret
+    password: '' # Set via secret
   master:
     resources:
       requests:
@@ -135,9 +135,9 @@ mongodb:
   enabled: true
   auth:
     enabled: true
-    rootPassword: ""  # Set via secret
+    rootPassword: '' # Set via secret
     username: noa
-    password: ""  # Set via secret
+    password: '' # Set via secret
     database: noa_prod
   resources:
     requests:
@@ -157,7 +157,7 @@ mcpServers:
     replicaCount: 2
     image:
       repository: noa-server/mcp-server
-      tag: "latest"
+      tag: 'latest'
     resources:
       requests:
         cpu: 100m
@@ -165,14 +165,14 @@ mcpServers:
       limits:
         cpu: 200m
         memory: 256Mi
-    basePath: "/data"
+    basePath: '/data'
 
   sqlite:
     enabled: true
     replicaCount: 2
     image:
       repository: noa-server/mcp-server
-      tag: "latest"
+      tag: 'latest'
     resources:
       requests:
         cpu: 100m
@@ -180,14 +180,14 @@ mcpServers:
       limits:
         cpu: 200m
         memory: 256Mi
-    dbPath: "/data/mcp.db"
+    dbPath: '/data/mcp.db'
 
   github:
     enabled: true
     replicaCount: 2
     image:
       repository: noa-server/mcp-server
-      tag: "latest"
+      tag: 'latest'
     resources:
       requests:
         cpu: 100m
@@ -195,7 +195,7 @@ mcpServers:
       limits:
         cpu: 200m
         memory: 256Mi
-    token: ""  # Set via secret
+    token: '' # Set via secret
 
 # Monitoring
 monitoring:
@@ -206,22 +206,22 @@ monitoring:
 
   grafana:
     enabled: true
-    adminPassword: ""  # Set via secret
+    adminPassword: '' # Set via secret
 
 # Environment variables
 env:
-  NODE_ENV: "production"
-  LOG_LEVEL: "info"
+  NODE_ENV: 'production'
+  LOG_LEVEL: 'info'
   # Database URLs set via secrets
 
 # Secrets
 secrets:
   createSecrets: true
-  databaseUrl: ""
-  redisUrl: ""
-  mongodbUrl: ""
-  githubToken: ""
-  jwtSecret: ""
+  databaseUrl: ''
+  redisUrl: ''
+  mongodbUrl: ''
+  githubToken: ''
+  jwtSecret: ''
 
 # Probes
 livenessProbe:

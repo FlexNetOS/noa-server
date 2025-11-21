@@ -1,6 +1,8 @@
 # Customize state
 
-In this tutorial, you will add additional fields to the state to define complex behavior without relying on the message list. The chatbot will use its search tool to find specific information and forward them to a human for review.
+In this tutorial, you will add additional fields to the state to define complex
+behavior without relying on the message list. The chatbot will use its search
+tool to find specific information and forward them to a human for review.
 
 !!! note
 
@@ -8,7 +10,8 @@ In this tutorial, you will add additional fields to the state to define complex 
 
 ## 1. Add keys to the state
 
-Update the chatbot to research the birthday of an entity by adding `name` and `birthday` keys to the state:
+Update the chatbot to research the birthday of an entity by adding `name` and
+`birthday` keys to the state:
 
 :::python
 
@@ -33,8 +36,8 @@ class State(TypedDict):
 :::js
 
 ```typescript
-import { MessagesZodState } from "@langchain/langgraph";
-import { z } from "zod";
+import { MessagesZodState } from '@langchain/langgraph';
+import { z } from 'zod';
 
 const State = z.object({
   messages: MessagesZodState.shape.messages,
@@ -47,13 +50,18 @@ const State = z.object({
 
 :::
 
-Adding this information to the state makes it easily accessible by other graph nodes (like a downstream node that stores or processes the information), as well as the graph's persistence layer.
+Adding this information to the state makes it easily accessible by other graph
+nodes (like a downstream node that stores or processes the information), as well
+as the graph's persistence layer.
 
 ## 2. Update the state inside the tool
 
 :::python
 
-Now, populate the state keys inside of the `human_assistance` tool. This allows a human to review the information before it is stored in the state. Use [`Command`](../../concepts/low_level.md#using-inside-tools) to issue a state update from inside the tool.
+Now, populate the state keys inside of the `human_assistance` tool. This allows
+a human to review the information before it is stored in the state. Use
+[`Command`](../../concepts/low_level.md#using-inside-tools) to issue a state
+update from inside the tool.
 
 ```python
 from langchain_core.messages import ToolMessage
@@ -103,12 +111,15 @@ def human_assistance(
 
 :::js
 
-Now, populate the state keys inside of the `humanAssistance` tool. This allows a human to review the information before it is stored in the state. Use [`Command`](../../concepts/low_level.md#using-inside-tools) to issue a state update from inside the tool.
+Now, populate the state keys inside of the `humanAssistance` tool. This allows a
+human to review the information before it is stored in the state. Use
+[`Command`](../../concepts/low_level.md#using-inside-tools) to issue a state
+update from inside the tool.
 
 ```typescript
-import { tool } from "@langchain/core/tools";
-import { ToolMessage } from "@langchain/core/messages";
-import { Command, interrupt } from "@langchain/langgraph";
+import { tool } from '@langchain/core/tools';
+import { ToolMessage } from '@langchain/core/messages';
+import { Command, interrupt } from '@langchain/langgraph';
 
 const humanAssistance = tool(
   async (input, config) => {
@@ -116,10 +127,10 @@ const humanAssistance = tool(
     // we generally require the ID of the corresponding tool call.
     // This is available in the tool's config.
     const toolCallId = config?.toolCall?.id as string | undefined;
-    if (!toolCallId) throw new Error("Tool call ID is required");
+    if (!toolCallId) throw new Error('Tool call ID is required');
 
     const humanResponse = await interrupt({
-      question: "Is this correct?",
+      question: 'Is this correct?',
       name: input.name,
       birthday: input.birthday,
     });
@@ -127,12 +138,12 @@ const humanAssistance = tool(
     // We explicitly update the state with a ToolMessage inside the tool.
     const stateUpdate = (() => {
       // If the information is correct, update the state as-is.
-      if (humanResponse.correct?.toLowerCase().startsWith("y")) {
+      if (humanResponse.correct?.toLowerCase().startsWith('y')) {
         return {
           name: input.name,
           birthday: input.birthday,
           messages: [
-            new ToolMessage({ content: "Correct", tool_call_id: toolCallId }),
+            new ToolMessage({ content: 'Correct', tool_call_id: toolCallId }),
           ],
         };
       }
@@ -154,11 +165,11 @@ const humanAssistance = tool(
     return new Command({ update: stateUpdate });
   },
   {
-    name: "humanAssistance",
-    description: "Request assistance from a human.",
+    name: 'humanAssistance',
+    description: 'Request assistance from a human.',
     schema: z.object({
-      name: z.string().describe("The name of the entity"),
-      birthday: z.string().describe("The birthday/release date of the entity"),
+      name: z.string().describe('The name of the entity'),
+      birthday: z.string().describe('The birthday/release date of the entity'),
     }),
   }
 );
@@ -170,8 +181,10 @@ The rest of the graph stays the same.
 
 ## 3. Prompt the chatbot
 
-:::python
-Prompt the chatbot to look up the "birthday" of the LangGraph library and direct the chatbot to reach out to the `human_assistance` tool once it has the required information. By setting `name` and `birthday` in the arguments for the tool, you force the chatbot to generate proposals for these fields.
+:::python Prompt the chatbot to look up the "birthday" of the LangGraph library
+and direct the chatbot to reach out to the `human_assistance` tool once it has
+the required information. By setting `name` and `birthday` in the arguments for
+the tool, you force the chatbot to generate proposals for these fields.
 
 ```python
 user_input = (
@@ -192,29 +205,31 @@ for event in events:
 
 :::
 
-:::js
-Prompt the chatbot to look up the "birthday" of the LangGraph library and direct the chatbot to reach out to the `humanAssistance` tool once it has the required information. By setting `name` and `birthday` in the arguments for the tool, you force the chatbot to generate proposals for these fields.
+:::js Prompt the chatbot to look up the "birthday" of the LangGraph library and
+direct the chatbot to reach out to the `humanAssistance` tool once it has the
+required information. By setting `name` and `birthday` in the arguments for the
+tool, you force the chatbot to generate proposals for these fields.
 
 ```typescript
-import { isAIMessage } from "@langchain/core/messages";
+import { isAIMessage } from '@langchain/core/messages';
 
 const userInput =
-  "Can you look up when LangGraph was released? " +
-  "When you have the answer, use the humanAssistance tool for review.";
+  'Can you look up when LangGraph was released? ' +
+  'When you have the answer, use the humanAssistance tool for review.';
 
 const events = await graph.stream(
-  { messages: [{ role: "user", content: userInput }] },
-  { configurable: { thread_id: "1" }, streamMode: "values" }
+  { messages: [{ role: 'user', content: userInput }] },
+  { configurable: { thread_id: '1' }, streamMode: 'values' }
 );
 
 for await (const event of events) {
-  if ("messages" in event) {
+  if ('messages' in event) {
     const lastMessage = event.messages.at(-1);
 
     console.log(
-      "=".repeat(32),
+      '='.repeat(32),
       `${lastMessage?.getType()} Message`,
-      "=".repeat(32)
+      '='.repeat(32)
     );
     console.log(lastMessage?.text);
 
@@ -223,7 +238,7 @@ for await (const event of events) {
       isAIMessage(lastMessage) &&
       lastMessage.tool_calls?.length
     ) {
-      console.log("Tool Calls:");
+      console.log('Tool Calls:');
       for (const call of lastMessage.tool_calls) {
         console.log(`  ${call.name} (${call.id})`);
         console.log(`  Args: ${JSON.stringify(call.args)}`);
@@ -262,13 +277,9 @@ Tool Calls:
     birthday: 2023-01-01
 ```
 
-:::python
-We've hit the `interrupt` in the `human_assistance` tool again.
-:::
+:::python We've hit the `interrupt` in the `human_assistance` tool again. :::
 
-:::js
-We've hit the `interrupt` in the `humanAssistance` tool again.
-:::
+:::js We've hit the `interrupt` in the `humanAssistance` tool again. :::
 
 ## 4. Add human assistance
 
@@ -295,28 +306,28 @@ for event in events:
 :::js
 
 ```typescript
-import { Command } from "@langchain/langgraph";
+import { Command } from '@langchain/langgraph';
 
 const humanCommand = new Command({
   resume: {
-    name: "LangGraph",
-    birthday: "Jan 17, 2024",
+    name: 'LangGraph',
+    birthday: 'Jan 17, 2024',
   },
 });
 
 const resumeEvents = await graph.stream(humanCommand, {
-  configurable: { thread_id: "1" },
-  streamMode: "values",
+  configurable: { thread_id: '1' },
+  streamMode: 'values',
 });
 
 for await (const event of resumeEvents) {
-  if ("messages" in event) {
+  if ('messages' in event) {
     const lastMessage = event.messages.at(-1);
 
     console.log(
-      "=".repeat(32),
+      '='.repeat(32),
       `${lastMessage?.getType()} Message`,
-      "=".repeat(32)
+      '='.repeat(32)
     );
     console.log(lastMessage?.text);
 
@@ -325,7 +336,7 @@ for await (const event of resumeEvents) {
       isAIMessage(lastMessage) &&
       lastMessage.tool_calls?.length
     ) {
-      console.log("Tool Calls:");
+      console.log('Tool Calls:');
       for (const call of lastMessage.tool_calls) {
         console.log(`  ${call.name} (${call.id})`);
         console.log(`  Args: ${JSON.stringify(call.args)}`);
@@ -387,7 +398,7 @@ const snapshot = await graph.getState(config);
 
 const relevantState = Object.fromEntries(
   Object.entries(snapshot.values).filter(([k]) =>
-    ["name", "birthday"].includes(k)
+    ['name', 'birthday'].includes(k)
   )
 );
 ```
@@ -398,12 +409,14 @@ const relevantState = Object.fromEntries(
 
 :::
 
-This makes them easily accessible to downstream nodes (e.g., a node that further processes or stores the information).
+This makes them easily accessible to downstream nodes (e.g., a node that further
+processes or stores the information).
 
 ## 5. Manually update the state
 
-:::python
-LangGraph gives a high degree of control over the application state. For instance, at any point (including when interrupted), you can manually override a key using `graph.update_state`:
+:::python LangGraph gives a high degree of control over the application state.
+For instance, at any point (including when interrupted), you can manually
+override a key using `graph.update_state`:
 
 ```python
 graph.update_state(config, {"name": "LangGraph (library)"})
@@ -417,13 +430,14 @@ graph.update_state(config, {"name": "LangGraph (library)"})
 
 :::
 
-:::js
-LangGraph gives a high degree of control over the application state. For instance, at any point (including when interrupted), you can manually override a key using `graph.updateState`:
+:::js LangGraph gives a high degree of control over the application state. For
+instance, at any point (including when interrupted), you can manually override a
+key using `graph.updateState`:
 
 ```typescript
 await graph.updateState(
-  { configurable: { thread_id: "1" } },
-  { name: "LangGraph (library)" }
+  { configurable: { thread_id: '1' } },
+  { name: 'LangGraph (library)' }
 );
 ```
 
@@ -441,8 +455,7 @@ await graph.updateState(
 
 ## 6. View the new value
 
-:::python
-If you call `graph.get_state`, you can see the new value is reflected:
+:::python If you call `graph.get_state`, you can see the new value is reflected:
 
 ```python
 snapshot = graph.get_state(config)
@@ -456,15 +469,14 @@ snapshot = graph.get_state(config)
 
 :::
 
-:::js
-If you call `graph.getState`, you can see the new value is reflected:
+:::js If you call `graph.getState`, you can see the new value is reflected:
 
 ```typescript
 const updatedSnapshot = await graph.getState(config);
 
 const updatedRelevantState = Object.fromEntries(
   Object.entries(updatedSnapshot.values).filter(([k]) =>
-    ["name", "birthday"].includes(k)
+    ['name', 'birthday'].includes(k)
   )
 );
 ```
@@ -475,9 +487,16 @@ const updatedRelevantState = Object.fromEntries(
 
 :::
 
-Manual state updates will [generate a trace](https://smith.langchain.com/public/7ebb7827-378d-49fe-9f6c-5df0e90086c8/r) in LangSmith. If desired, they can also be used to [control human-in-the-loop workflows](../../how-tos/human_in_the_loop/add-human-in-the-loop.md). Use of the `interrupt` function is generally recommended instead, as it allows data to be transmitted in a human-in-the-loop interaction independently of state updates.
+Manual state updates will
+[generate a trace](https://smith.langchain.com/public/7ebb7827-378d-49fe-9f6c-5df0e90086c8/r)
+in LangSmith. If desired, they can also be used to
+[control human-in-the-loop workflows](../../how-tos/human_in_the_loop/add-human-in-the-loop.md).
+Use of the `interrupt` function is generally recommended instead, as it allows
+data to be transmitted in a human-in-the-loop interaction independently of state
+updates.
 
-**Congratulations!** You've added custom keys to the state to facilitate a more complex workflow, and learned how to generate state updates from inside tools.
+**Congratulations!** You've added custom keys to the state to facilitate a more
+complex workflow, and learned how to generate state updates from inside tools.
 
 Check out the code snippet below to review the graph from this tutorial:
 
@@ -580,13 +599,13 @@ import {
   StateGraph,
   END,
   START,
-} from "@langchain/langgraph";
-import { ToolNode, toolsCondition } from "@langchain/langgraph/prebuilt";
-import { ChatAnthropic } from "@langchain/anthropic";
-import { TavilySearch } from "@langchain/tavily";
-import { ToolMessage } from "@langchain/core/messages";
-import { tool } from "@langchain/core/tools";
-import { z } from "zod";
+} from '@langchain/langgraph';
+import { ToolNode, toolsCondition } from '@langchain/langgraph/prebuilt';
+import { ChatAnthropic } from '@langchain/anthropic';
+import { TavilySearch } from '@langchain/tavily';
+import { ToolMessage } from '@langchain/core/messages';
+import { tool } from '@langchain/core/tools';
+import { z } from 'zod';
 
 const State = z.object({
   messages: MessagesZodState.shape.messages,
@@ -600,10 +619,10 @@ const humanAssistance = tool(
     // generally require the ID of the corresponding tool call. This is available
     // in the tool's config.
     const toolCallId = config?.toolCall?.id as string | undefined;
-    if (!toolCallId) throw new Error("Tool call ID is required");
+    if (!toolCallId) throw new Error('Tool call ID is required');
 
     const humanResponse = await interrupt({
-      question: "Is this correct?",
+      question: 'Is this correct?',
       name: input.name,
       birthday: input.birthday,
     });
@@ -611,12 +630,12 @@ const humanAssistance = tool(
     // We explicitly update the state with a ToolMessage inside the tool.
     const stateUpdate = (() => {
       // If the information is correct, update the state as-is.
-      if (humanResponse.correct?.toLowerCase().startsWith("y")) {
+      if (humanResponse.correct?.toLowerCase().startsWith('y')) {
         return {
           name: input.name,
           birthday: input.birthday,
           messages: [
-            new ToolMessage({ content: "Correct", tool_call_id: toolCallId }),
+            new ToolMessage({ content: 'Correct', tool_call_id: toolCallId }),
           ],
         };
       }
@@ -638,11 +657,11 @@ const humanAssistance = tool(
     return new Command({ update: stateUpdate });
   },
   {
-    name: "humanAssistance",
-    description: "Request assistance from a human.",
+    name: 'humanAssistance',
+    description: 'Request assistance from a human.',
     schema: z.object({
-      name: z.string().describe("The name of the entity"),
-      birthday: z.string().describe("The birthday/release date of the entity"),
+      name: z.string().describe('The name of the entity'),
+      birthday: z.string().describe('The birthday/release date of the entity'),
     }),
   }
 );
@@ -651,7 +670,7 @@ const searchTool = new TavilySearch({ maxResults: 2 });
 
 const tools = [searchTool, humanAssistance];
 const llmWithTools = new ChatAnthropic({
-  model: "claude-3-5-sonnet-latest",
+  model: 'claude-3-5-sonnet-latest',
 }).bindTools(tools);
 
 const memory = new MemorySaver();
@@ -662,11 +681,11 @@ const chatbot = async (state: z.infer<typeof State>) => {
 };
 
 const graph = new StateGraph(State)
-  .addNode("chatbot", chatbot)
-  .addNode("tools", new ToolNode(tools))
-  .addConditionalEdges("chatbot", toolsCondition, ["tools", END])
-  .addEdge("tools", "chatbot")
-  .addEdge(START, "chatbot")
+  .addNode('chatbot', chatbot)
+  .addNode('tools', new ToolNode(tools))
+  .addConditionalEdges('chatbot', toolsCondition, ['tools', END])
+  .addEdge('tools', 'chatbot')
+  .addEdge(START, 'chatbot')
   .compile({ checkpointer: memory });
 ```
 
@@ -674,4 +693,6 @@ const graph = new StateGraph(State)
 
 ## Next steps
 
-There's one more concept to review before finishing the LangGraph basics tutorials: connecting `checkpointing` and `state updates` to [time travel](./6-time-travel.md).
+There's one more concept to review before finishing the LangGraph basics
+tutorials: connecting `checkpointing` and `state updates` to
+[time travel](./6-time-travel.md).

@@ -1,0 +1,11 @@
+image: ghcr.io/yourorg/cas-vfsd:latest
+mountPath: /mnt/relay
+cas:
+  backend: s3
+  s3:
+    endpoint: https://s3.example.com
+    bucket: relay-cas
+    region: us-east-1
+    accessKeySecret: cas-s3-creds
+    accessKeyIdKey: access_key_id
+    secretAccessKeyKey: secret_access_key

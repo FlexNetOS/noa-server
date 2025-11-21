@@ -51,7 +51,7 @@ export class IntegrationPipeline {
             throw new Error('Agent file not found');
           }
           console.log('   ✓ Agent definition validated');
-        }
+        },
       },
       {
         name: 'register-agent',
@@ -70,14 +70,14 @@ export class IntegrationPipeline {
             type: agentInfo.type,
             path: agentInfo.path,
             capabilities: agentInfo.capabilities || [],
-            registeredAt: new Date().toISOString()
+            registeredAt: new Date().toISOString(),
           };
 
           // Store in context for other steps
           context.set('registry', registry);
 
           console.log(`   ✓ Agent registered: ${agentInfo.name}`);
-        }
+        },
       },
       {
         name: 'update-package-json',
@@ -97,7 +97,7 @@ export class IntegrationPipeline {
 
             console.log('   ✓ package.json updated');
           }
-        }
+        },
       },
       {
         name: 'update-documentation',
@@ -105,7 +105,7 @@ export class IntegrationPipeline {
         execute: async (agentInfo: AgentInfo) => {
           // Note: In production, this would update actual documentation
           console.log(`   ✓ Documentation marked for update: ${agentInfo.name}`);
-        }
+        },
       },
       {
         name: 'create-integration-code',
@@ -113,7 +113,7 @@ export class IntegrationPipeline {
         execute: async (agentInfo: AgentInfo) => {
           // Create example integration code
           console.log(`   ✓ Integration code template created: ${agentInfo.name}`);
-        }
+        },
       },
       {
         name: 'generate-tests',
@@ -123,7 +123,7 @@ export class IntegrationPipeline {
           const testDir = path.join(process.cwd(), 'tests', agentInfo.name);
 
           console.log(`   ✓ Test suite template marked: ${testDir}`);
-        }
+        },
       },
       {
         name: 'validate-cross-references',
@@ -136,8 +136,8 @@ export class IntegrationPipeline {
           }
 
           console.log('   ✓ Cross-references validated');
-        }
-      }
+        },
+      },
     ];
   }
 
@@ -163,9 +163,8 @@ export class IntegrationPipeline {
         results.push({
           step: step.name,
           success: true,
-          duration
+          duration,
         });
-
       } catch (error) {
         const duration = Date.now() - stepStart;
         const errorMessage = error instanceof Error ? error.message : String(error);
@@ -174,7 +173,7 @@ export class IntegrationPipeline {
           step: step.name,
           success: false,
           duration,
-          error: errorMessage
+          error: errorMessage,
         });
 
         console.error(`   ❌ Failed: ${errorMessage}`);
@@ -185,10 +184,10 @@ export class IntegrationPipeline {
 
     return {
       totalSteps: this.steps.length,
-      successfulSteps: results.filter(r => r.success).length,
-      failedSteps: results.filter(r => !r.success).length,
+      successfulSteps: results.filter((r) => r.success).length,
+      failedSteps: results.filter((r) => !r.success).length,
       totalDuration,
-      results
+      results,
     };
   }
 

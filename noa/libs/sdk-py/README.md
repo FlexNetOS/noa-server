@@ -1,17 +1,20 @@
 # LangGraph Python SDK
 
-This repository contains the Python SDK for interacting with the LangGraph Platform REST API.
+This repository contains the Python SDK for interacting with the LangGraph
+Platform REST API.
 
 ## Quick Start
 
-To get started with the Python SDK, [install the package](https://pypi.org/project/langgraph-sdk/)
+To get started with the Python SDK,
+[install the package](https://pypi.org/project/langgraph-sdk/)
 
 ```bash
 pip install -U langgraph-sdk
 ```
 
-You will need a running LangGraph API server. If you're running a server locally using `langgraph-cli`, SDK will automatically point at `http://localhost:8123`, otherwise
-you would need to specify the server URL when creating a client.
+You will need a running LangGraph API server. If you're running a server locally
+using `langgraph-cli`, SDK will automatically point at `http://localhost:8123`,
+otherwise you would need to specify the server URL when creating a client.
 
 ```python
 from langgraph_sdk import get_client

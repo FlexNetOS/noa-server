@@ -48,7 +48,7 @@
         azure_deployment=os.environ["AZURE_OPENAI_DEPLOYMENT_NAME"],
     )
     ```
- 
+
     👉 Read the [Azure integration docs](https://python.langchain.com/docs/integrations/chat/azure_chat_openai/)
 
 === "Google Gemini"

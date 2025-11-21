@@ -4,22 +4,22 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Target environment'
+        description: "Target environment"
         required: true
         type: choice
         options:
           - staging
           - production
       target_version:
-        description: 'Version to rollback to (leave empty for previous)'
+        description: "Version to rollback to (leave empty for previous)"
         required: false
         type: string
       reason:
-        description: 'Rollback reason'
+        description: "Rollback reason"
         required: true
         type: string
       skip_backup:
-        description: 'Skip backup of current state'
+        description: "Skip backup of current state"
         required: false
         type: boolean
         default: false
@@ -39,7 +39,7 @@ jobs:
       can_rollback: ${{ steps.validate.outputs.can_rollback }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Configure kubectl
         run: |
@@ -103,7 +103,7 @@ jobs:
 
       - name: Require approval for production
         if: inputs.environment == 'production'
-        uses: trstringer/manual-approval@v1
+        uses: trstringer/manual-approval@3d14780b464d2be3c8ebf6a91838b8dd6a04a52a
         with:
           secret: ${{ secrets.GITHUB_TOKEN }}
           approvers: ops-team,sre-team
@@ -124,7 +124,7 @@ jobs:
     if: needs.validate-rollback.outputs.can_rollback == 'true' && !inputs.skip_backup
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Configure kubectl
         run: |
@@ -157,7 +157,7 @@ jobs:
           tar -czf /tmp/rollback-backup.tar.gz -C /tmp $(basename "$BACKUP_DIR")
 
       - name: Upload backup
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
         with:
           name: rollback-backup-${{ needs.validate-rollback.outputs.current_version }}
           path: /tmp/rollback-backup.tar.gz
@@ -170,7 +170,7 @@ jobs:
     if: always() && needs.validate-rollback.outputs.can_rollback == 'true'
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Configure kubectl
         run: |
@@ -262,7 +262,7 @@ jobs:
     needs: [validate-rollback, execute-rollback]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Configure kubectl
         run: |
@@ -313,7 +313,7 @@ jobs:
     if: always()
     steps:
       - name: Send Slack notification
-        uses: slackapi/slack-github-action@v1
+        uses: slackapi/slack-github-action@37ebaef184d7626c5f204ab8d3baff4262dd30f0
         with:
           payload: |
             {
@@ -333,7 +333,7 @@ jobs:
 
       - name: Create incident issue
         if: failure()
-        uses: actions/github-script@v7
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
         with:
           script: |
             await github.rest.issues.create({

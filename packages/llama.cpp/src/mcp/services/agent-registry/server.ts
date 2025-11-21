@@ -9,7 +9,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
-  Tool
+  Tool,
 } from '@modelcontextprotocol/sdk/types.js';
 import { AgentRegistry } from './registry.js';
 import { AgentRegistryStorage } from './storage.js';
@@ -22,7 +22,7 @@ import {
   AgentDiscoveryFilter,
   AgentHeartbeat,
   TaskAssignment,
-  TaskCompletion
+  TaskCompletion,
 } from './types.js';
 
 /**
@@ -37,56 +37,56 @@ const TOOLS: Tool[] = [
       properties: {
         name: {
           type: 'string',
-          description: 'Agent name'
+          description: 'Agent name',
         },
         type: {
           type: 'string',
           enum: Object.values(AgentType),
-          description: 'Agent type'
+          description: 'Agent type',
         },
         capabilities: {
           type: 'array',
           items: {
             type: 'string',
-            enum: Object.values(AgentCapability)
+            enum: Object.values(AgentCapability),
           },
-          description: 'Agent capabilities'
+          description: 'Agent capabilities',
         },
         version: {
           type: 'string',
-          description: 'Agent version (optional)'
+          description: 'Agent version (optional)',
         },
         description: {
           type: 'string',
-          description: 'Agent description (optional)'
+          description: 'Agent description (optional)',
         },
         tags: {
           type: 'array',
           items: { type: 'string' },
-          description: 'Agent tags (optional)'
+          description: 'Agent tags (optional)',
         },
         priority: {
           type: 'number',
           minimum: 1,
           maximum: 10,
-          description: 'Agent priority 1-10 (optional, default: 5)'
+          description: 'Agent priority 1-10 (optional, default: 5)',
         },
         maxConcurrentTasks: {
           type: 'number',
           minimum: 1,
-          description: 'Max concurrent tasks (optional, default: 5)'
+          description: 'Max concurrent tasks (optional, default: 5)',
         },
         endpoint: {
           type: 'string',
-          description: 'Agent MCP endpoint (optional)'
+          description: 'Agent MCP endpoint (optional)',
         },
         configuration: {
           type: 'object',
-          description: 'Agent configuration (optional)'
-        }
+          description: 'Agent configuration (optional)',
+        },
       },
-      required: ['name', 'type', 'capabilities']
-    }
+      required: ['name', 'type', 'capabilities'],
+    },
   },
   {
     name: 'discover_agents',
@@ -98,75 +98,75 @@ const TOOLS: Tool[] = [
           type: 'array',
           items: {
             type: 'string',
-            enum: Object.values(AgentType)
+            enum: Object.values(AgentType),
           },
-          description: 'Filter by agent types'
+          description: 'Filter by agent types',
         },
         capabilities: {
           type: 'array',
           items: {
             type: 'string',
-            enum: Object.values(AgentCapability)
+            enum: Object.values(AgentCapability),
           },
-          description: 'Filter by capabilities'
+          description: 'Filter by capabilities',
         },
         statuses: {
           type: 'array',
           items: {
             type: 'string',
-            enum: Object.values(AgentStatus)
+            enum: Object.values(AgentStatus),
           },
-          description: 'Filter by statuses'
+          description: 'Filter by statuses',
         },
         tags: {
           type: 'array',
           items: { type: 'string' },
-          description: 'Filter by tags'
+          description: 'Filter by tags',
         },
         minPriority: {
           type: 'number',
           minimum: 1,
           maximum: 10,
-          description: 'Minimum priority'
+          description: 'Minimum priority',
         },
         maxPriority: {
           type: 'number',
           minimum: 1,
           maximum: 10,
-          description: 'Maximum priority'
+          description: 'Maximum priority',
         },
         availableOnly: {
           type: 'boolean',
-          description: 'Only idle/active agents'
+          description: 'Only idle/active agents',
         },
         minSuccessRate: {
           type: 'number',
           minimum: 0,
           maximum: 1,
-          description: 'Minimum success rate (0-1)'
+          description: 'Minimum success rate (0-1)',
         },
         sortBy: {
           type: 'string',
           enum: ['priority', 'successRate', 'uptime', 'taskCount'],
-          description: 'Sort field'
+          description: 'Sort field',
         },
         sortOrder: {
           type: 'string',
           enum: ['asc', 'desc'],
-          description: 'Sort order'
+          description: 'Sort order',
         },
         limit: {
           type: 'number',
           minimum: 1,
-          description: 'Result limit'
+          description: 'Result limit',
         },
         offset: {
           type: 'number',
           minimum: 0,
-          description: 'Result offset'
-        }
-      }
-    }
+          description: 'Result offset',
+        },
+      },
+    },
   },
   {
     name: 'get_agent_health',
@@ -176,11 +176,11 @@ const TOOLS: Tool[] = [
       properties: {
         agentId: {
           type: 'string',
-          description: 'Agent ID'
-        }
+          description: 'Agent ID',
+        },
       },
-      required: ['agentId']
-    }
+      required: ['agentId'],
+    },
   },
   {
     name: 'get_agent_metrics',
@@ -190,11 +190,11 @@ const TOOLS: Tool[] = [
       properties: {
         agentId: {
           type: 'string',
-          description: 'Agent ID'
-        }
+          description: 'Agent ID',
+        },
       },
-      required: ['agentId']
-    }
+      required: ['agentId'],
+    },
   },
   {
     name: 'update_agent_status',
@@ -204,16 +204,16 @@ const TOOLS: Tool[] = [
       properties: {
         agentId: {
           type: 'string',
-          description: 'Agent ID'
+          description: 'Agent ID',
         },
         status: {
           type: 'string',
           enum: Object.values(AgentStatus),
-          description: 'New status'
-        }
+          description: 'New status',
+        },
       },
-      required: ['agentId', 'status']
-    }
+      required: ['agentId', 'status'],
+    },
   },
   {
     name: 'update_agent',
@@ -223,44 +223,44 @@ const TOOLS: Tool[] = [
       properties: {
         agentId: {
           type: 'string',
-          description: 'Agent ID'
+          description: 'Agent ID',
         },
         status: {
           type: 'string',
           enum: Object.values(AgentStatus),
-          description: 'New status (optional)'
+          description: 'New status (optional)',
         },
         capabilities: {
           type: 'array',
           items: {
             type: 'string',
-            enum: Object.values(AgentCapability)
+            enum: Object.values(AgentCapability),
           },
-          description: 'Updated capabilities (optional)'
+          description: 'Updated capabilities (optional)',
         },
         tags: {
           type: 'array',
           items: { type: 'string' },
-          description: 'Updated tags (optional)'
+          description: 'Updated tags (optional)',
         },
         priority: {
           type: 'number',
           minimum: 1,
           maximum: 10,
-          description: 'Updated priority (optional)'
+          description: 'Updated priority (optional)',
         },
         maxConcurrentTasks: {
           type: 'number',
           minimum: 1,
-          description: 'Updated max concurrent tasks (optional)'
+          description: 'Updated max concurrent tasks (optional)',
         },
         configuration: {
           type: 'object',
-          description: 'Updated configuration (optional)'
-        }
+          description: 'Updated configuration (optional)',
+        },
       },
-      required: ['agentId']
-    }
+      required: ['agentId'],
+    },
   },
   {
     name: 'agent_heartbeat',
@@ -270,28 +270,28 @@ const TOOLS: Tool[] = [
       properties: {
         agentId: {
           type: 'string',
-          description: 'Agent ID'
+          description: 'Agent ID',
         },
         status: {
           type: 'string',
           enum: Object.values(AgentStatus),
-          description: 'Current status (optional)'
+          description: 'Current status (optional)',
         },
         taskCount: {
           type: 'number',
-          description: 'Current task count (optional)'
+          description: 'Current task count (optional)',
         },
         memoryUsage: {
           type: 'number',
-          description: 'Memory usage in bytes (optional)'
+          description: 'Memory usage in bytes (optional)',
         },
         cpuUsage: {
           type: 'number',
-          description: 'CPU usage percentage (optional)'
-        }
+          description: 'CPU usage percentage (optional)',
+        },
       },
-      required: ['agentId']
-    }
+      required: ['agentId'],
+    },
   },
   {
     name: 'assign_task',
@@ -301,33 +301,33 @@ const TOOLS: Tool[] = [
       properties: {
         taskId: {
           type: 'string',
-          description: 'Task ID'
+          description: 'Task ID',
         },
         agentId: {
           type: 'string',
-          description: 'Agent ID'
+          description: 'Agent ID',
         },
         description: {
           type: 'string',
-          description: 'Task description'
+          description: 'Task description',
         },
         priority: {
           type: 'number',
           minimum: 1,
           maximum: 10,
-          description: 'Task priority'
+          description: 'Task priority',
         },
         deadline: {
           type: 'string',
-          description: 'Task deadline (ISO 8601 format, optional)'
+          description: 'Task deadline (ISO 8601 format, optional)',
         },
         metadata: {
           type: 'object',
-          description: 'Task metadata (optional)'
-        }
+          description: 'Task metadata (optional)',
+        },
       },
-      required: ['taskId', 'agentId', 'description', 'priority']
-    }
+      required: ['taskId', 'agentId', 'description', 'priority'],
+    },
   },
   {
     name: 'complete_task',
@@ -337,42 +337,42 @@ const TOOLS: Tool[] = [
       properties: {
         taskId: {
           type: 'string',
-          description: 'Task ID'
+          description: 'Task ID',
         },
         agentId: {
           type: 'string',
-          description: 'Agent ID'
+          description: 'Agent ID',
         },
         success: {
           type: 'boolean',
-          description: 'Task success status'
+          description: 'Task success status',
         },
         duration: {
           type: 'number',
-          description: 'Task duration in milliseconds'
+          description: 'Task duration in milliseconds',
         },
         tokensProcessed: {
           type: 'number',
-          description: 'Tokens processed (optional)'
+          description: 'Tokens processed (optional)',
         },
         error: {
           type: 'string',
-          description: 'Error message if failed (optional)'
+          description: 'Error message if failed (optional)',
         },
         result: {
-          description: 'Task result (optional)'
-        }
+          description: 'Task result (optional)',
+        },
       },
-      required: ['taskId', 'agentId', 'success', 'duration']
-    }
+      required: ['taskId', 'agentId', 'success', 'duration'],
+    },
   },
   {
     name: 'get_registry_stats',
     description: 'Get registry statistics',
     inputSchema: {
       type: 'object',
-      properties: {}
-    }
+      properties: {},
+    },
   },
   {
     name: 'remove_agent',
@@ -382,12 +382,12 @@ const TOOLS: Tool[] = [
       properties: {
         agentId: {
           type: 'string',
-          description: 'Agent ID'
-        }
+          description: 'Agent ID',
+        },
       },
-      required: ['agentId']
-    }
-  }
+      required: ['agentId'],
+    },
+  },
 ];
 
 /**
@@ -399,7 +399,7 @@ async function main() {
     dataDir: process.env.AGENT_REGISTRY_DATA_DIR || '/tmp/agent-registry',
     enablePersistence: process.env.AGENT_REGISTRY_PERSISTENCE !== 'false',
     autoSaveInterval: parseInt(process.env.AGENT_REGISTRY_SAVE_INTERVAL || '30000'),
-    maxEventHistory: parseInt(process.env.AGENT_REGISTRY_MAX_EVENTS || '1000')
+    maxEventHistory: parseInt(process.env.AGENT_REGISTRY_MAX_EVENTS || '1000'),
   });
 
   const registry = new AgentRegistry({
@@ -407,7 +407,7 @@ async function main() {
     heartbeatTimeout: parseInt(process.env.AGENT_REGISTRY_HEARTBEAT_TIMEOUT || '60000'),
     healthCheckInterval: parseInt(process.env.AGENT_REGISTRY_HEALTH_CHECK_INTERVAL || '30000'),
     enableAutoCleanup: process.env.AGENT_REGISTRY_AUTO_CLEANUP !== 'false',
-    cleanupInterval: parseInt(process.env.AGENT_REGISTRY_CLEANUP_INTERVAL || '300000')
+    cleanupInterval: parseInt(process.env.AGENT_REGISTRY_CLEANUP_INTERVAL || '300000'),
   });
 
   await registry.initialize();
@@ -416,18 +416,18 @@ async function main() {
   const server = new Server(
     {
       name: 'agent-registry',
-      version: '1.0.0'
+      version: '1.0.0',
     },
     {
       capabilities: {
-        tools: {}
-      }
+        tools: {},
+      },
     }
   );
 
   // List tools handler
   server.setRequestHandler(ListToolsRequestSchema, async () => ({
-    tools: TOOLS
+    tools: TOOLS,
   }));
 
   // Call tool handler
@@ -439,60 +439,72 @@ async function main() {
         case 'register_agent': {
           const result = await registry.registerAgent(args as RegisterAgentRequest);
           return {
-            content: [{
-              type: 'text',
-              text: JSON.stringify(result, null, 2)
-            }]
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(result, null, 2),
+              },
+            ],
           };
         }
 
         case 'discover_agents': {
           const result = await registry.discoverAgents(args as AgentDiscoveryFilter);
           return {
-            content: [{
-              type: 'text',
-              text: JSON.stringify(result, null, 2)
-            }]
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(result, null, 2),
+              },
+            ],
           };
         }
 
         case 'get_agent_health': {
           const result = await registry.getAgentHealth(args.agentId);
           return {
-            content: [{
-              type: 'text',
-              text: JSON.stringify(result, null, 2)
-            }]
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(result, null, 2),
+              },
+            ],
           };
         }
 
         case 'get_agent_metrics': {
           const result = await registry.getAgentMetrics(args.agentId);
           return {
-            content: [{
-              type: 'text',
-              text: JSON.stringify(result, null, 2)
-            }]
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(result, null, 2),
+              },
+            ],
           };
         }
 
         case 'update_agent_status': {
           const result = await registry.updateAgentStatus(args.agentId, args.status);
           return {
-            content: [{
-              type: 'text',
-              text: JSON.stringify(result, null, 2)
-            }]
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(result, null, 2),
+              },
+            ],
           };
         }
 
         case 'update_agent': {
           const result = await registry.updateAgent(args as UpdateAgentRequest);
           return {
-            content: [{
-              type: 'text',
-              text: JSON.stringify(result, null, 2)
-            }]
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(result, null, 2),
+              },
+            ],
           };
         }
 
@@ -503,14 +515,16 @@ async function main() {
             status: args.status,
             taskCount: args.taskCount,
             memoryUsage: args.memoryUsage,
-            cpuUsage: args.cpuUsage
+            cpuUsage: args.cpuUsage,
           };
           const result = await registry.heartbeat(heartbeat);
           return {
-            content: [{
-              type: 'text',
-              text: JSON.stringify(result, null, 2)
-            }]
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(result, null, 2),
+              },
+            ],
           };
         }
 
@@ -522,14 +536,16 @@ async function main() {
             priority: args.priority,
             assignedAt: new Date(),
             deadline: args.deadline ? new Date(args.deadline) : undefined,
-            metadata: args.metadata
+            metadata: args.metadata,
           };
           const result = await registry.assignTask(task);
           return {
-            content: [{
-              type: 'text',
-              text: JSON.stringify(result, null, 2)
-            }]
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(result, null, 2),
+              },
+            ],
           };
         }
 
@@ -542,59 +558,69 @@ async function main() {
             tokensProcessed: args.tokensProcessed,
             error: args.error,
             result: args.result,
-            completedAt: new Date()
+            completedAt: new Date(),
           };
           const result = await registry.completeTask(completion);
           return {
-            content: [{
-              type: 'text',
-              text: JSON.stringify(result, null, 2)
-            }]
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(result, null, 2),
+              },
+            ],
           };
         }
 
         case 'get_registry_stats': {
           const result = await registry.getStatistics();
           return {
-            content: [{
-              type: 'text',
-              text: JSON.stringify(result, null, 2)
-            }]
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(result, null, 2),
+              },
+            ],
           };
         }
 
         case 'remove_agent': {
           const result = await registry.removeAgent(args.agentId);
           return {
-            content: [{
-              type: 'text',
-              text: JSON.stringify(result, null, 2)
-            }]
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(result, null, 2),
+              },
+            ],
           };
         }
 
         default:
           return {
-            content: [{
-              type: 'text',
-              text: JSON.stringify({
-                success: false,
-                error: `Unknown tool: ${name}`
-              })
-            }],
-            isError: true
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify({
+                  success: false,
+                  error: `Unknown tool: ${name}`,
+                }),
+              },
+            ],
+            isError: true,
           };
       }
     } catch (error) {
       return {
-        content: [{
-          type: 'text',
-          text: JSON.stringify({
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error'
-          })
-        }],
-        isError: true
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({
+              success: false,
+              error: error instanceof Error ? error.message : 'Unknown error',
+            }),
+          },
+        ],
+        isError: true,
       };
     }
   });

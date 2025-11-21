@@ -3,7 +3,23 @@
  * Global test configuration and mocks
  */
 
-import '@testing-library/jest-dom';
+// Use CommonJS require so Jest can load this setup file without ESM support
+require('@testing-library/jest-dom');
+
+// jsdom does not implement window.matchMedia by default; mock it so components
+// relying on prefers-reduced-motion / high contrast queries don't crash tests.
+if (typeof window !== 'undefined' && !window.matchMedia) {
+  window.matchMedia = jest.fn().mockImplementation((query) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  }));
+}
 
 // Mock environment variables
 process.env.VITE_API_URL = 'http://localhost:8080/api';
@@ -13,6 +29,7 @@ process.env.VITE_WS_URL = 'ws://localhost:8080';
 global.WebSocket = class WebSocket {
   constructor(url) {
     this.url = url;
+    // Mirror the standard WebSocket readyState constants on instances
     this.OPEN = 1;
     this.CONNECTING = 0;
     this.CLOSING = 2;
@@ -86,6 +103,12 @@ global.WebSocket = class WebSocket {
 
   removeEventListener() {}
 };
+
+// Ensure static readyState constants exist so code paths using WebSocket.OPEN, etc. work
+global.WebSocket.CONNECTING = 0;
+global.WebSocket.OPEN = 1;
+global.WebSocket.CLOSING = 2;
+global.WebSocket.CLOSED = 3;
 
 // Mock fetch globally
 global.fetch = jest.fn();

@@ -1,13 +1,18 @@
 # Context
 
-**Context engineering** is the practice of building dynamic systems that provide the right information and tools, in the right format, so that an AI application can accomplish a task. Context can be characterized along two key dimensions:
+**Context engineering** is the practice of building dynamic systems that provide
+the right information and tools, in the right format, so that an AI application
+can accomplish a task. Context can be characterized along two key dimensions:
 
 1. By **mutability**:
-    - **Static context**: Immutable data that doesn't change during execution (e.g., user metadata, database connections, tools)
-    - **Dynamic context**: Mutable data that evolves as the application runs (e.g., conversation history, intermediate results, tool call observations)
+   - **Static context**: Immutable data that doesn't change during execution
+     (e.g., user metadata, database connections, tools)
+   - **Dynamic context**: Mutable data that evolves as the application runs
+     (e.g., conversation history, intermediate results, tool call observations)
 2. By **lifetime**:
-    - **Runtime context**: Data scoped to a single run or invocation
-    - **Cross-conversation context**: Data that persists across multiple conversations or sessions
+   - **Runtime context**: Data scoped to a single run or invocation
+   - **Cross-conversation context**: Data that persists across multiple
+     conversations or sessions
 
 !!! tip "Runtime context vs LLM context"
 
@@ -19,7 +24,8 @@
     Runtime context can be used to optimize the LLM context. For example, you can use user metadata
     in the runtime context to fetch user preferences and feed them into the context window.
 
-LangGraph provides three ways to manage context, which combines the mutability and lifetime dimensions:
+LangGraph provides three ways to manage context, which combines the mutability
+and lifetime dimensions:
 
 :::python
 
@@ -31,9 +37,13 @@ LangGraph provides three ways to manage context, which combines the mutability a
 
 ## Static runtime context
 
-**Static runtime context** represents immutable data like user metadata, tools, and database connections that are passed to an application at the start of a run via the `context` argument to `invoke`/`stream`. This data does not change during execution.
+**Static runtime context** represents immutable data like user metadata, tools,
+and database connections that are passed to an application at the start of a run
+via the `context` argument to `invoke`/`stream`. This data does not change
+during execution.
 
-!!! version-added "Added in version 0.6.0: `context` replaces `config['configurable']`"
+!!! version-added "Added in version 0.6.0: `context` replaces
+`config['configurable']`"
 
     Runtime context is now passed to the `context` argument of `invoke`/`stream`,
     which replaces the previous pattern of passing application configuration to `config['configurable']`.
@@ -50,9 +60,13 @@ graph.invoke( # (1)!
 )
 ```
 
-1. This is the invocation of the agent or graph. The `invoke` method runs the underlying graph with the provided input.
-2. This example uses messages as an input, which is common, but your application may use different input structures.
-3. This is where you pass the runtime data. The `context` parameter allows you to provide additional dependencies that the agent can use during its execution.
+1. This is the invocation of the agent or graph. The `invoke` method runs the
+   underlying graph with the provided input.
+2. This example uses messages as an input, which is common, but your application
+   may use different input structures.
+3. This is where you pass the runtime data. The `context` parameter allows you
+   to provide additional dependencies that the agent can use during its
+   execution.
 
 === "Agent prompt"
 
@@ -131,16 +145,18 @@ graph.invoke( # (1)!
 
 ## Config (static context)
 
-Config is for immutable data like user metadata or API keys. Use this when you have values that don't change mid-run.
+Config is for immutable data like user metadata or API keys. Use this when you
+have values that don't change mid-run.
 
-Specify configuration using a key called **"configurable"** which is reserved for this purpose.
+Specify configuration using a key called **"configurable"** which is reserved
+for this purpose.
 
 ```typescript
 await graph.invoke(
   // (1)!
-  { messages: [{ role: "user", content: "hi!" }] }, // (2)!
+  { messages: [{ role: 'user', content: 'hi!' }] }, // (2)!
   // highlight-next-line
-  { configurable: { user_id: "user_123" } } // (3)!
+  { configurable: { user_id: 'user_123' } } // (3)!
 );
 ```
 
@@ -148,7 +164,11 @@ await graph.invoke(
 
 ## Dynamic runtime context (state)
 
-**Dynamic runtime context** represents mutable data that can evolve during a single run and is managed through the LangGraph state object. This includes conversation history, intermediate results, and values derived from tools or LLM outputs. In LangGraph, the state object acts as [short-term memory](../concepts/memory.md) during a run.
+**Dynamic runtime context** represents mutable data that can evolve during a
+single run and is managed through the LangGraph state object. This includes
+conversation history, intermediate results, and values derived from tools or LLM
+outputs. In LangGraph, the state object acts as
+[short-term memory](../concepts/memory.md) during a run.
 
 === "In an agent"
 
@@ -303,6 +323,12 @@ await graph.invoke(
 
 ## Dynamic cross-conversation context (store)
 
-**Dynamic cross-conversation context** represents persistent, mutable data that spans across multiple conversations or sessions and is managed through the LangGraph store. This includes user profiles, preferences, and historical interactions. The LangGraph store acts as [long-term memory](../concepts/memory.md#long-term-memory) across multiple runs. This can be used to read or update persistent facts (e.g., user profiles, preferences, prior interactions).
+**Dynamic cross-conversation context** represents persistent, mutable data that
+spans across multiple conversations or sessions and is managed through the
+LangGraph store. This includes user profiles, preferences, and historical
+interactions. The LangGraph store acts as
+[long-term memory](../concepts/memory.md#long-term-memory) across multiple runs.
+This can be used to read or update persistent facts (e.g., user profiles,
+preferences, prior interactions).
 
 For more information, see the [Memory guide](../how-tos/memory/add-memory.md).

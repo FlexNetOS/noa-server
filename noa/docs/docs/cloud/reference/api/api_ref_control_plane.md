@@ -1,24 +1,30 @@
 # LangGraph Control Plane API Reference
 
-The LangGraph Control Plane API is used to programmatically create and manage LangGraph Server deployments. For example, the APIs can be orchestrated to create custom CI/CD workflows.
+The LangGraph Control Plane API is used to programmatically create and manage
+LangGraph Server deployments. For example, the APIs can be orchestrated to
+create custom CI/CD workflows.
 
-Click <a href="https://api.host.langchain.com/docs" target="_blank">here</a> to view the API reference.
+Click <a href="https://api.host.langchain.com/docs" target="_blank">here</a> to
+view the API reference.
 
 ## Host
 
 LangGraph Control Plane hosts for Cloud SaaS data regions:
 
-| US | EU |
-|----|----|
+| US                               | EU                                  |
+| -------------------------------- | ----------------------------------- |
 | `https://api.host.langchain.com` | `https://eu.api.host.langchain.com` |
 
-**Note**: Self-hosted deployments of LangGraph Platform will have a custom host for the LangGraph Control Plane.
+**Note**: Self-hosted deployments of LangGraph Platform will have a custom host
+for the LangGraph Control Plane.
 
 ## Authentication
 
-To authenticate with the LangGraph Control Plane API, set the `X-Api-Key` header to a valid LangSmith API key.
+To authenticate with the LangGraph Control Plane API, set the `X-Api-Key` header
+to a valid LangSmith API key.
 
 Example `curl` command:
+
 ```shell
 curl --request GET \
   --url http://localhost:8124/v2/deployments \
@@ -31,13 +37,21 @@ Each endpoint path is prefixed with a version (e.g. `v1`, `v2`).
 
 ## Quick Start
 
-1. Call `POST /v2/deployments` to create a new Deployment. The response body contains the Deployment ID (`id`) and the ID of the latest (and first) revision (`latest_revision_id`).
-1. Call `GET /v2/deployments/{deployment_id}` to retrieve the Deployment. Set `deployment_id` in the URL to the value of Deployment ID (`id`).
-1. Poll for revision `status` until `status` is `DEPLOYED` by calling `GET /v2/deployments/{deployment_id}/revisions/{latest_revision_id}`.
+1. Call `POST /v2/deployments` to create a new Deployment. The response body
+   contains the Deployment ID (`id`) and the ID of the latest (and first)
+   revision (`latest_revision_id`).
+1. Call `GET /v2/deployments/{deployment_id}` to retrieve the Deployment. Set
+   `deployment_id` in the URL to the value of Deployment ID (`id`).
+1. Poll for revision `status` until `status` is `DEPLOYED` by calling
+   `GET /v2/deployments/{deployment_id}/revisions/{latest_revision_id}`.
 1. Call `PATCH /v2/deployments/{deployment_id}` to update the deployment.
 
 ## Example Code
-Below is example Python code that demonstrates how to orchestrate the LangGraph Control Plane APIs to create a deployment, update the deployment, and delete the deployment.
+
+Below is example Python code that demonstrates how to orchestrate the LangGraph
+Control Plane APIs to create a deployment, update the deployment, and delete the
+deployment.
+
 ```python
 import os
 import time

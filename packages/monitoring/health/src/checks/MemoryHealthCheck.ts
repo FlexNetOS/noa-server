@@ -25,7 +25,7 @@ export class MemoryHealthCheck extends BaseHealthCheck {
       enabled: true,
       critical: true,
       checkTypes: ['liveness'],
-      retries: 1
+      retries: 1,
     });
 
     this.warningThreshold = options.warningThreshold || 80;
@@ -45,9 +45,7 @@ export class MemoryHealthCheck extends BaseHealthCheck {
 
       // Process memory (heap)
       const heapStats = this.checkHeapMemory ? process.memoryUsage() : null;
-      const heapPercentage = heapStats
-        ? (heapStats.heapUsed / heapStats.heapTotal) * 100
-        : 0;
+      const heapPercentage = heapStats ? (heapStats.heapUsed / heapStats.heapTotal) * 100 : 0;
 
       const duration = Date.now() - startTime;
 
@@ -56,15 +54,17 @@ export class MemoryHealthCheck extends BaseHealthCheck {
           total: totalMem,
           used: usedMem,
           free: freeMem,
-          percentage: memoryPercentage
+          percentage: memoryPercentage,
         },
-        process: heapStats ? {
-          rss: heapStats.rss,
-          heapTotal: heapStats.heapTotal,
-          heapUsed: heapStats.heapUsed,
-          external: heapStats.external,
-          heapPercentage
-        } : undefined
+        process: heapStats
+          ? {
+              rss: heapStats.rss,
+              heapTotal: heapStats.heapTotal,
+              heapUsed: heapStats.heapUsed,
+              external: heapStats.external,
+              heapPercentage,
+            }
+          : undefined,
       };
 
       // Check critical threshold
@@ -124,7 +124,7 @@ export class MemoryHealthCheck extends BaseHealthCheck {
   } {
     return {
       system: process.cpuUsage(),
-      process: process.memoryUsage()
+      process: process.memoryUsage(),
     };
   }
 }

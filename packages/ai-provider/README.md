@@ -1,5 +1,8 @@
 # @noa/ai-provider
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 A unified AI provider package that provides a consistent interface for different
 AI providers including OpenAI, Claude, and llama.cpp. This package abstracts
 provider-specific APIs and offers consistent methods for inference, model
@@ -123,7 +126,7 @@ for await (const chunk of stream) {
 ```typescript
 const provider = createProvider({
   type: ProviderType.CLAUDE,
-  apiKey: process.env.CLAUDE_API_KEY!
+  apiKey: process.env.CLAUDE_API_KEY!,
 });
 
 provider.on('request:start', (requestId, providerType, operation) => {
@@ -211,15 +214,15 @@ const llama = createProvider({
   type: ProviderType.LLAMA_CPP,
   baseURL: 'http://localhost:8080',
   timeout: 60_000,
-  defaultModel: 'llama-2-7b'
+  defaultModel: 'llama-2-7b',
 });
 
 const response = await llama.createChatCompletion({
   model: 'llama-2-7b',
   messages: [
     { role: 'system', content: 'You are a concise assistant.' },
-    { role: 'user', content: 'Summarize the latest release notes.' }
-  ]
+    { role: 'user', content: 'Summarize the latest release notes.' },
+  ],
 });
 
 console.log(response.choices[0]?.message?.content);
@@ -486,3 +489,5 @@ const response = await provider.createChatCompletion({
 ## License
 
 MIT
+
+> Last updated: 2025-11-20

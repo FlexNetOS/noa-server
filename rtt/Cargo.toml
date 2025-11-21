@@ -1,0 +1,13 @@
+[workspace]
+members = [
+    "fabric/shm",
+    "planner/rtt_planner_rs",
+    "tools/rtt_sign_rs",
+    "viewfs/rust-fuse",
+]
+
+[workspace.package]
+version = "1.0.0"
+edition = "2021"
+authors = ["FlexNetOS <noreply@flexnetos.com>"]
+license = "Proprietary"

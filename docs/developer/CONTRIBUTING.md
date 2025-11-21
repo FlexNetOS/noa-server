@@ -1,6 +1,7 @@
 # Contributing to Noa Server
 
-Thank you for your interest in contributing to Noa Server! This guide will help you get started.
+Thank you for your interest in contributing to Noa Server! This guide will help
+you get started.
 
 ## 📋 Table of Contents
 
@@ -17,7 +18,8 @@ Thank you for your interest in contributing to Noa Server! This guide will help 
 
 ### Our Pledge
 
-We are committed to providing a welcoming and inspiring community for all. Please be respectful and constructive in all interactions.
+We are committed to providing a welcoming and inspiring community for all.
+Please be respectful and constructive in all interactions.
 
 ### Expected Behavior
 
@@ -48,12 +50,16 @@ We are committed to providing a welcoming and inspiring community for all. Pleas
    ```bash
    git remote add upstream https://github.com/your-org/noa-server.git
    ```
-4. **Set up development environment**: See [Development Setup](DEVELOPMENT_SETUP.md)
+4. **Set up development environment**: See
+   [Development Setup](DEVELOPMENT_SETUP.md)
 
 ### Find an Issue
 
-- Check [good first issues](https://github.com/your-org/noa-server/labels/good%20first%20issue)
-- Look for [help wanted](https://github.com/your-org/noa-server/labels/help%20wanted) labels
+- Check
+  [good first issues](https://github.com/your-org/noa-server/labels/good%20first%20issue)
+- Look for
+  [help wanted](https://github.com/your-org/noa-server/labels/help%20wanted)
+  labels
 - Comment on the issue to let others know you're working on it
 
 ## Development Workflow
@@ -70,6 +76,7 @@ git checkout -b feature/your-feature-name
 ```
 
 Branch naming conventions:
+
 - `feature/` - New features
 - `fix/` - Bug fixes
 - `docs/` - Documentation changes
@@ -110,6 +117,7 @@ git commit -m "docs: update API documentation"
 ```
 
 **Commit Message Format**:
+
 ```
 <type>(<scope>): <subject>
 
@@ -119,6 +127,7 @@ git commit -m "docs: update API documentation"
 ```
 
 **Types**:
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -129,6 +138,7 @@ git commit -m "docs: update API documentation"
 - `perf`: Performance improvements
 
 **Examples**:
+
 ```bash
 feat(swarm): add adaptive topology support
 
@@ -170,31 +180,38 @@ When creating a PR, include:
 
 ```markdown
 ## Description
+
 Brief description of what this PR does.
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Related Issues
+
 Closes #123
 
 ## Changes Made
+
 - Change 1
 - Change 2
 - Change 3
 
 ## Testing
+
 - [ ] Tests pass locally
 - [ ] Added new tests for changes
 - [ ] Updated documentation
 
 ## Screenshots (if applicable)
+
 [Add screenshots here]
 
 ## Checklist
+
 - [ ] Code follows style guide
 - [ ] Self-review completed
 - [ ] Comments added for complex code
@@ -247,6 +264,7 @@ git push origin feature/your-feature-name --force-with-lease
 - Use interfaces for object shapes
 
 **Example**:
+
 ```typescript
 // Good
 interface UserConfig {
@@ -283,12 +301,13 @@ See [Code Style Guide](CODE_STYLE.md) for complete rules.
 - **Files**: `kebab-case.ts`
 
 **Examples**:
+
 ```typescript
-const maxAgentCount = 10;  // variable
-function spawnAgent() {}   // function
-class SwarmCoordinator {}  // class
-interface AgentConfig {}   // interface
-const API_VERSION = 'v1';  // constant
+const maxAgentCount = 10; // variable
+function spawnAgent() {} // function
+class SwarmCoordinator {} // class
+interface AgentConfig {} // interface
+const API_VERSION = 'v1'; // constant
 ```
 
 ### File Organization
@@ -351,9 +370,9 @@ describe('Swarm', () => {
     it('should throw error if swarm is full', async () => {
       swarm.maxAgents = 1;
       await swarm.spawn({ type: 'coder' });
-      await expect(
-        swarm.spawn({ type: 'tester' })
-      ).rejects.toThrow('Swarm is full');
+      await expect(swarm.spawn({ type: 'tester' })).rejects.toThrow(
+        'Swarm is full'
+      );
     });
   });
 });
@@ -362,16 +381,19 @@ describe('Swarm', () => {
 ### Test Types
 
 **Unit Tests**: Test individual functions/classes
+
 ```bash
 npm test -- packages/core/src/swarm.test.ts
 ```
 
 **Integration Tests**: Test multiple components together
+
 ```bash
 npm run test:integration
 ```
 
 **E2E Tests**: Test full workflows
+
 ```bash
 npm run test:e2e
 ```
@@ -397,7 +419,8 @@ npm test -- src/swarm.test.ts
 ### Code Documentation
 
 **Functions**:
-```typescript
+
+````typescript
 /**
  * Initializes a new swarm with the specified configuration.
  *
@@ -415,15 +438,14 @@ npm test -- src/swarm.test.ts
  * });
  * ```
  */
-export async function initializeSwarm(
-  config: SwarmConfig
-): Promise<Swarm> {
+export async function initializeSwarm(config: SwarmConfig): Promise<Swarm> {
   // Implementation
 }
-```
+````
 
 **Classes**:
-```typescript
+
+````typescript
 /**
  * Coordinates multiple AI agents in a swarm topology.
  *
@@ -439,7 +461,7 @@ export async function initializeSwarm(
 export class Swarm {
   // Implementation
 }
-```
+````
 
 ### User Documentation
 
@@ -462,7 +484,8 @@ When adding new features, update:
 ### Getting Help
 
 - **Discord**: [Join our server](#)
-- **Discussions**: [GitHub Discussions](https://github.com/your-org/noa-server/discussions)
+- **Discussions**:
+  [GitHub Discussions](https://github.com/your-org/noa-server/discussions)
 - **Issues**: [Report bugs](https://github.com/your-org/noa-server/issues)
 
 ### Reporting Bugs
@@ -470,28 +493,25 @@ When adding new features, update:
 Use the bug report template:
 
 ```markdown
-**Describe the bug**
-A clear and concise description of what the bug is.
+**Describe the bug** A clear and concise description of what the bug is.
 
-**To Reproduce**
-Steps to reproduce the behavior:
+**To Reproduce** Steps to reproduce the behavior:
+
 1. Initialize swarm with '...'
 2. Spawn agent '...'
 3. See error
 
-**Expected behavior**
-What you expected to happen.
+**Expected behavior** What you expected to happen.
 
-**Actual behavior**
-What actually happened.
+**Actual behavior** What actually happened.
 
 **Environment**
+
 - OS: [e.g., Ubuntu 22.04]
 - Node.js: [e.g., 18.16.0]
 - Noa Server: [e.g., 1.0.0]
 
-**Additional context**
-Add any other context about the problem here.
+**Additional context** Add any other context about the problem here.
 ```
 
 ### Suggesting Features
@@ -499,17 +519,16 @@ Add any other context about the problem here.
 Use the feature request template:
 
 ```markdown
-**Is your feature request related to a problem?**
-A clear description of the problem.
+**Is your feature request related to a problem?** A clear description of the
+problem.
 
-**Describe the solution you'd like**
-A clear description of what you want to happen.
+**Describe the solution you'd like** A clear description of what you want to
+happen.
 
-**Describe alternatives you've considered**
-Alternative solutions or features you've considered.
+**Describe alternatives you've considered** Alternative solutions or features
+you've considered.
 
-**Additional context**
-Any other context or screenshots.
+**Additional context** Any other context or screenshots.
 ```
 
 ### Security Issues
@@ -517,6 +536,7 @@ Any other context or screenshots.
 **DO NOT** open public issues for security vulnerabilities.
 
 Instead:
+
 - Email security@noa-server.com
 - Include detailed description
 - We'll respond within 48 hours
@@ -524,6 +544,7 @@ Instead:
 ## Recognition
 
 Contributors are recognized in:
+
 - `CONTRIBUTORS.md`
 - Release notes
 - Project README
@@ -532,4 +553,5 @@ Thank you for contributing to Noa Server!
 
 ---
 
-**Questions?** Ask in [Discussions](https://github.com/your-org/noa-server/discussions) or Discord.
+**Questions?** Ask in
+[Discussions](https://github.com/your-org/noa-server/discussions) or Discord.

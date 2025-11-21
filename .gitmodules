@@ -1,0 +1,3 @@
+[submodule "packages/archon"]
+	path = packages/archon
+	url = https://github.com/coleam00/archon.git

@@ -10,18 +10,18 @@ import { Pool } from 'pg';
 jest.mock('pg', () => {
   const mockClient = {
     query: jest.fn().mockResolvedValue({ rows: [{ health_check: 1 }] }),
-    release: jest.fn()
+    release: jest.fn(),
   };
 
   const mockPool = {
     connect: jest.fn().mockResolvedValue(mockClient),
     totalCount: 10,
     idleCount: 5,
-    waitingCount: 0
+    waitingCount: 0,
   };
 
   return {
-    Pool: jest.fn(() => mockPool)
+    Pool: jest.fn(() => mockPool),
   };
 });
 

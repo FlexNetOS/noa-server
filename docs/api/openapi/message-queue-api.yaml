@@ -1,0 +1,728 @@
+openapi: 3.1.0
+info:
+  title: NOA Server Message Queue API
+  version: 1.0.0
+  description: |
+    High-performance message queue API for asynchronous task processing.
+
+    Features:
+    - Priority queue support
+    - Dead letter queues (DLQ)
+    - Message retry with exponential backoff
+    - Queue statistics and monitoring
+    - WebSocket real-time updates
+    - Batch operations
+    - Message TTL and expiration
+
+  contact:
+    name: API Support
+    email: support@noa-server.io
+  license:
+    name: MIT
+
+servers:
+  - url: https://api.noa-server.io/api/v1
+    description: Production
+  - url: http://localhost:3000/api/v1
+    description: Development
+  - url: ws://localhost:3000/api/v1
+    description: WebSocket (Development)
+
+tags:
+  - name: Queue
+    description: Queue management operations
+  - name: Messages
+    description: Message publishing and consumption
+  - name: Monitoring
+    description: Queue monitoring and statistics
+
+paths:
+  /queue/publish:
+    post:
+      summary: Publish message
+      description: |
+        Publish message to queue for processing.
+        Supports priority levels and TTL configuration.
+      operationId: publishMessage
+      tags:
+        - Messages
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublishMessageRequest'
+            examples:
+              basic:
+                summary: Basic message
+                value:
+                  queue: ai-inference
+                  payload:
+                    type: chat_completion
+                    model: gpt-4
+                    messages:
+                      - role: user
+                        content: Hello
+              priority:
+                summary: High priority message
+                value:
+                  queue: ai-inference
+                  payload:
+                    type: embeddings
+                    input: Important text
+                  priority: high
+                  ttl: 3600
+              scheduled:
+                summary: Delayed message
+                value:
+                  queue: notifications
+                  payload:
+                    type: email
+                    to: user@example.com
+                    subject: Reminder
+                  delay: 7200
+      responses:
+        '201':
+          description: Message published successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  messageId:
+                    type: string
+                    format: uuid
+                  queue:
+                    type: string
+                  status:
+                    type: string
+                    enum: [queued]
+                  publishedAt:
+                    type: string
+                    format: date-time
+              examples:
+                success:
+                  value:
+                    messageId: 550e8400-e29b-41d4-a716-446655440000
+                    queue: ai-inference
+                    status: queued
+                    publishedAt: '2024-01-01T00:00:00Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /queue/publish/batch:
+    post:
+      summary: Publish multiple messages
+      description: Batch publish up to 100 messages in single request
+      operationId: publishBatchMessages
+      tags:
+        - Messages
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - messages
+              properties:
+                messages:
+                  type: array
+                  maxItems: 100
+                  items:
+                    $ref: '#/components/schemas/PublishMessageRequest'
+      responses:
+        '201':
+          description: Batch published
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  successful:
+                    type: integer
+                  failed:
+                    type: integer
+                  messages:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        messageId:
+                          type: string
+                        status:
+                          type: string
+                          enum: [success, failed]
+                        error:
+                          type: string
+
+  /queue/consume:
+    get:
+      summary: Consume messages
+      description: |
+        Long-poll for available messages from queue.
+        Returns immediately if messages available, otherwise waits up to timeout.
+      operationId: consumeMessages
+      tags:
+        - Messages
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: queue
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Queue name
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 10
+            default: 1
+          description: Max messages to consume
+        - name: timeout
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 30
+            default: 20
+          description: Long poll timeout in seconds
+        - name: visibilityTimeout
+          in: query
+          schema:
+            type: integer
+            minimum: 30
+            maximum: 43200
+            default: 300
+          description: Message visibility timeout in seconds
+      responses:
+        '200':
+          description: Messages retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  messages:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/QueueMessage'
+              examples:
+                messages:
+                  value:
+                    messages:
+                      - messageId: 550e8400-e29b-41d4-a716-446655440000
+                        receiptHandle: AQEBwJnKyrHigUMZj6rYigCgxlaS3SLy0a...
+                        payload:
+                          type: chat_completion
+                          model: gpt-4
+                        priority: normal
+                        attempts: 0
+                        publishedAt: '2024-01-01T00:00:00Z'
+                        receivedAt: '2024-01-01T00:00:05Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /queue/ack:
+    post:
+      summary: Acknowledge message
+      description: Mark message as successfully processed and remove from queue
+      operationId: acknowledgeMessage
+      tags:
+        - Messages
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - receiptHandle
+              properties:
+                receiptHandle:
+                  type: string
+                  description: Receipt handle from consume operation
+            examples:
+              ack:
+                value:
+                  receiptHandle: AQEBwJnKyrHigUMZj6rYigCgxlaS3SLy0a...
+      responses:
+        '200':
+          description: Message acknowledged
+        '400':
+          description: Invalid receipt handle
+        '404':
+          description: Message not found
+
+  /queue/nack:
+    post:
+      summary: Negative acknowledge message
+      description: |
+        Return message to queue for retry.
+        Message will be retried with exponential backoff.
+      operationId: negativeAcknowledgeMessage
+      tags:
+        - Messages
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - receiptHandle
+              properties:
+                receiptHandle:
+                  type: string
+                reason:
+                  type: string
+                  description: Reason for failure
+                retryDelay:
+                  type: integer
+                  minimum: 0
+                  description: Delay before retry in seconds
+            examples:
+              nack:
+                value:
+                  receiptHandle: AQEBwJnKyrHigUMZj6rYigCgxlaS3SLy0a...
+                  reason: Temporary API failure
+                  retryDelay: 60
+      responses:
+        '200':
+          description: Message returned to queue
+
+  /queue/status:
+    get:
+      summary: Get queue status
+      description: Retrieve status and metrics for specific queue
+      operationId: getQueueStatus
+      tags:
+        - Monitoring
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: queue
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Queue status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueueStatus'
+              examples:
+                status:
+                  value:
+                    queue: ai-inference
+                    status: healthy
+                    metrics:
+                      messagesInQueue: 42
+                      messagesInFlight: 8
+                      messagesDlq: 2
+                      messagesProcessed: 1523
+                      messagesFailed: 15
+                      averageProcessingTime: 1250
+                      oldestMessage: '2024-01-01T00:00:00Z'
+                    consumers:
+                      active: 3
+                      total: 5
+                    lastUpdated: '2024-01-01T00:05:00Z'
+
+  /queue/stats:
+    get:
+      summary: Get queue statistics
+      description: Get aggregated statistics for all queues
+      operationId: getQueueStatistics
+      tags:
+        - Monitoring
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [1h, 6h, 24h, 7d]
+            default: 1h
+          description: Statistics time period
+      responses:
+        '200':
+          description: Queue statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  period:
+                    type: string
+                  queues:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/QueueStatistics'
+
+  /queue/{queueName}:
+    delete:
+      summary: Purge queue
+      description: |
+        Remove all messages from queue.
+        Warning: This operation is irreversible.
+      operationId: purgeQueue
+      tags:
+        - Queue
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: queueName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Queue purged
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  purged:
+                    type: integer
+                    description: Number of messages deleted
+        '404':
+          description: Queue not found
+
+  /queue/dlq:
+    get:
+      summary: Get dead letter queue messages
+      description: Retrieve messages that failed maximum retry attempts
+      operationId: getDlqMessages
+      tags:
+        - Queue
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: queue
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+            maximum: 100
+      responses:
+        '200':
+          description: DLQ messages
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  messages:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/QueueMessage'
+                        - type: object
+                          properties:
+                            failureReason:
+                              type: string
+                            failedAt:
+                              type: string
+                              format: date-time
+
+  /queue/dlq/replay:
+    post:
+      summary: Replay DLQ messages
+      description: Move messages from DLQ back to main queue for retry
+      operationId: replayDlqMessages
+      tags:
+        - Queue
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - queue
+              properties:
+                queue:
+                  type: string
+                messageIds:
+                  type: array
+                  items:
+                    type: string
+                  description: Specific messages to replay (optional, all if omitted)
+      responses:
+        '200':
+          description: Messages replayed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  replayed:
+                    type: integer
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    PublishMessageRequest:
+      type: object
+      required:
+        - queue
+        - payload
+      properties:
+        queue:
+          type: string
+          description: Target queue name
+          examples:
+            - ai-inference
+            - notifications
+            - webhooks
+        payload:
+          type: object
+          description: Message payload (arbitrary JSON)
+        priority:
+          type: string
+          enum: [low, normal, high, critical]
+          default: normal
+          description: Message priority
+        ttl:
+          type: integer
+          minimum: 1
+          description: Time to live in seconds
+        delay:
+          type: integer
+          minimum: 0
+          maximum: 86400
+          description: Delay before message becomes available
+        deduplicationId:
+          type: string
+          description: Deduplication ID for exactly-once delivery
+        metadata:
+          type: object
+          description: Additional metadata
+
+    QueueMessage:
+      type: object
+      properties:
+        messageId:
+          type: string
+          format: uuid
+        receiptHandle:
+          type: string
+          description: Handle for ack/nack operations
+        payload:
+          type: object
+        priority:
+          type: string
+          enum: [low, normal, high, critical]
+        attempts:
+          type: integer
+          description: Number of delivery attempts
+        maxAttempts:
+          type: integer
+          default: 3
+        publishedAt:
+          type: string
+          format: date-time
+        receivedAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+        metadata:
+          type: object
+
+    QueueStatus:
+      type: object
+      properties:
+        queue:
+          type: string
+        status:
+          type: string
+          enum: [healthy, degraded, unhealthy]
+        metrics:
+          type: object
+          properties:
+            messagesInQueue:
+              type: integer
+            messagesInFlight:
+              type: integer
+            messagesDlq:
+              type: integer
+            messagesProcessed:
+              type: integer
+            messagesFailed:
+              type: integer
+            averageProcessingTime:
+              type: number
+              description: Average processing time in milliseconds
+            oldestMessage:
+              type: string
+              format: date-time
+              nullable: true
+        consumers:
+          type: object
+          properties:
+            active:
+              type: integer
+            total:
+              type: integer
+        lastUpdated:
+          type: string
+          format: date-time
+
+    QueueStatistics:
+      type: object
+      properties:
+        queue:
+          type: string
+        period:
+          type: string
+        totalMessages:
+          type: integer
+        successfulMessages:
+          type: integer
+        failedMessages:
+          type: integer
+        averageThroughput:
+          type: number
+          description: Messages per second
+        p50Latency:
+          type: number
+        p95Latency:
+          type: number
+        p99Latency:
+          type: number
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+webhooks:
+  messagePublished:
+    post:
+      summary: Message published event
+      description: Triggered when new message is published to queue
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event:
+                  type: string
+                  enum: [message.published]
+                messageId:
+                  type: string
+                queue:
+                  type: string
+                timestamp:
+                  type: string
+                  format: date-time
+      responses:
+        '200':
+          description: Event acknowledged
+
+  messageProcessed:
+    post:
+      summary: Message processed event
+      description: Triggered when message is successfully processed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event:
+                  type: string
+                  enum: [message.processed]
+                messageId:
+                  type: string
+                queue:
+                  type: string
+                processingTime:
+                  type: number
+                timestamp:
+                  type: string
+                  format: date-time
+      responses:
+        '200':
+          description: Event acknowledged
+
+  messageFailed:
+    post:
+      summary: Message failed event
+      description: Triggered when message processing fails
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event:
+                  type: string
+                  enum: [message.failed]
+                messageId:
+                  type: string
+                queue:
+                  type: string
+                error:
+                  type: string
+                attempts:
+                  type: integer
+                movedToDlq:
+                  type: boolean
+                timestamp:
+                  type: string
+                  format: date-time
+      responses:
+        '200':
+          description: Event acknowledged

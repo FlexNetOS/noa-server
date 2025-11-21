@@ -1,0 +1,127 @@
+name: Monorepo Operations with Custom Toolkit
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: "Operation to perform"
+        required: true
+        default: "status"
+        type: choice
+        options:
+          - status
+          - packages
+          - dependencies
+          - build-status
+      package:
+        description: "Target package (optional)"
+        required: false
+        type: string
+
+jobs:
+  toolkit-analysis:
+    name: Toolkit Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Setup Node.js
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Repository Status
+        uses: ./.github/actions/custom-toolkit-action
+        id: status
+        with:
+          operation: "status"
+
+      - name: Package Analysis
+        uses: ./.github/actions/custom-toolkit-action
+        id: packages
+        with:
+          operation: "packages"
+          package: ${{ github.event.inputs.package }}
+
+      - name: Dependency Check
+        uses: ./.github/actions/custom-toolkit-action
+        id: dependencies
+        with:
+          operation: "dependencies"
+          package: ${{ github.event.inputs.package }}
+
+      - name: Build Status Check
+        uses: ./.github/actions/custom-toolkit-action
+        id: build-status
+        with:
+          operation: "build-status"
+          package: ${{ github.event.inputs.package }}
+
+      - name: Generate Report
+        run: |
+          echo "# Monorepo Analysis Report" > analysis-report.md
+          echo "" >> analysis-report.md
+          echo "## Summary" >> analysis-report.md
+          echo "- Packages Found: ${{ steps.packages.outputs.package-count }}" >> analysis-report.md
+          echo "- Analysis Time: $(date)" >> analysis-report.md
+          echo "" >> analysis-report.md
+          echo "## Package Details" >> analysis-report.md
+          echo "\`\`\`json" >> analysis-report.md
+          echo '${{ steps.packages.outputs.packages }}' | jq . >> analysis-report.md
+          echo "\`\`\`" >> analysis-report.md
+
+      - name: Upload Analysis Report
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
+        with:
+          name: monorepo-analysis
+          path: analysis-report.md
+          retention-days: 30
+
+  quality-gate:
+    name: Quality Gate
+    runs-on: ubuntu-latest
+    needs: toolkit-analysis
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Download Analysis Report
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
+        with:
+          name: monorepo-analysis
+          path: reports
+
+      - name: Quality Assessment
+        run: |
+          # Read the analysis report and make quality decisions
+          if [ -f "reports/analysis-report.md" ]; then
+            echo "Analysis report generated successfully"
+            # Could add logic here to fail the build based on quality metrics
+          else
+            echo "Analysis report not found"
+            exit 1
+          fi
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('reports/analysis-report.md', 'utf8');
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🔍 Monorepo Analysis Report\n\n${report}`
+            });

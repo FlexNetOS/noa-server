@@ -61,9 +61,7 @@ export class ConsoleTransport {
 
             const filteredKeys = Object.keys(filteredMeta);
             if (filteredKeys.length > 0) {
-              logMessage += `\n  ${JSON.stringify(filteredMeta, null, 2)
-                .split('\n')
-                .join('\n  ')}`;
+              logMessage += `\n  ${JSON.stringify(filteredMeta, null, 2).split('\n').join('\n  ')}`;
             }
           }
 

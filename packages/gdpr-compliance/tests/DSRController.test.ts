@@ -51,8 +51,7 @@ describe('DSRController', () => {
 
       // Mock the rightToAccess.createAccessRequest method
       const mockRequest = { id: 'req-123', status: 'pending' };
-      vi.spyOn(controller['rightToAccess'], 'createAccessRequest')
-        .mockResolvedValue(mockRequest);
+      vi.spyOn(controller['rightToAccess'], 'createAccessRequest').mockResolvedValue(mockRequest);
 
       await controller.createAccessRequest(mockReq, mockRes);
 
@@ -98,8 +97,7 @@ describe('DSRController', () => {
       } as any;
 
       const mockData = { personalData: 'test data' };
-      vi.spyOn(controller['rightToAccess'], 'exportUserData')
-        .mockResolvedValue(mockData);
+      vi.spyOn(controller['rightToAccess'], 'exportUserData').mockResolvedValue(mockData);
 
       await controller.exportUserData(mockReq, mockRes);
 
@@ -141,9 +139,7 @@ describe('DSRController', () => {
         json: vi.fn(),
       } as any;
 
-      const mockRows = [
-        { id: 'req-1', request_type: 'access', status: 'completed' },
-      ];
+      const mockRows = [{ id: 'req-1', request_type: 'access', status: 'completed' }];
 
       mockPool.query.mockResolvedValue({ rows: mockRows });
 

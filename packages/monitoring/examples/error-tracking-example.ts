@@ -9,7 +9,7 @@ import {
   ExpressErrorHandler,
   ProcessErrorHandler,
   UnhandledRejectionHandler,
-  ErrorSeverity
+  ErrorSeverity,
 } from '../errors/src';
 
 // Initialize Express
@@ -32,18 +32,15 @@ const errorTracker = new ErrorTracker({
     }
     return event;
   },
-  ignoreErrors: [
-    /network.*error/i,
-    /cancelled/i
-  ],
-  maxBreadcrumbs: 100
+  ignoreErrors: [/network.*error/i, /cancelled/i],
+  maxBreadcrumbs: 100,
 });
 
 // Setup Express error handlers
 const expressHandler = new ExpressErrorHandler(errorTracker, {
   exposeErrors: process.env.NODE_ENV !== 'production',
   logErrors: true,
-  captureUnhandled: true
+  captureUnhandled: true,
 });
 
 // Request handler (must be first)
@@ -57,7 +54,7 @@ const processHandler = new ProcessErrorHandler(errorTracker, {
   exitOnError: process.env.NODE_ENV === 'production',
   flushTimeout: 2000,
   captureRejections: true,
-  captureExceptions: true
+  captureExceptions: true,
 });
 processHandler.register();
 
@@ -66,16 +63,15 @@ const rejectionHandler = new UnhandledRejectionHandler(errorTracker, {
   logRejections: true,
   exitOnRejection: false,
   maxRejections: 10,
-  rejectionWindow: 60000
+  rejectionWindow: 60000,
 });
 rejectionHandler.register();
 
 // Add custom error grouping rules
-errorTracker.addGroupingRule(
-  'payment_error',
-  /payment.*failed|stripe.*error/i,
-  ['payment', 'processing']
-);
+errorTracker.addGroupingRule('payment_error', /payment.*failed|stripe.*error/i, [
+  'payment',
+  'processing',
+]);
 
 // Middleware to set user context
 app.use((req, res, next) => {
@@ -85,11 +81,11 @@ app.use((req, res, next) => {
   errorTracker.setUser({
     id: user.id,
     email: user.email,
-    username: user.username
+    username: user.username,
   });
 
   // Add request ID
-  const requestId = req.headers['x-request-id'] as string || `req-${Date.now()}`;
+  const requestId = (req.headers['x-request-id'] as string) || `req-${Date.now()}`;
   errorTracker.setTag('request_id', requestId);
 
   next();
@@ -104,7 +100,7 @@ app.get('/api/users/:id', async (req, res) => {
       category: 'http',
       message: `Fetching user ${req.params.id}`,
       level: ErrorSeverity.INFO,
-      data: { userId: req.params.id }
+      data: { userId: req.params.id },
     });
 
     // Simulate user fetch
@@ -115,7 +111,7 @@ app.get('/api/users/:id', async (req, res) => {
       category: 'database',
       message: 'User fetched successfully',
       level: ErrorSeverity.INFO,
-      data: { userId: user.id }
+      data: { userId: user.id },
     });
 
     res.json(user);
@@ -133,7 +129,7 @@ app.post('/api/orders', async (req, res) => {
       category: 'business',
       message: 'Processing new order',
       level: ErrorSeverity.INFO,
-      data: { items: req.body.items?.length }
+      data: { items: req.body.items?.length },
     });
 
     // Simulate validation error
@@ -141,7 +137,7 @@ app.post('/api/orders', async (req, res) => {
       const error = new Error('Order must contain at least one item');
       await errorTracker.captureError(error, {
         tags: { feature: 'orders', error_type: 'validation' },
-        extra: { requestBody: req.body }
+        extra: { requestBody: req.body },
       });
       return res.status(400).json({ error: error.message });
     }
@@ -154,7 +150,7 @@ app.post('/api/orders', async (req, res) => {
       category: 'business',
       message: 'Order created successfully',
       level: ErrorSeverity.INFO,
-      data: { orderId: order.id }
+      data: { orderId: order.id },
     });
 
     res.json(order);
@@ -169,7 +165,7 @@ app.get('/api/slow-query', async (req, res) => {
 
   try {
     // Simulate slow query
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     const duration = Date.now() - startTime;
 
@@ -180,7 +176,7 @@ app.get('/api/slow-query', async (req, res) => {
         ErrorSeverity.WARNING,
         {
           tags: { query_type: 'user_search', slow_query: 'true' },
-          extra: { duration, threshold: 2000 }
+          extra: { duration, threshold: 2000 },
         }
       );
     }
@@ -200,14 +196,14 @@ app.post('/api/checkout', async (req, res) => {
       // Set checkout-specific tags
       errorTracker.setTags({
         feature: 'checkout',
-        payment_method: req.body.paymentMethod
+        payment_method: req.body.paymentMethod,
       });
 
       errorTracker.addBreadcrumb({
         timestamp: new Date(),
         category: 'business',
         message: 'Starting checkout process',
-        level: ErrorSeverity.INFO
+        level: ErrorSeverity.INFO,
       });
 
       // Simulate payment processing
@@ -232,12 +228,12 @@ app.get('/api/admin/error-stats', async (req, res) => {
 
   res.json({
     errors: stats,
-    recentErrors: recentErrors.map(e => ({
+    recentErrors: recentErrors.map((e) => ({
       message: e.message,
       category: e.category,
-      timestamp: e.timestamp
+      timestamp: e.timestamp,
     })),
-    rejections: rejectionStats
+    rejections: rejectionStats,
   });
 });
 

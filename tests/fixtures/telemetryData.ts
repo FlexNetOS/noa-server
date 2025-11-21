@@ -9,7 +9,7 @@ import type {
   TaskQueueItem,
   SystemHealth,
   SwarmMetrics,
-  NeuralMetrics
+  NeuralMetrics,
 } from '../../packages/ui-dashboard/src/types';
 
 export const mockSwarmMetrics: SwarmMetrics = {
@@ -20,7 +20,7 @@ export const mockSwarmMetrics: SwarmMetrics = {
   failedTasks: 4,
   avgResponseTime: 245,
   throughput: 18.5,
-  uptime: 3600000
+  uptime: 3600000,
 };
 
 export const mockSystemHealth: SystemHealth = {
@@ -30,14 +30,14 @@ export const mockSystemHealth: SystemHealth = {
   disk: 58,
   network: {
     latency: 12,
-    throughput: 850
+    throughput: 850,
   },
   services: {
     mcp: true,
     neural: true,
     swarm: true,
-    hooks: true
-  }
+    hooks: true,
+  },
 };
 
 export const mockNeuralMetrics: NeuralMetrics = {
@@ -46,7 +46,7 @@ export const mockNeuralMetrics: NeuralMetrics = {
   avgInferenceTime: 187,
   gpuUtilization: 78,
   vramUsage: 6.4,
-  accuracy: 0.98
+  accuracy: 0.98,
 };
 
 export const mockAgent: AgentStatus = {
@@ -58,7 +58,7 @@ export const mockAgent: AgentStatus = {
   avgResponseTime: 250,
   lastActive: new Date().toISOString(),
   cpu: 45,
-  memory: 60
+  memory: 60,
 };
 
 export const mockAgents: AgentStatus[] = [
@@ -72,7 +72,7 @@ export const mockAgents: AgentStatus[] = [
     avgResponseTime: 180,
     lastActive: new Date(Date.now() - 300000).toISOString(),
     cpu: 20,
-    memory: 35
+    memory: 35,
   },
   {
     id: 'agent-3',
@@ -83,8 +83,8 @@ export const mockAgents: AgentStatus[] = [
     avgResponseTime: 320,
     lastActive: new Date(Date.now() - 600000).toISOString(),
     cpu: 0,
-    memory: 10
-  }
+    memory: 10,
+  },
 ];
 
 export const mockTask: TaskQueueItem = {
@@ -95,7 +95,7 @@ export const mockTask: TaskQueueItem = {
   assignedAgent: 'agent-1',
   createdAt: new Date().toISOString(),
   startedAt: new Date().toISOString(),
-  progress: 45
+  progress: 45,
 };
 
 export const mockTasks: TaskQueueItem[] = [
@@ -105,7 +105,7 @@ export const mockTasks: TaskQueueItem[] = [
     type: 'test-execution',
     priority: 'critical',
     status: 'pending',
-    createdAt: new Date(Date.now() - 120000).toISOString()
+    createdAt: new Date(Date.now() - 120000).toISOString(),
   },
   {
     id: 'task-3',
@@ -116,8 +116,8 @@ export const mockTasks: TaskQueueItem[] = [
     createdAt: new Date(Date.now() - 600000).toISOString(),
     startedAt: new Date(Date.now() - 480000).toISOString(),
     completedAt: new Date(Date.now() - 60000).toISOString(),
-    progress: 100
-  }
+    progress: 100,
+  },
 ];
 
 export const mockTelemetryData: TelemetryData = {
@@ -133,8 +133,8 @@ export const mockTelemetryData: TelemetryData = {
       avgDuration: 145,
       successRate: 0.98,
       lastUsed: new Date().toISOString(),
-      errors: 2
-    }
+      errors: 2,
+    },
   ],
   recentHooks: [
     {
@@ -143,12 +143,12 @@ export const mockTelemetryData: TelemetryData = {
       run: 'test-run-1',
       payload: { taskId: 'task-1' },
       agent: 'agent-1',
-      status: 'success'
-    }
+      status: 'success',
+    },
   ],
   truthGate: {
     passed: true,
     accuracy: 0.98,
-    timestamp: new Date().toISOString()
-  }
+    timestamp: new Date().toISOString(),
+  },
 };

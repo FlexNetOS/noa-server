@@ -1,10 +1,17 @@
 # Time travel
 
-In a typical chatbot workflow, the user interacts with the bot one or more times to accomplish a task. [Memory](./3-add-memory.md) and a [human-in-the-loop](./4-human-in-the-loop.md) enable checkpoints in the graph state and control future responses.
+In a typical chatbot workflow, the user interacts with the bot one or more times
+to accomplish a task. [Memory](./3-add-memory.md) and a
+[human-in-the-loop](./4-human-in-the-loop.md) enable checkpoints in the graph
+state and control future responses.
 
-What if you want a user to be able to start from a previous response and explore a different outcome? Or what if you want users to be able to rewind your chatbot's work to fix mistakes or try a different strategy, something that is common in applications like autonomous software engineers?
+What if you want a user to be able to start from a previous response and explore
+a different outcome? Or what if you want users to be able to rewind your
+chatbot's work to fix mistakes or try a different strategy, something that is
+common in applications like autonomous software engineers?
 
-You can create these types of experiences using LangGraph's built-in **time travel** functionality.
+You can create these types of experiences using LangGraph's built-in **time
+travel** functionality.
 
 !!! note
 
@@ -12,13 +19,13 @@ You can create these types of experiences using LangGraph's built-in **time trav
 
 ## 1. Rewind your graph
 
-:::python
-Rewind your graph by fetching a checkpoint using the graph's `get_state_history` method. You can then resume execution at this previous point in time.
-:::
+:::python Rewind your graph by fetching a checkpoint using the graph's
+`get_state_history` method. You can then resume execution at this previous point
+in time. :::
 
-:::js
-Rewind your graph by fetching a checkpoint using the graph's `getStateHistory` method. You can then resume execution at this previous point in time.
-:::
+:::js Rewind your graph by fetching a checkpoint using the graph's
+`getStateHistory` method. You can then resume execution at this previous point
+in time. :::
 
 :::python
 
@@ -83,26 +90,26 @@ import {
   END,
   MessagesZodState,
   MemorySaver,
-} from "@langchain/langgraph";
-import { ToolNode, toolsCondition } from "@langchain/langgraph/prebuilt";
-import { TavilySearch } from "@langchain/tavily";
-import { ChatOpenAI } from "@langchain/openai";
-import { z } from "zod";
+} from '@langchain/langgraph';
+import { ToolNode, toolsCondition } from '@langchain/langgraph/prebuilt';
+import { TavilySearch } from '@langchain/tavily';
+import { ChatOpenAI } from '@langchain/openai';
+import { z } from 'zod';
 
 const State = z.object({ messages: MessagesZodState.shape.messages });
 
 const tools = [new TavilySearch({ maxResults: 2 })];
-const llmWithTools = new ChatOpenAI({ model: "gpt-4o-mini" }).bindTools(tools);
+const llmWithTools = new ChatOpenAI({ model: 'gpt-4o-mini' }).bindTools(tools);
 const memory = new MemorySaver();
 
 const graph = new StateGraph(State)
-  .addNode("chatbot", async (state) => ({
+  .addNode('chatbot', async (state) => ({
     messages: [await llmWithTools.invoke(state.messages)],
   }))
-  .addNode("tools", new ToolNode(tools))
-  .addConditionalEdges("chatbot", toolsCondition, ["tools", END])
-  .addEdge("tools", "chatbot")
-  .addEdge(START, "chatbot")
+  .addNode('tools', new ToolNode(tools))
+  .addConditionalEdges('chatbot', toolsCondition, ['tools', END])
+  .addEdge('tools', 'chatbot')
+  .addEdge(START, 'chatbot')
   .compile({ checkpointer: memory });
 ```
 
@@ -228,7 +235,7 @@ Output is truncated. View as a scrollable element or open in a text editor. Adju
 :::js
 
 ```typescript
-import { randomUUID } from "node:crypto";
+import { randomUUID } from 'node:crypto';
 const threadId = randomUUID();
 
 let iter = 0;
@@ -241,18 +248,18 @@ for (const userInput of [
 
   console.log(`\n--- Conversation Turn ${iter} ---\n`);
   const events = await graph.stream(
-    { messages: [{ role: "user", content: userInput }] },
-    { configurable: { thread_id: threadId }, streamMode: "values" }
+    { messages: [{ role: 'user', content: userInput }] },
+    { configurable: { thread_id: threadId }, streamMode: 'values' }
   );
 
   for await (const event of events) {
-    if ("messages" in event) {
+    if ('messages' in event) {
       const lastMessage = event.messages.at(-1);
 
       console.log(
-        "=".repeat(32),
+        '='.repeat(32),
         `${lastMessage?.getType()} Message`,
-        "=".repeat(32)
+        '='.repeat(32)
       );
       console.log(lastMessage?.text);
     }
@@ -352,7 +359,8 @@ Based on the search results, I can provide you with a practical overview of how 
 
 ## 3. Replay the full state history
 
-Now that you have added steps to the chatbot, you can `replay` the full state history to see everything that occurred.
+Now that you have added steps to the chatbot, you can `replay` the full state
+history to see everything that occurred.
 
 :::python
 
@@ -394,7 +402,7 @@ Num Messages:  0 Next:  ('__start__',)
 :::js
 
 ```typescript
-import type { StateSnapshot } from "@langchain/langgraph";
+import type { StateSnapshot } from '@langchain/langgraph';
 
 let toReplay: StateSnapshot | undefined;
 for await (const state of graph.getStateHistory({
@@ -405,7 +413,7 @@ for await (const state of graph.getStateHistory({
       state.next
     )}`
   );
-  console.log("-".repeat(80));
+  console.log('-'.repeat(80));
   if (state.values.messages.length === 6) {
     // We are somewhat arbitrarily selecting a specific state based on the number of chat messages in the state.
     toReplay = state;
@@ -442,18 +450,20 @@ Num Messages: 0, Next: ["__start__"]
 
 :::
 
-Checkpoints are saved for every step of the graph. This **spans invocations** so you can rewind across a full thread's history.
+Checkpoints are saved for every step of the graph. This **spans invocations** so
+you can rewind across a full thread's history.
 
 ## Resume from a checkpoint
 
 :::python
 
-Resume from the `to_replay` state, which is after the `chatbot` node in the second graph invocation. Resuming from this point will call the **action** node next.
-:::
+Resume from the `to_replay` state, which is after the `chatbot` node in the
+second graph invocation. Resuming from this point will call the **action** node
+next. :::
 
-:::js
-Resume from the `toReplay` state, which is after a specific node in one of the graph invocations. Resuming from this point will call the next scheduled node.
-:::
+:::js Resume from the `toReplay` state, which is after a specific node in one of
+the graph invocations. Resuming from this point will call the next scheduled
+node. :::
 
 :::python
 
@@ -471,7 +481,9 @@ print(to_replay.config)
 
 :::js
 
-Resume from the `toReplay` state, which is after the `chatbot` node in one of the graph invocations. Resuming from this point will call the next scheduled node.
+Resume from the `toReplay` state, which is after the `chatbot` node in one of
+the graph invocations. Resuming from this point will call the next scheduled
+node.
 
 ```typescript
 console.log(toReplay.next);
@@ -495,7 +507,9 @@ console.log(toReplay.config);
 
 :::python
 
-The checkpoint's `to_replay.config` contains a `checkpoint_id` timestamp. Providing this `checkpoint_id` value tells LangGraph's checkpointer to **load** the state from that moment in time.
+The checkpoint's `to_replay.config` contains a `checkpoint_id` timestamp.
+Providing this `checkpoint_id` value tells LangGraph's checkpointer to **load**
+the state from that moment in time.
 
 ```python
 # The `checkpoint_id` in the `to_replay.config` corresponds to a state we've persisted to our checkpointer.
@@ -534,26 +548,29 @@ Would you like more information on any specific aspect of building your autonomo
 Output is truncated. View as a scrollable element or open in a text editor. Adjust cell output settings...
 ```
 
-The graph resumed execution from the `tools` node. You can tell this is the case since the first value printed above is the response from our search engine tool.
+The graph resumed execution from the `tools` node. You can tell this is the case
+since the first value printed above is the response from our search engine tool.
 :::
 
 :::js
 
-The checkpoint's `toReplay.config` contains a `checkpoint_id` timestamp. Providing this `checkpoint_id` value tells LangGraph's checkpointer to **load** the state from that moment in time.
+The checkpoint's `toReplay.config` contains a `checkpoint_id` timestamp.
+Providing this `checkpoint_id` value tells LangGraph's checkpointer to **load**
+the state from that moment in time.
 
 ```typescript
 // The `checkpoint_id` in the `toReplay.config` corresponds to a state we've persisted to our checkpointer.
 for await (const event of await graph.stream(null, {
   ...toReplay?.config,
-  streamMode: "values",
+  streamMode: 'values',
 })) {
-  if ("messages" in event) {
+  if ('messages' in event) {
     const lastMessage = event.messages.at(-1);
 
     console.log(
-      "=".repeat(32),
+      '='.repeat(32),
       `${lastMessage?.getType()} Message`,
-      "=".repeat(32)
+      '='.repeat(32)
     );
     console.log(lastMessage?.text);
   }
@@ -609,15 +626,23 @@ Based on the search results, I can share some practical information about buildi
 (...)
 ```
 
-The graph resumed execution from the `tools` node. You can tell this is the case since the first value printed above is the response from our search engine tool.
+The graph resumed execution from the `tools` node. You can tell this is the case
+since the first value printed above is the response from our search engine tool.
 :::
 
-**Congratulations!** You've now used time-travel checkpoint traversal in LangGraph. Being able to rewind and explore alternative paths opens up a world of possibilities for debugging, experimentation, and interactive applications.
+**Congratulations!** You've now used time-travel checkpoint traversal in
+LangGraph. Being able to rewind and explore alternative paths opens up a world
+of possibilities for debugging, experimentation, and interactive applications.
 
 ## Learn more
 
-Take your LangGraph journey further by exploring deployment and advanced features:
+Take your LangGraph journey further by exploring deployment and advanced
+features:
 
-- **[LangGraph Server quickstart](../../tutorials/langgraph-platform/local-server.md)**: Launch a LangGraph server locally and interact with it using the REST API and LangGraph Studio Web UI.
-- **[LangGraph Platform quickstart](../../cloud/quick_start.md)**: Deploy your LangGraph app using LangGraph Platform.
-- **[LangGraph Platform concepts](../../concepts/langgraph_platform.md)**: Understand the foundational concepts of the LangGraph Platform.
+- **[LangGraph Server quickstart](../../tutorials/langgraph-platform/local-server.md)**:
+  Launch a LangGraph server locally and interact with it using the REST API and
+  LangGraph Studio Web UI.
+- **[LangGraph Platform quickstart](../../cloud/quick_start.md)**: Deploy your
+  LangGraph app using LangGraph Platform.
+- **[LangGraph Platform concepts](../../concepts/langgraph_platform.md)**:
+  Understand the foundational concepts of the LangGraph Platform.

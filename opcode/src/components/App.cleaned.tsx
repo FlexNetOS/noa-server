@@ -1,24 +1,27 @@
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { OutputCacheProvider } from "@/lib/outputCache";
-import { TabProvider } from "@/contexts/TabContext";
-import { NFOCredits } from "@/components/NFOCredits";
-import { ClaudeBinaryDialog } from "@/components/ClaudeBinaryDialog";
-import { Toast, ToastContainer } from "@/components/ui/toast";
-import { TabManager } from "@/components/TabManager";
-import { TabContent } from "@/components/TabContent";
-import { AgentsModal } from "@/components/AgentsModal";
-import { CustomTitlebar } from "@/components/CustomTitlebar";
-import { useTabState } from "@/hooks/useTabState";
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { OutputCacheProvider } from '@/lib/outputCache';
+import { TabProvider } from '@/contexts/TabContext';
+import { NFOCredits } from '@/components/NFOCredits';
+import { ClaudeBinaryDialog } from '@/components/ClaudeBinaryDialog';
+import { Toast, ToastContainer } from '@/components/ui/toast';
+import { TabManager } from '@/components/TabManager';
+import { TabContent } from '@/components/TabContent';
+import { AgentsModal } from '@/components/AgentsModal';
+import { CustomTitlebar } from '@/components/CustomTitlebar';
+import { useTabState } from '@/hooks/useTabState';
 
 /**
  * AppContent component - Contains the main app logic, wrapped by providers
  */
 function AppContent() {
-  const { } = useTabState();
+  const {} = useTabState();
   const [showNFO, setShowNFO] = useState(false);
   const [showClaudeBinaryDialog, setShowClaudeBinaryDialog] = useState(false);
-  const [toast, setToast] = useState<{ message: string; type: "success" | "error" | "info" } | null>(null);
+  const [toast, setToast] = useState<{
+    message: string;
+    type: 'success' | 'error' | 'info';
+  } | null>(null);
   const [showAgentsModal, setShowAgentsModal] = useState(false);
   const [, setClaudeExecutableExists] = useState(true);
 
@@ -27,7 +30,7 @@ function AppContent() {
     const handleKeyDown = (e: KeyboardEvent) => {
       const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
       const modKey = isMac ? e.metaKey : e.ctrlKey;
-      
+
       if (modKey) {
         switch (e.key) {
           case 't':
@@ -72,7 +75,7 @@ function AppContent() {
           setShowClaudeBinaryDialog(true);
         }
       } catch (error) {
-        console.error("Error checking Claude executable:", error);
+        console.error('Error checking Claude executable:', error);
       }
     };
 
@@ -112,7 +115,7 @@ function AppContent() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="min-h-screen bg-background flex flex-col rounded-xl overflow-hidden shadow-2xl border border-border/20"
+        className="bg-background border-border/20 flex min-h-screen flex-col overflow-hidden rounded-xl border shadow-2xl"
       >
         {/* Custom Titlebar */}
         <CustomTitlebar
@@ -122,41 +125,34 @@ function AppContent() {
           }}
           onAgentsClick={() => {}}
         />
-        
+
         {/* Tab-based interface */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex flex-1 flex-col">
           <TabManager />
           <TabContent />
         </div>
 
         {/* Global Modals */}
         {showNFO && <NFOCredits onClose={() => setShowNFO(false)} />}
-        
-        <ClaudeBinaryDialog 
-          open={showClaudeBinaryDialog} 
+
+        <ClaudeBinaryDialog
+          open={showClaudeBinaryDialog}
           onOpenChange={setShowClaudeBinaryDialog}
           onSuccess={() => {
             setClaudeExecutableExists(true);
-            setToast({ message: "Claude binary path set successfully", type: "success" });
+            setToast({ message: 'Claude binary path set successfully', type: 'success' });
           }}
           onError={(message) => {
-            setToast({ message, type: "error" });
+            setToast({ message, type: 'error' });
           }}
         />
-        
-        <AgentsModal
-          open={showAgentsModal}
-          onOpenChange={setShowAgentsModal}
-        />
+
+        <AgentsModal open={showAgentsModal} onOpenChange={setShowAgentsModal} />
 
         {/* Toast Container */}
         {toast && (
           <ToastContainer>
-            <Toast
-              message={toast.message}
-              type={toast.type}
-              onDismiss={() => setToast(null)}
-            />
+            <Toast message={toast.message} type={toast.type} onDismiss={() => setToast(null)} />
           </ToastContainer>
         )}
       </motion.div>

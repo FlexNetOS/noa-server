@@ -1,6 +1,7 @@
 # Python API Client
 
-Python client library for the Noa Server API, auto-generated from the OpenAPI specification.
+Python client library for the Noa Server API, auto-generated from the OpenAPI
+specification.
 
 ## Installation
 

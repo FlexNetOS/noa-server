@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import { cn } from "@/lib/utils";
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { cn } from '@/lib/utils';
 
 interface SplitPaneProps {
   /**
@@ -37,7 +37,7 @@ interface SplitPaneProps {
 
 /**
  * Resizable split pane component for side-by-side layouts
- * 
+ *
  * @example
  * <SplitPane
  *   left={<div>Left content</div>}
@@ -73,28 +73,31 @@ export const SplitPane: React.FC<SplitPaneProps> = ({
   };
 
   // Handle mouse move
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (!isDragging || !containerRef.current) return;
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (!isDragging || !containerRef.current) return;
 
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-    }
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
 
-    animationFrameRef.current = requestAnimationFrame(() => {
-      const containerWidth = containerRef.current!.offsetWidth;
-      const deltaX = e.clientX - dragStartX.current;
-      const deltaPercent = (deltaX / containerWidth) * 100;
-      const newSplit = dragStartSplit.current + deltaPercent;
+      animationFrameRef.current = requestAnimationFrame(() => {
+        const containerWidth = containerRef.current!.offsetWidth;
+        const deltaX = e.clientX - dragStartX.current;
+        const deltaPercent = (deltaX / containerWidth) * 100;
+        const newSplit = dragStartSplit.current + deltaPercent;
 
-      // Calculate min/max based on pixel constraints
-      const minSplit = (minLeftWidth / containerWidth) * 100;
-      const maxSplit = 100 - (minRightWidth / containerWidth) * 100;
+        // Calculate min/max based on pixel constraints
+        const minSplit = (minLeftWidth / containerWidth) * 100;
+        const maxSplit = 100 - (minRightWidth / containerWidth) * 100;
 
-      const clampedSplit = Math.min(Math.max(newSplit, minSplit), maxSplit);
-      setSplitPosition(clampedSplit);
-      onSplitChange?.(clampedSplit);
-    });
-  }, [isDragging, minLeftWidth, minRightWidth, onSplitChange]);
+        const clampedSplit = Math.min(Math.max(newSplit, minSplit), maxSplit);
+        setSplitPosition(clampedSplit);
+        onSplitChange?.(clampedSplit);
+      });
+    },
+    [isDragging, minLeftWidth, minRightWidth, onSplitChange]
+  );
 
   // Handle mouse up
   const handleMouseUp = useCallback(() => {
@@ -155,26 +158,20 @@ export const SplitPane: React.FC<SplitPaneProps> = ({
   };
 
   return (
-    <div 
-      ref={containerRef}
-      className={cn("flex h-full w-full relative", className)}
-    >
+    <div ref={containerRef} className={cn('relative flex h-full w-full', className)}>
       {/* Left pane */}
-      <div 
-        className="h-full overflow-hidden"
-        style={{ width: `${splitPosition}%` }}
-      >
+      <div className="h-full overflow-hidden" style={{ width: `${splitPosition}%` }}>
         {left}
       </div>
 
       {/* Divider */}
       <div
         className={cn(
-          "relative flex-shrink-0 group",
-          "w-1 hover:w-2 transition-all duration-150",
-          "bg-border hover:bg-primary/50",
-          "cursor-col-resize",
-          isDragging && "bg-primary w-2"
+          'group relative flex-shrink-0',
+          'w-1 transition-all duration-150 hover:w-2',
+          'bg-border hover:bg-primary/50',
+          'cursor-col-resize',
+          isDragging && 'bg-primary w-2'
         )}
         onMouseDown={handleMouseDown}
         onKeyDown={handleKeyDown}
@@ -186,28 +183,27 @@ export const SplitPane: React.FC<SplitPaneProps> = ({
         aria-valuemax={100}
       >
         {/* Expand hit area for easier dragging */}
-        <div className="absolute inset-y-0 -left-2 -right-2 z-10" />
-        
+        <div className="absolute inset-y-0 -right-2 -left-2 z-10" />
+
         {/* Visual indicator dots */}
-        <div className={cn(
-          "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
-          "flex flex-col items-center justify-center gap-1",
-          "opacity-0 group-hover:opacity-100 transition-opacity",
-          isDragging && "opacity-100"
-        )}>
-          <div className="w-1 h-1 bg-primary rounded-full" />
-          <div className="w-1 h-1 bg-primary rounded-full" />
-          <div className="w-1 h-1 bg-primary rounded-full" />
+        <div
+          className={cn(
+            'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
+            'flex flex-col items-center justify-center gap-1',
+            'opacity-0 transition-opacity group-hover:opacity-100',
+            isDragging && 'opacity-100'
+          )}
+        >
+          <div className="bg-primary h-1 w-1 rounded-full" />
+          <div className="bg-primary h-1 w-1 rounded-full" />
+          <div className="bg-primary h-1 w-1 rounded-full" />
         </div>
       </div>
 
       {/* Right pane */}
-      <div 
-        className="h-full overflow-hidden flex-1"
-        style={{ width: `${100 - splitPosition}%` }}
-      >
+      <div className="h-full flex-1 overflow-hidden" style={{ width: `${100 - splitPosition}%` }}>
         {right}
       </div>
     </div>
   );
-}; 
+};

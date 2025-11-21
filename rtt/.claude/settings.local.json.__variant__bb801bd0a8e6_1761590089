@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tar:*)",
+      "Bash(unzip:*)",
+      "Bash(git commit:*)",
+      "Bash(git log:*)",
+      "Bash(tree:*)",
+      "Bash(find:*)",
+      "Bash(python -c \"import yaml; yaml.safe_load(open(''.rtt/panel.yaml''))\")",
+      "Bash(python:*)",
+      "Bash(git add:*)",
+      "Bash(python3:*)",
+      "Bash(cat:*)",
+      "Bash(for f in plan_build.py policy_match.py semver.py solver_constraints.py)",
+      "Bash(do echo \"=== $f ===\")",
+      "Bash(diff:*)",
+      "Bash(done)",
+      "Bash(git push:*)",
+      "Bash(rsync:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

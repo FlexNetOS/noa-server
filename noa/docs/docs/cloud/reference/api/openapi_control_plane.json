@@ -425,7 +425,7 @@
           }
         }
       },
-      "CreateProjectRequest":{
+      "CreateProjectRequest": {
         "type": "object",
         "description": "Object for creating a new project.",
         "properties": {
@@ -470,10 +470,7 @@
           "deployment_type": {
             "type": "string",
             "description": "Development (`dev`) or Production (`prod`) type deployment.",
-            "enum": [
-              "dev",
-              "prod"
-            ]
+            "enum": ["dev", "prod"]
           },
           "shareable": {
             "type": ["boolean", "null"],
@@ -552,10 +549,7 @@
           },
           "type": {
             "type": "string",
-            "enum": [
-              "default",
-              "secret"
-            ],
+            "enum": ["default", "secret"],
             "description": "Field to designate type of the environment variable (default) or secret.",
             "required": true
           }
@@ -686,19 +680,12 @@
           "deployment_type": {
             "type": "string",
             "description": "Development (`dev`) or Production (`prod`) type deployment.",
-            "enum": [
-              "dev",
-              "prod"
-            ]
+            "enum": ["dev", "prod"]
           },
           "image_source": {
             "type": "string",
             "description": "Do not use.",
-            "enum": [
-              "github",
-              "internal_docker",
-              "external_docker"
-            ]
+            "enum": ["github", "internal_docker", "external_docker"]
           },
           "shareable": {
             "type": "boolean",
@@ -724,10 +711,7 @@
         "properties": {
           "type": {
             "type": "string",
-            "enum": [
-              "revisions",
-              "services"
-            ]
+            "enum": ["revisions", "services"]
           },
           "name": {
             "type": "string"

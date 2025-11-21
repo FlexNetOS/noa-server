@@ -211,7 +211,7 @@ paths:
               type: code_generation
               parameters:
                 language: typescript
-                requirements: "Create REST API"
+                requirements: 'Create REST API'
               priority: high
               timeout: 300
       responses:
@@ -386,7 +386,7 @@ paths:
             example:
               task:
                 type: full_stack_development
-                requirements: "Build REST API with React frontend"
+                requirements: 'Build REST API with React frontend'
               strategy: hierarchical
               timeout: 600
       responses:

@@ -16,7 +16,7 @@ import {
   TaskAssignment,
   TaskCompletion,
   RegistryEvent,
-  RegistryEventType
+  RegistryEventType,
 } from './types';
 
 export interface StorageConfig {
@@ -41,7 +41,7 @@ export class AgentRegistryStorage {
       dataDir: config.dataDir || '/tmp/agent-registry',
       enablePersistence: config.enablePersistence ?? true,
       autoSaveInterval: config.autoSaveInterval || 30000, // 30 seconds
-      maxEventHistory: config.maxEventHistory || 1000
+      maxEventHistory: config.maxEventHistory || 1000,
     };
   }
 
@@ -56,7 +56,7 @@ export class AgentRegistryStorage {
       // Start auto-save
       if (this.config.autoSaveInterval && this.config.autoSaveInterval > 0) {
         this.autoSaveTimer = setInterval(() => {
-          this.save().catch(err => console.error('Auto-save failed:', err));
+          this.save().catch((err) => console.error('Auto-save failed:', err));
         }, this.config.autoSaveInterval);
       }
     }
@@ -85,7 +85,7 @@ export class AgentRegistryStorage {
       agents: Array.from(this.agents.entries()),
       tasks: Array.from(this.tasks.entries()),
       events: this.events,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     const filePath = path.join(this.config.dataDir, 'registry.json');
@@ -104,40 +104,51 @@ export class AgentRegistryStorage {
       const content = await fs.readFile(filePath, 'utf-8');
       const data = JSON.parse(content);
 
-      this.agents = new Map(data.agents?.map((entry: [string, AgentRegistration]) => {
-        // Restore Date objects
-        const [id, agent] = entry;
-        return [id, {
-          ...agent,
-          metadata: {
-            ...agent.metadata,
-            createdAt: new Date(agent.metadata.createdAt),
-            updatedAt: new Date(agent.metadata.updatedAt)
-          },
-          health: {
-            ...agent.health,
-            lastHeartbeat: new Date(agent.health.lastHeartbeat)
-          },
-          performance: {
-            ...agent.performance,
-            lastUpdated: new Date(agent.performance.lastUpdated)
-          }
-        }];
-      }) || []);
+      this.agents = new Map(
+        data.agents?.map((entry: [string, AgentRegistration]) => {
+          // Restore Date objects
+          const [id, agent] = entry;
+          return [
+            id,
+            {
+              ...agent,
+              metadata: {
+                ...agent.metadata,
+                createdAt: new Date(agent.metadata.createdAt),
+                updatedAt: new Date(agent.metadata.updatedAt),
+              },
+              health: {
+                ...agent.health,
+                lastHeartbeat: new Date(agent.health.lastHeartbeat),
+              },
+              performance: {
+                ...agent.performance,
+                lastUpdated: new Date(agent.performance.lastUpdated),
+              },
+            },
+          ];
+        }) || []
+      );
 
-      this.tasks = new Map(data.tasks?.map((entry: [string, TaskAssignment]) => {
-        const [id, task] = entry;
-        return [id, {
-          ...task,
-          assignedAt: new Date(task.assignedAt),
-          deadline: task.deadline ? new Date(task.deadline) : undefined
-        }];
-      }) || []);
+      this.tasks = new Map(
+        data.tasks?.map((entry: [string, TaskAssignment]) => {
+          const [id, task] = entry;
+          return [
+            id,
+            {
+              ...task,
+              assignedAt: new Date(task.assignedAt),
+              deadline: task.deadline ? new Date(task.deadline) : undefined,
+            },
+          ];
+        }) || []
+      );
 
-      this.events = data.events?.map((event: RegistryEvent) => ({
-        ...event,
-        timestamp: new Date(event.timestamp)
-      })) || [];
+      this.events =
+        data.events?.map((event: RegistryEvent) => ({
+          ...event,
+          timestamp: new Date(event.timestamp),
+        })) || [];
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
         console.warn('Failed to load registry data:', error);
@@ -155,7 +166,7 @@ export class AgentRegistryStorage {
       type: RegistryEventType.AGENT_REGISTERED,
       agentId: registration.metadata.id,
       timestamp: new Date(),
-      data: registration.metadata
+      data: registration.metadata,
     });
   }
 
@@ -186,8 +197,8 @@ export class AgentRegistryStorage {
       metadata: {
         ...agent.metadata,
         ...updates.metadata,
-        updatedAt: new Date()
-      }
+        updatedAt: new Date(),
+      },
     };
 
     this.agents.set(agentId, updated);
@@ -195,7 +206,7 @@ export class AgentRegistryStorage {
       type: RegistryEventType.AGENT_UPDATED,
       agentId,
       timestamp: new Date(),
-      data: updates
+      data: updates,
     });
 
     return true;
@@ -217,7 +228,7 @@ export class AgentRegistryStorage {
         type: RegistryEventType.AGENT_STATUS_CHANGED,
         agentId,
         timestamp: new Date(),
-        data: { previousStatus, newStatus: status }
+        data: { previousStatus, newStatus: status },
       });
     }
 
@@ -234,14 +245,14 @@ export class AgentRegistryStorage {
     agent.health = {
       ...agent.health,
       ...health,
-      lastHeartbeat: new Date()
+      lastHeartbeat: new Date(),
     };
 
     await this.addEvent({
       type: RegistryEventType.AGENT_HEARTBEAT,
       agentId,
       timestamp: new Date(),
-      data: health
+      data: health,
     });
 
     return true;
@@ -250,14 +261,17 @@ export class AgentRegistryStorage {
   /**
    * Update agent performance
    */
-  async updateAgentPerformance(agentId: string, performance: Partial<AgentPerformanceMetrics>): Promise<boolean> {
+  async updateAgentPerformance(
+    agentId: string,
+    performance: Partial<AgentPerformanceMetrics>
+  ): Promise<boolean> {
     const agent = this.agents.get(agentId);
     if (!agent) return false;
 
     agent.performance = {
       ...agent.performance,
       ...performance,
-      lastUpdated: new Date()
+      lastUpdated: new Date(),
     };
 
     return true;
@@ -275,7 +289,7 @@ export class AgentRegistryStorage {
       type: RegistryEventType.AGENT_REMOVED,
       agentId,
       timestamp: new Date(),
-      data: agent.metadata
+      data: agent.metadata,
     });
 
     return true;
@@ -290,7 +304,7 @@ export class AgentRegistryStorage {
       type: RegistryEventType.TASK_ASSIGNED,
       agentId: task.agentId,
       timestamp: new Date(),
-      data: task
+      data: task,
     });
   }
 
@@ -310,11 +324,14 @@ export class AgentRegistryStorage {
       }
 
       // Update average task duration (rolling average)
-      const totalDuration = agent.performance.averageTaskDuration * (agent.performance.tasksCompleted - 1) + completion.duration;
+      const totalDuration =
+        agent.performance.averageTaskDuration * (agent.performance.tasksCompleted - 1) +
+        completion.duration;
       agent.performance.averageTaskDuration = totalDuration / agent.performance.tasksCompleted;
 
       // Update success rate
-      agent.performance.successRate = agent.performance.tasksCompleted /
+      agent.performance.successRate =
+        agent.performance.tasksCompleted /
         (agent.performance.tasksCompleted + agent.performance.tasksFailed);
 
       if (completion.tokensProcessed) {
@@ -329,7 +346,7 @@ export class AgentRegistryStorage {
       type: RegistryEventType.TASK_COMPLETED,
       agentId: completion.agentId,
       timestamp: new Date(),
-      data: completion
+      data: completion,
     });
   }
 
@@ -344,8 +361,7 @@ export class AgentRegistryStorage {
    * Get tasks for agent
    */
   getAgentTasks(agentId: string): TaskAssignment[] {
-    return Array.from(this.tasks.values())
-      .filter(task => task.agentId === agentId);
+    return Array.from(this.tasks.values()).filter((task) => task.agentId === agentId);
   }
 
   /**
@@ -371,7 +387,7 @@ export class AgentRegistryStorage {
    * Get events for agent
    */
   getAgentEvents(agentId: string, limit?: number): RegistryEvent[] {
-    const events = this.events.filter(event => event.agentId === agentId);
+    const events = this.events.filter((event) => event.agentId === agentId);
     return limit ? events.slice(-limit) : events;
   }
 

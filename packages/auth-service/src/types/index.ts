@@ -81,10 +81,7 @@ export interface AuthConfig {
     providers: OAuthProviderConfig[];
   };
   saml?: {
-    entryPoint: string;
-    issuer: string;
-    cert: string;
-    privateKey: string;
+    providers: SAMLProviderConfig[];
   };
   ldap?: {
     url: string;
@@ -142,6 +139,45 @@ export interface OAuthProviderConfig {
   tokenURL: string;
   callbackURL: string;
   scope: string[];
+}
+
+export interface SAMLProviderConfig {
+  name: string;
+  entryPoint: string;
+  issuer: string;
+  callbackUrl: string;
+  cert: string;
+  privateKey: string;
+  idpCert?: string;
+  decryptionPvk?: string;
+  decryptionCert?: string;
+  signingCert?: string;
+  signatureAlgorithm?: 'sha1' | 'sha256' | 'sha384' | 'sha512';
+  digestAlgorithm?: 'sha1' | 'sha256' | 'sha384' | 'sha512';
+  wantAssertionsSigned?: boolean;
+  wantAuthnResponseSigned?: boolean;
+  identifierFormat?: string;
+  attributeConsumingServiceIndex?: string;
+  validateInResponseTo?: boolean;
+  requestIdExpirationPeriodMs?: number;
+  cacheProvider?: any;
+  logoutUrl?: string;
+  logoutCallbackUrl?: string;
+  skipRequestCompression?: boolean;
+  disableRequestedAuthnContext?: boolean;
+  authnContext?: string;
+  forceAuthn?: boolean;
+  passive?: boolean;
+  providerName?: string;
+  acceptedClockSkewMs?: number;
+  additionalAuthnRequestParams?: Record<string, any>;
+  emailAttribute?: string;
+  nameAttribute?: string;
+  givenNameAttribute?: string;
+  familyNameAttribute?: string;
+  groupAttribute?: string;
+  requiredAttributes?: string[];
+  allowedGroups?: string[];
 }
 
 export interface PasswordResetToken {

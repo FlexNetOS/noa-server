@@ -12,7 +12,7 @@
       "id": 1,
       "title": "Request Rate",
       "type": "graph",
-      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
       "targets": [
         {
           "expr": "rate(mcp_requests_total[5m])",
@@ -21,15 +21,15 @@
         }
       ],
       "yaxes": [
-        {"format": "reqps", "label": "Requests/sec"},
-        {"format": "short"}
+        { "format": "reqps", "label": "Requests/sec" },
+        { "format": "short" }
       ]
     },
     {
       "id": 2,
       "title": "Request Duration (p95)",
       "type": "graph",
-      "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8},
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
       "targets": [
         {
           "expr": "histogram_quantile(0.95, rate(mcp_request_duration_seconds_bucket[5m]))",
@@ -37,16 +37,13 @@
           "refId": "A"
         }
       ],
-      "yaxes": [
-        {"format": "s", "label": "Duration"},
-        {"format": "short"}
-      ]
+      "yaxes": [{ "format": "s", "label": "Duration" }, { "format": "short" }]
     },
     {
       "id": 3,
       "title": "Error Rate",
       "type": "graph",
-      "gridPos": {"x": 0, "y": 8, "w": 12, "h": 8},
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
       "targets": [
         {
           "expr": "rate(mcp_request_errors_total[5m])",
@@ -55,17 +52,17 @@
         }
       ],
       "yaxes": [
-        {"format": "ops", "label": "Errors/sec"},
-        {"format": "short"}
+        { "format": "ops", "label": "Errors/sec" },
+        { "format": "short" }
       ],
       "alert": {
         "name": "High Error Rate",
         "conditions": [
           {
-            "evaluator": {"type": "gt", "params": [10]},
-            "operator": {"type": "and"},
-            "query": {"params": ["A", "5m", "now"]},
-            "reducer": {"type": "avg"},
+            "evaluator": { "type": "gt", "params": [10] },
+            "operator": { "type": "and" },
+            "query": { "params": ["A", "5m", "now"] },
+            "reducer": { "type": "avg" },
             "type": "query"
           }
         ],
@@ -80,7 +77,7 @@
       "id": 4,
       "title": "Active Agents",
       "type": "stat",
-      "gridPos": {"x": 12, "y": 8, "w": 6, "h": 4},
+      "gridPos": { "x": 12, "y": 8, "w": 6, "h": 4 },
       "targets": [
         {
           "expr": "sum(mcp_agents_active)",
@@ -97,7 +94,7 @@
       "id": 5,
       "title": "Agent Success Rate",
       "type": "gauge",
-      "gridPos": {"x": 18, "y": 8, "w": 6, "h": 4},
+      "gridPos": { "x": 18, "y": 8, "w": 6, "h": 4 },
       "targets": [
         {
           "expr": "rate(mcp_agents_spawned_total[5m]) / (rate(mcp_agents_spawned_total[5m]) + rate(mcp_agents_failed_total[5m]))",
@@ -115,9 +112,9 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {"value": 0, "color": "red"},
-              {"value": 0.8, "color": "yellow"},
-              {"value": 0.95, "color": "green"}
+              { "value": 0, "color": "red" },
+              { "value": 0.8, "color": "yellow" },
+              { "value": 0.95, "color": "green" }
             ]
           }
         }
@@ -127,7 +124,7 @@
       "id": 6,
       "title": "Task Queue Depth",
       "type": "graph",
-      "gridPos": {"x": 0, "y": 16, "w": 12, "h": 8},
+      "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 },
       "targets": [
         {
           "expr": "mcp_tasks_pending",
@@ -140,16 +137,13 @@
           "refId": "B"
         }
       ],
-      "yaxes": [
-        {"format": "short", "label": "Tasks"},
-        {"format": "short"}
-      ]
+      "yaxes": [{ "format": "short", "label": "Tasks" }, { "format": "short" }]
     },
     {
       "id": 7,
       "title": "Task Duration",
       "type": "heatmap",
-      "gridPos": {"x": 12, "y": 16, "w": 12, "h": 8},
+      "gridPos": { "x": 12, "y": 16, "w": 12, "h": 8 },
       "targets": [
         {
           "expr": "rate(mcp_task_duration_seconds_bucket[5m])",
@@ -167,7 +161,7 @@
       "id": 8,
       "title": "Memory Usage",
       "type": "graph",
-      "gridPos": {"x": 0, "y": 24, "w": 12, "h": 8},
+      "gridPos": { "x": 0, "y": 24, "w": 12, "h": 8 },
       "targets": [
         {
           "expr": "mcp_memory_usage_bytes",
@@ -175,16 +169,13 @@
           "refId": "A"
         }
       ],
-      "yaxes": [
-        {"format": "bytes", "label": "Memory"},
-        {"format": "short"}
-      ]
+      "yaxes": [{ "format": "bytes", "label": "Memory" }, { "format": "short" }]
     },
     {
       "id": 9,
       "title": "Memory Operations",
       "type": "graph",
-      "gridPos": {"x": 12, "y": 24, "w": 12, "h": 8},
+      "gridPos": { "x": 12, "y": 24, "w": 12, "h": 8 },
       "targets": [
         {
           "expr": "rate(mcp_memory_operations_total[5m])",
@@ -193,15 +184,15 @@
         }
       ],
       "yaxes": [
-        {"format": "ops", "label": "Operations/sec"},
-        {"format": "short"}
+        { "format": "ops", "label": "Operations/sec" },
+        { "format": "short" }
       ]
     },
     {
       "id": 10,
       "title": "Neural Inference Duration",
       "type": "graph",
-      "gridPos": {"x": 0, "y": 32, "w": 12, "h": 8},
+      "gridPos": { "x": 0, "y": 32, "w": 12, "h": 8 },
       "targets": [
         {
           "expr": "histogram_quantile(0.95, rate(mcp_neural_inference_duration_seconds_bucket[5m]))",
@@ -214,16 +205,13 @@
           "refId": "B"
         }
       ],
-      "yaxes": [
-        {"format": "s", "label": "Duration"},
-        {"format": "short"}
-      ]
+      "yaxes": [{ "format": "s", "label": "Duration" }, { "format": "short" }]
     },
     {
       "id": 11,
       "title": "Token Throughput",
       "type": "graph",
-      "gridPos": {"x": 12, "y": 32, "w": 12, "h": 8},
+      "gridPos": { "x": 12, "y": 32, "w": 12, "h": 8 },
       "targets": [
         {
           "expr": "rate(mcp_neural_tokens_processed_total[5m])",
@@ -232,15 +220,15 @@
         }
       ],
       "yaxes": [
-        {"format": "tps", "label": "Tokens/sec"},
-        {"format": "short"}
+        { "format": "tps", "label": "Tokens/sec" },
+        { "format": "short" }
       ]
     },
     {
       "id": 12,
       "title": "System CPU Usage",
       "type": "gauge",
-      "gridPos": {"x": 0, "y": 40, "w": 8, "h": 6},
+      "gridPos": { "x": 0, "y": 40, "w": 8, "h": 6 },
       "targets": [
         {
           "expr": "mcp_system_cpu_usage_percent",
@@ -255,9 +243,9 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {"value": 0, "color": "green"},
-              {"value": 70, "color": "yellow"},
-              {"value": 90, "color": "red"}
+              { "value": 0, "color": "green" },
+              { "value": 70, "color": "yellow" },
+              { "value": 90, "color": "red" }
             ]
           }
         }
@@ -267,7 +255,7 @@
       "id": 13,
       "title": "System Memory Usage",
       "type": "gauge",
-      "gridPos": {"x": 8, "y": 40, "w": 8, "h": 6},
+      "gridPos": { "x": 8, "y": 40, "w": 8, "h": 6 },
       "targets": [
         {
           "expr": "mcp_system_memory_usage_percent",
@@ -282,9 +270,9 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {"value": 0, "color": "green"},
-              {"value": 80, "color": "yellow"},
-              {"value": 95, "color": "red"}
+              { "value": 0, "color": "green" },
+              { "value": 80, "color": "yellow" },
+              { "value": 95, "color": "red" }
             ]
           }
         }
@@ -294,7 +282,7 @@
       "id": 14,
       "title": "Authentication Success Rate",
       "type": "stat",
-      "gridPos": {"x": 16, "y": 40, "w": 8, "h": 6},
+      "gridPos": { "x": 16, "y": 40, "w": 8, "h": 6 },
       "targets": [
         {
           "expr": "sum(rate(mcp_auth_attempts_total{status=\"success\"}[5m])) / sum(rate(mcp_auth_attempts_total[5m]))",
@@ -314,9 +302,9 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {"value": 0, "color": "red"},
-              {"value": 0.95, "color": "yellow"},
-              {"value": 0.99, "color": "green"}
+              { "value": 0, "color": "red" },
+              { "value": 0.95, "color": "yellow" },
+              { "value": 0.99, "color": "green" }
             ]
           }
         }
@@ -326,7 +314,7 @@
       "id": 15,
       "title": "Rate Limit Violations",
       "type": "graph",
-      "gridPos": {"x": 0, "y": 46, "w": 24, "h": 6},
+      "gridPos": { "x": 0, "y": 46, "w": 24, "h": 6 },
       "targets": [
         {
           "expr": "rate(mcp_auth_rate_limit_exceeded_total[5m])",
@@ -335,17 +323,17 @@
         }
       ],
       "yaxes": [
-        {"format": "ops", "label": "Violations/sec"},
-        {"format": "short"}
+        { "format": "ops", "label": "Violations/sec" },
+        { "format": "short" }
       ],
       "alert": {
         "name": "High Rate Limit Violations",
         "conditions": [
           {
-            "evaluator": {"type": "gt", "params": [5]},
-            "operator": {"type": "and"},
-            "query": {"params": ["A", "5m", "now"]},
-            "reducer": {"type": "avg"},
+            "evaluator": { "type": "gt", "params": [5] },
+            "operator": { "type": "and" },
+            "query": { "params": ["A", "5m", "now"] },
+            "reducer": { "type": "avg" },
             "type": "query"
           }
         ],

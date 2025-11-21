@@ -1,0 +1,92 @@
+name: Octelium - Cluster Components
+permissions:
+  contents: read
+  packages: write
+on:
+  push:
+    tags:
+      - 'octelium-v*.*.*'
+    branches:
+      - b-*
+      - main
+      - dev
+    paths:
+      - 'octelium/**'
+      - '.github/workflows/octelium-cluster-components.yml'
+  pull_request:
+    paths:
+      - 'octelium/**'
+      - '.github/workflows/octelium-cluster-components.yml'
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ./octelium
+    strategy:
+      matrix:
+        component:
+          [
+            apiserver,
+            dnsserver,
+            genesis,
+            ingress,
+            nocturne,
+            gwagent,
+            nodeinit,
+            authserver,
+            portal,
+            rscserver,
+            vigil,
+            octovigil,
+          ]
+    steps:
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@cc11e9682d6c9f95b4a4ee7a73c64af4ed5c4628
+
+      - name: Set ENV variables
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+        run: for v in `cat .github/workflows/env` ; do echo "::set-env name=${v%%=*}::${v##*=}" ; done
+      - name: Set is latest
+        run: |
+          IS_LATEST=$(git tag | grep -E "^v[0-9]+\.[0-9]+\.[0-9]+$" | sort -r --version-sort | head -n1)
+          echo $IS_LATEST
+          if [ "$IS_LATEST" = ${{ env.GITHUB_REF_SLUG }} ]; then
+            echo "V_IS_LATEST=true" >> $GITHUB_ENV
+          else
+            echo "V_IS_LATEST=false" >> $GITHUB_ENV
+          fi
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@8e5442c4ef9f78752691e2d8f8d19755c6f78e81
+        with:
+          images: ${{env.V_CONTAINER_REGISTRY}}/${{env.V_ORG}}/octelium-${{matrix.component}}
+          flavor: |
+            latest=${{env.V_IS_LATEST}}
+            prefix=
+            suffix=
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+      - name: Buildah build
+        uses: redhat-actions/buildah-build@b13805753a7ac93d18d14b22f6ebdf8499a3a95e
+        with:
+          context: .
+          tags: ${{ steps.meta.outputs.tags }}
+          containerfiles: |
+            cluster/${{matrix.component}}/Dockerfile
+          labels: ${{ steps.meta.outputs.labels }}
+      - name: Push To registry
+        uses: redhat-actions/push-to-registry@5ed88d269cf581ea9ef6dd6806d01562096bee9c
+        with:
+          tags: ${{ steps.meta.outputs.tags }}
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}

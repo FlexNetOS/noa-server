@@ -3,7 +3,7 @@ name: noa-server
 description: A Helm chart for Noa Server platform
 type: application
 version: 0.1.0
-appVersion: "1.0.0"
+appVersion: '1.0.0'
 keywords:
   - noa
   - mcp

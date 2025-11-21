@@ -4,21 +4,42 @@ To use [time-travel](../../concepts/time-travel.md) in LangGraph:
 
 :::python
 
-1. [Run the graph](#1-run-the-graph) with initial inputs using @[`invoke`][CompiledStateGraph.invoke] or @[`stream`][CompiledStateGraph.stream] methods.
-2. [Identify a checkpoint in an existing thread](#2-identify-a-checkpoint): Use the @[`get_state_history()`][get_state_history] method to retrieve the execution history for a specific `thread_id` and locate the desired `checkpoint_id`.  
-   Alternatively, set an [interrupt](../../how-tos/human_in_the_loop/add-human-in-the-loop.md) before the node(s) where you want execution to pause. You can then find the most recent checkpoint recorded up to that interrupt.
-3. [Update the graph state (optional)](#3-update-the-state-optional): Use the @[`update_state`][update_state] method to modify the graph's state at the checkpoint and resume execution from alternative state.
-4. [Resume execution from the checkpoint](#4-resume-execution-from-the-checkpoint): Use the `invoke` or `stream` methods with an input of `None` and a configuration containing the appropriate `thread_id` and `checkpoint_id`.
-   :::
+1. [Run the graph](#1-run-the-graph) with initial inputs using
+   @[`invoke`][CompiledStateGraph.invoke] or
+   @[`stream`][CompiledStateGraph.stream] methods.
+2. [Identify a checkpoint in an existing thread](#2-identify-a-checkpoint): Use
+   the @[`get_state_history()`][get_state_history] method to retrieve the
+   execution history for a specific `thread_id` and locate the desired
+   `checkpoint_id`.  
+   Alternatively, set an
+   [interrupt](../../how-tos/human_in_the_loop/add-human-in-the-loop.md) before
+   the node(s) where you want execution to pause. You can then find the most
+   recent checkpoint recorded up to that interrupt.
+3. [Update the graph state (optional)](#3-update-the-state-optional): Use the
+   @[`update_state`][update_state] method to modify the graph's state at the
+   checkpoint and resume execution from alternative state.
+4. [Resume execution from the checkpoint](#4-resume-execution-from-the-checkpoint):
+   Use the `invoke` or `stream` methods with an input of `None` and a
+   configuration containing the appropriate `thread_id` and `checkpoint_id`. :::
 
 :::js
 
-1. [Run the graph](#1-run-the-graph) with initial inputs using @[`invoke`][CompiledStateGraph.invoke] or @[`stream`][CompiledStateGraph.stream] methods.
-2. [Identify a checkpoint in an existing thread](#2-identify-a-checkpoint): Use the @[`getStateHistory()`][get_state_history] method to retrieve the execution history for a specific `thread_id` and locate the desired `checkpoint_id`.  
-   Alternatively, set a [breakpoint](../../concepts/breakpoints.md) before the node(s) where you want execution to pause. You can then find the most recent checkpoint recorded up to that breakpoint.
-3. [Update the graph state (optional)](#3-update-the-state-optional): Use the @[`updateState`][update_state] method to modify the graph's state at the checkpoint and resume execution from alternative state.
-4. [Resume execution from the checkpoint](#4-resume-execution-from-the-checkpoint): Use the `invoke` or `stream` methods with an input of `null` and a configuration containing the appropriate `thread_id` and `checkpoint_id`.
-   :::
+1. [Run the graph](#1-run-the-graph) with initial inputs using
+   @[`invoke`][CompiledStateGraph.invoke] or
+   @[`stream`][CompiledStateGraph.stream] methods.
+2. [Identify a checkpoint in an existing thread](#2-identify-a-checkpoint): Use
+   the @[`getStateHistory()`][get_state_history] method to retrieve the
+   execution history for a specific `thread_id` and locate the desired
+   `checkpoint_id`.  
+   Alternatively, set a [breakpoint](../../concepts/breakpoints.md) before the
+   node(s) where you want execution to pause. You can then find the most recent
+   checkpoint recorded up to that breakpoint.
+3. [Update the graph state (optional)](#3-update-the-state-optional): Use the
+   @[`updateState`][update_state] method to modify the graph's state at the
+   checkpoint and resume execution from alternative state.
+4. [Resume execution from the checkpoint](#4-resume-execution-from-the-checkpoint):
+   Use the `invoke` or `stream` methods with an input of `null` and a
+   configuration containing the appropriate `thread_id` and `checkpoint_id`. :::
 
 !!! tip
 
@@ -26,7 +47,10 @@ To use [time-travel](../../concepts/time-travel.md) in LangGraph:
 
 ## In a workflow
 
-This example builds a simple LangGraph workflow that generates a joke topic and writes a joke using an LLM. It demonstrates how to run the graph, retrieve past execution checkpoints, optionally modify the state, and resume execution from a chosen checkpoint to explore alternate outcomes.
+This example builds a simple LangGraph workflow that generates a joke topic and
+writes a joke using an LLM. It demonstrates how to run the graph, retrieve past
+execution checkpoints, optionally modify the state, and resume execution from a
+chosen checkpoint to explore alternate outcomes.
 
 ### Setup
 
@@ -71,7 +95,7 @@ _set_env("ANTHROPIC_API_KEY")
 :::js
 
 ```typescript
-process.env.ANTHROPIC_API_KEY = "YOUR_API_KEY";
+process.env.ANTHROPIC_API_KEY = 'YOUR_API_KEY';
 ```
 
 :::
@@ -140,11 +164,11 @@ graph
 :::js
 
 ```typescript
-import { v4 as uuidv4 } from "uuid";
-import { z } from "zod";
-import { StateGraph, START, END } from "@langchain/langgraph";
-import { ChatAnthropic } from "@langchain/anthropic";
-import { MemorySaver } from "@langchain/langgraph";
+import { v4 as uuidv4 } from 'uuid';
+import { z } from 'zod';
+import { StateGraph, START, END } from '@langchain/langgraph';
+import { ChatAnthropic } from '@langchain/anthropic';
+import { MemorySaver } from '@langchain/langgraph';
 
 const State = z.object({
   topic: z.string().optional(),
@@ -152,27 +176,27 @@ const State = z.object({
 });
 
 const llm = new ChatAnthropic({
-  model: "claude-3-5-sonnet-latest",
+  model: 'claude-3-5-sonnet-latest',
   temperature: 0,
 });
 
 // Build workflow
 const workflow = new StateGraph(State)
   // Add nodes
-  .addNode("generateTopic", async (state) => {
+  .addNode('generateTopic', async (state) => {
     // LLM call to generate a topic for the joke
-    const msg = await llm.invoke("Give me a funny topic for a joke");
+    const msg = await llm.invoke('Give me a funny topic for a joke');
     return { topic: msg.content };
   })
-  .addNode("writeJoke", async (state) => {
+  .addNode('writeJoke', async (state) => {
     // LLM call to write a joke based on the topic
     const msg = await llm.invoke(`Write a short joke about ${state.topic}`);
     return { joke: msg.content };
   })
   // Add edges to connect nodes
-  .addEdge(START, "generateTopic")
-  .addEdge("generateTopic", "writeJoke")
-  .addEdge("writeJoke", END);
+  .addEdge(START, 'generateTopic')
+  .addEdge('generateTopic', 'writeJoke')
+  .addEdge('writeJoke', END);
 
 // Compile
 const checkpointer = new MemorySaver();
@@ -334,8 +358,8 @@ console.log(selectedState.values);
 
 ### 3. Update the state (optional)
 
-:::python
-`update_state` will create a new checkpoint. The new checkpoint will be associated with the same thread, but a new checkpoint ID.
+:::python `update_state` will create a new checkpoint. The new checkpoint will
+be associated with the same thread, but a new checkpoint ID.
 
 ```python
 new_config = graph.update_state(selected_state.config, values={"topic": "chickens"})
@@ -350,12 +374,12 @@ print(new_config)
 
 :::
 
-:::js
-`updateState` will create a new checkpoint. The new checkpoint will be associated with the same thread, but a new checkpoint ID.
+:::js `updateState` will create a new checkpoint. The new checkpoint will be
+associated with the same thread, but a new checkpoint ID.
 
 ```typescript
 const newConfig = await graph.updateState(selectedState.config, {
-  topic: "chickens",
+  topic: 'chickens',
 });
 console.log(newConfig);
 ```

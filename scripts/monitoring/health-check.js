@@ -43,7 +43,7 @@ class HealthCheckMonitor {
         latency,
         timestamp: new Date().toISOString(),
         critical: endpoint.critical,
-        error: success ? null : `Expected ${endpoint.expectedStatus}, got ${result.statusCode}`
+        error: success ? null : `Expected ${endpoint.expectedStatus}, got ${result.statusCode}`,
       };
 
       // Update failure tracking
@@ -71,7 +71,7 @@ class HealthCheckMonitor {
         latency: Date.now() - startTime,
         timestamp: new Date().toISOString(),
         critical: endpoint.critical,
-        error: error.message
+        error: error.message,
       };
 
       const failures = (this.failureCount.get(endpoint.name) || 0) + 1;
@@ -101,17 +101,17 @@ class HealthCheckMonitor {
         port: url.port || (url.protocol === 'https:' ? 443 : 80),
         path: url.pathname + url.search,
         method: endpoint.method || 'GET',
-        timeout: this.config.timeout
+        timeout: this.config.timeout,
       };
 
       const req = protocol.request(options, (res) => {
         let data = '';
-        res.on('data', chunk => data += chunk);
+        res.on('data', (chunk) => (data += chunk));
         res.on('end', () => {
           resolve({
             statusCode: res.statusCode,
             headers: res.headers,
-            body: data
+            body: data,
           });
         });
       });
@@ -143,7 +143,7 @@ class HealthCheckMonitor {
       service: endpoint.name,
       message: `Service health check failed: ${result.error}`,
       timestamp: new Date().toISOString(),
-      action: 'self-healing-triggered'
+      action: 'self-healing-triggered',
     });
 
     // Attempt service restart if configured
@@ -160,7 +160,7 @@ class HealthCheckMonitor {
       'mcp-server': 'pm2 restart mcp-server',
       'claude-flow': 'pm2 restart claude-flow',
       'neural-processing': 'pm2 restart neural-processing',
-      'ui-server': 'pm2 restart ui-server'
+      'ui-server': 'pm2 restart ui-server',
     };
 
     const command = restartCommands[serviceName];
@@ -217,9 +217,7 @@ class HealthCheckMonitor {
   async runAllChecks() {
     console.log('[HEALTH-CHECK] Running health checks...');
 
-    const checks = this.config.endpoints.map(endpoint =>
-      this.checkEndpoint(endpoint)
-    );
+    const checks = this.config.endpoints.map((endpoint) => this.checkEndpoint(endpoint));
 
     const results = await Promise.all(checks);
 
@@ -227,18 +225,20 @@ class HealthCheckMonitor {
     const summary = {
       timestamp: new Date().toISOString(),
       total: results.length,
-      healthy: results.filter(r => r.status === 'healthy').length,
-      unhealthy: results.filter(r => r.status === 'unhealthy').length,
-      errors: results.filter(r => r.status === 'error').length,
-      criticalFailures: results.filter(r => r.critical && r.status !== 'healthy').length,
-      checks: results
+      healthy: results.filter((r) => r.status === 'healthy').length,
+      unhealthy: results.filter((r) => r.status === 'unhealthy').length,
+      errors: results.filter((r) => r.status === 'error').length,
+      criticalFailures: results.filter((r) => r.critical && r.status !== 'healthy').length,
+      checks: results,
     };
 
     // Log summary
     console.log(`[HEALTH-CHECK] Summary: ${summary.healthy}/${summary.total} healthy`);
 
     if (summary.criticalFailures > 0) {
-      console.error(`[HEALTH-CHECK] CRITICAL: ${summary.criticalFailures} critical service(s) failing`);
+      console.error(
+        `[HEALTH-CHECK] CRITICAL: ${summary.criticalFailures} critical service(s) failing`
+      );
     }
 
     return summary;
@@ -274,8 +274,8 @@ class HealthCheckMonitor {
     const allResults = Array.from(this.results.values());
     return {
       timestamp: new Date().toISOString(),
-      overall: allResults.every(r => r.status === 'healthy') ? 'healthy' : 'degraded',
-      services: allResults
+      overall: allResults.every((r) => r.status === 'healthy') ? 'healthy' : 'degraded',
+      services: allResults,
     };
   }
 }

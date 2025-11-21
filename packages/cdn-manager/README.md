@@ -1,6 +1,10 @@
 # @noa/cdn-manager
 
-Multi-CDN management and asset optimization system supporting CloudFront, Cloudflare, Fastly, and Akamai.
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
+Multi-CDN management and asset optimization system supporting CloudFront,
+Cloudflare, Fastly, and Akamai.
 
 ## Features
 
@@ -68,9 +72,9 @@ const cdnManager = new CDNManager({
     defaultMaxAge: 86400, // 24 hours
     staleWhileRevalidate: 3600, // 1 hour
     customMaxAge: {
-      'js': 31536000, // 1 year for JS
-      'css': 31536000, // 1 year for CSS
-      'html': 3600, // 1 hour for HTML
+      js: 31536000, // 1 year for JS
+      css: 31536000, // 1 year for CSS
+      html: 3600, // 1 hour for HTML
     },
   },
   versioning: {
@@ -127,6 +131,7 @@ const cdnManager = new CDNManager({
 ```
 
 **Setup:**
+
 1. Create S3 bucket
 2. Create CloudFront distribution
 3. Configure origin as S3 bucket
@@ -150,6 +155,7 @@ const cdnManager = new CDNManager({
 ```
 
 **Setup:**
+
 1. Add domain to Cloudflare
 2. Get API key from dashboard
 3. Get Zone ID from dashboard
@@ -170,6 +176,7 @@ const cdnManager = new CDNManager({
 ```
 
 **Setup:**
+
 1. Create Fastly service
 2. Get API token
 3. Configure origin server
@@ -192,6 +199,7 @@ const cdnManager = new CDNManager({
 ```
 
 **Setup:**
+
 1. Create Akamai property
 2. Get API credentials
 3. Configure CP code
@@ -207,15 +215,11 @@ import sharp from 'sharp';
 // Automatic WebP/AVIF conversion
 const imageBuffer = await fs.readFile('image.jpg');
 
-const webpBuffer = await sharp(imageBuffer)
-  .webp({ quality: 80 })
-  .toBuffer();
+const webpBuffer = await sharp(imageBuffer).webp({ quality: 80 }).toBuffer();
 
 await cdnManager.uploadAsset('image.webp', webpBuffer);
 
-const avifBuffer = await sharp(imageBuffer)
-  .avif({ quality: 70 })
-  .toBuffer();
+const avifBuffer = await sharp(imageBuffer).avif({ quality: 70 }).toBuffer();
 
 await cdnManager.uploadAsset('image.avif', avifBuffer);
 ```
@@ -272,15 +276,15 @@ const cdnManager = new CDNManager({
     defaultMaxAge: 86400,
     customMaxAge: {
       // Long cache for static assets
-      'js': 31536000, // 1 year
-      'css': 31536000, // 1 year
-      'jpg': 31536000,
-      'png': 31536000,
-      'woff2': 31536000,
+      js: 31536000, // 1 year
+      css: 31536000, // 1 year
+      jpg: 31536000,
+      png: 31536000,
+      woff2: 31536000,
 
       // Short cache for dynamic content
-      'html': 3600, // 1 hour
-      'json': 300, // 5 minutes
+      html: 3600, // 1 hour
+      json: 300, // 5 minutes
     },
   },
 });
@@ -415,11 +419,7 @@ jobs:
 
 ```typescript
 // Purge individual files
-await cdnManager.purgeCache([
-  'index.html',
-  'app.js',
-  'styles.css',
-]);
+await cdnManager.purgeCache(['index.html', 'app.js', 'styles.css']);
 ```
 
 ### Purge All
@@ -544,3 +544,5 @@ cdnManager.on('deployment-completed', (stats) => {
 ## License
 
 MIT
+
+> Last updated: 2025-11-20

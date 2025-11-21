@@ -1,0 +1,9 @@
+{
+  "root": "6c255e24661c420e82be830a8f5b1448b1ca29b0c71b11b6bd87376abb4e6589",
+  "frame": {
+    "ts": 1761611951.2116914,
+    "plan_id": "test-4",
+    "prev": "1a96ce0e5a428ff7e4c33fa66ff689dea8237647fb4303927595f2b1354e984f",
+    "apply": []
+  }
+}

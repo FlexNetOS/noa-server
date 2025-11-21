@@ -6,7 +6,8 @@ This guide shows you how to run a LangGraph application locally.
 
 Before you begin, ensure you have the following:
 
-- An API key for [LangSmith](https://smith.langchain.com/settings) - free to sign up
+- An API key for [LangSmith](https://smith.langchain.com/settings) - free to
+  sign up
 
 ## 1. Install the LangGraph CLI
 
@@ -30,8 +31,10 @@ npx @langchain/langgraph-cli
 
 ## 2. Create a LangGraph app 🌱
 
-:::python
-Create a new app from the [`new-langgraph-project-python` template](https://github.com/langchain-ai/new-langgraph-project). This template demonstrates a single-node application you can extend with your own logic.
+:::python Create a new app from the
+[`new-langgraph-project-python` template](https://github.com/langchain-ai/new-langgraph-project).
+This template demonstrates a single-node application you can extend with your
+own logic.
 
 ```shell
 langgraph new path/to/your/app --template new-langgraph-project-python
@@ -43,8 +46,10 @@ langgraph new path/to/your/app --template new-langgraph-project-python
 
 :::
 
-:::js
-Create a new app from the [`new-langgraph-project-js` template](https://github.com/langchain-ai/new-langgraphjs-project). This template demonstrates a single-node application you can extend with your own logic.
+:::js Create a new app from the
+[`new-langgraph-project-js` template](https://github.com/langchain-ai/new-langgraphjs-project).
+This template demonstrates a single-node application you can extend with your
+own logic.
 
 ```shell
 npm create langgraph
@@ -54,7 +59,8 @@ npm create langgraph
 
 ## 3. Install dependencies
 
-In the root of your new LangGraph app, install the dependencies in `edit` mode so your local changes are used by the server:
+In the root of your new LangGraph app, install the dependencies in `edit` mode
+so your local changes are used by the server:
 
 :::python
 
@@ -76,7 +82,9 @@ npm install
 
 ## 4. Create a `.env` file
 
-You will find a `.env.example` in the root of your new LangGraph app. Create a `.env` file in the root of your new LangGraph app and copy the contents of the `.env.example` file into it, filling in the necessary API keys:
+You will find a `.env.example` in the root of your new LangGraph app. Create a
+`.env` file in the root of your new LangGraph app and copy the contents of the
+`.env.example` file into it, filling in the necessary API keys:
 
 ```bash
 LANGSMITH_API_KEY=lsv2...
@@ -114,17 +122,24 @@ Sample output:
 >    - LangGraph Studio Web UI: https://smith.langchain.com/studio/?baseUrl=http://127.0.0.1:2024
 ```
 
-The `langgraph dev` command starts LangGraph Server in an in-memory mode. This mode is suitable for development and testing purposes. For production use, deploy LangGraph Server with access to a persistent storage backend. For more information, see [Deployment options](../../concepts/deployment_options.md).
+The `langgraph dev` command starts LangGraph Server in an in-memory mode. This
+mode is suitable for development and testing purposes. For production use,
+deploy LangGraph Server with access to a persistent storage backend. For more
+information, see [Deployment options](../../concepts/deployment_options.md).
 
 ## 6. Test your application in LangGraph Studio
 
-[LangGraph Studio](../../concepts/langgraph_studio.md) is a specialized UI that you can connect to LangGraph API server to visualize, interact with, and debug your application locally. Test your graph in LangGraph Studio by visiting the URL provided in the output of the `langgraph dev` command:
+[LangGraph Studio](../../concepts/langgraph_studio.md) is a specialized UI that
+you can connect to LangGraph API server to visualize, interact with, and debug
+your application locally. Test your graph in LangGraph Studio by visiting the
+URL provided in the output of the `langgraph dev` command:
 
 ```
 >    - LangGraph Studio Web UI: https://smith.langchain.com/studio/?baseUrl=http://127.0.0.1:2024
 ```
 
-For a LangGraph Server running on a custom host/port, update the baseURL parameter.
+For a LangGraph Server running on a custom host/port, update the baseURL
+parameter.
 
 ??? info "Safari compatibility"
 
@@ -136,8 +151,7 @@ For a LangGraph Server running on a custom host/port, update the baseURL paramet
 
 ## 7. Test the API
 
-:::python
-=== "Python SDK (async)"
+:::python === "Python SDK (async)"
 
     1. Install the LangGraph Python SDK:
 
@@ -224,8 +238,7 @@ For a LangGraph Server running on a custom host/port, update the baseURL paramet
 
 :::
 
-:::js
-=== "Javascript SDK"
+:::js === "Javascript SDK"
 
     1. Install the LangGraph JS SDK:
 
@@ -285,18 +298,22 @@ For a LangGraph Server running on a custom host/port, update the baseURL paramet
 
 ## Next steps
 
-Now that you have a LangGraph app running locally, take your journey further by exploring deployment and advanced features:
+Now that you have a LangGraph app running locally, take your journey further by
+exploring deployment and advanced features:
 
-- [Deployment quickstart](../../cloud/quick_start.md): Deploy your LangGraph app using LangGraph Platform.
-- [LangGraph Platform overview](../../concepts/langgraph_platform.md): Learn about foundational LangGraph Platform concepts.
-- [LangGraph Server API Reference](../../cloud/reference/api/api_ref.html): Explore the LangGraph Server API documentation.
+- [Deployment quickstart](../../cloud/quick_start.md): Deploy your LangGraph app
+  using LangGraph Platform.
+- [LangGraph Platform overview](../../concepts/langgraph_platform.md): Learn
+  about foundational LangGraph Platform concepts.
+- [LangGraph Server API Reference](../../cloud/reference/api/api_ref.html):
+  Explore the LangGraph Server API documentation.
 
 :::python
 
-- [Python SDK Reference](../../cloud/reference/sdk/python_sdk_ref.md): Explore the Python SDK API Reference.
-  :::
+- [Python SDK Reference](../../cloud/reference/sdk/python_sdk_ref.md): Explore
+  the Python SDK API Reference. :::
 
 :::js
 
-- [JS/TS SDK Reference](../../cloud/reference/sdk/js_ts_sdk_ref.md): Explore the JS/TS SDK API Reference.
-  :::
+- [JS/TS SDK Reference](../../cloud/reference/sdk/js_ts_sdk_ref.md): Explore the
+  JS/TS SDK API Reference. :::

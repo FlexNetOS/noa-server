@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata: { name: spire-server }
+spec:
+  selector: { app: spire-server }
+  ports:
+    - { port: 8081, name: api }
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata: { name: spire-server }
+spec:
+  selector: { matchLabels: { app: spire-server } }
+  serviceName: spire-server
+  replicas: {{ .Values.server.replicas }}
+  template:
+    metadata: { labels: { app: spire-server } }
+    spec:
+      containers:
+      - name: server
+        image: {{ .Values.serverImage }}
+        args: ["-config","/run/spire/server.conf"]
+        volumeMounts:
+        - { name: conf, mountPath: /run/spire/server.conf, subPath: server.conf }
+        - { name: data, mountPath: /run/spire/data }
+        - { name: bootstrap, mountPath: /run/spire/bootstrap }
+      volumes:
+      - name: conf
+        configMap: { name: spire-server-conf }
+      - name: bootstrap
+        secret: { secretName: spire-bootstrap } # create manually with CA key/cert
+      - name: data
+        emptyDir: {}

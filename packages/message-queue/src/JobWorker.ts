@@ -23,10 +23,7 @@ export class JobWorker extends EventEmitter {
     queues: string[];
   };
 
-  constructor(
-    queueManager: QueueManager,
-    options: Partial<JobWorker['options']> = {}
-  ) {
+  constructor(queueManager: QueueManager, options: Partial<JobWorker['options']> = {}) {
     super();
     this.queueManager = queueManager;
     this.workerId = uuidv4();
@@ -38,7 +35,7 @@ export class JobWorker extends EventEmitter {
       maxRetries: 3,
       pollInterval: 1000, // 1 second
       queues: ['jobs-default'],
-      ...options
+      ...options,
     };
   }
 
@@ -69,7 +66,7 @@ export class JobWorker extends EventEmitter {
     this.emit('stopped', {
       workerId: this.workerId,
       processedJobs: this.processedJobs,
-      failedJobs: this.failedJobs
+      failedJobs: this.failedJobs,
     });
   }
 
@@ -108,7 +105,7 @@ export class JobWorker extends EventEmitter {
       failedJobs: this.failedJobs,
       currentJob: this.currentJob,
       uptime: Date.now() - this.startTime.getTime(),
-      queues: this.options.queues
+      queues: this.options.queues,
     };
   }
 
@@ -128,7 +125,7 @@ export class JobWorker extends EventEmitter {
         this.emit('error', {
           workerId: this.workerId,
           error,
-          context: 'process_loop'
+          context: 'process_loop',
         });
 
         // Wait a bit longer on error
@@ -160,7 +157,7 @@ export class JobWorker extends EventEmitter {
           workerId: this.workerId,
           error,
           context: 'receive_message',
-          queueName
+          queueName,
         });
       }
     }
@@ -183,7 +180,7 @@ export class JobWorker extends EventEmitter {
       this.emit('job_started', {
         workerId: this.workerId,
         job,
-        queueName
+        queueName,
       });
 
       // Start the job in the queue manager
@@ -213,9 +210,8 @@ export class JobWorker extends EventEmitter {
         workerId: this.workerId,
         job,
         processingTime,
-        queueName
+        queueName,
       });
-
     } catch (error) {
       this.failedJobs++;
       const processingTime = Date.now() - jobStartTime;
@@ -225,7 +221,7 @@ export class JobWorker extends EventEmitter {
         job,
         error,
         processingTime,
-        queueName
+        queueName,
       });
 
       try {
@@ -236,7 +232,7 @@ export class JobWorker extends EventEmitter {
           workerId: this.workerId,
           error: failError,
           context: 'fail_job',
-          jobId: job.id
+          jobId: job.id,
         });
       }
     } finally {
@@ -273,7 +269,7 @@ export class JobWorker extends EventEmitter {
    * Utility method for delays
    */
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
 

@@ -1,0 +1,277 @@
+name: Security Scanning
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # Daily at 2 AM UTC
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  # ===================================
+  # DEPENDENCY SCANNING
+  # ===================================
+  dependency-scan:
+    name: Dependency Vulnerability Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Setup Node.js
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        with:
+          node-version: '20.17.0'
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd533
+        with:
+          version: '9.11.0'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile=false
+
+      - name: Run npm audit
+        run: |
+          pnpm audit --audit-level=moderate --json > npm-audit.json || true
+        continue-on-error: true
+
+      - name: Run Snyk security scan
+        uses: snyk/actions/node@806182742461562b4c0c6c55c4d2d9c5f2d9b5a8
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high --json-file-output=snyk-results.json
+
+      - name: Upload security results
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
+        if: always()
+        with:
+          name: dependency-scan-results
+          path: |
+            npm-audit.json
+            snyk-results.json
+          retention-days: 90
+
+  # ===================================
+  # CODE SCANNING (SAST)
+  # ===================================
+  codeql-analysis:
+    name: CodeQL Security Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ['javascript', 'python']
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@4fa2a7953630fd2f3fb3806a1a9e8f7591a52fe43
+        with:
+          languages: ${{ matrix.language }}
+          queries: +security-and-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@4fa2a7953630fd2f3fb3806a1a9e8f7591a52fe43
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@4fa2a7953630fd2f3fb3806a1a9e8f7591a52fe43
+        with:
+          category: '/language:${{ matrix.language }}'
+
+  # ===================================
+  # CONTAINER SCANNING
+  # ===================================
+  container-scan:
+    name: Container Image Scanning
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Build test image
+        run: |
+          if [ -f "Docker/Dockerfile.api" ]; then
+            docker build -t noa-server:scan -f Docker/Dockerfile.api .
+          else
+            echo "No Dockerfile found, skipping"
+          fi
+        continue-on-error: true
+
+      - name: Run Trivy container scan
+        uses: aquasecurity/trivy-action@18f2510ee396bbf400402947b394f2dd8c87dbb0
+        with:
+          image-ref: 'noa-server:scan'
+          format: 'sarif'
+          output: 'trivy-container-results.sarif'
+          severity: 'CRITICAL,HIGH'
+        continue-on-error: true
+
+      - name: Upload Trivy results
+        uses: github/codeql-action/upload-sarif@17573ee1cc1f98061c6e8654bfcc003a637bd73
+        if: always()
+        with:
+          sarif_file: 'trivy-container-results.sarif'
+
+      - name: Scan with Grype
+        uses: anchore/scan-action@86e0e50d04c994bd8e48e3e4c7c1e5b5c8a7c5f8
+        with:
+          image: 'noa-server:scan'
+          fail-build: false
+          severity-cutoff: high
+        continue-on-error: true
+
+  # ===================================
+  # SECRET SCANNING
+  # ===================================
+  secret-scan:
+    name: Secret Detection
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+        with:
+          fetch-depth: 0
+
+      - name: TruffleHog Secret Scan
+        uses: trufflesecurity/trufflehog@3d2c2d3e4f5g6h7i8j9k0l1m2n3o4p5q6r7s8t9u0v1w2x3y4z5
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --debug --only-verified
+
+      - name: GitLeaks Secret Scan
+        uses: gitleaks/gitleaks-action@4da9990576f94cdbf9c8f066a8c6a2c0c3e5c6a7
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_SUMMARY: true
+
+  # ===================================
+  # LICENSE COMPLIANCE
+  # ===================================
+  license-check:
+    name: License Compliance Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Setup Node.js
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        with:
+          node-version: '20.17.0'
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd533
+        with:
+          version: '9.11.0'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile=false
+
+      - name: Check licenses
+        run: |
+          pnpm add -D license-checker
+          npx license-checker --json --out licenses.json || true
+        continue-on-error: true
+
+      - name: Upload license report
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
+        with:
+          name: license-report
+          path: licenses.json
+          retention-days: 90
+
+  # ===================================
+  # SECURITY REPORT GENERATION
+  # ===================================
+  generate-security-report:
+    name: Generate Security Report
+    runs-on: ubuntu-latest
+    needs: [dependency-scan, codeql-analysis, container-scan, secret-scan, license-check]
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
+        continue-on-error: true
+
+      - name: Generate consolidated report
+        run: |
+          mkdir -p security-reports
+          cat > security-reports/summary.md << 'EOF'
+          # Security Scan Summary
+
+          **Scan Date**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+          **Repository**: ${{ github.repository }}
+          **Branch**: ${{ github.ref_name }}
+          **Commit**: ${{ github.sha }}
+
+          ## Scan Results
+
+          - Dependency Scan: ${{ needs.dependency-scan.result }}
+          - CodeQL Analysis: ${{ needs.codeql-analysis.result }}
+          - Container Scan: ${{ needs.container-scan.result }}
+          - Secret Detection: ${{ needs.secret-scan.result }}
+          - License Check: ${{ needs.license-check.result }}
+
+          ## Critical Findings
+
+          Review individual scan artifacts for detailed findings.
+
+          ## Recommendations
+
+          1. Review and remediate all CRITICAL vulnerabilities immediately
+          2. Plan remediation for HIGH severity issues within 7 days
+          3. Monitor and update dependencies regularly
+          4. Ensure no secrets are committed to repository
+
+          EOF
+
+      - name: Upload security report
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
+        with:
+          name: security-report
+          path: security-reports/
+          retention-days: 365
+
+      - name: Comment on PR with results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('security-reports/summary.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
+        continue-on-error: true

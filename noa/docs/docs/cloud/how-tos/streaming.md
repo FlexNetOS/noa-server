@@ -1,6 +1,8 @@
 # Streaming API
 
-[LangGraph SDK](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/python_sdk_ref/) allows you to [stream outputs](../../concepts/streaming.md) from the LangGraph API server.
+[LangGraph SDK](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/python_sdk_ref/)
+allows you to [stream outputs](../../concepts/streaming.md) from the LangGraph
+API server.
 
 !!! note
 
@@ -211,11 +213,10 @@ Basic usage example:
     {'generate_joke': {'joke': 'This is a joke about ice cream and cats'}}
     ```
 
-
 ### Supported stream modes
 
 | Mode                             | Description                                                                                                                                                                         | LangGraph Library Method                                                                                 |
-|----------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | [`values`](#stream-graph-state)  | Stream the full graph state after each [super-step](../../concepts/low_level.md#graphs).                                                                                            | `.stream()` / `.astream()` with [`stream_mode="values"`](../../how-tos/streaming.md#stream-graph-state)  |
 | [`updates`](#stream-graph-state) | Streams the updates to the state after each step of the graph. If multiple updates are made in the same step (e.g., multiple nodes are run), those updates are streamed separately. | `.stream()` / `.astream()` with [`stream_mode="updates"`](../../how-tos/streaming.md#stream-graph-state) |
 | [`messages-tuple`](#messages)    | Streams LLM tokens and metadata for the graph node where the LLM is invoked (useful for chat apps).                                                                                 | `.stream()` / `.astream()` with [`stream_mode="messages"`](../../how-tos/streaming.md#messages)          |
@@ -225,9 +226,11 @@ Basic usage example:
 
 ### Stream multiple modes
 
-You can pass a list as the `stream_mode` parameter to stream multiple modes at once.
+You can pass a list as the `stream_mode` parameter to stream multiple modes at
+once.
 
-The streamed outputs will be tuples of `(mode, chunk)` where `mode` is the name of the stream mode and `chunk` is the data streamed by that mode.
+The streamed outputs will be tuples of `(mode, chunk)` where `mode` is the name
+of the stream mode and `chunk` is the data streamed by that mode.
 
 === "Python"
 
@@ -275,10 +278,11 @@ The streamed outputs will be tuples of `(mode, chunk)` where `mode` is the name 
 
 ## Stream graph state
 
-Use the stream modes `updates` and `values` to stream the state of the graph as it executes.
+Use the stream modes `updates` and `values` to stream the state of the graph as
+it executes.
 
-* `updates` streams the **updates** to the state after each step of the graph.
-* `values` streams the **full value** of the state after each step of the graph.
+- `updates` streams the **updates** to the state after each step of the graph.
+- `values` streams the **full value** of the state after each step of the graph.
 
 ??? example "Example graph"
 
@@ -395,7 +399,7 @@ Use the stream modes `updates` and `values` to stream the state of the graph as 
         }"
         ```
 
-===  "values"
+=== "values"
 
     Use this to stream the **full state** of the graph after each step.
 
@@ -442,10 +446,11 @@ Use the stream modes `updates` and `values` to stream the state of the graph as 
         }"
         ```
 
-
 ## Subgraphs
 
-To include outputs from [subgraphs](../../concepts/subgraphs.md) in the streamed outputs, you can set `subgraphs=True` in the `.stream()` method of the parent graph. This will stream outputs from both the parent graph and any subgraphs.
+To include outputs from [subgraphs](../../concepts/subgraphs.md) in the streamed
+outputs, you can set `subgraphs=True` in the `.stream()` method of the parent
+graph. This will stream outputs from both the parent graph and any subgraphs.
 
 ```python
 for chunk in client.runs.stream(
@@ -519,7 +524,7 @@ for chunk in client.runs.stream(
         # create a thread
         thread = await client.threads.create()
         thread_id = thread["thread_id"]
-    
+
         async for chunk in client.runs.stream(
             thread_id,
             assistant_id,
@@ -530,7 +535,7 @@ for chunk in client.runs.stream(
         ):
             print(chunk)
         ```
-        
+
         1. Set `stream_subgraphs=True` to stream outputs from subgraphs.
 
     === "JavaScript"
@@ -595,7 +600,9 @@ for chunk in client.runs.stream(
 
 ## Debugging {#debug}
 
-Use the `debug` streaming mode to stream as much information as possible throughout the execution of the graph. The streamed outputs include the name of the node as well as the full state.
+Use the `debug` streaming mode to stream as much information as possible
+throughout the execution of the graph. The streamed outputs include the name of
+the node as well as the full state.
 
 === "Python"
 
@@ -642,13 +649,17 @@ Use the `debug` streaming mode to stream as much information as possible through
 
 ## LLM tokens {#messages}
 
-Use the `messages-tuple` streaming mode to stream Large Language Model (LLM) outputs **token by token** from any part of your graph, including nodes, tools, subgraphs, or tasks.
+Use the `messages-tuple` streaming mode to stream Large Language Model (LLM)
+outputs **token by token** from any part of your graph, including nodes, tools,
+subgraphs, or tasks.
 
-The streamed output from [`messages-tuple` mode](#supported-stream-modes) is a tuple `(message_chunk, metadata)` where:
+The streamed output from [`messages-tuple` mode](#supported-stream-modes) is a
+tuple `(message_chunk, metadata)` where:
 
 - `message_chunk`: the token or message segment from the LLM.
-- `metadata`: a dictionary containing details about the graph node and LLM invocation.
- 
+- `metadata`: a dictionary containing details about the graph node and LLM
+  invocation.
+
 ??? example "Example graph"
 
     ```python
@@ -741,8 +752,11 @@ The streamed output from [`messages-tuple` mode](#supported-stream-modes) is a t
 
 ### Filter LLM tokens
 
-* To filter the streamed tokens by LLM invocation, you can [associate `tags` with LLM invocations](../../how-tos/streaming.md#filter-by-llm-invocation).
-* To stream tokens only from specific nodes, use `stream_mode="messages"` and [filter the outputs by the `langgraph_node` field](../../how-tos/streaming.md#filter-by-node) in the streamed metadata.
+- To filter the streamed tokens by LLM invocation, you can
+  [associate `tags` with LLM invocations](../../how-tos/streaming.md#filter-by-llm-invocation).
+- To stream tokens only from specific nodes, use `stream_mode="messages"` and
+  [filter the outputs by the `langgraph_node` field](../../how-tos/streaming.md#filter-by-node)
+  in the streamed metadata.
 
 ## Stream custom data
 
@@ -840,7 +854,9 @@ To stream all events, including the state of the graph:
 
 ## Stateless runs
 
-If you don't want to **persist the outputs** of a streaming run in the [checkpointer](../../concepts/persistence.md) DB, you can create a stateless run without creating a thread:
+If you don't want to **persist the outputs** of a streaming run in the
+[checkpointer](../../concepts/persistence.md) DB, you can create a stateless run
+without creating a thread:
 
 === "Python"
 
@@ -900,7 +916,11 @@ If you don't want to **persist the outputs** of a streaming run in the [checkpoi
 
 ## Join and stream
 
-LangGraph Platform allows you to join an active [background run](../how-tos/background_run.md) and stream outputs from it. To do so, you can use [LangGraph SDK's](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/python_sdk_ref/) `client.runs.join_stream` method:
+LangGraph Platform allows you to join an active
+[background run](../how-tos/background_run.md) and stream outputs from it. To do
+so, you can use
+[LangGraph SDK's](https://langchain-ai.github.io/langgraph/cloud/reference/sdk/python_sdk_ref/)
+`client.runs.join_stream` method:
 
 === "Python"
 
@@ -918,7 +938,6 @@ LangGraph Platform allows you to join an active [background run](../how-tos/back
     ```
 
     1. This is the `run_id` of an existing run you want to join.
-
 
 === "JavaScript"
 
@@ -954,4 +973,5 @@ LangGraph Platform allows you to join an active [background run](../how-tos/back
 
 ## API Reference
 
-For API usage and implementation, refer to the [API reference](../reference/api/api_ref.html#tag/thread-runs/POST/threads/{thread_id}/runs/stream). 
+For API usage and implementation, refer to the
+[API reference](../reference/api/api_ref.html#tag/thread-runs/POST/threads/{thread_id}/runs/stream).

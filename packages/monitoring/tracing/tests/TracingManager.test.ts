@@ -140,7 +140,7 @@ describe('TracingManager', () => {
           type: 'otlp',
           endpoint: 'http://localhost:4318/v1/traces',
           headers: {
-            'Authorization': 'Bearer token',
+            Authorization: 'Bearer token',
           },
         },
       });

@@ -31,36 +31,50 @@ export class PromptFormatter {
     sections.push('**Core Intent:**');
     sections.push(`- Primary Objective: ${result.deconstructResult.coreIntent.primaryObjective}`);
     sections.push(`- Desired Outcome: ${result.deconstructResult.coreIntent.desiredOutcome}`);
-    sections.push(`- Action Verbs: ${result.deconstructResult.coreIntent.actionVerbs.join(', ')}\n`);
+    sections.push(
+      `- Action Verbs: ${result.deconstructResult.coreIntent.actionVerbs.join(', ')}\n`
+    );
 
     sections.push('**Key Entities:**');
     sections.push(`- Domain: ${result.deconstructResult.keyEntities.domain}`);
-    sections.push(`- Subjects: ${result.deconstructResult.keyEntities.subjects.join(', ') || 'None identified'}`);
-    sections.push(`- Context: ${result.deconstructResult.keyEntities.context.join(', ') || 'None identified'}\n`);
+    sections.push(
+      `- Subjects: ${result.deconstructResult.keyEntities.subjects.join(', ') || 'None identified'}`
+    );
+    sections.push(
+      `- Context: ${result.deconstructResult.keyEntities.context.join(', ') || 'None identified'}\n`
+    );
 
     sections.push('**Gap Analysis:**');
-    sections.push(`- Critical Gaps: ${result.deconstructResult.gapAnalysis.criticalGaps.join(', ') || 'None'}`);
-    sections.push(`- Missing Elements: ${result.deconstructResult.gapAnalysis.missing.join(', ') || 'None'}\n`);
+    sections.push(
+      `- Critical Gaps: ${result.deconstructResult.gapAnalysis.criticalGaps.join(', ') || 'None'}`
+    );
+    sections.push(
+      `- Missing Elements: ${result.deconstructResult.gapAnalysis.missing.join(', ') || 'None'}\n`
+    );
 
     // 2. DIAGNOSE
     sections.push('### 2️⃣ DIAGNOSE\n');
     sections.push('**Quality Metrics:**');
     sections.push(`- Clarity Score: ${result.diagnoseResult.clarityScore.score}/10`);
     sections.push(`- Specificity Score: ${result.diagnoseResult.specificityCheck.score}/10`);
-    sections.push(`- Completeness: ${result.diagnoseResult.completenessMatrix.completenessPercentage}%`);
+    sections.push(
+      `- Completeness: ${result.diagnoseResult.completenessMatrix.completenessPercentage}%`
+    );
     sections.push(`- Complexity Level: ${result.diagnoseResult.complexityAssessment.level}\n`);
 
     // 3. DEVELOP
     sections.push('### 3️⃣ DEVELOP\n');
     sections.push('**Strategy Selection:**');
     sections.push(`- Type: ${result.developResult.strategySelection.primaryType}`);
-    sections.push(`- Confidence: ${(result.developResult.strategySelection.confidence * 100).toFixed(1)}%`);
+    sections.push(
+      `- Confidence: ${(result.developResult.strategySelection.confidence * 100).toFixed(1)}%`
+    );
     sections.push(`- Reasoning: ${result.developResult.strategySelection.reasoning}\n`);
 
     sections.push('**Techniques Applied:**');
     result.developResult.techniques
-      .filter(t => t.applied)
-      .forEach(technique => {
+      .filter((t) => t.applied)
+      .forEach((technique) => {
         sections.push(`- ✅ ${technique.technique} (Impact: ${technique.impact})`);
         sections.push(`  ${technique.description}`);
       });
@@ -74,7 +88,7 @@ export class PromptFormatter {
     sections.push(`- Perspective: ${result.deliverResult.roleAssignment.perspective}\n`);
 
     sections.push('**Verification Protocol:**');
-    result.deliverResult.verificationProtocol.successCriteria.forEach(criterion => {
+    result.deliverResult.verificationProtocol.successCriteria.forEach((criterion) => {
       sections.push(`- ✓ ${criterion}`);
     });
     sections.push('');
@@ -90,13 +104,13 @@ export class PromptFormatter {
     sections.push('---\n');
     sections.push('## Optimization Rationale\n');
     sections.push('**Key Improvements:**');
-    result.optimizationRationale.keyImprovements.forEach(improvement => {
+    result.optimizationRationale.keyImprovements.forEach((improvement) => {
       sections.push(`- ${improvement}`);
     });
     sections.push('');
 
     sections.push('**Why It Matters:**');
-    result.optimizationRationale.whyItMatters.forEach(reason => {
+    result.optimizationRationale.whyItMatters.forEach((reason) => {
       sections.push(`- ${reason}`);
     });
     sections.push('');
@@ -158,7 +172,7 @@ export class PromptFormatter {
     let currentSection: Section | null = null;
     let order = 0;
 
-    lines.forEach(line => {
+    lines.forEach((line) => {
       // Check if line is a header
       const headerMatch = line.match(/^(#{1,6})\s+(.+)$/);
       if (headerMatch) {
@@ -172,7 +186,7 @@ export class PromptFormatter {
           title: headerMatch[2],
           content: '',
           order: order++,
-          required: true
+          required: true,
         };
       } else if (currentSection) {
         // Add to current section
@@ -191,11 +205,7 @@ export class PromptFormatter {
   /**
    * Format role assignment
    */
-  static formatRoleAssignment(
-    persona: string,
-    expertise: string,
-    capabilities: string[]
-  ): string {
+  static formatRoleAssignment(persona: string, expertise: string, capabilities: string[]): string {
     const lines: string[] = [];
 
     lines.push('# ROLE & EXPERTISE\n');
@@ -203,7 +213,7 @@ export class PromptFormatter {
 
     if (capabilities.length > 0) {
       lines.push('**Capabilities:**');
-      capabilities.forEach(capability => {
+      capabilities.forEach((capability) => {
         lines.push(`- ${capability}`);
       });
       lines.push('');
@@ -215,17 +225,14 @@ export class PromptFormatter {
   /**
    * Format verification protocol
    */
-  static formatVerificationProtocol(
-    qualityChecks: string[],
-    successCriteria: string[]
-  ): string {
+  static formatVerificationProtocol(qualityChecks: string[], successCriteria: string[]): string {
     const lines: string[] = [];
 
     lines.push('# VERIFICATION PROTOCOL\n');
 
     if (qualityChecks.length > 0) {
       lines.push('## Quality Checks');
-      qualityChecks.forEach(check => {
+      qualityChecks.forEach((check) => {
         lines.push(`- [ ] ${check}`);
       });
       lines.push('');
@@ -233,7 +240,7 @@ export class PromptFormatter {
 
     if (successCriteria.length > 0) {
       lines.push('## Success Criteria');
-      successCriteria.forEach(criterion => {
+      successCriteria.forEach((criterion) => {
         lines.push(`- [ ] ${criterion}`);
       });
       lines.push('');
@@ -256,7 +263,7 @@ export class PromptFormatter {
 
     if (background.length > 0) {
       lines.push('## Background');
-      background.forEach(item => {
+      background.forEach((item) => {
         lines.push(`- ${item}`);
       });
       lines.push('');
@@ -264,7 +271,7 @@ export class PromptFormatter {
 
     if (domainKnowledge.length > 0) {
       lines.push('## Domain Knowledge');
-      domainKnowledge.forEach(item => {
+      domainKnowledge.forEach((item) => {
         lines.push(`- ${item}`);
       });
       lines.push('');
@@ -272,7 +279,7 @@ export class PromptFormatter {
 
     if (assumptions.length > 0) {
       lines.push('## Assumptions');
-      assumptions.forEach(item => {
+      assumptions.forEach((item) => {
         lines.push(`- ${item}`);
       });
       lines.push('');
@@ -310,7 +317,9 @@ export class PromptFormatter {
     lines.push(`**Strategy**: ${result.developResult.strategySelection.primaryType}`);
     lines.push(`**Complexity**: ${result.diagnoseResult.complexityAssessment.level}`);
     lines.push(`**Quality Score**: ${result.diagnoseResult.overallQualityScore.toFixed(1)}/10`);
-    lines.push(`**Improvements**: Clarity +${result.metrics.clarityImprovement.toFixed(1)}%, Specificity +${result.metrics.specificityImprovement.toFixed(1)}%, Completeness +${result.metrics.completenessImprovement.toFixed(1)}%`);
+    lines.push(
+      `**Improvements**: Clarity +${result.metrics.clarityImprovement.toFixed(1)}%, Specificity +${result.metrics.specificityImprovement.toFixed(1)}%, Completeness +${result.metrics.completenessImprovement.toFixed(1)}%`
+    );
 
     return lines.join('\n');
   }

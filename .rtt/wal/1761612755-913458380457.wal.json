@@ -1,0 +1,26 @@
+{
+  "root": "91345838045785e6be3274c0bd3972108a23bfda8eef4252f7a87a3c149efb1e",
+  "frame": {
+    "ts": 1761612755.5318148,
+    "plan_id": "sha256-0cadf8779fae95b38bef22b9cf1d913ea1087d876ab36685a0fc8be621a3388d",
+    "apply": [
+      {
+        "from": "rtt://ui/hook/refresh",
+        "to": "rtt://core/api/metrics",
+        "lane": "shm"
+      },
+      {
+        "from": "rtt://core/bus/events",
+        "to": "rtt://obs/extension/logger#ndjson",
+        "lane": "uds"
+      },
+      {
+        "from": "rtt://core/api/auth",
+        "to": "rtt://idp/api/auth",
+        "lane": "shm"
+      }
+    ],
+    "remove": [],
+    "prev": "1a96ce0e5a428ff7e4c33fa66ff689dea8237647fb4303927595f2b1354e984f"
+  }
+}

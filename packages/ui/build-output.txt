@@ -1,0 +1,16 @@
+
+> @noa/ui@1.0.0 build /home/deflex/noa-server/packages/ui
+> tsc && vite build
+
+[31mfailed to load config from /home/deflex/noa-server/packages/ui/vite.config.ts[39m
+[31merror during build:
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'vite-plugin-compression2' imported from /home/deflex/noa-server/packages/ui/node_modules/.vite-temp/vite.config.ts.timestamp-1761278266969-e778334d6f4ad.mjs
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36)[39m
+ ELIFECYCLE  Command failed with exit code 1.

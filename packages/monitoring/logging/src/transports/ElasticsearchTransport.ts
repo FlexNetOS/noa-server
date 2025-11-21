@@ -54,7 +54,8 @@ export class ElasticsearchTransport {
     this.client = new Client(clientConfig);
 
     // Create Winston Elasticsearch transport
-    const indexPrefix = this.config.indexPrefix || `${this.config.index}-${this.config.environment}`;
+    const indexPrefix =
+      this.config.indexPrefix || `${this.config.index}-${this.config.environment}`;
 
     this.transport = new WinstonElasticsearch({
       level: this.config.level,

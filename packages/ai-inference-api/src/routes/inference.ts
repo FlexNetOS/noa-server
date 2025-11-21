@@ -47,23 +47,27 @@ const router = Router();
  *       500:
  *         description: Internal server error
  */
-router.post('/chat', [
-  body('messages').isArray().withMessage('Messages must be an array'),
-  body('model').isString().withMessage('Model is required'),
-], async (req: Request, res: Response) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+router.post(
+  '/chat',
+  [
+    body('messages').isArray().withMessage('Messages must be an array'),
+    body('model').isString().withMessage('Model is required'),
+  ],
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
-  try {
-    const { messages, model, config } = req.body;
-    const response = await aiService.createChatCompletion(messages, model, config);
-    res.json(response);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to generate chat completion' });
+    try {
+      const { messages, model, config } = req.body;
+      const response = await aiService.createChatCompletion(messages, model, config);
+      res.json(response);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to generate chat completion' });
+    }
   }
-});
+);
 
 /**
  * @swagger
@@ -97,22 +101,26 @@ router.post('/chat', [
  *       500:
  *         description: Internal server error
  */
-router.post('/embeddings', [
-  body('input').notEmpty().withMessage('Input is required'),
-  body('model').isString().withMessage('Model is required'),
-], async (req: Request, res: Response) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+router.post(
+  '/embeddings',
+  [
+    body('input').notEmpty().withMessage('Input is required'),
+    body('model').isString().withMessage('Model is required'),
+  ],
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
-  try {
-    const { input, model } = req.body;
-    const response = await aiService.createEmbedding(input, model);
-    res.json(response);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to generate embeddings' });
+    try {
+      const { input, model } = req.body;
+      const response = await aiService.createEmbedding(input, model);
+      res.json(response);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to generate embeddings' });
+    }
   }
-});
+);
 
 export default router;

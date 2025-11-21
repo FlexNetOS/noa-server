@@ -1,0 +1,58 @@
+name: Claude Squad - Release
+
+on:
+  push:
+    tags:
+      - 'claude-squad-v*'
+
+jobs:
+  build:
+    permissions: write-all
+    name: Build Release
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./claude-squad
+
+    steps:
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+        with:
+          fetch-depth: 0
+
+      - name: Validate tag matches version in main.go
+        run: |
+          # Extract version from main.go
+          VERSION=$(grep -E '^[[:space:]]*version[[:space:]]*=' main.go | sed -E 's/.*"([^"]+)".*/\1/')
+
+          # Get the tag name (remove refs/tags/ prefix)
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+
+          # Remove 'v' prefix from tag if present
+          TAG_VERSION=${TAG_NAME#v}
+
+          echo "Version in main.go: $VERSION"
+          echo "Tag version: $TAG_VERSION"
+
+          # Compare versions
+          if [ "$VERSION" != "$TAG_VERSION" ]; then
+            echo "ERROR: Tag version ($TAG_VERSION) does not match version in main.go ($VERSION)"
+            echo "Please ensure the tag matches the version defined in main.go"
+            exit 1
+          fi
+
+          echo "✅ Tag version matches main.go version: $VERSION"
+
+      - name: Set up Go 1.23
+        uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7
+        with:
+          go-version: '1.23'
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@90a3faa9d0182683851fbfa97ca1a2cb983bfca3
+        with:
+          version: latest
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HOMEBREW_REPO_TOKEN: ${{ secrets.BREW_TOKEN }}

@@ -63,7 +63,13 @@ export interface ComplexityMetrics {
 }
 
 export interface SecurityHint {
-  category: 'injection' | 'authentication' | 'authorization' | 'cryptography' | 'sensitive-data' | 'validation';
+  category:
+    | 'injection'
+    | 'authentication'
+    | 'authorization'
+    | 'cryptography'
+    | 'sensitive-data'
+    | 'validation';
   description: string;
   location: CodeLocation;
   confidence: number;
@@ -230,7 +236,9 @@ export class NeuralCodeAnalyzer {
   private buildAnalysisPrompt(code: string, fileType: string, fileName?: string): string {
     const sections: string[] = [];
 
-    sections.push(`You are an expert code analyst with deep understanding of software engineering principles.`);
+    sections.push(
+      `You are an expert code analyst with deep understanding of software engineering principles.`
+    );
     sections.push(`Analyze the following ${fileType} code comprehensively.`);
     if (fileName) {
       sections.push(`File: ${fileName}`);
@@ -241,41 +249,45 @@ export class NeuralCodeAnalyzer {
     sections.push(`Provide a comprehensive analysis in JSON format with the following structure:`);
 
     const analysisTemplate = {
-      summary: "Brief overall assessment",
-      overallQuality: "Score 0-100",
-      patterns: this.config.enablePatternDetection ? [
-        {
-          type: "design | architectural | performance | security",
-          name: "Pattern name",
-          description: "What this pattern accomplishes",
-          location: { startLine: 0, endLine: 0, snippet: "code snippet" },
-          confidence: 0.95,
-          severity: "info | low | medium | high | critical",
-          recommendation: "How to use or improve this pattern"
-        }
-      ] : [],
-      antiPatterns: this.config.enableAntiPatterns ? [
-        {
-          name: "Anti-pattern name",
-          description: "Why this is problematic",
-          location: { startLine: 0, endLine: 0, snippet: "code snippet" },
-          confidence: 0.85,
-          severity: "low | medium | high | critical",
-          impact: "Consequences",
-          refactoringSuggestion: "How to fix",
-          codeExample: "Better approach"
-        }
-      ] : [],
+      summary: 'Brief overall assessment',
+      overallQuality: 'Score 0-100',
+      patterns: this.config.enablePatternDetection
+        ? [
+            {
+              type: 'design | architectural | performance | security',
+              name: 'Pattern name',
+              description: 'What this pattern accomplishes',
+              location: { startLine: 0, endLine: 0, snippet: 'code snippet' },
+              confidence: 0.95,
+              severity: 'info | low | medium | high | critical',
+              recommendation: 'How to use or improve this pattern',
+            },
+          ]
+        : [],
+      antiPatterns: this.config.enableAntiPatterns
+        ? [
+            {
+              name: 'Anti-pattern name',
+              description: 'Why this is problematic',
+              location: { startLine: 0, endLine: 0, snippet: 'code snippet' },
+              confidence: 0.85,
+              severity: 'low | medium | high | critical',
+              impact: 'Consequences',
+              refactoringSuggestion: 'How to fix',
+              codeExample: 'Better approach',
+            },
+          ]
+        : [],
       codeSmells: [
         {
-          type: "complexity | duplication | coupling | cohesion | naming | length",
-          name: "Smell name",
+          type: 'complexity | duplication | coupling | cohesion | naming | length',
+          name: 'Smell name',
           description: "What's wrong",
           location: { startLine: 0, endLine: 0 },
           confidence: 0.8,
-          severity: "minor | moderate | major",
-          suggestion: "How to improve"
-        }
+          severity: 'minor | moderate | major',
+          suggestion: 'How to improve',
+        },
       ],
       complexity: {
         cyclomaticComplexity: 0,
@@ -283,31 +295,36 @@ export class NeuralCodeAnalyzer {
         nestingDepth: 0,
         linesOfCode: 0,
         maintainabilityIndex: 0,
-        technicalDebt: "Estimate"
+        technicalDebt: 'Estimate',
       },
-      securityHints: this.config.enableSecurityAnalysis ? [
-        {
-          category: "injection | authentication | authorization | cryptography | sensitive-data | validation",
-          description: "Security concern",
-          location: { startLine: 0, endLine: 0 },
-          confidence: 0.9,
-          severity: "low | medium | high | critical",
-          cwe: "CWE-xxx",
-          remediation: "How to secure",
-          secureExample: "Secure code"
-        }
-      ] : [],
-      performanceHotspots: this.config.enablePerformanceAnalysis ? [
-        {
-          type: "algorithmic | memory | io | network | database",
-          description: "Performance issue",
-          location: { startLine: 0, endLine: 0 },
-          confidence: 0.85,
-          impact: "low | medium | high",
-          optimization: "How to optimize",
-          estimatedGain: "Expected improvement"
-        }
-      ] : [],
+      securityHints: this.config.enableSecurityAnalysis
+        ? [
+            {
+              category:
+                'injection | authentication | authorization | cryptography | sensitive-data | validation',
+              description: 'Security concern',
+              location: { startLine: 0, endLine: 0 },
+              confidence: 0.9,
+              severity: 'low | medium | high | critical',
+              cwe: 'CWE-xxx',
+              remediation: 'How to secure',
+              secureExample: 'Secure code',
+            },
+          ]
+        : [],
+      performanceHotspots: this.config.enablePerformanceAnalysis
+        ? [
+            {
+              type: 'algorithmic | memory | io | network | database',
+              description: 'Performance issue',
+              location: { startLine: 0, endLine: 0 },
+              confidence: 0.85,
+              impact: 'low | medium | high',
+              optimization: 'How to optimize',
+              estimatedGain: 'Expected improvement',
+            },
+          ]
+        : [],
       dependencyAnalysis: {
         imports: [],
         exports: [],
@@ -315,7 +332,7 @@ export class NeuralCodeAnalyzer {
         externalDependencies: [],
         circularDependencies: [],
         unusedDependencies: [],
-        dependencyGraph: {}
+        dependencyGraph: {},
       },
       architectureConformance: {
         conforms: true,
@@ -323,21 +340,21 @@ export class NeuralCodeAnalyzer {
         layerAnalysis: [],
         cohesion: 0.8,
         coupling: 0.3,
-        recommendations: []
+        recommendations: [],
       },
       refactoringSuggestions: [
         {
-          type: "extract-method | rename | move | inline | simplify | decompose",
-          description: "What to refactor",
+          type: 'extract-method | rename | move | inline | simplify | decompose',
+          description: 'What to refactor',
           location: { startLine: 0, endLine: 0 },
-          priority: "low | medium | high",
-          effort: "small | medium | large",
-          benefit: "Expected benefit",
-          before: "Current code",
-          after: "Improved code"
-        }
+          priority: 'low | medium | high',
+          effort: 'small | medium | large',
+          benefit: 'Expected benefit',
+          before: 'Current code',
+          after: 'Improved code',
+        },
       ],
-      confidence: 0.85
+      confidence: 0.85,
     };
 
     sections.push(`\n${JSON.stringify(analysisTemplate, null, 2)}`);
@@ -364,10 +381,14 @@ export class NeuralCodeAnalyzer {
       const args = [
         this.llamaBridgePath,
         'chat',
-        '--prompt', prompt,
-        '--context-size', this.config.contextSize.toString(),
-        '--temperature', this.config.temperature.toString(),
-        '--max-tokens', this.config.maxTokens.toString()
+        '--prompt',
+        prompt,
+        '--context-size',
+        this.config.contextSize.toString(),
+        '--temperature',
+        this.config.temperature.toString(),
+        '--max-tokens',
+        this.config.maxTokens.toString(),
       ];
 
       if (this.config.modelPath) {
@@ -454,11 +475,15 @@ export class NeuralCodeAnalyzer {
       securityHints: this.normalizeSecurityHints(parsed.securityHints || []),
       performanceHotspots: this.normalizePerformanceHotspots(parsed.performanceHotspots || []),
       dependencyAnalysis: this.normalizeDependencyAnalysis(parsed.dependencyAnalysis || {}),
-      architectureConformance: this.normalizeArchitectureConformance(parsed.architectureConformance || {}),
-      refactoringSuggestions: this.normalizeRefactoringSuggestions(parsed.refactoringSuggestions || []),
+      architectureConformance: this.normalizeArchitectureConformance(
+        parsed.architectureConformance || {}
+      ),
+      refactoringSuggestions: this.normalizeRefactoringSuggestions(
+        parsed.refactoringSuggestions || []
+      ),
       confidence: this.normalizeScore(parsed.confidence),
       processingTime: 0, // Will be set by caller
-      modelUsed: '' // Will be set by caller
+      modelUsed: '', // Will be set by caller
     };
   }
 
@@ -484,7 +509,7 @@ export class NeuralCodeAnalyzer {
         nestingDepth: 0,
         linesOfCode: lines.length,
         maintainabilityIndex: 50,
-        technicalDebt: 'Unknown'
+        technicalDebt: 'Unknown',
       },
       securityHints: [],
       performanceHotspots: [],
@@ -495,7 +520,7 @@ export class NeuralCodeAnalyzer {
         externalDependencies: [],
         circularDependencies: [],
         unusedDependencies: [],
-        dependencyGraph: {}
+        dependencyGraph: {},
       },
       architectureConformance: {
         conforms: true,
@@ -503,12 +528,12 @@ export class NeuralCodeAnalyzer {
         layerAnalysis: [],
         cohesion: 0.5,
         coupling: 0.5,
-        recommendations: ['Neural analysis failed - using static analysis fallback']
+        recommendations: ['Neural analysis failed - using static analysis fallback'],
       },
       refactoringSuggestions: [],
       confidence: 0.3,
       processingTime: 0,
-      modelUsed: ''
+      modelUsed: '',
     };
   }
 
@@ -520,7 +545,7 @@ export class NeuralCodeAnalyzer {
   }
 
   private normalizePatterns(patterns: any[]): CodePattern[] {
-    return patterns.map(p => ({
+    return patterns.map((p) => ({
       type: p.type || 'design',
       name: p.name || 'Unknown Pattern',
       description: p.description || '',
@@ -528,12 +553,12 @@ export class NeuralCodeAnalyzer {
       confidence: this.normalizeScore(p.confidence) / 100,
       severity: p.severity || 'info',
       recommendation: p.recommendation || '',
-      examples: p.examples || []
+      examples: p.examples || [],
     }));
   }
 
   private normalizeAntiPatterns(antiPatterns: any[]): AntiPattern[] {
-    return antiPatterns.map(ap => ({
+    return antiPatterns.map((ap) => ({
       name: ap.name || 'Unknown Anti-Pattern',
       description: ap.description || '',
       location: this.normalizeLocation(ap.location),
@@ -541,19 +566,19 @@ export class NeuralCodeAnalyzer {
       severity: ap.severity || 'medium',
       impact: ap.impact || '',
       refactoringSuggestion: ap.refactoringSuggestion || '',
-      codeExample: ap.codeExample
+      codeExample: ap.codeExample,
     }));
   }
 
   private normalizeCodeSmells(smells: any[]): CodeSmell[] {
-    return smells.map(s => ({
+    return smells.map((s) => ({
       type: s.type || 'complexity',
       name: s.name || 'Code Smell',
       description: s.description || '',
       location: this.normalizeLocation(s.location),
       confidence: this.normalizeScore(s.confidence) / 100,
       severity: s.severity || 'moderate',
-      suggestion: s.suggestion || ''
+      suggestion: s.suggestion || '',
     }));
   }
 
@@ -564,12 +589,12 @@ export class NeuralCodeAnalyzer {
       nestingDepth: complexity.nestingDepth || 0,
       linesOfCode: complexity.linesOfCode || 0,
       maintainabilityIndex: this.normalizeScore(complexity.maintainabilityIndex),
-      technicalDebt: complexity.technicalDebt || 'Unknown'
+      technicalDebt: complexity.technicalDebt || 'Unknown',
     };
   }
 
   private normalizeSecurityHints(hints: any[]): SecurityHint[] {
-    return hints.map(h => ({
+    return hints.map((h) => ({
       category: h.category || 'validation',
       description: h.description || '',
       location: this.normalizeLocation(h.location),
@@ -577,19 +602,19 @@ export class NeuralCodeAnalyzer {
       severity: h.severity || 'medium',
       cwe: h.cwe,
       remediation: h.remediation || '',
-      secureExample: h.secureExample
+      secureExample: h.secureExample,
     }));
   }
 
   private normalizePerformanceHotspots(hotspots: any[]): PerformanceHotspot[] {
-    return hotspots.map(h => ({
+    return hotspots.map((h) => ({
       type: h.type || 'algorithmic',
       description: h.description || '',
       location: this.normalizeLocation(h.location),
       confidence: this.normalizeScore(h.confidence) / 100,
       impact: h.impact || 'medium',
       optimization: h.optimization || '',
-      estimatedGain: h.estimatedGain
+      estimatedGain: h.estimatedGain,
     }));
   }
 
@@ -601,7 +626,7 @@ export class NeuralCodeAnalyzer {
       externalDependencies: deps.externalDependencies || [],
       circularDependencies: deps.circularDependencies || [],
       unusedDependencies: deps.unusedDependencies || [],
-      dependencyGraph: deps.dependencyGraph || {}
+      dependencyGraph: deps.dependencyGraph || {},
     };
   }
 
@@ -612,12 +637,12 @@ export class NeuralCodeAnalyzer {
       layerAnalysis: arch.layerAnalysis || [],
       cohesion: this.normalizeScore(arch.cohesion) / 100,
       coupling: this.normalizeScore(arch.coupling) / 100,
-      recommendations: arch.recommendations || []
+      recommendations: arch.recommendations || [],
     };
   }
 
   private normalizeRefactoringSuggestions(suggestions: any[]): RefactoringSuggestion[] {
-    return suggestions.map(s => ({
+    return suggestions.map((s) => ({
       type: s.type || 'simplify',
       description: s.description || '',
       location: this.normalizeLocation(s.location),
@@ -625,7 +650,7 @@ export class NeuralCodeAnalyzer {
       effort: s.effort || 'medium',
       benefit: s.benefit || '',
       before: s.before,
-      after: s.after
+      after: s.after,
     }));
   }
 
@@ -634,7 +659,7 @@ export class NeuralCodeAnalyzer {
       file: loc?.file,
       startLine: loc?.startLine || 1,
       endLine: loc?.endLine || 1,
-      snippet: loc?.snippet
+      snippet: loc?.snippet,
     };
   }
 
@@ -666,7 +691,7 @@ export class NeuralCodeAnalyzer {
       '.java': 'java',
       '.cpp': 'cpp',
       '.cc': 'cpp',
-      '.cxx': 'cpp'
+      '.cxx': 'cpp',
     };
     return typeMap[ext] || 'typescript';
   }
@@ -686,8 +711,10 @@ export class NeuralCodeAnalyzer {
 
     if (analysis.patterns.length > 0) {
       sections.push(`## Detected Patterns (${analysis.patterns.length})\n`);
-      analysis.patterns.forEach(p => {
-        sections.push(`- **${p.name}** (${p.type}, confidence: ${(p.confidence * 100).toFixed(1)}%)`);
+      analysis.patterns.forEach((p) => {
+        sections.push(
+          `- **${p.name}** (${p.type}, confidence: ${(p.confidence * 100).toFixed(1)}%)`
+        );
         sections.push(`  ${p.description}`);
         sections.push(`  *Recommendation:* ${p.recommendation}\n`);
       });
@@ -695,7 +722,7 @@ export class NeuralCodeAnalyzer {
 
     if (analysis.antiPatterns.length > 0) {
       sections.push(`## Anti-Patterns (${analysis.antiPatterns.length})\n`);
-      analysis.antiPatterns.forEach(ap => {
+      analysis.antiPatterns.forEach((ap) => {
         sections.push(`- **${ap.name}** [${ap.severity.toUpperCase()}]`);
         sections.push(`  ${ap.description}`);
         sections.push(`  *Impact:* ${ap.impact}`);
@@ -705,7 +732,7 @@ export class NeuralCodeAnalyzer {
 
     if (analysis.securityHints.length > 0) {
       sections.push(`## Security Concerns (${analysis.securityHints.length})\n`);
-      analysis.securityHints.forEach(h => {
+      analysis.securityHints.forEach((h) => {
         sections.push(`- **${h.category}** [${h.severity.toUpperCase()}]`);
         sections.push(`  ${h.description}`);
         if (h.cwe) sections.push(`  CWE: ${h.cwe}`);
@@ -721,7 +748,7 @@ export class NeuralCodeAnalyzer {
 
     if (analysis.refactoringSuggestions.length > 0) {
       sections.push(`## Refactoring Suggestions (${analysis.refactoringSuggestions.length})\n`);
-      analysis.refactoringSuggestions.forEach(s => {
+      analysis.refactoringSuggestions.forEach((s) => {
         sections.push(`- **${s.type}** [${s.priority} priority, ${s.effort} effort]`);
         sections.push(`  ${s.description}`);
         sections.push(`  *Benefit:* ${s.benefit}\n`);

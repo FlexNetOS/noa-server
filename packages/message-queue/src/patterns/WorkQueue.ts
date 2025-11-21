@@ -79,7 +79,7 @@ export class WorkQueue extends EventEmitter {
       }
     });
 
-    jobsToReassign.forEach(jobId => {
+    jobsToReassign.forEach((jobId) => {
       this.processingJobs.delete(jobId);
       // Re-queue the job for another worker
       this.emit('job-reassigned', { jobId, oldWorkerId: workerId });
@@ -113,8 +113,8 @@ export class WorkQueue extends EventEmitter {
         timestamp: new Date(),
         priority: job.priority,
         retryCount: job.retryCount,
-        maxRetries: job.maxRetries
-      }
+        maxRetries: job.maxRetries,
+      },
     };
 
     await this.queueManager.sendMessage(this.queueName, message);
@@ -145,16 +145,16 @@ export class WorkQueue extends EventEmitter {
             this.emit('job-assigned', {
               queueName: this.queueName,
               jobId: job.id,
-              workerId
+              workerId,
             });
 
             // Process job asynchronously
-            this.processJob(job, workerId, message.id).catch(error => {
+            this.processJob(job, workerId, message.id).catch((error) => {
               this.emit('job-processing-error', {
                 queueName: this.queueName,
                 jobId: job.id,
                 workerId,
-                error: error.message
+                error: error.message,
               });
             });
           } else {
@@ -162,22 +162,21 @@ export class WorkQueue extends EventEmitter {
             // The message will remain in the queue for later processing
             this.emit('no-workers-available', {
               queueName: this.queueName,
-              jobId: job.id
+              jobId: job.id,
             });
           }
         }
 
         // Small delay to prevent tight loop
-        await new Promise(resolve => setTimeout(resolve, 100));
-
+        await new Promise((resolve) => setTimeout(resolve, 100));
       } catch (error) {
         this.emit('queue-processing-error', {
           queueName: this.queueName,
-          error: (error as Error).message
+          error: (error as Error).message,
         });
 
         // Wait longer on error
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     }
   }
@@ -205,9 +204,8 @@ export class WorkQueue extends EventEmitter {
         fail: async (error: string) => {
           await this.queueManager.failJob(job.id, error);
           this.processingJobs.delete(job.id);
-        }
+        },
       });
-
     } catch (error) {
       // Job processing failed
       await this.queueManager.failJob(job.id, (error as Error).message);
@@ -217,7 +215,7 @@ export class WorkQueue extends EventEmitter {
         queueName: this.queueName,
         jobId: job.id,
         workerId,
-        error: (error as Error).message
+        error: (error as Error).message,
       });
     }
   }
@@ -231,7 +229,7 @@ export class WorkQueue extends EventEmitter {
       isRunning: this.isRunning,
       workerCount: this.workers.size,
       processingJobs: this.processingJobs.size,
-      workers: Array.from(this.workers)
+      workers: Array.from(this.workers),
     };
   }
 }

@@ -41,7 +41,7 @@ class SelfHealingSystem {
         strategy: strategy.name,
         result,
         timestamp: new Date().toISOString(),
-        success: result.success
+        success: result.success,
       });
 
       return result;
@@ -53,7 +53,7 @@ class SelfHealingSystem {
         strategy: strategy.name,
         error: error.message,
         timestamp: new Date().toISOString(),
-        success: false
+        success: false,
       });
 
       // Attempt fallback strategy
@@ -69,33 +69,33 @@ class SelfHealingSystem {
       'service-down': {
         name: 'service-restart',
         priority: 1,
-        handler: this.restartServiceStrategy.bind(this)
+        handler: this.restartServiceStrategy.bind(this),
       },
       'high-error-rate': {
         name: 'restart-with-safe-mode',
         priority: 2,
-        handler: this.safeRestartStrategy.bind(this)
+        handler: this.safeRestartStrategy.bind(this),
       },
       'dependency-failure': {
         name: 'dependency-check',
         priority: 1,
-        handler: this.dependencyCheckStrategy.bind(this)
+        handler: this.dependencyCheckStrategy.bind(this),
       },
       'memory-leak': {
         name: 'graceful-restart',
         priority: 2,
-        handler: this.gracefulRestartStrategy.bind(this)
+        handler: this.gracefulRestartStrategy.bind(this),
       },
       'performance-degradation': {
         name: 'scale-up',
         priority: 3,
-        handler: this.scaleUpStrategy.bind(this)
+        handler: this.scaleUpStrategy.bind(this),
       },
       'deployment-failure': {
         name: 'rollback',
         priority: 1,
-        handler: this.rollbackStrategy.bind(this)
-      }
+        handler: this.rollbackStrategy.bind(this),
+      },
     };
 
     return strategies[issue.type] || strategies['service-down'];
@@ -201,7 +201,7 @@ class SelfHealingSystem {
         await this.heal({
           type: 'service-down',
           service: dep,
-          source: 'dependency-check'
+          source: 'dependency-check',
         });
       }
     }
@@ -215,7 +215,7 @@ class SelfHealingSystem {
     return {
       success: failedDeps.length === 0,
       action: 'dependency-check',
-      healedDependencies: failedDeps
+      healedDependencies: failedDeps,
     };
   }
 
@@ -279,7 +279,10 @@ class SelfHealingSystem {
       return { success: false, reason: 'rollback-disabled' };
     }
 
-    if (this.config.strategies.rollback.approvalRequired && !this.config.strategies.rollback.automatic) {
+    if (
+      this.config.strategies.rollback.approvalRequired &&
+      !this.config.strategies.rollback.automatic
+    ) {
       console.log(`[SELF-HEAL] Rollback requires manual approval`);
       return { success: false, reason: 'approval-required' };
     }
@@ -328,7 +331,7 @@ class SelfHealingSystem {
       severity: 'critical',
       service,
       message: `Service ${service} in graceful degradation mode: ${mode}`,
-      action: 'manual-intervention-required'
+      action: 'manual-intervention-required',
     });
   }
 
@@ -344,7 +347,7 @@ class SelfHealingSystem {
     return {
       success: false,
       action: 'fallback-degradation',
-      mode: 'graceful-degradation'
+      mode: 'graceful-degradation',
     };
   }
 
@@ -387,7 +390,7 @@ class SelfHealingSystem {
     const dependencies = {
       'mcp-server': ['claude-flow'],
       'ui-server': ['mcp-server'],
-      'neural-processing': []
+      'neural-processing': [],
     };
     return dependencies[service] || [];
   }
@@ -489,7 +492,7 @@ class SelfHealingSystem {
   }
 
   delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
 
@@ -510,7 +513,7 @@ async function main() {
     const issue = {
       type: issueType,
       service: service,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     console.log('[SELF-HEAL] Executing healing action...');

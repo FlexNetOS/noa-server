@@ -2,7 +2,9 @@
 
 ## Executive Summary
 
-This document provides a comprehensive overview of the Noa Server infrastructure architecture, deployment strategies, and operational guidelines for Phase 1 implementation.
+This document provides a comprehensive overview of the Noa Server infrastructure
+architecture, deployment strategies, and operational guidelines for Phase 1
+implementation.
 
 ## System Architecture
 
@@ -45,39 +47,43 @@ This document provides a comprehensive overview of the Noa Server infrastructure
 
 ### Service Inventory
 
-| Service | Type | Port | Technology | Purpose |
-|---------|------|------|------------|---------|
-| MCP | Backend | 8001 | Node.js | Model Context Protocol coordination |
-| Claude Flow | Backend | 9100 | Node.js | AI workflow orchestration |
-| UI Dashboard | Frontend | 9200 | Next.js 14 | Web interface |
-| Llama.cpp | ML Service | 9300 | Python/C++ | Neural processing |
-| AgenticOS | Backend | 9400 | Python | Agent system management |
-| PostgreSQL | Database | 5432 | PostgreSQL 16 | Primary data store |
-| Redis | Cache | 6379 | Redis 7 | Session & cache layer |
+| Service      | Type       | Port | Technology    | Purpose                             |
+| ------------ | ---------- | ---- | ------------- | ----------------------------------- |
+| MCP          | Backend    | 8001 | Node.js       | Model Context Protocol coordination |
+| Claude Flow  | Backend    | 9100 | Node.js       | AI workflow orchestration           |
+| UI Dashboard | Frontend   | 9200 | Next.js 14    | Web interface                       |
+| Llama.cpp    | ML Service | 9300 | Python/C++    | Neural processing                   |
+| AgenticOS    | Backend    | 9400 | Python        | Agent system management             |
+| PostgreSQL   | Database   | 5432 | PostgreSQL 16 | Primary data store                  |
+| Redis        | Cache      | 6379 | Redis 7       | Session & cache layer               |
 
 ## Deployment Options
 
 ### Option 1: Docker Compose (Development & Small Production)
 
 **Use Cases:**
+
 - Local development
 - Single-server deployments
 - Testing and QA environments
 - Small production (<1000 users)
 
 **Pros:**
+
 - Simple setup and configuration
 - Easy local development
 - Lower resource requirements
 - Quick iteration
 
 **Cons:**
+
 - Limited scalability
 - Manual orchestration
 - Single point of failure
 - No auto-scaling
 
 **Quick Start:**
+
 ```bash
 cd /home/deflex/noa-server
 docker-compose -f docker/docker-compose.yml up -d
@@ -86,12 +92,14 @@ docker-compose -f docker/docker-compose.yml up -d
 ### Option 2: Kubernetes (Production)
 
 **Use Cases:**
+
 - Production deployments
 - High availability requirements
 - Auto-scaling needs
 - Multi-region deployments
 
 **Pros:**
+
 - Horizontal auto-scaling
 - Self-healing capabilities
 - Rolling updates
@@ -99,12 +107,14 @@ docker-compose -f docker/docker-compose.yml up -d
 - Multi-cloud support
 
 **Cons:**
+
 - Complex setup
 - Higher learning curve
 - More resource overhead
 - Requires cluster management
 
 **Quick Start:**
+
 ```bash
 kubectl apply -k k8s/overlays/prod/
 ```
@@ -112,6 +122,7 @@ kubectl apply -k k8s/overlays/prod/
 ### Option 3: Hybrid (Recommended for Phase 1)
 
 **Strategy:**
+
 - Development: Docker Compose
 - Staging: Kubernetes (single cluster)
 - Production: Kubernetes (multi-cluster)
@@ -121,6 +132,7 @@ kubectl apply -k k8s/overlays/prod/
 ### Container Orchestration
 
 **Docker:**
+
 - Multi-stage builds for optimization
 - Security hardening (non-root, read-only FS)
 - Health checks on all services
@@ -128,6 +140,7 @@ kubectl apply -k k8s/overlays/prod/
 - Volume management for persistence
 
 **Kubernetes:**
+
 - Namespace isolation per environment
 - RBAC for security
 - Horizontal Pod Autoscaling (HPA)
@@ -137,11 +150,13 @@ kubectl apply -k k8s/overlays/prod/
 ### Networking
 
 **Docker Compose:**
+
 - Bridge network (172.28.0.0/16)
 - Service discovery via DNS
 - Port mapping to host
 
 **Kubernetes:**
+
 - ClusterIP services for internal communication
 - Ingress for external access
 - Network policies for security
@@ -150,6 +165,7 @@ kubectl apply -k k8s/overlays/prod/
 ### Storage
 
 **Persistent Volumes:**
+
 - MCP data: 5GB
 - Claude Flow data: 10GB
 - UI Dashboard data: 5GB
@@ -159,6 +175,7 @@ kubectl apply -k k8s/overlays/prod/
 - Redis: 5GB
 
 **Storage Classes:**
+
 - Standard: HDD-backed, default
 - Fast-SSD: SSD-backed for databases
 - Shared: NFS/EFS for multi-pod access
@@ -166,6 +183,7 @@ kubectl apply -k k8s/overlays/prod/
 ### Security
 
 **Docker:**
+
 - Non-root user (UID 1000/1001)
 - Read-only root filesystem
 - Dropped capabilities
@@ -173,6 +191,7 @@ kubectl apply -k k8s/overlays/prod/
 - Image scanning with Trivy
 
 **Kubernetes:**
+
 - Pod Security Standards (restricted)
 - Network policies
 - RBAC authorization
@@ -199,21 +218,22 @@ kubectl apply -k k8s/overlays/prod/
 
 ### Per-Service Resources
 
-| Service | CPU Request | CPU Limit | Memory Request | Memory Limit |
-|---------|-------------|-----------|----------------|--------------|
-| MCP | 250m | 1000m | 256Mi | 512Mi |
-| Claude Flow | 500m | 2000m | 512Mi | 1Gi |
-| UI Dashboard | 250m | 1500m | 384Mi | 768Mi |
-| Llama.cpp | 2000m | 4000m | 2Gi | 4Gi |
-| AgenticOS | 500m | 2000m | 512Mi | 1Gi |
-| PostgreSQL | 250m | 1000m | 256Mi | 512Mi |
-| Redis | 100m | 500m | 128Mi | 256Mi |
+| Service      | CPU Request | CPU Limit | Memory Request | Memory Limit |
+| ------------ | ----------- | --------- | -------------- | ------------ |
+| MCP          | 250m        | 1000m     | 256Mi          | 512Mi        |
+| Claude Flow  | 500m        | 2000m     | 512Mi          | 1Gi          |
+| UI Dashboard | 250m        | 1500m     | 384Mi          | 768Mi        |
+| Llama.cpp    | 2000m       | 4000m     | 2Gi            | 4Gi          |
+| AgenticOS    | 500m        | 2000m     | 512Mi          | 1Gi          |
+| PostgreSQL   | 250m        | 1000m     | 256Mi          | 512Mi        |
+| Redis        | 100m        | 500m      | 128Mi          | 256Mi        |
 
 ## Environment Strategy
 
 ### Development
 
 **Characteristics:**
+
 - Single replica for all services
 - Reduced resource limits
 - Debug logging enabled
@@ -221,6 +241,7 @@ kubectl apply -k k8s/overlays/prod/
 - Mock external APIs
 
 **Configuration:**
+
 ```bash
 NODE_ENV=development
 LOG_LEVEL=debug
@@ -230,6 +251,7 @@ REPLICAS=1
 ### Staging
 
 **Characteristics:**
+
 - Production-like configuration
 - 2 replicas for critical services
 - Info-level logging
@@ -237,6 +259,7 @@ REPLICAS=1
 - Performance testing enabled
 
 **Configuration:**
+
 ```bash
 NODE_ENV=staging
 LOG_LEVEL=info
@@ -246,6 +269,7 @@ REPLICAS=2
 ### Production
 
 **Characteristics:**
+
 - High availability (3+ replicas)
 - Auto-scaling enabled
 - Warn-level logging
@@ -253,6 +277,7 @@ REPLICAS=2
 - Backup automation
 
 **Configuration:**
+
 ```bash
 NODE_ENV=production
 LOG_LEVEL=warn
@@ -265,6 +290,7 @@ MAX_REPLICAS=15
 ### Health Check Endpoints
 
 All services expose:
+
 - `/health` - Liveness probe
 - `/health/ready` - Readiness probe
 - `/health/startup` - Startup probe
@@ -272,16 +298,19 @@ All services expose:
 ### Monitoring Stack
 
 **Metrics:**
+
 - Prometheus for metrics collection
 - Grafana for visualization
 - Custom dashboards per service
 
 **Logging:**
+
 - Fluent Bit for log collection
 - Elasticsearch for log storage
 - Kibana for log analysis
 
 **Tracing:**
+
 - Jaeger for distributed tracing
 - OpenTelemetry instrumentation
 
@@ -290,11 +319,13 @@ All services expose:
 ### Horizontal Scaling (Auto-scaling)
 
 **Triggers:**
+
 - CPU utilization > 70%
 - Memory utilization > 80%
 - Custom metrics (requests/sec)
 
 **Services with HPA:**
+
 - MCP: 2-10 replicas
 - Claude Flow: 2-8 replicas
 - UI Dashboard: 3-15 replicas
@@ -302,11 +333,13 @@ All services expose:
 ### Vertical Scaling
 
 **Triggers:**
+
 - Consistent resource exhaustion
 - OOM kills
 - CPU throttling
 
 **Approach:**
+
 - Use Vertical Pod Autoscaler (VPA)
 - Manual resource limit adjustments
 - Review and optimize code
@@ -314,12 +347,14 @@ All services expose:
 ### Database Scaling
 
 **PostgreSQL:**
+
 - Read replicas for read-heavy workloads
 - Connection pooling (PgBouncer)
 - Query optimization
 - Partitioning for large tables
 
 **Redis:**
+
 - Redis Sentinel for HA
 - Redis Cluster for sharding
 - Separate cache and session stores
@@ -329,27 +364,31 @@ All services expose:
 ### Backup Strategy
 
 **Databases:**
+
 - Automated daily backups
 - Point-in-time recovery enabled
 - 30-day retention
 - Off-site backup storage
 
 **Persistent Volumes:**
+
 - Volume snapshots daily
 - 7-day retention
 - Cross-region replication
 
 **Configuration:**
+
 - GitOps approach (all configs in Git)
 - Sealed Secrets for sensitive data
 - Regular disaster recovery drills
 
 ### Recovery Procedures
 
-**RTO (Recovery Time Objective):** 1 hour
-**RPO (Recovery Point Objective):** 15 minutes
+**RTO (Recovery Time Objective):** 1 hour **RPO (Recovery Point Objective):** 15
+minutes
 
 **Steps:**
+
 1. Identify failure scope
 2. Switch to backup region (if applicable)
 3. Restore from latest backup
@@ -441,24 +480,28 @@ Performance Tests → Manual Approval → Production Deploy → Smoke Tests
 ## Migration Path
 
 ### Phase 1 (Current)
+
 - Docker Compose for development
 - Basic health checks
 - Manual deployment
 - Single environment
 
 ### Phase 2 (1-2 months)
+
 - Kubernetes for staging
 - CI/CD pipeline
 - Basic monitoring
 - Two environments (dev, staging)
 
 ### Phase 3 (3-6 months)
+
 - Production Kubernetes deployment
 - Full observability stack
 - Auto-scaling enabled
 - Multi-region setup
 
 ### Phase 4 (6-12 months)
+
 - Service mesh (Istio)
 - Advanced auto-scaling
 - Chaos engineering
@@ -469,24 +512,28 @@ Performance Tests → Manual Approval → Production Deploy → Smoke Tests
 ### Common Issues
 
 **Service Won't Start:**
+
 - Check logs: `docker logs <container>` or `kubectl logs <pod>`
 - Verify environment variables
 - Check resource availability
 - Verify dependencies are healthy
 
 **High Memory Usage:**
+
 - Check for memory leaks
 - Review resource limits
 - Scale horizontally
 - Optimize code
 
 **Slow Performance:**
+
 - Check database queries
 - Review cache hit rates
 - Analyze network latency
 - Profile application code
 
 **Database Connection Issues:**
+
 - Verify connection pool settings
 - Check network connectivity
 - Review firewall rules
@@ -495,8 +542,10 @@ Performance Tests → Manual Approval → Production Deploy → Smoke Tests
 ## Documentation Index
 
 1. [Docker Guide](./DOCKER_GUIDE.md) - Complete Docker deployment guide
-2. [Kubernetes Guide](./KUBERNETES_GUIDE.md) - Kubernetes deployment and operations
-3. [Environment Variables](./ENVIRONMENT_VARIABLES.md) - Complete variable reference
+2. [Kubernetes Guide](./KUBERNETES_GUIDE.md) - Kubernetes deployment and
+   operations
+3. [Environment Variables](./ENVIRONMENT_VARIABLES.md) - Complete variable
+   reference
 4. [Health Checks](./HEALTH_CHECKS.md) - Health check implementation guide
 5. [Security Best Practices](./SECURITY_BEST_PRACTICES.md) - Security guidelines
 
@@ -505,23 +554,27 @@ Performance Tests → Manual Approval → Production Deploy → Smoke Tests
 ### Regular Tasks
 
 **Daily:**
+
 - Monitor health dashboards
 - Review error logs
 - Check resource utilization
 
 **Weekly:**
+
 - Review performance metrics
 - Update dependencies
 - Security scan reviews
 - Backup verification
 
 **Monthly:**
+
 - Cost optimization review
 - Capacity planning
 - Security audits
 - Disaster recovery drills
 
 **Quarterly:**
+
 - Architecture review
 - Technology stack updates
 - Performance benchmarking
@@ -529,6 +582,10 @@ Performance Tests → Manual Approval → Production Deploy → Smoke Tests
 
 ## Conclusion
 
-This infrastructure provides a solid foundation for Noa Server deployment across development, staging, and production environments. The dual-approach (Docker Compose + Kubernetes) offers flexibility while maintaining production-grade reliability and scalability.
+This infrastructure provides a solid foundation for Noa Server deployment across
+development, staging, and production environments. The dual-approach (Docker
+Compose + Kubernetes) offers flexibility while maintaining production-grade
+reliability and scalability.
 
-For questions or issues, refer to the detailed guides in this documentation directory.
+For questions or issues, refer to the detailed guides in this documentation
+directory.

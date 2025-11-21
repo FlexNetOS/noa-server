@@ -3,7 +3,7 @@ import { ThemeMode } from '@/contexts/ThemeContext';
 /**
  * Claude-themed syntax highlighting theme factory
  * Returns different syntax themes based on the current theme mode
- * 
+ *
  * @param theme - The current theme mode
  * @returns Prism syntax highlighting theme object
  */
@@ -74,7 +74,7 @@ export const getClaudeSyntaxTheme = (theme: ThemeMode): any => {
       keyword: '#c084fc',
       variable: '#a78bfa',
       operator: '#9ca3af',
-    }
+    },
   };
 
   const colors = themes[theme] || themes.dark;
@@ -124,131 +124,129 @@ export const getClaudeSyntaxTheme = (theme: ThemeMode): any => {
       overflow: 'auto',
     },
     ':not(pre) > code[class*="language-"]': {
-      background: theme === 'light' 
-        ? 'rgba(139, 92, 246, 0.1)' 
-        : 'rgba(139, 92, 246, 0.1)',
+      background: theme === 'light' ? 'rgba(139, 92, 246, 0.1)' : 'rgba(139, 92, 246, 0.1)',
       padding: '0.1em 0.3em',
       borderRadius: '0.3em',
       whiteSpace: 'normal',
     },
-    'comment': {
+    comment: {
       color: colors.comment,
       fontStyle: 'italic',
     },
-    'prolog': {
+    prolog: {
       color: colors.comment,
     },
-    'doctype': {
+    doctype: {
       color: colors.comment,
     },
-    'cdata': {
+    cdata: {
       color: colors.comment,
     },
-    'punctuation': {
+    punctuation: {
       color: colors.punctuation,
     },
-    'namespace': {
+    namespace: {
       opacity: '0.7',
     },
-    'property': {
+    property: {
       color: colors.property,
     },
-    'tag': {
+    tag: {
       color: colors.tag,
     },
-    'boolean': {
+    boolean: {
       color: colors.property,
     },
-    'number': {
+    number: {
       color: colors.property,
     },
-    'constant': {
+    constant: {
       color: colors.property,
     },
-    'symbol': {
+    symbol: {
       color: colors.property,
     },
-    'deleted': {
+    deleted: {
       color: '#ef4444',
     },
-    'selector': {
+    selector: {
       color: colors.variable,
     },
     'attr-name': {
       color: colors.variable,
     },
-    'string': {
+    string: {
       color: colors.string,
     },
-    'char': {
+    char: {
       color: colors.string,
     },
-    'builtin': {
+    builtin: {
       color: colors.tag,
     },
-    'url': {
+    url: {
       color: colors.string,
     },
-    'inserted': {
+    inserted: {
       color: colors.string,
     },
-    'entity': {
+    entity: {
       color: colors.variable,
       cursor: 'help',
     },
-    'atrule': {
+    atrule: {
       color: colors.keyword,
     },
     'attr-value': {
       color: colors.string,
     },
-    'keyword': {
+    keyword: {
       color: colors.keyword,
     },
-    'function': {
+    function: {
       color: colors.function,
     },
     'class-name': {
       color: colors.property,
     },
-    'regex': {
+    regex: {
       color: '#06b6d4', // Cyan
     },
-    'important': {
+    important: {
       color: colors.property,
       fontWeight: 'bold',
     },
-    'variable': {
+    variable: {
       color: colors.variable,
     },
-    'bold': {
+    bold: {
       fontWeight: 'bold',
     },
-    'italic': {
+    italic: {
       fontStyle: 'italic',
     },
-    'operator': {
+    operator: {
       color: colors.operator,
     },
-    'script': {
+    script: {
       color: colors.base,
     },
-    'parameter': {
+    parameter: {
       color: colors.property,
     },
-    'method': {
+    method: {
       color: colors.function,
     },
-    'field': {
+    field: {
       color: colors.property,
     },
-    'annotation': {
+    annotation: {
       color: colors.comment,
     },
-    'type': {
+    type: {
       color: colors.variable,
     },
-    'module': {
+    module: {
       color: colors.tag,
     },
   };

@@ -1,0 +1,13 @@
+{
+  "timestamp": 1761612726.0454102,
+  "uptime_seconds": 0.00042057037353515625,
+  "counters": {
+    "directories_created": 0,
+    "directories_verified": 8
+  },
+  "timings": {},
+  "gauges": {
+    "total_directories": 8
+  },
+  "metadata": {}
+}

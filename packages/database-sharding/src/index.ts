@@ -29,5 +29,10 @@ export { ShardingMonitor } from './monitoring/ShardingMonitor';
 
 // Types
 export type {
-    MigrationPlan, ShardInfo, ShardKey, ShardMetrics, ShardRange, ShardingStrategy
+  MigrationPlan,
+  ShardInfo,
+  ShardKey,
+  ShardMetrics,
+  ShardRange,
+  ShardingStrategy,
 } from './types';

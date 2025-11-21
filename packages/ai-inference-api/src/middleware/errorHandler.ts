@@ -1,12 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { AIProviderError } from '@noa/ai-provider';
 
-export const errorHandler = (
-  err: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error('Error:', err);
 
   if (err instanceof AIProviderError) {
@@ -15,8 +10,8 @@ export const errorHandler = (
         message: err.message,
         code: err.code,
         provider: err.provider,
-        retryable: err.retryable
-      }
+        retryable: err.retryable,
+      },
     });
   }
 
@@ -24,7 +19,7 @@ export const errorHandler = (
   res.status(500).json({
     error: {
       message: 'Internal server error',
-      code: 'INTERNAL_ERROR'
-    }
+      code: 'INTERNAL_ERROR',
+    },
   });
 };

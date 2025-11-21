@@ -1,0 +1,103 @@
+name: Self-Hosted Runner Tasks
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+    inputs:
+      runner_type:
+        description: "Runner type to use"
+        required: true
+        default: "gpu"
+        type: choice
+        options:
+          - gpu
+          - docker
+          - standard
+
+jobs:
+  gpu-accelerated-tasks:
+    name: GPU Accelerated Tasks
+    runs-on: [self-hosted, gpu]
+    if: github.event.inputs.runner_type == 'gpu' || github.event.schedule == '0 2 * * *'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Setup Node.js
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: GPU-accelerated testing
+        run: |
+          echo "Running GPU-accelerated tests"
+          npm run test:unit -- --reporter=verbose
+
+      - name: Performance benchmarks
+        run: |
+          echo "Running GPU-accelerated benchmarks"
+          npm run perf:bench:system
+
+  docker-containerized-builds:
+    name: Docker Containerized Builds
+    runs-on: [self-hosted, docker]
+    if: github.event.inputs.runner_type == 'docker' || github.event.schedule == '0 2 * * *'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@885d1462741c5bd3a9e5b8d95c7e9c0f0f1c5d9
+
+      - name: Build and test in container
+        run: |
+          docker build -t noa-server:test .
+          docker run --rm noa-server:test npm run test:unit
+
+      - name: Multi-platform build
+        uses: docker/build-push-action@15560696de535e4014efeff63c48f16952e52dd1
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: false
+          tags: noa-server:multi-arch
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  heavy-computation:
+    name: Heavy Computation Tasks
+    runs-on: [self-hosted, heavy-compute]
+    if: github.event.inputs.runner_type == 'standard' || github.event.schedule == '0 2 * * *'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+      - name: Setup Node.js
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Extended integration tests
+        run: |
+          echo "Running extended integration tests"
+          npm run test:integration
+
+      - name: Load testing
+        run: |
+          echo "Running load tests"
+          npm run test:e2e
+
+      - name: Comprehensive benchmarks
+        run: |
+          echo "Running comprehensive benchmarks"
+          npm run perf:bench:all

@@ -8,10 +8,14 @@ import { z } from 'zod';
 const JaegerConfigSchema = z.object({
   endpoint: z.string().default('http://localhost:14268/api/traces'),
   serviceName: z.string(),
-  tags: z.array(z.object({
-    key: z.string(),
-    value: z.string(),
-  })).optional(),
+  tags: z
+    .array(
+      z.object({
+        key: z.string(),
+        value: z.string(),
+      })
+    )
+    .optional(),
   maxPacketSize: z.number().default(65000),
 });
 

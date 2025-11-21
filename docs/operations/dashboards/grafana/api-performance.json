@@ -10,7 +10,7 @@
       {
         "title": "Request Rate",
         "type": "graph",
-        "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
+        "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "sum(rate(http_requests_total{service=\"api\"}[5m])) by (method, endpoint)",
@@ -19,14 +19,14 @@
           }
         ],
         "yaxes": [
-          {"format": "reqps", "label": "Requests/sec"},
-          {"format": "short"}
+          { "format": "reqps", "label": "Requests/sec" },
+          { "format": "short" }
         ]
       },
       {
         "title": "Response Time (P95)",
         "type": "graph",
-        "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8},
+        "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{service=\"api\"}[5m])) by (le, endpoint))",
@@ -40,17 +40,17 @@
           }
         ],
         "yaxes": [
-          {"format": "s", "label": "Response Time"},
-          {"format": "short"}
+          { "format": "s", "label": "Response Time" },
+          { "format": "short" }
         ],
         "alert": {
           "name": "High API Latency",
           "conditions": [
             {
-              "evaluator": {"params": [2], "type": "gt"},
-              "operator": {"type": "and"},
-              "query": {"params": ["A", "5m", "now"]},
-              "reducer": {"params": [], "type": "avg"},
+              "evaluator": { "params": [2], "type": "gt" },
+              "operator": { "type": "and" },
+              "query": { "params": ["A", "5m", "now"] },
+              "reducer": { "params": [], "type": "avg" },
               "type": "query"
             }
           ],
@@ -65,7 +65,7 @@
       {
         "title": "Error Rate",
         "type": "graph",
-        "gridPos": {"x": 0, "y": 8, "w": 12, "h": 8},
+        "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "sum(rate(http_requests_total{service=\"api\",status=~\"5..\"}[5m])) by (endpoint) / sum(rate(http_requests_total{service=\"api\"}[5m])) by (endpoint) * 100",
@@ -74,17 +74,17 @@
           }
         ],
         "yaxes": [
-          {"format": "percent", "label": "Error Rate"},
-          {"format": "short"}
+          { "format": "percent", "label": "Error Rate" },
+          { "format": "short" }
         ],
         "alert": {
           "name": "High Error Rate",
           "conditions": [
             {
-              "evaluator": {"params": [1], "type": "gt"},
-              "operator": {"type": "and"},
-              "query": {"params": ["A", "5m", "now"]},
-              "reducer": {"params": [], "type": "avg"},
+              "evaluator": { "params": [1], "type": "gt" },
+              "operator": { "type": "and" },
+              "query": { "params": ["A", "5m", "now"] },
+              "reducer": { "params": [], "type": "avg" },
               "type": "query"
             }
           ],
@@ -99,7 +99,7 @@
       {
         "title": "Active Requests",
         "type": "graph",
-        "gridPos": {"x": 12, "y": 8, "w": 12, "h": 8},
+        "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "http_requests_in_flight{service=\"api\"}",
@@ -108,14 +108,14 @@
           }
         ],
         "yaxes": [
-          {"format": "short", "label": "Active Requests"},
-          {"format": "short"}
+          { "format": "short", "label": "Active Requests" },
+          { "format": "short" }
         ]
       },
       {
         "title": "Throughput by Endpoint",
         "type": "table",
-        "gridPos": {"x": 0, "y": 16, "w": 12, "h": 8},
+        "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "topk(10, sum(rate(http_requests_total{service=\"api\"}[5m])) by (endpoint, method))",
@@ -127,7 +127,7 @@
           {
             "id": "organize",
             "options": {
-              "excludeByName": {"Time": true},
+              "excludeByName": { "Time": true },
               "indexByName": {},
               "renameByName": {
                 "endpoint": "Endpoint",
@@ -141,7 +141,7 @@
       {
         "title": "Response Status Codes",
         "type": "piechart",
-        "gridPos": {"x": 12, "y": 16, "w": 12, "h": 8},
+        "gridPos": { "x": 12, "y": 16, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "sum(rate(http_requests_total{service=\"api\"}[5m])) by (status)",
@@ -153,7 +153,7 @@
       {
         "title": "CPU Usage",
         "type": "graph",
-        "gridPos": {"x": 0, "y": 24, "w": 12, "h": 8},
+        "gridPos": { "x": 0, "y": 24, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "sum(rate(container_cpu_usage_seconds_total{pod=~\"api-.*\"}[5m])) by (pod)",
@@ -162,14 +162,14 @@
           }
         ],
         "yaxes": [
-          {"format": "percentunit", "label": "CPU Usage"},
-          {"format": "short"}
+          { "format": "percentunit", "label": "CPU Usage" },
+          { "format": "short" }
         ]
       },
       {
         "title": "Memory Usage",
         "type": "graph",
-        "gridPos": {"x": 12, "y": 24, "w": 12, "h": 8},
+        "gridPos": { "x": 12, "y": 24, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "sum(container_memory_working_set_bytes{pod=~\"api-.*\"}) by (pod) / 1024 / 1024 / 1024",
@@ -178,8 +178,8 @@
           }
         ],
         "yaxes": [
-          {"format": "gbytes", "label": "Memory"},
-          {"format": "short"}
+          { "format": "gbytes", "label": "Memory" },
+          { "format": "short" }
         ]
       }
     ]

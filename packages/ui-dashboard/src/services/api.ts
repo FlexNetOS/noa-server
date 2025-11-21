@@ -2,8 +2,19 @@
 import type { AgentStatus, TaskQueueItem, TelemetryData, Queue, QueueJob } from '@/types';
 import { RequestContext, requestInterceptor } from './request-interceptor';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8081/api/v1';
-const WS_BASE = import.meta.env.VITE_WS_URL || 'ws://localhost:8081';
+// Note: We intentionally use process.env here instead of import.meta.env so that
+// Jest (Node) can run tests without needing Vite's import.meta shim.
+//
+// In the Vite build, these process.env references are replaced at bundle-time
+// via the `define` section in vite.config.ts, so no runtime process global is
+// required in the browser. In tests, Node's real process.env is used.
+//
+// Minimal typing to keep TypeScript happy without pulling in full Node types.
+declare const process: { env?: Record<string, string | undefined> };
+
+const API_BASE = (process.env?.VITE_API_URL as string | undefined) ||
+  'http://localhost:8081/api/v1';
+const WS_BASE = (process.env?.VITE_WS_URL as string | undefined) || 'ws://localhost:8081';
 
 interface WebSocketHandshake {
   sid?: string;
@@ -95,7 +106,7 @@ class APIService {
       method,
       body,
       headers,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
   }
 
@@ -150,7 +161,7 @@ class APIService {
       const [statsResponse, providersResponse, queuesResponse] = await Promise.all([
         this.makeInterceptedRequest('/stats'),
         this.makeInterceptedRequest('/providers'),
-        this.makeInterceptedRequest('/queues')
+        this.makeInterceptedRequest('/queues'),
       ]);
 
       if (!statsResponse.ok || !providersResponse.ok || !queuesResponse.ok) {
@@ -187,7 +198,7 @@ class APIService {
     try {
       const [statsResponse, queuesResponse] = await Promise.all([
         this.makeInterceptedRequest('/stats'),
-        this.makeInterceptedRequest('/queues')
+        this.makeInterceptedRequest('/queues'),
       ]);
 
       if (!statsResponse.ok || !queuesResponse.ok) {
@@ -372,9 +383,7 @@ class APIService {
           : 'unknown-event';
 
       const payload =
-        (parsed as { payload?: unknown }).payload ??
-        (parsed as { data?: unknown }).data ??
-        parsed;
+        (parsed as { payload?: unknown }).payload ?? (parsed as { data?: unknown }).data ?? parsed;
 
       const transformed = this.transformWebSocketData(eventName, payload);
       onMessage(transformed);
@@ -385,8 +394,7 @@ class APIService {
   }
 
   private notifyListeners(eventName: string, payload: DashboardWebSocketEvent): void {
-    const listeners =
-      this.listeners.get(eventName) || this.listeners.get('message-queue-event');
+    const listeners = this.listeners.get(eventName) || this.listeners.get('message-queue-event');
 
     if (!listeners) {
       return;
@@ -498,7 +506,7 @@ class APIService {
     return {
       swarmMetrics: {
         totalAgents: providers.length,
-        activeAgents: providers.filter(p => p.isConnected).length,
+        activeAgents: providers.filter((p) => p.isConnected).length,
         totalTasks: totalMessages,
         completedTasks: stats.totalMessagesReceived,
         failedTasks: stats.totalJobsFailed || 0,
@@ -507,7 +515,7 @@ class APIService {
         uptime: uptime,
       },
       systemHealth: {
-        status: providers.some(p => p.isConnected) ? 'healthy' : 'degraded',
+        status: providers.some((p) => p.isConnected) ? 'healthy' : 'degraded',
         cpu: 45, // Mock values for now
         memory: 62,
         disk: 58,
@@ -515,7 +523,7 @@ class APIService {
         services: {
           mcp: true,
           neural: true,
-          swarm: providers.some(p => p.isConnected),
+          swarm: providers.some((p) => p.isConnected),
           hooks: true,
         },
       },
@@ -568,11 +576,15 @@ class APIService {
         queueJobs.forEach((job: any, jobIndex: number) => {
           tasks.push({
             id: job.id || `queue-job-${queueIndex}-${jobIndex}`,
-            type: job.type || ['code-review', 'test-execution', 'deployment', 'analysis'][jobIndex % 4],
-            priority: job.priority || ['high', 'medium', 'low', 'critical'][jobIndex % 4] as TaskQueueItem['priority'],
+            type:
+              job.type || ['code-review', 'test-execution', 'deployment', 'analysis'][jobIndex % 4],
+            priority:
+              job.priority ||
+              (['high', 'medium', 'low', 'critical'][jobIndex % 4] as TaskQueueItem['priority']),
             status: job.status || 'pending',
             assignedAgent: job.assignedAgent,
-            createdAt: job.createdAt || new Date(Date.now() - Math.random() * 7200000).toISOString(),
+            createdAt:
+              job.createdAt || new Date(Date.now() - Math.random() * 7200000).toISOString(),
             startedAt: job.startedAt,
             progress: job.progress,
           });
@@ -738,10 +750,10 @@ class APIService {
           statuses.length === 0
             ? 'degraded'
             : statuses.every((status) => status?.status === 'healthy')
-            ? 'healthy'
-            : statuses.some((status) => status?.status === 'unhealthy')
-            ? 'unhealthy'
-            : 'degraded';
+              ? 'healthy'
+              : statuses.some((status) => status?.status === 'unhealthy')
+                ? 'unhealthy'
+                : 'degraded';
 
         return {
           type: 'health-update',
@@ -949,7 +961,8 @@ class APIService {
         status: ['pending', 'running', 'completed', 'failed'][i % 4] as QueueJob['status'],
         assignedAgent: i % 2 === 0 ? `agent-${(i % 3) + 1}` : undefined,
         createdAt: new Date(Date.now() - Math.random() * 7200000).toISOString(),
-        startedAt: i % 2 === 0 ? new Date(Date.now() - Math.random() * 3600000).toISOString() : undefined,
+        startedAt:
+          i % 2 === 0 ? new Date(Date.now() - Math.random() * 3600000).toISOString() : undefined,
         progress: i % 4 === 0 ? Math.floor(Math.random() * 100) : undefined,
       })),
     }));

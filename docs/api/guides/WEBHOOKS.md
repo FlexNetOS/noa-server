@@ -14,7 +14,9 @@ Real-time event notifications via webhooks in the Noa Server API.
 
 ## Overview
 
-Webhooks allow you to receive real-time HTTP notifications when specific events occur in the Noa Server. Instead of polling the API, webhooks push data to your server.
+Webhooks allow you to receive real-time HTTP notifications when specific events
+occur in the Noa Server. Instead of polling the API, webhooks push data to your
+server.
 
 ### Benefits
 
@@ -34,50 +36,50 @@ Webhooks allow you to receive real-time HTTP notifications when specific events 
 
 ### Workflow Events
 
-| Event | Description | Trigger |
-|-------|-------------|---------|
-| `workflow.created` | New workflow created | Workflow creation |
-| `workflow.updated` | Workflow modified | Workflow update |
-| `workflow.deleted` | Workflow deleted | Workflow deletion |
-| `workflow.executed` | Workflow execution started | Execution start |
+| Event                | Description                 | Trigger            |
+| -------------------- | --------------------------- | ------------------ |
+| `workflow.created`   | New workflow created        | Workflow creation  |
+| `workflow.updated`   | Workflow modified           | Workflow update    |
+| `workflow.deleted`   | Workflow deleted            | Workflow deletion  |
+| `workflow.executed`  | Workflow execution started  | Execution start    |
 | `workflow.completed` | Workflow execution finished | Execution complete |
-| `workflow.failed` | Workflow execution failed | Execution failure |
+| `workflow.failed`    | Workflow execution failed   | Execution failure  |
 
 ### Agent Events
 
-| Event | Description | Trigger |
-|-------|-------------|---------|
-| `agent.spawned` | New agent created | Agent spawn |
-| `agent.status.changed` | Agent status updated | Status change |
-| `agent.task.assigned` | Task assigned to agent | Task assignment |
-| `agent.task.completed` | Agent completed task | Task completion |
-| `agent.terminated` | Agent shut down | Termination |
+| Event                  | Description            | Trigger         |
+| ---------------------- | ---------------------- | --------------- |
+| `agent.spawned`        | New agent created      | Agent spawn     |
+| `agent.status.changed` | Agent status updated   | Status change   |
+| `agent.task.assigned`  | Task assigned to agent | Task assignment |
+| `agent.task.completed` | Agent completed task   | Task completion |
+| `agent.terminated`     | Agent shut down        | Termination     |
 
 ### Agent Swarm Events
 
-| Event | Description | Trigger |
-|-------|-------------|---------|
-| `swarm.created` | New swarm created | Swarm creation |
-| `swarm.coordination.started` | Coordination began | Coordination start |
-| `swarm.coordination.completed` | Coordination finished | Coordination end |
-| `swarm.terminated` | Swarm shut down | Termination |
+| Event                          | Description           | Trigger            |
+| ------------------------------ | --------------------- | ------------------ |
+| `swarm.created`                | New swarm created     | Swarm creation     |
+| `swarm.coordination.started`   | Coordination began    | Coordination start |
+| `swarm.coordination.completed` | Coordination finished | Coordination end   |
+| `swarm.terminated`             | Swarm shut down       | Termination        |
 
 ### User Events
 
-| Event | Description | Trigger |
-|-------|-------------|---------|
-| `user.registered` | New user account | Registration |
-| `user.login` | User logged in | Login |
-| `user.logout` | User logged out | Logout |
-| `user.updated` | User profile updated | Profile update |
-| `user.deleted` | User account deleted | Deletion |
+| Event             | Description          | Trigger        |
+| ----------------- | -------------------- | -------------- |
+| `user.registered` | New user account     | Registration   |
+| `user.login`      | User logged in       | Login          |
+| `user.logout`     | User logged out      | Logout         |
+| `user.updated`    | User profile updated | Profile update |
+| `user.deleted`    | User account deleted | Deletion       |
 
 ### System Events
 
-| Event | Description | Trigger |
-|-------|-------------|---------|
-| `system.alert` | System alert triggered | Alert condition |
-| `system.maintenance` | Maintenance scheduled | Maintenance plan |
+| Event                | Description            | Trigger          |
+| -------------------- | ---------------------- | ---------------- |
+| `system.alert`       | System alert triggered | Alert condition  |
+| `system.maintenance` | Maintenance scheduled  | Maintenance plan |
 
 ## Setting Up Webhooks
 
@@ -152,18 +154,15 @@ curl -X POST https://api.noa-server.io/v1/webhooks \
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
   "data": {
     "id": "wh_550e8400-e29b-41d4-a716-446655440000",
     "url": "https://your-server.com/webhooks/noa-server",
-    "events": [
-      "workflow.completed",
-      "workflow.failed",
-      "agent.status.changed"
-    ],
-  "secret": "YOUR_WEBHOOK_SECRET",
+    "events": ["workflow.completed", "workflow.failed", "agent.status.changed"],
+    "secret": "YOUR_WEBHOOK_SECRET",
     "active": true,
     "createdAt": "2025-10-22T10:00:00Z"
   }
@@ -263,10 +262,7 @@ All webhook payloads follow this structure:
     "status": "completed",
     "duration": 30000,
     "result": {
-      "filesCreated": [
-        "/src/api/users.ts",
-        "/src/api/auth.ts"
-      ],
+      "filesCreated": ["/src/api/users.ts", "/src/api/auth.ts"],
       "linesOfCode": 450
     }
   }
@@ -293,10 +289,7 @@ function verifyWebhookSignature(payload, signature, secret) {
   const digest = 'sha256=' + hmac.update(JSON.stringify(payload)).digest('hex');
 
   // Use timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(digest)
-  );
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest));
 }
 ```
 
@@ -305,14 +298,11 @@ function verifyWebhookSignature(payload, signature, secret) {
 Restrict webhook access to Noa Server IPs:
 
 ```javascript
-const ALLOWED_IPS = [
-  '203.0.113.0/24',
-  '198.51.100.0/24'
-];
+const ALLOWED_IPS = ['203.0.113.0/24', '198.51.100.0/24'];
 
 function isAllowedIP(ip) {
   // Implement IP range checking
-  return ALLOWED_IPS.some(range => ipInRange(ip, range));
+  return ALLOWED_IPS.some((range) => ipInRange(ip, range));
 }
 
 app.post('/webhooks/noa-server', (req, res) => {
@@ -376,7 +366,7 @@ app.post('/webhooks/noa-server', async (req, res) => {
   res.status(200).send('OK');
 
   // Process asynchronously
-  processEventAsync(req.body).catch(err => {
+  processEventAsync(req.body).catch((err) => {
     console.error('Error processing event:', err);
   });
 });
@@ -420,9 +410,7 @@ const winston = require('winston');
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.json(),
-  transports: [
-    new winston.transports.File({ filename: 'webhooks.log' })
-  ]
+  transports: [new winston.transports.File({ filename: 'webhooks.log' })],
 });
 
 app.post('/webhooks/noa-server', (req, res) => {
@@ -430,7 +418,7 @@ app.post('/webhooks/noa-server', (req, res) => {
     eventId: req.body.id,
     event: req.body.event,
     timestamp: req.body.timestamp,
-    data: req.body.data
+    data: req.body.data,
   });
 
   // Process event...
@@ -444,7 +432,7 @@ Queue events for reliable processing:
 ```javascript
 const Queue = require('bull');
 const webhookQueue = new Queue('webhooks', {
-  redis: { host: 'localhost', port: 6379 }
+  redis: { host: 'localhost', port: 6379 },
 });
 
 app.post('/webhooks/noa-server', async (req, res) => {
@@ -470,7 +458,7 @@ Track webhook delivery success:
 const metrics = {
   received: 0,
   processed: 0,
-  failed: 0
+  failed: 0,
 };
 
 app.post('/webhooks/noa-server', async (req, res) => {
@@ -490,7 +478,7 @@ app.post('/webhooks/noa-server', async (req, res) => {
 app.get('/webhooks/metrics', (req, res) => {
   res.json({
     ...metrics,
-    successRate: metrics.processed / metrics.received
+    successRate: metrics.processed / metrics.received,
   });
 });
 ```
@@ -535,22 +523,26 @@ curl -X GET https://api.noa-server.io/v1/webhooks/{webhookId}/deliveries \
 ### Common Issues
 
 **1. Webhooks not received**
+
 - Verify URL is publicly accessible
 - Check firewall rules
 - Ensure HTTPS certificate is valid
 - Verify webhook is active
 
 **2. Signature verification fails**
+
 - Check webhook secret
 - Verify signature algorithm (SHA256)
 - Ensure raw body is used for verification
 
 **3. Timeouts**
+
 - Respond within 5 seconds
 - Process events asynchronously
 - Use queue for long operations
 
 **4. Duplicate events**
+
 - Implement idempotency checks
 - Use event ID for deduplication
 - Store processed event IDs
@@ -565,6 +557,7 @@ curl -X GET https://api.noa-server.io/v1/webhooks/{webhookId}/deliveries/{delive
 ```
 
 **Response:**
+
 ```json
 {
   "id": "del_123",
@@ -590,6 +583,7 @@ curl -X GET https://api.noa-server.io/v1/webhooks/{webhookId}/deliveries/{delive
 ---
 
 For more information, see:
+
 - [API Quick Start](./API_QUICKSTART.md)
 - [Authentication Guide](./AUTHENTICATION.md)
 - [Rate Limiting Guide](./RATE_LIMITING.md)

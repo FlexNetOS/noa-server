@@ -1,16 +1,19 @@
 # Runbook: High API Latency
 
 ## Alert Details
+
 - **Alert Name**: HighAPILatency / CriticalAPILatency
 - **Severity**: Warning (>100ms) / Critical (>500ms)
 - **Target**: <100ms (95th percentile)
 
 ## Symptoms
+
 - API response times exceed acceptable thresholds
 - Users reporting slow application performance
 - Prometheus alert firing for sustained period
 
 ## Impact
+
 - Degraded user experience
 - Potential timeout errors
 - Risk to 99.9% uptime SLA
@@ -19,6 +22,7 @@
 ## Diagnosis Steps
 
 ### 1. Verify the Alert
+
 ```bash
 # Check current response times in Grafana
 # Navigate to: http://localhost:3001/d/noa-server-production
@@ -30,6 +34,7 @@ curl -G 'http://localhost:9090/api/v1/query' \
 ```
 
 ### 2. Identify Affected Endpoints
+
 ```bash
 # Get slowest endpoints from logs
 kubectl logs deployment/noa-api --tail=1000 | \
@@ -44,6 +49,7 @@ curl -G 'http://localhost:9090/api/v1/query' \
 ```
 
 ### 3. Check System Resources
+
 ```bash
 # CPU utilization
 kubectl top nodes
@@ -58,6 +64,7 @@ kubectl get pods -l app=noa-api -o json | \
 ```
 
 ### 4. Database Performance Check
+
 ```bash
 # Connect to database
 kubectl exec -it deployment/noa-api -- psql $DATABASE_URL
@@ -96,6 +103,7 @@ LIMIT 10;
 ```
 
 ### 5. Cache Performance
+
 ```bash
 # Check Redis hit rate
 kubectl exec -it deployment/redis -- redis-cli info stats | grep keyspace
@@ -108,6 +116,7 @@ kubectl exec -it deployment/redis -- redis-cli monitor
 ```
 
 ### 6. External Dependencies
+
 ```bash
 # Check external API response times
 kubectl exec -it deployment/noa-api -- sh -c '
@@ -119,6 +128,7 @@ kubectl exec -it deployment/noa-api -- sh -c '
 ```
 
 ### 7. Network Issues
+
 ```bash
 # Check pod network latency
 kubectl exec -it deployment/noa-api -- ping -c 5 database-service
@@ -135,6 +145,7 @@ kubectl get endpoints noa-api
 ### Quick Wins (Immediate)
 
 #### 1. Scale Horizontally
+
 ```bash
 # Increase replica count
 kubectl scale deployment/noa-api --replicas=10
@@ -144,6 +155,7 @@ kubectl get pods -l app=noa-api -w
 ```
 
 #### 2. Restart Problematic Pods
+
 ```bash
 # Identify slow pods
 kubectl get pods -l app=noa-api -o json | \
@@ -157,6 +169,7 @@ kubectl rollout restart deployment/noa-api
 ```
 
 #### 3. Enable/Clear Cache
+
 ```bash
 # Flush Redis cache (use with caution)
 kubectl exec -it deployment/redis -- redis-cli FLUSHALL
@@ -168,6 +181,7 @@ curl -X POST https://noa-server.example.com/api/cache/warmup
 ### Medium-term Fixes
 
 #### 1. Optimize Database Queries
+
 ```sql
 -- Add missing indexes
 CREATE INDEX CONCURRENTLY idx_users_email ON users(email);
@@ -182,6 +196,7 @@ REINDEX INDEX CONCURRENTLY idx_orders_user_id;
 ```
 
 #### 2. Implement Rate Limiting
+
 ```yaml
 # Apply rate limiting configuration
 kubectl apply -f - <<EOF
@@ -208,6 +223,7 @@ EOF
 ```
 
 #### 3. Enable Query Caching
+
 ```javascript
 // Add to application code
 const cache = require('./cache');
@@ -232,6 +248,7 @@ async function getUser(userId) {
 ### Long-term Improvements
 
 #### 1. Implement Connection Pooling
+
 ```javascript
 // Configure database connection pool
 const pool = new Pool({
@@ -243,6 +260,7 @@ const pool = new Pool({
 ```
 
 #### 2. Add Database Read Replicas
+
 ```yaml
 # Update database service to use read replicas
 apiVersion: v1
@@ -254,19 +272,24 @@ spec:
     app: postgres
     role: replica
   ports:
-  - port: 5432
+    - port: 5432
 ```
 
 #### 3. Implement API Response Caching
+
 ```javascript
 // Add response caching middleware
-app.use('/api', cacheMiddleware({
-  ttl: 60, // 1 minute
-  key: (req) => `api:${req.path}:${JSON.stringify(req.query)}`
-}));
+app.use(
+  '/api',
+  cacheMiddleware({
+    ttl: 60, // 1 minute
+    key: (req) => `api:${req.path}:${JSON.stringify(req.query)}`,
+  })
+);
 ```
 
 #### 4. Profile and Optimize Code
+
 ```bash
 # Enable profiling
 kubectl exec -it deployment/noa-api -- curl http://localhost:3000/debug/pprof/profile?seconds=30 > cpu.prof
@@ -281,6 +304,7 @@ kubectl exec -it deployment/noa-api -- node --prof src/index.js
 ## Verification
 
 ### 1. Check Metrics
+
 ```bash
 # Verify response time improvement
 curl -G 'http://localhost:9090/api/v1/query' \
@@ -291,6 +315,7 @@ curl -G 'http://localhost:9090/api/v1/query' \
 ```
 
 ### 2. Synthetic Tests
+
 ```bash
 # Run load test
 k6 run --vus 10 --duration 2m tests/load-test.js
@@ -300,6 +325,7 @@ time curl -w "\nTotal time: %{time_total}s\n" https://noa-server.example.com/api
 ```
 
 ### 3. Monitor Alert Status
+
 ```bash
 # Check if alert is resolved
 curl http://localhost:9093/api/v1/alerts | jq '.[] | select(.labels.alertname=="HighAPILatency")'
@@ -324,6 +350,7 @@ DROP INDEX CONCURRENTLY idx_problematic_index;
 ## Prevention
 
 ### 1. Regular Performance Testing
+
 ```bash
 # Run weekly performance benchmarks
 k6 run --vus 100 --duration 10m tests/performance-baseline.js
@@ -333,35 +360,42 @@ k6 run --vus 100 --duration 10m tests/performance-baseline.js
 ```
 
 ### 2. Proactive Monitoring
+
 - Set up alerts for gradual performance degradation (trending)
 - Monitor database query performance daily
 - Review slow query logs weekly
 - Track cache hit rates
 
 ### 3. Capacity Planning
+
 - Review resource utilization monthly
 - Plan scaling based on traffic trends
 - Test autoscaling configuration quarterly
 
 ### 4. Code Reviews
+
 - Mandate performance review for database queries
 - Require load testing for new endpoints
 - Review caching strategy for data access patterns
 
 ## Related Runbooks
+
 - [Database Performance Issues](./database-performance.md)
 - [High Error Rate](./high-error-rate.md)
 - [Service Down](./service-down.md)
 
 ## References
+
 - [Grafana Dashboard](http://localhost:3001/d/noa-server-production)
 - [Prometheus Alerts](http://localhost:9090/alerts)
 - [Performance SLA](../SLA.md)
 
 ## Last Updated
+
 2025-10-22
 
 ## On-Call Contact
+
 - Primary: DevOps Team (#ops-oncall)
 - Escalation: Engineering Lead
 - PagerDuty: https://noa-server.pagerduty.com
