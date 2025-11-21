@@ -13,7 +13,7 @@ jobs:
           fetch-depth: 0
 
       - name: Sync to GitLab
-        uses: keninkujovic/gitlab-sync@2.1.0
+        uses: keninkujovic/gitlab-sync@2255578444d23f254d08592bb8434084d29474d5
         with:
           gitlab_url: https://gitlab.com/octelium/octelium.git
           username: geoctl

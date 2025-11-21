@@ -323,7 +323,7 @@ jobs:
             -n ${{ inputs.environment }}
 
       - name: Notify rollback
-        uses: slackapi/slack-github-action@70cd7be8e40a46e8b612094aa26fbd48c5a13a8
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a
         with:
           payload: |
             {
@@ -348,7 +348,7 @@ jobs:
     if: always()
     steps:
       - name: Send notification
-        uses: slackapi/slack-github-action@70cd7be8e40a46e8b612094aa26fbd48c5a13a8
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a
         with:
           payload: |
             {

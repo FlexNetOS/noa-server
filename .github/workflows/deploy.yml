@@ -197,7 +197,7 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Download build artifacts
-        uses: actions/download-artifact@65a9edc5881444af0b9093e5e666db3dd7f06d4
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806
         with:
           name: build-artifacts
 
@@ -215,7 +215,7 @@ jobs:
 
       - name: Send deployment notification
         if: always()
-        uses: slackapi/slack-github-action@70cd7be8e40a46e8b612094aa26fbd48c5a13a8
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a
         with:
           payload: |
             {
@@ -247,7 +247,7 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Download build artifacts
-        uses: actions/download-artifact@65a9edc5881444af0b9093e5e666db3dd7f06d4
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806
         with:
           name: build-artifacts
 
@@ -289,7 +289,7 @@ jobs:
 
       - name: Send deployment notification
         if: always()
-        uses: slackapi/slack-github-action@70cd7be8e40a46e8b612094aa26fbd48c5a13a8
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a
         with:
           payload: |
             {

@@ -40,7 +40,7 @@ jobs:
 
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@8e5442c4ef9f78752691e2d8f8d197ba4b6c395
+        uses: docker/metadata-action@8e5442c4ef9f78752691e2d8f8d19755c6f78e81
         with:
           images: ${{env.V_CONTAINER_REGISTRY}}/${{env.V_ORG}}/${{matrix.component}}
           flavor: |
@@ -54,10 +54,10 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@885d1462741c5bd3a9e5b8d95c7e9c0f0f1c5d9
+        uses: docker/setup-buildx-action@885d1462b80bc1c1c7f0b00334ad271f09369c55
 
       - name: Login to Github Registry
-        uses: docker/login-action@0d4c9c5ea6d534d45898ff36dea041f5dca6892
+        uses: docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446
         with:
           registry: ${{env.V_CONTAINER_REGISTRY}}
           username: ${{ github.repository_owner }}

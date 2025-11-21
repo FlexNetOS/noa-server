@@ -89,7 +89,7 @@ jobs:
           cd ..
 
       - name: Create Release
-        uses: softprops/action-gh-release@8a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z
+        uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe
         with:
           tag_name: ${{ steps.version.outputs.version }}
           name: opcode ${{ steps.version.outputs.version }}

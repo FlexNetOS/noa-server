@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Set up Bun
-        uses: oven-sh/setup-bun@4bc047ad259df6fc24b05eb89eb1ce5c7e9e3c9
+        uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5
         with:
           bun-version: latest
 
@@ -46,7 +46,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Set up Rust (stable)
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@6d9817901c499d6b02debbb57edb38d33daa680b
 
       - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@23bce2519186d4e5285a58e8e37ed955ad904019
