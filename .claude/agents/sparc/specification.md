@@ -95,9 +95,12 @@ use_cases:
       - 'User has valid email'
       - 'User accepts terms'
     flow:
-      1. "User clicks 'Sign Up'" 2. "System displays registration form" 3. "User
-      enters email and password" 4. "System validates inputs" 5. "System creates
-      account" 6. "System sends confirmation email"
+      - "User clicks 'Sign Up'"
+      - "System displays registration form"
+      - "User enters email and password"
+      - "System validates inputs"
+      - "System creates account"
+      - "System sends confirmation email"
     postconditions:
       - 'User account created'
       - 'Confirmation email sent'

@@ -1,0 +1,23 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8sresidency
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sResidency
+  targets:
+  - target: admission.k8s.gatekeeper.sh
+    rego: |
+      package k8sresidency
+      violation[{"msg": msg}] {
+        input.review.kind.kind == "Deployment"
+        ns := input.review.object.metadata.namespace
+        nslabels := data.inventory.namespace[ns].metadata.labels
+        allowed := split(nslabels["rtt.allowed-regions"], ",")
+        region := input.review.object.metadata.annotations["rtt.data/region"]
+        not member(region, allowed)
+        msg := sprintf("region %v not in namespace allowed list %v", [region, allowed])
+      }
+      member(x, s) { some i; x == s[i] }

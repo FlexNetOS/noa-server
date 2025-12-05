@@ -1,0 +1,5 @@
+image: sonatype/nexus3:latest
+storageSize: 20Gi
+service:
+  type: ClusterIP
+  port: 8081

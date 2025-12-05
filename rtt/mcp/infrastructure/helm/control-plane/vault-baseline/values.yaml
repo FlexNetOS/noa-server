@@ -1,0 +1,7 @@
+vault:
+  address: http://vault.vault:8200
+  rootTokenSecret: vault-root-token
+  k8sHost: https://kubernetes.default.svc
+  k8sAuthPath: auth/kubernetes
+  roleName: rtt-gateway
+  namespace: default

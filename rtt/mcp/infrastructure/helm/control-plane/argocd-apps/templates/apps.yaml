@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata: { name: mcp, namespace: {{ .Values.namespace }} }
+spec:
+  sourceRepos: ["*"]
+  destinations: [ { namespace: "*", server: "https://kubernetes.default.svc" } ]
+  clusterResourceWhitelist: [ { group: "*", kind: "*" } ]
+---
+{{- range .Values.apps }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata: { name: {{ .name }}, namespace: {{ $.Values.namespace }} }
+spec:
+  project: mcp
+  source:
+    repoURL: {{ $.Values.repoURL }}
+    targetRevision: {{ $.Values.targetRevision }}
+    path: {{ .path }}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .namespace }}
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }
+    syncOptions: ["CreateNamespace=true"]
+---
+{{- end }}

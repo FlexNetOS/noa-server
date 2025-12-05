@@ -1,0 +1,16 @@
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: rtt-gateway
+spec:
+  spiffeIDTemplate: "spiffe://example.org/ns/{{ .ObjectMeta.Namespace }}/sa/{{ .ServiceAccount }}"
+  parentID: "spiffe://example.org/spire/server"
+  podSelector:
+    matchLabels:
+      app: model-gateway
+  namespaceSelector:
+    matchExpressions:
+    - key: kubernetes.io/metadata.name
+      operator: In
+      values: ["rtt"]
+  ttl: 24h

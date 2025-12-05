@@ -1,5 +1,8 @@
 # 🚀 Flow Nexus: Your Path to Digital Immortality
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 <div align="center">
 
 ## 🌐 [flow-nexus.ruv.io](https://flow-nexus.ruv.io)
@@ -768,3 +771,5 @@ npx flow-nexus
 Built with ❤️ by [rUv](https://ruv.io)
 
 </div>
+
+> Last updated: 2025-11-20

@@ -1,0 +1,104 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.local
+.env.*.local
+*.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# IDE
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+coverage/
+*.lcov
+.nyc_output/
+playwright-report/
+test-results/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# OS
+Thumbs.db
+
+# Docker
+.dockerignore
+
+# Kubernetes secrets (never commit real secrets!)
+**/secrets.yaml
+!**/secrets.example.yaml
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+*.tfvars
+!*.tfvars.example
+
+# Build artifacts
+*.d.ts.map
+*.js.map
+
+# Cache
+.cache/
+.turbo/
+.next/
+.nuxt/
+
+# Monitoring data
+monitoring/data/
+
+# Backups
+*.backup
+*.bak
+
+# MacOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+# Emacs
+\#*\#
+.\#*
+
+# Archives (from original bundles - keep for reference)
+archive/
+*.tar.gz
+*.zip

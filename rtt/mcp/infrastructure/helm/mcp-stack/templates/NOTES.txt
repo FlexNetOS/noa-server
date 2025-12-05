@@ -1,0 +1,5 @@
+1) helm upgrade --install mcp charts/mcp-stack -n mcp --create-namespace
+2) port-forward: kubectl -n mcp port-forward svc/mcp-server 3000:3000
+3) OTel: set .Values.otelCollector.exportOtlpEndpoint for your backend
+4) TURN: change coturn credentials and realm
+5) Gatekeeper: policy requires annotation cosign.sigstore.dev/verified=true on Pods

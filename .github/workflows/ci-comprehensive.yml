@@ -163,7 +163,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload coverage
-        uses: codecov/codecov-action@5b6b21c47e7704e4e6f19b2c9d5c3b3c3c3c3c
+        uses: codecov/codecov-action@af09b5e394c93991b95a5e7646aeb90c1917f78f
         if: always()
         with:
           files: ./coverage/${{ matrix.test-suite }}/coverage-final.json
@@ -282,10 +282,10 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@885d1462741c5bd3a9e5b8d95c7e9c0f0f1c5d9
+        uses: docker/setup-buildx-action@885d1462b80bc1c1c7f0b00334ad271f09369c55
 
       - name: Log in to Container Registry
-        uses: docker/login-action@0d4c9c5ea6d534d45898ff36dea041f5dca6892
+        uses: docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -341,7 +341,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload benchmark results
-        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
         if: always()
         with:
           name: performance-results

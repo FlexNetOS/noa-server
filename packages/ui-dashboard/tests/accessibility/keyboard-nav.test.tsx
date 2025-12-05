@@ -85,6 +85,7 @@ describe('Keyboard Navigation Tests', () => {
 
   describe('Enter and Space Key Activation', () => {
     it('should activate buttons with Enter key', async () => {
+      const user = userEvent.setup();
       const handleClick = jest.fn();
 
       render(
@@ -96,11 +97,12 @@ describe('Keyboard Navigation Tests', () => {
       const button = screen.getByText('Test Button');
       button.focus();
 
-      fireEvent.keyDown(button, { key: 'Enter' });
+      await user.keyboard('{Enter}');
       expect(handleClick).toHaveBeenCalledTimes(1);
     });
 
     it('should activate buttons with Space key', async () => {
+      const user = userEvent.setup();
       const handleClick = jest.fn();
 
       render(
@@ -112,7 +114,7 @@ describe('Keyboard Navigation Tests', () => {
       const button = screen.getByText('Test Button');
       button.focus();
 
-      fireEvent.keyDown(button, { key: ' ' });
+      await user.keyboard(' ');
       expect(handleClick).toHaveBeenCalledTimes(1);
     });
 
@@ -348,7 +350,15 @@ describe('Keyboard Navigation Tests', () => {
       render(
         <AccessibilityProvider>
           <div>
-            <a href="#main-content" className="skip-link">
+            <a
+              href="#main-content"
+              className="skip-link"
+              onClick={(e) => {
+                e.preventDefault();
+                const target = document.getElementById('main-content');
+                target?.focus();
+              }}
+            >
               Skip to main content
             </a>
             <nav>

@@ -1,5 +1,8 @@
 # GDPR Compliance Package
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 Comprehensive GDPR compliance framework for Noa Server.
 
 ## Features
@@ -212,3 +215,5 @@ for comprehensive documentation.
 ## License
 
 MIT
+
+> Last updated: 2025-11-20

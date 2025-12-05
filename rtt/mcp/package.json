@@ -1,0 +1,79 @@
+{
+  "name": "mcp-platform",
+  "version": "1.0.0",
+  "description": "Production-ready Model Context Protocol (MCP) platform",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "src/server",
+    "src/gateway",
+    "src/ui",
+    "src/libs/*",
+    "src/agents/*",
+    "src/services/*",
+    "src/adapters/*",
+    "src/wasm/*"
+  ],
+  "scripts": {
+    "install:all": "npm install && npm run install:workspaces",
+    "install:workspaces": "npm install --workspaces",
+    "build": "npm run build --workspaces --if-present",
+    "build:server": "npm run build --workspace=src/server",
+    "build:gateway": "npm run build --workspace=src/gateway",
+    "build:ui": "npm run build --workspace=src/ui",
+    "dev:server": "npm run dev --workspace=src/server",
+    "dev:gateway": "npm run dev --workspace=src/gateway",
+    "dev:ui": "npm run dev --workspace=src/ui",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
+    "test:e2e": "playwright test",
+    "test:load": "k6 run tests/load/k6/gateway-load.js",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest watch",
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
+    "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yaml,yml}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yaml,yml}\"",
+    "clean": "npm run clean --workspaces --if-present && rm -rf node_modules",
+    "docker:build": "make docker-build",
+    "docker:build:server": "docker build -f infrastructure/docker/server.Dockerfile -t mcp-server:latest .",
+    "docker:build:gateway": "docker build -f infrastructure/docker/gateway.Dockerfile -t mcp-gateway:latest .",
+    "docker:build:ui": "docker build -f infrastructure/docker/ui.Dockerfile -t mcp-ui:latest .",
+    "deploy:local": "cd deployments/local && docker-compose up -d",
+    "deploy:local:down": "cd deployments/local && docker-compose down"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.45.0",
+    "@types/node": "^22.7.8",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "@vitest/coverage-v8": "^1.6.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.35.0",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.3",
+    "vitest": "^1.6.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourorg/mcp-platform"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "llm",
+    "ai",
+    "gateway",
+    "platform"
+  ],
+  "author": "MCP Platform Team",
+  "license": "MIT"
+}

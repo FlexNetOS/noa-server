@@ -1,0 +1,80 @@
+{{- if .Values.coturn.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coturn-config
+data:
+  turnserver.conf: |
+    listening-port=3478
+    tls-listening-port=5349
+    fingerprint
+    realm={{ .Values.coturn.realm }}
+    min-port=49152
+    max-port=65535
+    userdb=/var/lib/turn/users.txt
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.coturn.userSecretName }}
+type: Opaque
+stringData:
+  users.txt: |
+    relay:supersecret
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coturn
+  labels: { app: coturn }
+spec:
+  replicas: {{ .Values.coturn.replicas }}
+  selector: { matchLabels: { app: coturn } }
+  template:
+    metadata:
+      labels: { app: coturn }
+    spec:
+      containers:
+        - name: turn
+          image: instrumentisto/coturn:latest
+          args: ["-c","/etc/turnserver/turnserver.conf","--no-daemon"]
+          ports:
+            - containerPort: 3478
+              name: udp
+              protocol: UDP
+            - containerPort: 5349
+              name: tls
+              protocol: TCP
+          volumeMounts:
+            - name: cfg
+              mountPath: /etc/turnserver
+            - name: users
+              mountPath: /var/lib/turn
+      volumes:
+        - name: cfg
+          configMap:
+            name: coturn-config
+            items:
+              - key: turnserver.conf
+                path: turnserver.conf
+        - name: users
+          secret:
+            secretName: {{ .Values.coturn.userSecretName }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: coturn
+spec:
+  type: {{ .Values.coturn.serviceType }}
+  selector: { app: coturn }
+  ports:
+    - name: udp
+      port: 3478
+      protocol: UDP
+      targetPort: 3478
+    - name: tls
+      port: 5349
+      protocol: TCP
+      targetPort: 5349
+{{- end }}

@@ -14,10 +14,10 @@
  * @module unified/utils/LoggerFactory
  */
 
+import fs from 'fs';
+import path from 'path';
 import winston from 'winston';
 import { z } from 'zod';
-import path from 'path';
-import fs from 'fs';
 
 /**
  * Log level enumeration
@@ -62,7 +62,7 @@ export const LoggerConfigSchema = z.object({
         .object({
           enabled: z.boolean().default(false),
           endpoint: z.string().optional(),
-          headers: z.record(z.string()).optional(),
+          headers: z.record(z.string(), z.string()).optional(),
         })
         .default({}),
     })
@@ -84,7 +84,9 @@ export const LoggerConfigSchema = z.object({
       rate: z.number().min(0).max(1).default(1.0), // 1.0 = 100%
     })
     .default({}),
-  moduleOverrides: z.record(z.nativeEnum(LogLevel)).default({}),
+  moduleOverrides: z
+    .record(z.string(), z.nativeEnum(LogLevel))
+    .default({}),
 });
 
 export type LoggerConfig = z.infer<typeof LoggerConfigSchema>;
@@ -158,8 +160,9 @@ export class LoggerFactory {
     this.initialized = true;
 
     // Ensure log directory exists
-    if (this.config.transports.file.enabled) {
-      const logDir = this.config.transports.file.directory;
+    const fileTransport = this.config.transports?.file;
+    if (fileTransport?.enabled) {
+      const logDir = fileTransport.directory || 'logs';
       if (!fs.existsSync(logDir)) {
         fs.mkdirSync(logDir, { recursive: true });
       }
@@ -189,7 +192,8 @@ export class LoggerFactory {
     }
 
     // Determine log level for this module
-    const level = this.config.moduleOverrides[module] || this.config.level;
+    const level =
+      (this.config.moduleOverrides?.[module] as LogLevel | undefined) || this.config.level;
 
     // Create Winston logger
     const winstonLogger = winston.createLogger({
@@ -270,11 +274,12 @@ export class LoggerFactory {
     const transports: winston.transport[] = [];
 
     // Console transport
-    if (this.config.transports.console.enabled) {
+    const consoleTransport = this.config.transports?.console;
+    if (consoleTransport?.enabled) {
       transports.push(
         new winston.transports.Console({
-          level: this.config.transports.console.level || this.config.level,
-          format: this.config.transports.console.colorize
+          level: consoleTransport.level || this.config.level,
+          format: consoleTransport.colorize
             ? winston.format.combine(winston.format.colorize(), winston.format.simple())
             : undefined,
         })
@@ -282,18 +287,24 @@ export class LoggerFactory {
     }
 
     // File transports
-    if (this.config.transports.file.enabled) {
-      const fileConfig = this.config.transports.file;
-      const logPath = path.join(fileConfig.directory, fileConfig.filename);
-      const errorLogPath = path.join(fileConfig.directory, fileConfig.errorFilename);
+    const fileConfig = this.config.transports?.file;
+    if (fileConfig?.enabled) {
+      const logPath = path.join(
+        fileConfig.directory || 'logs',
+        fileConfig.filename || 'application.log'
+      );
+      const errorLogPath = path.join(
+        fileConfig.directory || 'logs',
+        fileConfig.errorFilename || 'error.log'
+      );
 
       // Combined log file
       transports.push(
         new winston.transports.File({
           filename: logPath,
           level: fileConfig.level || this.config.level,
-          maxsize: fileConfig.maxSize,
-          maxFiles: fileConfig.maxFiles,
+          maxsize: fileConfig.maxSize || 10485760,
+          maxFiles: fileConfig.maxFiles || 5,
         })
       );
 
@@ -399,6 +410,9 @@ export class LoggerFactory {
    * Set log level for specific module
    */
   public static setModuleLevel(module: string, level: LogLevel): void {
+    if (!this.config.moduleOverrides) {
+      this.config.moduleOverrides = {};
+    }
     this.config.moduleOverrides[module] = level;
     const logger = this.loggers.get(module);
     if (logger) {

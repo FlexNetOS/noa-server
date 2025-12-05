@@ -1,0 +1,19 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8simagebydigest
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sImageByDigest
+  targets:
+  - target: admission.k8s.gatekeeper.sh
+    rego: |
+      package k8simagebydigest
+      violation[{"msg": msg}] {
+        input.review.kind.kind == "Deployment"
+        c := input.review.object.spec.template.spec.containers[_]
+        not contains(c.image, "@sha256:")
+        msg := sprintf("container %v image must be pinned by digest: %v", [c.name, c.image])
+      }

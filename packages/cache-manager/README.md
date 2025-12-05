@@ -1,5 +1,8 @@
 # @noa/cache-manager
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 Multi-tier caching system with Redis, memory, and CDN support featuring advanced
 caching strategies.
 
@@ -417,3 +420,5 @@ cacheManager.on('circuit-closed', ({ service }) => {
 ## License
 
 MIT
+
+> Last updated: 2025-11-20

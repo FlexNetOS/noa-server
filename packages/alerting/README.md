@@ -1,5 +1,8 @@
 # Noa Server Alerting System
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 Automated alerting, incident response, and performance monitoring infrastructure
 for Noa Server.
 
@@ -317,3 +320,5 @@ const grafanaAlerts = ruleManager.exportToGrafana();
 ## License
 
 MIT
+
+> Last updated: 2025-11-20

@@ -1,5 +1,8 @@
 # Claude Suite UI Dashboard
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 Real-time automation dashboard with MCP integration, Claude-Flow telemetry, and
 agent swarm visualization.
 
@@ -164,3 +167,5 @@ CMD ["npm", "run", "preview"]
 ## License
 
 MIT
+
+> Last updated: 2025-11-20

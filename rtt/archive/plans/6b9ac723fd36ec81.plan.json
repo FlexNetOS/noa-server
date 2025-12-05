@@ -1,0 +1,27 @@
+{
+  "plan_id": "sha256-6b9ac723fd36ec813dd45bda3bb93303a3bbe925aeffa0965d9de72737839d55",
+  "created_at": "2025-10-27T18:11:21Z",
+  "routes_add": [
+    {
+      "from": "rtt://ui/hook/refresh",
+      "to": "rtt://core/api/metrics",
+      "lane": "shm"
+    },
+    {
+      "from": "rtt://core/bus/events",
+      "to": "rtt://obs/extension/logger#ndjson",
+      "lane": "uds"
+    },
+    {
+      "from": "rtt://core/api/auth",
+      "to": "rtt://idp/api/auth",
+      "lane": "shm"
+    }
+  ],
+  "routes_del": [],
+  "order": [
+    "rtt://ui/hook/refresh->rtt://core/api/metrics",
+    "rtt://core/bus/events->rtt://obs/extension/logger#ndjson",
+    "rtt://core/api/auth->rtt://idp/api/auth"
+  ]
+}

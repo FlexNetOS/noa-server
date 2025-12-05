@@ -22,7 +22,7 @@ jobs:
         run: corepack enable
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd533
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061
         with:
           version: 9.11.0
 
@@ -54,21 +54,21 @@ jobs:
         working-directory: ./
 
       - name: Upload verification.json
-        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
         with:
           name: verification
           path: EvidenceLedger/verification.json
           if-no-files-found: warn
 
       - name: Upload MCP catalog
-        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
         with:
           name: mcp-catalog
           path: logs/mcp/tool_catalog.json
           if-no-files-found: warn
 
       - name: Upload UI dist
-        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
         with:
           name: ui-dashboard-dist
           path: packages/ui-dashboard/dist

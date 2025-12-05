@@ -53,7 +53,7 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@885d1462741c5bd3a9e5b8d95c7e9c0f0f1c5d9
+        uses: docker/setup-buildx-action@885d1462b80bc1c1c7f0b00334ad271f09369c55
 
       - name: Build and test in container
         run: |

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata: { name: nexus3 }
+spec:
+  serviceName: nexus3
+  selector: { matchLabels: { app: nexus3 } }
+  replicas: 1
+  template:
+    metadata: { labels: { app: nexus3 } }
+    spec:
+      containers:
+      - name: nexus3
+        image: {{ .Values.image }}
+        ports: [ { containerPort: 8081, name: http } ]
+        volumeMounts:
+        - { name: data, mountPath: /nexus-data }
+  volumeClaimTemplates:
+  - metadata: { name: data }
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources: { requests: { storage: {{ .Values.storageSize }} } }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: nexus3 }
+spec:
+  selector: { app: nexus3 }
+  type: {{ .Values.service.type }}
+  ports: [ { port: {{ .Values.service.port }}, targetPort: http, name: http } ]

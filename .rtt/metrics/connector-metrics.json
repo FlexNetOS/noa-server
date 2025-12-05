@@ -1,0 +1,13 @@
+{
+  "timestamp": 1761606822.2121575,
+  "uptime_seconds": 0.004249095916748047,
+  "counters": {
+    "connectors_generated": 7
+  },
+  "timings": {},
+  "gauges": {
+    "total_connectors": 7,
+    "generation_errors": 0
+  },
+  "metadata": {}
+}

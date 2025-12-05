@@ -1,0 +1,106 @@
+# Runtime artifacts
+.rtt/cache/
+.rtt/wal/*.wal.json
+.rtt/wal/LATEST
+.rtt/registry/cas/sha256/*.json
+.rtt/manifests/*.json
+!.rtt/manifests/core.*.json
+!.rtt/manifests/idp.*.json
+!.rtt/manifests/obs.*.json
+!.rtt/manifests/ui.*.json
+
+# Plans (runtime generated)
+plans/*.plan.json
+plans/LATEST
+plans/dep.unify.json
+plans/latest.plan.json
+
+# Temporary directories
+rtt_elite_addon/
+tmp/
+temp/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Rust
+target/
+Cargo.lock
+**/*.rs.bk
+*.pdb
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pnpm-store/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Coverage
+.coverage
+.coverage.*
+htmlcov/
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Environment
+.env
+.env.local
+.env.*.local
+.venv/
+venv/
+ENV/
+env/
+
+# Generated files (runtime)
+index/*.tmp
+index/*.cache
+hash/
+# symbols.index.json is production metadata - tracked in git

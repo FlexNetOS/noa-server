@@ -36,7 +36,7 @@ jobs:
             librsvg2-dev
 
       - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@6d9817901c499d6b02debbb57edb38d33daa680b
         with:
           targets: x86_64-unknown-linux-gnu
 
@@ -46,7 +46,7 @@ jobs:
           workspaces: opcode/src-tauri
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@4bc047ad259df6fc24b05eb89eb1ce5c7e9e3c9
+        uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5
 
       - name: Install dependencies
         run: bun install
@@ -65,7 +65,7 @@ jobs:
           sha256sum * > checksums.txt
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
         with:
           name: linux-x86_64
           path: dist/linux-x86_64/*

@@ -1,5 +1,8 @@
 # @noa/auth-service
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 Enterprise-grade authentication and authorization service for Noa Server.
 
 ## Features
@@ -229,3 +232,5 @@ MIT
 - Issues: https://github.com/noa-server/auth-service/issues
 - Security: security@noa-server.com
 - Docs: https://docs.noa-server.com
+
+> Last updated: 2025-11-20

@@ -1,5 +1,8 @@
 # @noa/feature-flags
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 Feature flag management system for Noa Server with support for multiple
 providers and rollout strategies.
 
@@ -187,3 +190,5 @@ pnpm test:coverage
 ## License
 
 MIT
+
+> Last updated: 2025-11-20

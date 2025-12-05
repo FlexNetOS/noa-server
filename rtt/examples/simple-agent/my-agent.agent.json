@@ -1,0 +1,13 @@
+{
+  "$schema": "https://rtt/agent-manifest/v1",
+  "symbol": "myapp.worker",
+  "version": "1.0.0",
+  "name": "Simple Worker",
+  "desc": "Example worker agent",
+  "io": {
+    "input": "json",
+    "output": "json"
+  },
+  "capabilities": ["process"],
+  "rtt_saddr": "rtt://agent/myapp/worker@1.0.0"
+}

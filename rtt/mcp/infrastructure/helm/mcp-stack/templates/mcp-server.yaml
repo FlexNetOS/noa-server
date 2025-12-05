@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcp-server
+  labels: { app: mcp-server }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: mcp-server } }
+  template:
+    metadata:
+      labels: { app: mcp-server }
+      annotations:
+        cosign.sigstore.dev/verified: "{{ .Values.gatekeeperPolicies.requireCosignLabel }}"
+    spec:
+      containers:
+        - name: server
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: MCP_SERVER_NAME
+              value: "{{ .Values.env.MCP_SERVER_NAME }}"
+            - name: MCP_TRANSPORT
+              value: "{{ .Values.env.MCP_TRANSPORT }}"
+            - name: OTEL_SERVICE_NAME
+              value: "{{ .Values.env.OTEL_SERVICE_NAME }}"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "{{ .Values.env.OTEL_EXPORTER_OTLP_ENDPOINT }}"
+            - name: RTT_OUT
+              value: "{{ .Values.rtt.outDir }}"
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+          volumeMounts:
+            - name: rtt
+              mountPath: "{{ .Values.rtt.outDir }}"
+      volumes:
+        - name: rtt
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mcp-server
+spec:
+  selector: { app: mcp-server }
+  type: {{ .Values.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.service.port }}
+      targetPort: http

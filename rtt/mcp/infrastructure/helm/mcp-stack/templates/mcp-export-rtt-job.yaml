@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mcp-export-rtt
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: export
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command: ["node","dist/export_rtt.js"]
+          env:
+            - name: MCP_PROVIDER
+              value: "k8s"
+            - name: RTT_OUT
+              value: "{{ .Values.rtt.outDir }}"
+          volumeMounts:
+            - name: rtt
+              mountPath: "{{ .Values.rtt.outDir }}"
+      volumes:
+        - name: rtt
+          emptyDir: {}

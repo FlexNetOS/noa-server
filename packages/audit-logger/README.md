@@ -1,5 +1,8 @@
 # Audit Logger
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 Comprehensive audit logging system with SIEM integration and compliance support
 for SOC 2, PCI DSS, HIPAA, and GDPR.
 
@@ -468,3 +471,5 @@ CREATE INDEX idx_audit_ip ON audit_logs(ip_address);
 ## License
 
 MIT
+
+> Last updated: 2025-11-20

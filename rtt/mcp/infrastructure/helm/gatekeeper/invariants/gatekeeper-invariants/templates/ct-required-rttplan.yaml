@@ -1,0 +1,43 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8srequiredrttplan
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sRequiredRTTPlan
+      validation:
+        openAPIV3Schema:
+          properties:
+            annotations:
+              type: array
+              items: { type: string }
+            immutable:
+              type: boolean
+  targets:
+  - target: admission.k8s.gatekeeper.sh
+    rego: |
+      package k8srequiredrttplan
+      violation[{"msg": msg}] {
+        input.review.kind.kind == "Deployment"
+        required := {a | a := input.parameters.annotations[_]}
+        missing := {a | a := input.parameters.annotations[_]; not has_annotation(input.review.object.metadata.annotations, a)}
+        count(missing) > 0
+        msg := sprintf("missing required annotations: %v", [missing])
+      }
+
+      # Immutability check on update
+      violation[{"msg": msg}] {
+        input.review.kind.kind == "Deployment"
+        input.parameters.immutable == true
+        old := input.review.oldObject.metadata.annotations
+        new := input.review.object.metadata.annotations
+        # If hash changed, block
+        old["rtt.plan/hash"] != new["rtt.plan/hash"]
+        msg := "rtt.plan/hash is immutable"
+      }
+
+      has_annotation(ann, key) {
+        ann[key]
+      }

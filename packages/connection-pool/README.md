@@ -1,5 +1,8 @@
 # @noa/connection-pool
 
+📚 [Master Documentation Index](docs/INDEX.md)
+
+
 Advanced multi-database connection pooling with health checks, load balancing,
 and adaptive sizing.
 
@@ -514,3 +517,5 @@ async function batchInsert(records: any[]) {
 ## License
 
 MIT
+
+> Last updated: 2025-11-20

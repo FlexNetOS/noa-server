@@ -18,17 +18,24 @@ if [[ ! -f "${CATALOG_FILE}" ]]; then
     exit 1
 fi
 
+# Escape content for safe insertion in sed replacement blocks
+escape_sed_replacement() {
+    printf '%s' "$1" | sed -e 's/[\/&]/\\&/g'
+}
+
 # Function to add/update master index link
 add_master_index_link() {
     local readme_file="$1"
     local link_text="📚 [Master Documentation Index](docs/INDEX.md)"
+    local escaped_link_text
 
     # Check if link already exists
     if ! grep -q "Master Documentation Index" "$readme_file" 2>/dev/null; then
         # Add at the beginning after title
         if grep -q '^#' "$readme_file"; then
             # Insert after first heading
-            sed -i "0,/^#.*$/s//&\n\n${link_text}\n/" "$readme_file"
+            escaped_link_text="$(escape_sed_replacement "$link_text")"
+            sed -i "0,/^#.*$/s//&\n\n${escaped_link_text}\n/" "$readme_file"
         else
             # Prepend to file
             echo -e "${link_text}\n" | cat - "$readme_file" > "$readme_file.tmp"
@@ -55,7 +62,8 @@ update_timestamp() {
 # Function to validate and fix internal links
 validate_links() {
     local readme_file="$1"
-    local dir=$(dirname "$readme_file")
+    local dir
+    dir=$(dirname "$readme_file")
     local broken_links=0
 
     # Extract all markdown links

@@ -1,0 +1,9 @@
+{
+  "root": "b1369196803f824ebd38608f4c99fff53785689a19a55522c13bcf0b4c99f9c1",
+  "frame": {
+    "ts": 1761612094.8154747,
+    "plan_id": "test-0",
+    "prev": "1a96ce0e5a428ff7e4c33fa66ff689dea8237647fb4303927595f2b1354e984f",
+    "apply": []
+  }
+}

@@ -68,13 +68,13 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Download documentation artifacts
-        uses: actions/download-artifact@65a9edc5881444af0b9093e5e666db3dd7f06d4
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806
         with:
           name: documentation
           path: docs-site
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@8425965618f8b9a0c32f489d6b6c3b6b5c1239b
+        uses: ruby/setup-ruby@e5517072e87f198d9533967ae13d97c11b604005
         with:
           ruby-version: "3.2"
           bundler-cache: true
@@ -109,13 +109,13 @@ jobs:
       contents: write
     steps:
       - name: Download Jekyll site
-        uses: actions/download-artifact@65a9edc5881444af0b9093e5e666db3dd7f06d4
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806
         with:
           name: jekyll-site
           path: docs-site
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@373f7f263a76c20808c831209c920827a82a284
+        uses: peaceiris/actions-gh-pages@373f7f263a76c20808c831209c920827a82a2847
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: docs-site
@@ -135,7 +135,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download documentation artifacts
-        uses: actions/download-artifact@65a9edc5881444af0b9093e5e666db3dd7f06d4
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806
         with:
           name: documentation
           path: wiki-source

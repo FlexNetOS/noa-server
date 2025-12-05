@@ -1,0 +1,12 @@
+apiVersion: spire.spiffe.io/v1alpha1
+kind: SPIFFEID
+metadata:
+  name: rtt-gateway
+  namespace: rtt
+spec:
+  spiffeID: "spiffe://example.org/ns/rtt/sa/model-gateway"
+  parentID: "spiffe://example.org/spire/server"
+  selector:
+    matchLabels:
+      app: model-gateway
+  ttl: 24h

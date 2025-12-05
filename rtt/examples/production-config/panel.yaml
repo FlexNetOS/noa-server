@@ -1,0 +1,21 @@
+api:
+  listen:
+    unix: ./.rtt/sockets/panel.sock
+
+scan:
+  roots: [./agents, ./providers]
+  ignore: [./tests, ./docs]
+
+routing:
+  prefer: [shm, uds, tcp]
+  rewire_atomic: true
+
+security:
+  strict_manifests: true
+  allow_unsigned: []
+
+health:
+  heartbeat_ms: 1000
+  trip_threshold:
+    errors: 3
+    window_ms: 5000

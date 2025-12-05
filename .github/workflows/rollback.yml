@@ -157,7 +157,7 @@ jobs:
           tar -czf /tmp/rollback-backup.tar.gz -C /tmp $(basename "$BACKUP_DIR")
 
       - name: Upload backup
-        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
         with:
           name: rollback-backup-${{ needs.validate-rollback.outputs.current_version }}
           path: /tmp/rollback-backup.tar.gz

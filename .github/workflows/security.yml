@@ -40,16 +40,16 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@4fa2a7953630fd2f3fb3806a1a9e8f7591a52fe43
+        uses: github/codeql-action/init@6f7376048dd6be43ea34c6bd4a3ecef7d7abd847
         with:
           languages: ${{ matrix.language }}
           queries: +security-and-quality,security-extended
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@4fa2a7953630fd2f3fb3806a1a9e8f7591a52fe43
+        uses: github/codeql-action/autobuild@6f7376048dd6be43ea34c6bd4a3ecef7d7abd847
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@4fa2a7953630fd2f3fb3806a1a9e8f7591a52fe43
+        uses: github/codeql-action/analyze@6f7376048dd6be43ea34c6bd4a3ecef7d7abd847
         with:
           category: '/language:${{ matrix.language }}'
           upload: true
@@ -75,7 +75,7 @@ jobs:
 
       - name: Upload Gitleaks results
         if: always()
-        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
         with:
           name: gitleaks-results
           path: results.sarif
@@ -111,7 +111,7 @@ jobs:
 
       - name: Upload pip-audit results
         if: always()
-        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
         with:
           name: pip-audit-results
           path: pip-audit-*.json
@@ -137,7 +137,7 @@ jobs:
         run: corepack enable
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd533
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061
         with:
           version: ${{ env.PNPM_VERSION }}
 
@@ -163,7 +163,7 @@ jobs:
 
       - name: Upload pnpm audit results
         if: always()
-        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
         with:
           name: pnpm-audit-results
           path: pnpm-audit*.json
@@ -189,7 +189,7 @@ jobs:
         run: corepack enable
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd533
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061
         with:
           version: ${{ env.PNPM_VERSION }}
 
@@ -216,7 +216,7 @@ jobs:
 
       - name: Upload Snyk results
         if: always()
-        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
         with:
           name: snyk-scan-results
           path: snyk-results.json
@@ -258,14 +258,14 @@ jobs:
           severity: 'CRITICAL,HIGH'
 
       - name: Upload Trivy results to GitHub Security
-        uses: github/codeql-action/upload-sarif@17573ee1cc1f98061c6e8654bfcc003a637bd73
+        uses: github/codeql-action/upload-sarif@6f7376048dd6be43ea34c6bd4a3ecef7d7abd847
         if: always()
         with:
           sarif_file: 'trivy-fs-results.sarif'
 
       - name: Upload Trivy scan artifacts
         if: always()
-        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
         with:
           name: trivy-scan-results
           path: trivy-*.sarif
@@ -291,7 +291,7 @@ jobs:
         run: corepack enable
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd533
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061
         with:
           version: ${{ env.PNPM_VERSION }}
 
@@ -321,7 +321,7 @@ jobs:
           fi
 
       - name: Upload CycloneDX SBOMs
-        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
         with:
           name: sbom-cyclonedx
           path: sbom-*.{json,xml}
@@ -356,7 +356,7 @@ jobs:
           syft noa-server:sbom -o spdx-json > sbom-container-spdx.json
 
       - name: Upload Syft SBOMs
-        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
         with:
           name: sbom-syft
           path: sbom-*.json
@@ -392,13 +392,13 @@ jobs:
           tar -czf sbom-bundle.tar.gz sbom-bundle/
 
       - name: Attest SBOM bundle
-        uses: actions/attest-sbom@1c3b1e6b6c9e8f4a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7
+        uses: actions/attest-sbom@4651f806c01d8637787e274ac3bdf724ef169f34
         with:
           subject-path: 'sbom-bundle.tar.gz'
           sbom-path: 'sbom-bundle/sbom-nodejs.json'
 
       - name: Upload attested SBOM bundle
-        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
         with:
           name: sbom-bundle-attested
           path: sbom-bundle.tar.gz
@@ -496,7 +496,7 @@ jobs:
           EOF
 
       - name: Upload consolidated report
-        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72bd
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
         with:
           name: security-report
           path: security-reports/

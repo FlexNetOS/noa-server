@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata: { name: spire-server-conf }
+data:
+  server.conf: |
+    server {
+      bind_address = "0.0.0.0"
+      bind_port = "8081"
+      trust_domain = "{{ .Values.trustDomain }}"
+      data_dir = "/run/spire/data"
+      ca_key_type = "ed25519"
+      experimental {
+        api { enabled = true }
+      }
+      plugins {
+        DataStore "sql" { plugin_data { database_type = "sqlite3", connection_string = "/run/spire/data/datastore.sqlite3" } }
+        NodeAttestor "k8s_psat" { plugin_data { cluster = "k8s" } }
+        UpstreamAuthority "disk" { plugin_data { key_file_path = "/run/spire/bootstrap/ca.key" cert_file_path = "/run/spire/bootstrap/ca.crt" } }
+      }
+    }

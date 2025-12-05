@@ -239,7 +239,8 @@ export class ConfigValidator {
    * Format Zod validation errors
    */
   private static formatZodErrors(error: ZodError): ConfigValidationError[] {
-    return error.errors.map((issue: ZodIssue) => ({
+    const issues = (error as any).issues || (error as any).errors || [];
+    return issues.map((issue: ZodIssue) => ({
       path: issue.path.join('.'),
       message: issue.message,
       code: issue.code,
@@ -255,7 +256,7 @@ export class ConfigValidator {
     if (issue.code === 'invalid_type') {
       return (issue as any).expected || 'unknown';
     }
-    if (issue.code === 'invalid_enum_value') {
+    if ((issue.code as string) === 'invalid_enum_value') {
       return `one of: ${(issue as any).options.join(', ')}`;
     }
     return 'valid value';

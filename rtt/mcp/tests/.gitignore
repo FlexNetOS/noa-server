@@ -1,0 +1,12 @@
+# Test outputs
+coverage/
+test-results/
+playwright-report/
+*.log
+
+# Dependencies
+node_modules/
+
+# Environment
+.env.test
+.env.test.local

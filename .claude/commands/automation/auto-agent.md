@@ -82,22 +82,31 @@ npx claude-flow auto agent -t "Fix bug in login" -s minimal
 ### Optimal
 
 - Maximum efficiency
+
 - May spawn more agents
+
 - Best for complex tasks
+
 - Highest resource usage
 
 ### Minimal
 
 - Minimum viable agents
+
 - Conservative approach
+
 - Good for simple tasks
+
 - Lowest resource usage
 
 ### Balanced
 
 - Middle ground
+
 - Adaptive to complexity
+
 - Default strategy
+
 - Good performance/resource ratio
 
 ## Integration with Claude Code
