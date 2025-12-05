@@ -79,7 +79,6 @@ def jss(debugger, *args):
   rbp = frame.FindRegister("rbp")
   rsp = frame.FindRegister("rsp")
   pc = frame.FindRegister("pc")
-  rbp = js_entry_sp
   rsp = js_entry_sp + 2 *sizeof_void
   pc.value = js_entry_sp + sizeof_void
 
