@@ -3,14 +3,25 @@
 ## Overview
 
 This directory contains automation scripts for managing the task management
-system. All scripts are designed to work with `current.todo`, `backlog.todo`,
-`SOP.md`, and `SOT.md`.
+system. Canonical task artifacts now live under `.orchestration/docs/`.
+
+Canonical files:
+
+- `.orchestration/docs/current.todo`
+- `.orchestration/docs/backlog.todo`
+- `.orchestration/docs/sop.md`
+- `.orchestration/docs/sot.md`
+
+Legacy root pointers (`current.todo`, `backlog.todo`, `SOP.md`, `SOT.md`) will
+be removed after all external references update. Do not reference root-level
+duplicates in new automation.
 
 ## Available Scripts
 
 ### 1. archive-completed.sh
 
-**Purpose**: Archive completed tasks from current.todo to SOT.md
+**Purpose**: Archive completed tasks from canonical current.todo to canonical
+sot.md
 
 **Usage**:
 
@@ -20,9 +31,9 @@ system. All scripts are designed to work with `current.todo`, `backlog.todo`,
 
 **What it does**:
 
-- Finds all tasks marked with `[x]` in current.todo
+- Finds all tasks marked with `[x]` in `.orchestration/docs/current.todo`
 - Extracts task details (ID, description, category, time)
-- Adds entries to SOT.md Completed Tasks Archive
+- Adds entries to `.orchestration/docs/sot.md` Completed Tasks Archive
 - Removes completed tasks from current.todo
 - Updates task statistics
 - Creates backup before modification
@@ -43,6 +54,8 @@ system. All scripts are designed to work with `current.todo`, `backlog.todo`,
 ```
 
 **Backup Location**: `./.task-archive/current.todo.backup.YYYY-MM-DD`
+**Canonical Paths**: `.orchestration/docs/current.todo` →
+`.orchestration/docs/sot.md`
 
 ---
 
@@ -55,11 +68,11 @@ system. All scripts are designed to work with `current.todo`, `backlog.todo`,
 ```bash
 ./scripts/tasks/sort-by-priority.sh [--file FILE]
 
-# Sort current.todo (default)
+# Sort canonical current.todo (default)
 ./scripts/tasks/sort-by-priority.sh
 
 # Sort specific file
-./scripts/tasks/sort-by-priority.sh --file ./backlog.todo
+./scripts/tasks/sort-by-priority.sh --file ./.orchestration/docs/backlog.todo
 ```
 
 **What it does**:
@@ -115,7 +128,8 @@ system. All scripts are designed to work with `current.todo`, `backlog.todo`,
 
 **What it does**:
 
-- Extracts all task IDs from current.todo and backlog.todo
+- Extracts all task IDs from `.orchestration/docs/current.todo` and
+  `.orchestration/docs/backlog.todo`
 - Validates that all dependencies exist
 - Detects circular dependencies
 - Identifies blocked tasks
@@ -179,7 +193,7 @@ Blocked Tasks: 2
 
 **What it does**:
 
-- Backs up all 4 core files
+- Backs up all 4 core files (canonical .orchestration/docs/\*)
 - Creates daily/weekly/monthly backups
 - Generates SHA-256 checksums
 - Creates compressed archives
@@ -194,10 +208,10 @@ Blocked Tasks: 2
 
 **Files Backed Up**:
 
-- current.todo
-- backlog.todo
-- SOP.md
-- SOT.md
+- .orchestration/docs/current.todo
+- .orchestration/docs/backlog.todo
+- .orchestration/docs/sop.md
+- .orchestration/docs/sot.md
 
 **When to run**:
 
@@ -237,8 +251,8 @@ Retention:     30 days
 │   └── 2025-10-22/
 │       ├── current.todo
 │       ├── backlog.todo
-│       ├── SOP.md
-│       ├── SOT.md
+│       ├── sop.md
+│       ├── sot.md
 │       ├── checksums.txt
 │       └── manifest.txt
 ├── weekly/
@@ -319,7 +333,7 @@ shasum -a 256 -c checksums.txt
 # 2. Backup files
 ./scripts/tasks/backup-tasks.sh
 
-# 3. Review SOT.md for accuracy
+# 3. Review sot.md for accuracy
 ```
 
 ### Daily Maintenance
@@ -344,8 +358,8 @@ shasum -a 256 -c checksums.txt
 pwd
 # Should show: /path/to/noa-server-repo
 
-# Check file exists
-ls current.todo backlog.todo SOP.md SOT.md
+# Check canonical files exist
+ls .orchestration/docs/current.todo .orchestration/docs/backlog.todo .orchestration/docs/sop.md .orchestration/docs/sot.md
 ```
 
 **"Permission denied"**
@@ -439,7 +453,7 @@ find .task-backups/ -type f -mtime +30 -delete
 
 ```bash
 # For large task lists, limit scope
-grep -E "TASK-[0-9]+" current.todo | ./scripts/tasks/check-dependencies.sh
+grep -E "TASK-[0-9]+" .orchestration/docs/current.todo | ./scripts/tasks/check-dependencies.sh
 ```
 
 ---
@@ -469,9 +483,10 @@ set -euo pipefail
 3. **Test**:
 
 ```bash
-# Test on backup files
-cp current.todo current.todo.test
-./scripts/tasks/new-script.sh --file current.todo.test
+# Prepare test environment
+mkdir -p test-env
+cp .orchestration/docs/current.todo test-env/current.todo.test
+./scripts/tasks/new-script.sh --file test-env/current.todo.test
 ```
 
 4. **Document**:
@@ -482,9 +497,9 @@ cp current.todo current.todo.test
 ### Script Testing
 
 ```bash
-# Create test directory
+# Create test directory and copy canonical artifacts
 mkdir -p test-env
-cp current.todo backlog.todo SOP.md SOT.md test-env/
+cp .orchestration/docs/current.todo .orchestration/docs/backlog.todo .orchestration/docs/sop.md .orchestration/docs/sot.md test-env/
 
 # Test scripts
 cd test-env
@@ -494,7 +509,7 @@ cd test-env
 ../scripts/tasks/backup-tasks.sh
 
 # Verify results
-diff current.todo ../current.todo
+diff current.todo ../.orchestration/docs/current.todo
 ```
 
 ---
@@ -516,10 +531,10 @@ diff current.todo ../current.todo
 ### Documentation
 
 - [Task Management Guide](../../docs/task-management-guide.md)
-- [current.todo](../../current.todo)
-- [backlog.todo](../../backlog.todo)
-- [SOP.md](../../SOP.md)
-- [SOT.md](../../SOT.md)
+- [current.todo](../../.orchestration/docs/current.todo)
+- [backlog.todo](../../.orchestration/docs/backlog.todo)
+- [sop.md](../../.orchestration/docs/sop.md)
+- [sot.md](../../.orchestration/docs/sot.md)
 
 ### Issues
 

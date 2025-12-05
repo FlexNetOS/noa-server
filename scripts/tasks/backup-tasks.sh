@@ -7,16 +7,22 @@ set -euo pipefail
 
 # Configuration
 BACKUP_DIR="./.task-backups"
-RETENTION_DAYS="${1:-30}"
+# Parse optional retention flag: --retention DAYS
+if [[ "${1:-}" == "--retention" ]]; then
+    RETENTION_DAYS="${2:-30}"
+    shift 2 || true
+else
+    RETENTION_DAYS="${1:-30}"
+fi
 TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
 DATE_ONLY=$(date +"%Y-%m-%d")
 
-# Files to backup
+# Files to backup (canonical locations)
 FILES_TO_BACKUP=(
-    "current.todo"
-    "backlog.todo"
-    "SOP.md"
-    "SOT.md"
+    ".orchestration/docs/current.todo"
+    ".orchestration/docs/backlog.todo"
+    ".orchestration/docs/sop.md"
+    ".orchestration/docs/sot.md"
 )
 
 # Colors
@@ -67,12 +73,13 @@ BACKUP_COUNT=0
 BACKUP_SIZE=0
 
 for file in "${FILES_TO_BACKUP[@]}"; do
+    BASENAME=$(basename "$file")
     if [[ -f "$file" ]]; then
-        cp "$file" "$BACKUP_SUBDIR/"
+        cp "$file" "$BACKUP_SUBDIR/$BASENAME"
         FILE_SIZE=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null || echo "0")
         BACKUP_SIZE=$((BACKUP_SIZE + FILE_SIZE))
         BACKUP_COUNT=$((BACKUP_COUNT + 1))
-        log_info "Backed up: $file"
+        log_info "Backed up: $file -> $BACKUP_SUBDIR/$BASENAME"
     else
         log_warn "File not found: $file"
     fi
@@ -102,17 +109,19 @@ Files Backed Up:
 EOF
 
 for file in "${FILES_TO_BACKUP[@]}"; do
-    if [[ -f "$BACKUP_SUBDIR/$file" ]]; then
-        FILE_SIZE=$(stat -f%z "$BACKUP_SUBDIR/$file" 2>/dev/null || stat -c%s "$BACKUP_SUBDIR/$file" 2>/dev/null || echo "0")
-        echo "  - $file ($FILE_SIZE bytes)" >> "$BACKUP_SUBDIR/manifest.txt"
+    BASENAME=$(basename "$file")
+    if [[ -f "$BACKUP_SUBDIR/$BASENAME" ]]; then
+        FILE_SIZE=$(stat -f%z "$BACKUP_SUBDIR/$BASENAME" 2>/dev/null || stat -c%s "$BACKUP_SUBDIR/$BASENAME" 2>/dev/null || echo "0")
+        echo "  - $BASENAME ($FILE_SIZE bytes)" >> "$BACKUP_SUBDIR/manifest.txt"
     fi
 done
 
-# Generate checksums
+# Generate checksums (exclude manifest which is generated post-copy and changing)
 log_info "Generating checksums..."
 cd "$BACKUP_SUBDIR"
-for file in *; do
-    if [[ -f "$file" ]] && [[ "$file" != "checksums.txt" ]]; then
+rm -f checksums.txt
+for file in current.todo backlog.todo sop.md sot.md; do
+    if [[ -f "$file" ]]; then
         shasum -a 256 "$file" >> checksums.txt
     fi
 done
@@ -122,9 +131,8 @@ cd - > /dev/null
 log_info "Cleaning up old backups (retention: $RETENTION_DAYS days)..."
 
 # Daily backups: keep for retention days
-DELETED_COUNT=0
-find "$BACKUP_DIR/daily" -type d -mtime +$RETENTION_DAYS -exec rm -rf {} + 2>/dev/null || true
-DELETED_DAILY=$(find "$BACKUP_DIR/daily" -maxdepth 0 -empty -delete -print 2>/dev/null | wc -l || echo "0")
+find "$BACKUP_DIR/daily" -type d -mtime +"$RETENTION_DAYS" -exec rm -rf {} + 2>/dev/null || true
+find "$BACKUP_DIR/daily" -maxdepth 0 -empty -delete -print >/dev/null 2>&1 || true
 
 # Weekly backups: keep for 90 days
 find "$BACKUP_DIR/weekly" -type d -mtime +90 -exec rm -rf {} + 2>/dev/null || true
@@ -133,25 +141,28 @@ find "$BACKUP_DIR/weekly" -type d -mtime +90 -exec rm -rf {} + 2>/dev/null || tr
 # find "$BACKUP_DIR/monthly" -type d -mtime +365 -exec rm -rf {} + 2>/dev/null || true
 
 # Delete old archives
-find "$BACKUP_DIR" -name "*.tar.gz" -mtime +$RETENTION_DAYS -delete 2>/dev/null || true
+find "$BACKUP_DIR" -name "*.tar.gz" -mtime +"$RETENTION_DAYS" -delete 2>/dev/null || true
 
 log_info "Cleaned up old backups"
 
-# Verify backup integrity
 log_info "Verifying backup integrity..."
-
 VERIFY_ERRORS=0
 cd "$BACKUP_SUBDIR"
-while IFS= read -r line; do
-    EXPECTED_HASH=$(echo "$line" | awk '{print $1}')
-    FILE=$(echo "$line" | awk '{print $2}')
-
-    if [[ -f "$FILE" ]]; then
-        ACTUAL_HASH=$(shasum -a 256 "$FILE" | awk '{print $1}')
-        if [[ "$EXPECTED_HASH" != "$ACTUAL_HASH" ]]; then
-            log_error "Checksum mismatch for $FILE"
+while read -r line; do
+    expected=$(echo "$line" | awk '{print $1}')
+    file=$(echo "$line" | awk '{print $2}')
+    if [[ -z "$file" ]]; then
+        continue
+    fi
+    if [[ -f "$file" ]]; then
+        actual=$(shasum -a 256 "$file" | awk '{print $1}')
+        if [[ "$expected" != "$actual" ]]; then
+            log_error "Checksum mismatch for $file"
             VERIFY_ERRORS=$((VERIFY_ERRORS + 1))
         fi
+    else
+        log_error "Missing file during verification: $file"
+        VERIFY_ERRORS=$((VERIFY_ERRORS + 1))
     fi
 done < checksums.txt
 cd - > /dev/null
@@ -204,6 +215,7 @@ echo "Backup Summary"
 echo "================================================"
 echo "Type:          $BACKUP_TYPE"
 echo "Files:         $BACKUP_COUNT"
+BACKUP_SIZE_MB=$(awk "BEGIN {printf \"%.2f\", $BACKUP_SIZE/1024/1024}")
 echo "Size:          $BACKUP_SIZE_MB MB"
 echo "Location:      $BACKUP_SUBDIR"
 echo "Archive:       $ARCHIVE_NAME"

@@ -1,0 +1,10 @@
+{
+  "node_version": "20.17.0",
+  "download_url": "https://nodejs.org/dist/v20.17.0/node-v20.17.0-linux-x64.tar.xz",
+  "archive_name": "node-v20.17.0-linux-x64.tar.xz",
+  "expected_sha256": "a24db3dcd151a52e75965dba04cf1b3cd579ff30d6e0af9da1aede4d0f17486b",
+  "actual_sha256": "a24db3dcd151a52e75965dba04cf1b3cd579ff30d6e0af9da1aede4d0f17486b",
+  "verified": true,
+  "generated_at": "2025-11-11T20:44:06Z",
+  "install_dir": "/home/deflex/noa-server/.runtime/node-v20.17.0-linux-x64"
+}

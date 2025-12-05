@@ -6,8 +6,8 @@
 set -euo pipefail
 
 # Configuration
-CURRENT_TODO="./current.todo"
-BACKLOG_TODO="./backlog.todo"
+CURRENT_TODO="./.orchestration/docs/current.todo"
+BACKLOG_TODO="./.orchestration/docs/backlog.todo"
 FIX_MODE=false
 
 # Colors

@@ -1,8 +1,8 @@
 # Shared Provider Access Configuration - SPARC Development Environment
 
-## 🚨 CRITICAL: CONCURRENT EXECUTION & FILE MANAGEMENT
+**Primary Configuration File:**
 
-**ABSOLUTE RULES**:
+All Claude Code instructions and configuration are now centralized in:
 
 1. ALL operations MUST be concurrent/parallel in a single message
 2. **NEVER save working files, text/mds and tests to the root folder**
@@ -860,143 +860,23 @@ To use a specific model instead of auto-selection:
   }
 }
 ```
-
-### Integration with Queen Coordinator
-
-The Model Selector integrates seamlessly with the Queen coordinator:
-
-#### Automatic Integration
-
-```typescript
-// Queen.ts automatically initializes with best model
-const queen = new Queen(config);
-await queen.initialize();
-// Model auto-selected based on hardware
-
-// Get current model info
-const modelInfo = queen.getModelInfo();
-console.log(`Using: ${modelInfo.model_name}`);
-console.log(`Fitness: ${modelInfo.queen_fitness_score}`);
+/home/deflex/.github/chatmodes/agent.chatmode.md
 ```
 
-#### Runtime Model Switching
+This file contains:
+- Complete task management system with orchestration files
+- Truth Gate requirements and verification protocols
+- Evidence standards and triple-verification process
+- Tool configurations and policies
+- Verification playbooks for all major stacks
+- SPARC methodology and workflow phases
 
-```typescript
-// Switch to a different model at runtime
-const newModel = await selector.findModel('llama-3.1-8b', 'Q4_K_M');
-if (newModel) {
-  await queen.switchModel(newModel);
-  console.log('Model switched successfully');
-}
-```
-
-#### Performance Benchmarking
-
-```typescript
-// Benchmark current model
-const benchmark = await queen.benchmarkCurrentModel();
-console.log(`Tokens/sec: ${benchmark.tokensPerSecond}`);
-console.log(`Latency: ${benchmark.averageLatency}ms`);
-```
-
-### Model Database Management
-
-The model database is stored in CSV format for easy updates:
-
-**Location**: `/home/deflex/noa-server/models/queen-model-profiles.csv`
-
-**Adding New Models**:
-
-1. Download GGUF model file
-2. Add row to CSV with metrics:
-   - Model name, family, parameters, quantization
-   - Queen fitness score (0-1)
-   - Reasoning score (0-1)
-   - JSON reliability (0-1)
-   - Inference speeds (CPU/GPU)
-   - Memory requirements
-   - Download URL, license, tier
-3. Reload Queen or restart application
-
-**Example CSV Entry**:
-
-```csv
-Phi-3.5-mini-instruct,Phi,3.8B,Q4_K_M,0.95,0.95,0.98,40,120,2.5,2.5,4096,2.3,MIT,...
-```
-
-### Events and Monitoring
-
-Queen emits events during model selection:
-
-```typescript
-queen.on('model-auto-selected', (event) => {
-  console.log(`Selected: ${event.profile.model_name}`);
-  console.log(`Reasoning: ${event.reasoning}`);
-  console.log(
-    `Fallbacks: ${event.fallbacks.map((f) => f.model_name).join(', ')}`
-  );
-});
-
-queen.on('model-switched', (event) => {
-  console.log(`Switched to: ${event.profile.model_name}`);
-});
-```
-
-### Troubleshooting
-
-#### Model Selection Fails
-
-```bash
-# Check hardware detection
-node claude-flow/hooks/select-queen-model.js --hardware
-
-# Verify models in database
-node claude-flow/hooks/select-queen-model.js --stats
-
-# Try manual recommendation
-node claude-flow/hooks/select-queen-model.js --recommend --cpu-only
-```
-
-#### Performance Issues
-
-```bash
-# Benchmark current model
-node claude-flow/hooks/select-queen-model.js --benchmark <model-name>
-
-# Try lightweight tier
-# Edit .claude/config.json: "modelSelectionProfile": "lightweight"
-```
-
-#### GPU Not Detected
-
-```bash
-# Verify NVIDIA drivers
-nvidia-smi
-
-# Check CUDA availability
-# If no GPU, selector automatically uses CPU-optimized models
-```
-
-### Best Practices
-
-- ✅ **Start with auto-selection** - Let the system choose optimal model
-- ✅ **Use balanced profile** - Best for most deployments
-- ✅ **Benchmark before production** - Test model performance with your workload
-- ✅ **Monitor Queen events** - Track model selection and switching
-- ✅ **Keep CSV updated** - Add new models as they become available
-- ✅ **Test fallbacks** - Verify fallback chain works in your environment
-- ⚠️ **Don't hardcode model paths** - Use auto-selection for flexibility
-- ⚠️ **Review fitness scores** - Ensure model meets your quality requirements
-
-## Support
-
-- Documentation: <https://github.com/ruvnet/claude-flow>
-- Issues: <https://github.com/ruvnet/claude-flow/issues>
-- Flow-Nexus Platform: <https://flow-nexus.ruv.io> (registration required for
-  cloud features)
+**Please refer to the above file for all Claude Code configuration and instructions.**
 
 ---
 
+*This file serves as a pointer to the centralized agent chatmode configuration.*
+*Last updated: 2025-11-09*
 Remember: **Claude Flow coordinates, Shared Provider Access creates!**
 
 ## Important Instruction Reminders

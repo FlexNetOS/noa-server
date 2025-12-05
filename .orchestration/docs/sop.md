@@ -1,21 +1,22 @@
 # SOP - Standard Operating Procedures
 
 <!-- Living document of how we work -->
-<!-- Version: 2.0.0 | Last Updated: 2025-10-22 -->
+<!-- Version: 2.0.0 | Last Updated: 2025-10-23 00:20 UTC -->
 
-## 📋 Table of Contents
+## Table of Contents
 
-1. [Development Standards](#1-development-standards)
-2. [Testing Strategy](#2-testing-strategy)
-3. [Deployment Procedures](#3-deployment-procedures)
-4. [Architecture & Tooling](#4-architecture--tooling)
-5. [Backup & Recovery](#5-backup--recovery)
-6. [File & Folder Organization](#6-file--folder-organization)
-7. [Goals & Metrics](#7-goals--metrics)
+1. [Development Standards](#development-standards)
+2. [Task Management](#task-management)
+3. [Testing Strategy](#testing-strategy)
+4. [Deployment Procedures](#deployment-procedures)
+5. [Architecture & Tooling](#architecture--tooling)
+6. [Backup & Recovery](#backup--recovery)
+7. [File & Folder Organization](#file--folder-organization)
+8. [Goals & Metrics](#goals--metrics)
 
 ---
 
-## 1. Development Standards
+## Development Standards
 
 ### 1.1 Runtime Baselines
 
@@ -33,6 +34,8 @@ MAX_RETRIES = 3
 
 def calculate_total(price: float, quantity: int) -> float:
     """Return extended price using decimal-safe operations."""
+    if price < 0 or quantity < 0:
+        raise ValueError("Price and quantity must be non-negative")
     return price * quantity
 ```
 
@@ -43,18 +46,75 @@ export async function fetchTelemetry(): Promise<TelemetryPayload> {
   if (!response.ok) throw new Error('Telemetry request failed');
   return response.json();
 }
+
+export interface TelemetryPayload {
+  timestamp: string;
+  metrics: Record<string, number>;
+}
 ```
 
 ### 1.3 Git Workflow
 
-- **Branch prefixes**: `feature/`, `fix/`, `ops/`, `release/`
-- **Commit format**: `<type>(<scope>): <subject>`
-- **Protected branches**: `main` (requires CI + review)
-- Link every commit/PR to task IDs recorded in `.orchestration/docs`.
+#### Branch Naming Convention
+
+```text
+<type>/<ticket-id>-<short-description>
+
+Types:
+- feature/    New feature or enhancement
+- fix/        Bug fix
+- hotfix/     Critical production fix
+- release/    Release preparation
+- refactor/   Code refactoring
+- docs/       Documentation only
+- test/       Test additions or modifications
+
+Examples:
+- feature/TASK-123-user-authentication
+- fix/TASK-456-login-error
+- hotfix/security-patch
+- refactor/TASK-789-optimise-queries
+```
+
+#### Commit Message Format (Conventional Commits)
+
+```text
+<type>(<scope>): <subject>
+
+[optional body]
+
+[optional footer]
+
+Types:
+- feat:      New feature
+- fix:       Bug fix
+- docs:      Documentation changes
+- style:     Code style changes (formatting, no logic change)
+- refactor:  Code refactoring
+- perf:      Performance improvements
+- test:      Test additions or modifications
+- chore:     Build process or auxiliary tool changes
+- ci:        CI/CD changes
+```
+
+Link every commit/PR to task IDs recorded in `.orchestration/docs`.
 
 ---
 
-## 2. Testing Strategy
+## Task Management
+
+Canonical task files:
+
+- `current.todo` (active sprint/work)
+- `backlog.todo` (future work)
+- `sot.md` (historical record + metrics)
+- `organization_plan.md` (process unification plan)
+
+Refer to `backlog.todo` and `current.todo` for templates and lifecycle diagrams.
+
+---
+
+## Testing Strategy
 
 | Layer            | Command               | Notes                                              |
 | ---------------- | --------------------- | -------------------------------------------------- |
@@ -68,16 +128,16 @@ All test results feed into the Evidence Ledger and dashboard telemetry.
 
 ---
 
-## 3. Deployment Procedures
+## Deployment Procedures
 
-### 3.1 Pre-flight Checklist
+### 4.1 Pre-flight Checklist
 
 - [ ] Stakeholder approval (append to `docs/release/truth-report.md`)
 - [ ] `npm run verify` and `npm run truth-gate` passing
 - [ ] `npm run ui:build` refreshed dashboard committed
 - [ ] Updated export manifest via `npm run export`
 
-### 3.2 Release Commands
+### 4.2 Release Commands
 
 ```bash
 # 1. Pin runtimes (idempotent)
@@ -92,21 +152,20 @@ npm run export
 npm run release:report
 ```
 
-### 3.3 Rollback Steps
+### 4.3 Rollback Steps
 
-1. Restore previous `claude-suite.zip` and `.export_manifest.json` from
-   `backups/releases/`.
+1. Restore previous `claude-suite.zip` and `.export_manifest.json` from `backups/releases/`.
 2. Revert `EvidenceLedger/*.json` to the last known-good commit.
 3. Re-run `npm run verify` + `npm run truth-gate` to validate rollback state.
 4. Update `docs/release/truth-report.md` with rollback summary and timestamp.
 
 ---
 
-## 4. Architecture & Tooling
+## Architecture & Tooling
 
-### 4.1 High-level Flow
+### 5.1 High-level Flow
 
-```
+```text
 ┌────────────────────────────────────────────────────┐
 │ scripts/orchestrate.sh                             │
 │  ├─ npm run workspace:sync   (repo symlinks)       │
@@ -119,7 +178,7 @@ npm run release:report
 └────────────────────────────────────────────────────┘
 ```
 
-### 4.2 Approved Tooling
+### 5.2 Approved Tooling
 
 - **Automation**: Node scripts under `scripts/`, Bash stubs for MCP
 - **Documentation**: Markdown with front-matter, kept in `docs/`
@@ -128,7 +187,7 @@ npm run release:report
 
 ---
 
-## 5. Backup & Recovery
+## Backup & Recovery
 
 | Asset                                | Method                                | Frequency       | Retention |
 | ------------------------------------ | ------------------------------------- | --------------- | --------- |
@@ -141,9 +200,9 @@ Verification: run `scripts/backup/verify.sh --latest` after each backup window.
 
 ---
 
-## 6. File & Folder Organization
+## File & Folder Organization
 
-```
+```text
 noa-server/
 ├── .github/                    # CI workflows & chatmodes
 ├── .orchestration/
@@ -173,7 +232,43 @@ Cleanup expectations:
 
 ---
 
-## 7. Goals & Metrics
+## Canonical Task Docs Guardrail
+
+To keep the task system canonical and tamper-evident:
+
+- Canonical files: `.orchestration/docs/current.todo`, `backlog.todo`, `sop.md`, `sot.md`.
+- Baseline hashes live in `.orchestration/docs/HASHES.txt`.
+- CI enforces no root-level duplicates and verifies hashes via `scripts/ci/validate-task-canonical.sh`.
+
+### Update the hash baseline intentionally
+
+When you intentionally edit any canonical file, update the baseline:
+
+```bash
+pnpm docs:hash:update
+```
+
+This regenerates `.orchestration/docs/HASHES.txt` in a stable order and runs a quick verification. Commit the updated `HASHES.txt` alongside your doc changes.
+
+If CI fails with "HASHES.txt out of date", run:
+
+```bash
+pnpm docs:hash:update
+git add .orchestration/docs/HASHES.txt
+git commit -m "docs(guardrail): update canonical hashes"
+```
+
+To check locally without updating, run:
+
+```bash
+pnpm verify:task-canonical
+```
+
+This fails if root-level duplicates are present or if hashes drift from baseline.
+
+---
+
+## Goals & Metrics
 
 | Goal                           | Metric                  | Target | Source                                            |
 | ------------------------------ | ----------------------- | ------ | ------------------------------------------------- |

@@ -51,7 +51,7 @@ rbac = RBACManager()
 logger = setup_logger(
     name="mcp.server",
     level=logging.INFO,
-    log_file="/var/log/mcp/server.log",
+    log_file="/home/deflex/noa-server/mcp/logs/server.log",
     json_format=True
 )
 tracer = get_tracer()
