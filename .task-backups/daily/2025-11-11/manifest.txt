@@ -1,0 +1,14 @@
+Backup Manifest
+===============
+Date: Tue Nov 11 13:56:10 CST 2025
+Type: daily
+Files: 4
+Size: 87238 bytes
+Archive: task-backup-2025-11-11-2025-11-11_13-56-10.tar.gz
+Archive Size: 26878 bytes
+
+Files Backed Up:
+  - current.todo (18280 bytes)
+  - backlog.todo (24047 bytes)
+  - sop.md (8790 bytes)
+  - sot.md (36121 bytes)
