@@ -49,7 +49,6 @@ class ExtractNoaserverAgentswarmCoordinationLogicToMatrixOrchestrator:
         if not self._initialized:
             raise RuntimeError("Component not initialized")
         # TODO: Implement core logic
-        pass
 
     def cleanup(self):
         """Cleanup resources"""
