@@ -27,17 +27,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.11.0
+
       - name: Setup Node.js
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
         with:
           node-version: "20"
-          cache: "npm"
+          cache: "pnpm"
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Health check
-        run: npm run monitor:health
+        run: pnpm run monitor:health
 
       - name: Check service status
         run: |
@@ -56,17 +61,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.11.0
+
       - name: Setup Node.js
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
         with:
           node-version: "20"
-          cache: "npm"
+          cache: "pnpm"
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Performance monitoring
-        run: npm run perf:monitor:quick
+        run: pnpm run perf:monitor:quick
 
       - name: Check performance thresholds
         run: |
@@ -84,21 +94,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.11.0
+
       - name: Setup Node.js
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
         with:
           node-version: "20"
-          cache: "npm"
+          cache: "pnpm"
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Security audit
-        run: npm run security:audit
+        run: pnpm run security:audit
 
       - name: Check for vulnerabilities
         run: |
-          if npm audit --audit-level=high; then
+          if pnpm audit --audit-level=high; then
             echo "✅ No high-severity vulnerabilities"
           else
             echo "❌ High-severity vulnerabilities found"
@@ -113,20 +128,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.11.0
+
       - name: Setup Node.js
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
         with:
           node-version: "20"
-          cache: "npm"
+          cache: "pnpm"
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Check for outdated dependencies
-        run: npm outdated || true
+        run: pnpm outdated || true
 
       - name: Dependency license check
-        run: npm run license:check
+        run: pnpm run license:check
 
   alert-on-issues:
     name: Alert on Issues
