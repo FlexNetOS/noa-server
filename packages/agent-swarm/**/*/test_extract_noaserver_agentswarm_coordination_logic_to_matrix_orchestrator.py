@@ -19,7 +19,6 @@ class TestExtractNoaserverAgentswarmCoordinationLogicToMatrixOrchestrator(unitte
     def test_execution(self):
         self.component.initialize()
         # TODO: Add execution tests
-        pass
 
     def tearDown(self):
         self.component.cleanup()
