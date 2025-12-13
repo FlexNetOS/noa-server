@@ -9,5 +9,8 @@
     "/^\\s*(node|pnpm|npm|yarn|python3?|pip3?|go|java|javac|tsc)\\s+(-v|--version)\\s*$/": { "approve": true, "matchCommandLine": true },
     "/^\\s*(git\\s+(status|rev-parse\\s+--short\\s+HEAD|log\\s+-1|branch))\\s*$/": { "approve": true, "matchCommandLine": true },
     "/^\\s*(docker|docker\\s+compose|docker-compose|gh)\\s+(--version|-v)\\s*$/": { "approve": true, "matchCommandLine": true }
-  }
+  },
+  "editor.wordWrap": "on",
+  "editor.aiStats.enabled": true,
+  "editor.allowVariableFontsInAccessibilityMode": true
 }
